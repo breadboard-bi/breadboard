@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read></read>
+      <write></write>
+      <input></input>
+      <output></output>
+      <update></update>
+      <connection></connection>
+      <table></table>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection></connection>
+      <table></table>
+      <field></field>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts sales quota metrics from PeopleSoft CRM 8.8. The base is for reference only.  
+The other three inputs can be joined in a transformation to form a fact table (join on common group by attributes).</note>
+      <xloc>75</xloc>
+      <yloc>90</yloc>
+      <width>560</width>
+      <heigth>36</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <order>
+  </order>
+
+  <step>
+    <name>FACT_SALES_QUOTA</name>
+    <type>InsertUpdate</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <lookup>
+      <table>DIMENSION_CURRENCY</table>
+      </lookup>
+    <GUI>
+      <xloc>543</xloc>
+      <yloc>181</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_CRM_SALES_QUOTA</name>
+    <type>TableInput</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT
+FDTL.FORECAST_ID,
+FDTL.TIMEFRAME_PERIOD AS TIMEFRAME_PERIOD_ID, 
+FDTL.PERSON_ID,
+FDTL.BUSINESS_UNIT AS BUSINESS_UNIT_ID, 
+QTA.CURRENCY_CD AS CURRENCY_ID,
+MAX(QTA.QUOTA_AMOUNT) AS QUOTA_AMT
+FROM PS_RSF_FCAST_DTL FDTL, 
+PS_RSF_FCAST_USER FUSR, 
+PS_RSF_SUSER_QUOTA QTA
+WHERE FDTL.FORECAST_ID = FUSR.FORECAST_ID 
+AND FDTL.TIMEFRAME_PERIOD = FUSR.TIMEFRAME_PERIOD
+AND FDTL.PERSON_ID = FUSR.PERSON_ID
+AND FUSR.TIMEFRAME_PERIOD = QTA.TIMEFRAME_PERIOD
+AND FUSR.PERSON_ID = QTA.PERSON_ID
+GROUP BY FDTL.BUSINESS_UNIT, 
+FDTL.FORECAST_ID, 
+FDTL.TIMEFRAME_PERIOD, 
+FDTL.PERSON_ID, 
+QTA.CURRENCY_CD</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>166</xloc>
+      <yloc>378</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_CRM_SALES_QUOTA_BASE</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the columns from the PS_RB_REGION table.  It only includes geographical regions (recursive hierarchy).</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT DISTINCT
+FDTL.FORECAST_ID,
+FDTL.TIMEFRAME_PERIOD AS TIMEFRAME_PERIOD_ID, 
+FDTL.PERSON_ID, 
+FDTL.BUSINESS_UNIT, 
+FDTL.OPPORTUNITY_ID, 
+FDTL.OPPORTUNITY_STATUS AS OPPORTUNITY_STATUS_ID, 
+FUSR.FORECAST_SUBMITTED 
+FROM PS_RSF_FCAST_DTL FDTL, PS_RSF_FCAST_USER FUSR
+WHERE FDTL.FORECAST_ID = FUSR.FORECAST_ID 
+AND FDTL.TIMEFRAME_PERIOD = FUSR.TIMEFRAME_PERIOD 
+AND FDTL.PERSON_ID = FUSR.PERSON_ID</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>162</xloc>
+      <yloc>182</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_SALES_QUOTA_CLOSED_REVENUE</name>
+    <type>TableInput</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT FCAST.BUSINESS_UNIT AS BUSINESS_UNIT_ID,
+FCAST.FORECAST_ID, 
+FCAST.TIMEFRAME_PERIOD AS TIMEFRAME_PERIOD_ID,
+FCAST.PERSON_ID,  
+OPP.CURRENCY_CD AS CURRENCY_ID,
+SUM(OPP.ACT_REVENUE * (SREP.PCT_ALLOC/100)) AS CLOSED_REVENUE_AMT
+FROM 
+(SELECT DISTINCT
+FDTL.FORECAST_ID,
+FDTL.TIMEFRAME_PERIOD, 
+FDTL.PERSON_ID, 
+FDTL.BUSINESS_UNIT, 
+FDTL.OPPORTUNITY_ID, 
+FDTL.OPPORTUNITY_STATUS, 
+FUSR.FORECAST_SUBMITTED 
+FROM PS_RSF_FCAST_DTL FDTL, PS_RSF_FCAST_USER FUSR
+WHERE FDTL.FORECAST_ID = FUSR.FORECAST_ID 
+AND FDTL.TIMEFRAME_PERIOD = FUSR.TIMEFRAME_PERIOD 
+AND FDTL.PERSON_ID = FUSR.PERSON_ID) FCAST, 
+PS_RSF_OPPORTUNITY OPP, PS_RSF_OPP_SLSREP SREP
+WHERE FCAST.BUSINESS_UNIT = OPP.BUSINESS_UNIT 
+AND FCAST.OPPORTUNITY_ID = OPP.OPPORTUNITY_ID
+AND FCAST.PERSON_ID = SREP.PERSON_ID 
+AND OPP.OPPORTUNITY_ID = SREP.OPPORTUNITY_ID
+AND FCAST.OPPORTUNITY_STATUS = &apos;2&apos;
+AND FCAST.FORECAST_SUBMITTED = &apos;Y&apos;
+GROUP BY
+FCAST.BUSINESS_UNIT, 
+FCAST.FORECAST_ID, 
+FCAST.TIMEFRAME_PERIOD, 
+FCAST.PERSON_ID, 
+OPP.CURRENCY_CD</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>161</xloc>
+      <yloc>250</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_SALES_QUOTA_FORECAST_REVENUE</name>
+    <type>TableInput</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT FCAST.BUSINESS_UNIT AS BUSINESS_UNIT_ID, 
+FCAST.FORECAST_ID, 
+FCAST.TIMEFRAME_PERIOD AS TIMEFRAME_PERIOD_ID, 
+FCAST.PERSON_ID, 
+OPP.CURRENCY_CD AS CURRENCY_ID,
+SUM(FDTL.FROM_REVENUE) AS FORECAST_REVENUE_AMT
+FROM (SELECT DISTINCT
+FDTL.FORECAST_ID,
+FDTL.TIMEFRAME_PERIOD, 
+FDTL.PERSON_ID, 
+FDTL.BUSINESS_UNIT, 
+FDTL.OPPORTUNITY_ID, 
+FDTL.OPPORTUNITY_STATUS, 
+FUSR.FORECAST_SUBMITTED 
+FROM PS_RSF_FCAST_DTL FDTL, PS_RSF_FCAST_USER FUSR
+WHERE FDTL.FORECAST_ID = FUSR.FORECAST_ID 
+AND FDTL.TIMEFRAME_PERIOD = FUSR.TIMEFRAME_PERIOD 
+AND FDTL.PERSON_ID = FUSR.PERSON_ID) FCAST, PS_RSF_FCAST_DTL FDTL, PS_RSF_OPPORTUNITY OPP
+WHERE FCAST.BUSINESS_UNIT = FDTL.BUSINESS_UNIT
+AND FCAST.FORECAST_ID = FDTL.FORECAST_ID
+AND FCAST.TIMEFRAME_PERIOD = FDTL.TIMEFRAME_PERIOD
+AND FCAST.PERSON_ID = FDTL.PERSON_ID 
+AND FCAST.BUSINESS_UNIT = OPP.BUSINESS_UNIT
+AND FCAST.OPPORTUNITY_ID = OPP.OPPORTUNITY_ID
+AND FCAST.OPPORTUNITY_STATUS &lt;&gt; &apos;&apos;
+AND FCAST.FORECAST_SUBMITTED = &apos;Y&apos;
+GROUP BY FCAST.BUSINESS_UNIT, 
+FCAST.FORECAST_ID, 
+FCAST.TIMEFRAME_PERIOD, 
+FCAST.PERSON_ID, 
+OPP.CURRENCY_CD</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>164</xloc>
+      <yloc>313</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

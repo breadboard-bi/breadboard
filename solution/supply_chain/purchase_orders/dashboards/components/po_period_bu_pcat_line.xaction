@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>Returns by Period, Business Unit and Product Category</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Returns the purchase orders for period, business unit and product cateogry. It includes dynamic SQL that relies on the following columns &amp; formats from the date dimension: WEEK_NAME, YEAR_QUARTER_NAME, MONTH_SK, YEAR_SK, and DATE_SK. The formats for these columns should be as follows: YYYYQ[1-52], e.g, 1998W37 for WEEK_NAME; YYYYQ[1-4], e.g., 1998Q3 for YEAR_QUARTER_NAME; YYYYMM, e.g., 200509for MONTH_SK; YYYY, e.g., 2001 for YEAR_SK; and YYYYMMDD, e.g., 20061101 for DATE_SK.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <inputs> 
+    <BUSINESS_UNIT type="string"> 
+      <sources> 
+        <request>BUSINESS_UNIT</request> 
+      </sources> 
+    </BUSINESS_UNIT>  
+    <CATEGORY type="string"> 
+      <sources> 
+        <request>CATEGORY</request> 
+      </sources> 
+    </CATEGORY>  
+    <TEMPORAL_VALUE type="string"> 
+      <sources> 
+        <request>TEMPORAL_VALUE</request> 
+      </sources> 
+    </TEMPORAL_VALUE> 
+  </inputs>  
+  <outputs> 
+    <swresult type="result-set"/> 
+  </outputs>  
+  <resources/>  
+  <actions> 
+    <actions> 
+      <action-definition> 
+        <component-name>JavascriptRule</component-name>  
+        <action-type>JavaScript DSQL</action-type>  
+        <action-inputs> 
+          <TEMPORAL_VALUE type="string"/>  
+          <CATEGORY type="string"/>  
+          <BUSINESS_UNIT type="string"/>
+        </action-inputs>  
+        <action-outputs> 
+          <query type="string"/> 
+        </action-outputs>  
+        <component-definition> 
+          <script><![CDATA[var temporal_cat = "";
+var column_name = "";
+// Only use this logic as a model for line graphs
+if ('{TEMPORAL_VALUE}'.indexOf("W") >= 0)
+{
+ temporal_cat = "DATE";
+ column_name = "WEEK_NAME";
+}
+
+else if ('{TEMPORAL_VALUE}'.indexOf("Q") >= 0)
+{
+ temporal_cat = "MONTH";
+ column_name = "YEAR_QUARTER_NAME";
+}
+
+else if ('{TEMPORAL_VALUE}'.length == 6)
+{
+ temporal_cat = "WEEK";
+ column_name ="MONTH_SK";
+}
+else if ('{TEMPORAL_VALUE}'.length == 4)
+{
+ temporal_cat = "QUARTER";
+ column_name ="YEAR_SK";
+}
+else if ('{TEMPORAL_VALUE}'.length == 8)
+{
+ temporal_cat = "DATE";
+ column_name ="DATE_SK";
+}
+query = "SELECT CAST(" + temporal_cat+"_SK AS CHAR(8)) AS "+temporal_cat+"_OF_YEAR, ";
+query += "AVG(F.PURCHASE_ORDER_TRXN_AMT) AS 'Average PO Amount',  ";
+query += "AVG(F.PURCHASE_ORDER_QTY) AS 'Average PO Quantity' ";
+query += "FROM FACT_PURCHASE_ORDER F,DIMENSION_BUSINESS_UNIT B,  ";
+query += "DIMENSION_DAY D, DIMENSION_PRODUCT P ";
+query += "WHERE F.BUSINESS_UNIT_SK = B.BUSINESS_UNIT_SK  ";
+query += "AND F.PURCHASE_ORDER_DATE_SK = D.DATE_SK ";
+query += "AND F.PRODUCT_SK = P.PRODUCT_SK ";
+query += "AND B.BUSINESS_UNIT_NAME = '{BUSINESS_UNIT}'  ";
+query += "AND P.PARENT_PRODUCT_CATEGORY_NAME = '{CATEGORY}'  ";
+query += "AND D."+column_name+ " = '{TEMPORAL_VALUE}'  ";
+query += "GROUP BY D."+temporal_cat+"_SK ";
+query += "ORDER BY D."+temporal_cat+"_SK ASC ";]]></script> 
+        </component-definition> 
+      </action-definition>  
+      <action-definition> 
+        <component-name>SQLLookupRule</component-name>  
+        <action-type>Returns SQL Query with Country and Category Filters</action-type>  
+        <action-inputs> 
+          <query type="string"/> 
+        </action-inputs>  
+        <action-outputs> 
+          <query-result type="result-set" mapping="swresult"/> 
+        </action-outputs>  
+        <component-definition> 
+          <jndi>mdw_mysql</jndi> 
+        </component-definition> 
+      </action-definition> 
+    </actions> 
+  </actions> 
+</action-sequence>

@@ -1,0 +1,738 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>DIMENSION_EC2_WEB_VISITOR</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input>DIMENSION_WEB_VISITOR</input>
+      <output>DIMENSION_WEB_VISITOR</output>
+      <update/>
+      <rejected/>
+      <connection>mdw_amazon</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>N</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>174.129.240.99</name><hostname>174.129.240.99</hostname><port>8081</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2009&#47;01&#47;17 14:00:49.968</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Breadboard BI - Customer 360 - Dimension Web Visitor Data Flow - Version 2.4
+===============================================
+1.  This data flow extracts web site visitor information from the staging area.
+
+2.  As delivered, this loads as a slowly changing dimension Type 1 (SCD1).  Add SCD2 Functionality by 
+    editing the settings in the dimension lookup&#47;update step.
+
+3.  This transformation calls MaxMind Java APIs to return organization and geographical information using 
+      the visitor IP address.  The following steps are required:
+
+      1.  Use of Kettle Version: 2.5GA or greater.
+      2.  Place the maxmind.jar in the kettle libext directory. 
+      3.  Place the GeoIPOrg &amp; GeoLiteCity.dat binary files in a directory on your server, update the JavaScript steps with the path.
+           By default the JavaScript steps point to the following Windows path: D:&#47;geoip&#47;databases&#47;.</note>
+      <xloc>8</xloc>
+      <yloc>8</yloc>
+      <width>640</width>
+      <heigth>192</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>35</xloc>
+      <yloc>392</yloc>
+      <width>562</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2009 Breadboard BI, Inc.  All rights reserved.</note>
+      <xloc>38</xloc>
+      <yloc>499</yloc>
+      <width>290</width>
+      <heigth>23</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>mdw_mysql</name>
+    <server>10.10.10.3</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>3306</port>
+    <username>mdw</username>
+    <password>Encrypted 2be98afc86aa7f2e4a118bd79cbc3fd89</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_amazon</name>
+    <server>174.129.240.99</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>3306</port>
+    <username>mdw_user</username>
+    <password>Encrypted 2be98afc86aca9693940cbd75ccd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>MAP_EC2_LOOKUP_GEO_LOCATION</from><to>MAP_EC2_LOOKUP_WEB_BROWSER_OS</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_EC2_LOOKUP_WEB_BROWSER_OS</from><to>DIMENSION_WEB_VISITOR</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_DETECT_ROBOTS</from><to>FILTER_KNOWN_BOTS</to><enabled>Y</enabled> </hop>  <hop> <from>FILTER_KNOWN_BOTS</from><to>STAGE_WEB_BOT_LIST</to><enabled>Y</enabled> </hop>  <hop> <from>GET_GEO_LOCATION</from><to>MAP_DETECT_ROBOTS</to><enabled>Y</enabled> </hop>  <hop> <from>STAGE_WEB_REQUEST</from><to>GET_ORGANIZATION_NAME</to><enabled>Y</enabled> </hop>  <hop> <from>GET_ORGANIZATION_NAME</from><to>GET_GEO_LOCATION</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_DETECT_ROBOTS</from><to>LKP_STAGE_GEO_DMA</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_STAGE_GEO_DMA</from><to>MAP_EC2_LOOKUP_GEO_LOCATION</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>DIMENSION_WEB_VISITOR</name>
+    <type>DimensionLookup</type>
+    <description>This dimension lookup&#47;update step inserts or updates rows according to a slowly changing dimension Type 1 (SCD1) or slowly changing dimension Type 2 (SCD2) strategy.  The default configuration is SCD1. </description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <schema/>
+      <table>DIMENSION_WEB_VISITOR</table>
+      <connection>mdw_amazon</connection>
+      <commit>0</commit>
+      <update>Y</update>
+      <fields>
+        <key>
+          <name>HOSTED_CLIENT_SK</name>
+          <lookup>HOSTED_CLIENT_SK</lookup>
+        </key>
+        <key>
+          <name>LONG_IP_NUMBER</name>
+          <lookup>LONG_IP_NUMBER</lookup>
+        </key>
+        <key>
+          <name>WEB_VISITOR_FULL_NAME</name>
+          <lookup>WEB_VISITOR_FULL_NAME</lookup>
+        </key>
+        <date>
+          <name/>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+        </date>
+        <field>
+          <name>WEB_BROWSER_OS_DESC</name>
+          <lookup>WEB_BROWSER_OS_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>IP_ADDRESS_DESC</name>
+          <lookup>IP_ADDRESS_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>GEO_LOCATION_SK</name>
+          <lookup>GEO_LOCATION_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>CITY_NAME</name>
+          <lookup>CITY_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>REGION_CODE</name>
+          <lookup>REGION_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>REGION_NAME</name>
+          <lookup>REGION_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>POSTAL_CODE</name>
+          <lookup>POSTAL_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>COUNTRY_CODE</name>
+          <lookup>COUNTRY_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>COUNTRY_NAME</name>
+          <lookup>COUNTRY_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>LATITUDE_NUMBER</name>
+          <lookup>LATITUDE_NUMBER</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>LONGITUDE_NUMBER</name>
+          <lookup>LONGITUDE_NUMBER</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>DMA_CODE</name>
+          <lookup>DMA_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>PHONE_REGION_CODE</name>
+          <lookup>PHONE_REGION_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>TIMEZONE_DESC</name>
+          <lookup>TIMEZONE_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>WEB_ORGANIZATION_DESC</name>
+          <lookup>WEB_ORGANIZATION_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>ROBOT_IND</name>
+          <lookup>ROBOT_IND</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>WEB_BROWSER_OS_SK</name>
+          <lookup>WEB_BROWSER_OS_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>ROBOT_QTY</name>
+          <lookup>ROBOT_QTY</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>DMA_NAME</name>
+          <lookup>DMA_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <return>
+          <name>WEB_VISITOR_SK</name>
+          <rename/>
+          <creation_method>tablemax</creation_method>
+          <use_autoinc>N</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1970</min_year>
+      <max_year>2036</max_year>
+      <cache_size>0</cache_size>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>699</xloc>
+      <yloc>482</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>FILTER_KNOWN_BOTS</name>
+    <type>FilterRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+<send_true_to/>
+<send_false_to/>
+    <compare>
+<condition>
+ <negated>N</negated>
+ <leftvalue>NEW_BOT_IND</leftvalue>
+ <function>=</function>
+ <rightvalue/>
+ <value><name>constant</name><type>String</type><text>Y</text><length>-1</length><precision>-1</precision><isnull>N</isnull></value> </condition>
+    </compare>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>507</xloc>
+      <yloc>217</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>GET_GEO_LOCATION</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>Y</compatible>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>var thetype = typeof service;
+
+if (thetype == &quot;undefined&quot;)
+{
+var service = new Packages.com.maxmind.geoip.LookupService(&quot;&#47;usr&#47;local&#47;geoip&#47;databases&#47;GeoLiteCity.dat&quot;,Packages.com.maxmind.geoip.LookupService.GEOIP_MEMORY_CACHE);
+}
+
+var location=service.getLocation(IP_ADDRESS_DESC);
+if(location!=null)
+{
+var COUNTRY_CODE=location.countryCode;
+var COUNTRY_NAME=location.countryName;
+var REGION_NAME=Packages.com.maxmind.geoip.regionName.regionNameByCode(location.countryCode, location.region);
+var REGION_CODE=location.region;
+var CITY_NAME=location.city;
+var POSTAL_CODE=location.postalCode;
+&#47;&#47; var LATITUDE_NUMBER=num2str(location.latitude);
+&#47;&#47; var LONGITUDE_NUMBER=num2str(location.longitude);
+var LATITUDE_NUMBER=(location.latitude);
+var LONGITUDE_NUMBER=(location.longitude);
+
+var DMA_CODE=(location.dma_code);
+var PHONE_REGION_CODE = (location.area_code);
+var TIMEZONE_DESC = Packages.com.maxmind.geoip.timeZone.timeZoneByCountryAndRegion(location.countryCode, location.region);
+}
+
+else
+{
+var COUNTRY_CODE = &quot;-&quot;;
+var COUNTRY_NAME = &quot;-&quot;;
+var REGION_NAME = &quot;-&quot;;
+var REGION_CODE = &quot;-&quot;;
+var CITY_NAME = &quot;-&quot;;
+var POSTAL_CODE = &quot;-&quot;;
+var LATITUDE_NUMBER = 0;
+var LONGITUDE_NUMBER = 0;
+var DMA_CODE = 0;
+var PHONE_REGION_CODE = 0;
+var TIMEZONE_DESC = &quot;-&quot;;
+}</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>COUNTRY_CODE</name>
+        <rename>COUNTRY_CODE</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>COUNTRY_NAME</name>
+        <rename>COUNTRY_NAME</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>REGION_NAME</name>
+        <rename>REGION_NAME</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>REGION_CODE</name>
+        <rename>REGION_CODE</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>CITY_NAME</name>
+        <rename>CITY_NAME</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>POSTAL_CODE</name>
+        <rename>POSTAL_CODE</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>LATITUDE_NUMBER</name>
+        <rename>LATITUDE_NUMBER</rename>
+        <type>Number</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>LONGITUDE_NUMBER</name>
+        <rename>LONGITUDE_NUMBER</rename>
+        <type>Number</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>DMA_CODE</name>
+        <rename>DMA_CODE</rename>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>PHONE_REGION_CODE</name>
+        <rename>PHONE_REGION_CODE</rename>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>TIMEZONE_DESC</name>
+        <rename>TIMEZONE_DESC</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>268</xloc>
+      <yloc>220</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>GET_ORGANIZATION_NAME</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>Y</compatible>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>var thetype_org = typeof service;
+
+if (thetype_org == &quot;undefined&quot;)
+{
+var service = new Packages.com.maxmind.geoip.LookupService(&quot;&#47;usr&#47;local&#47;geoip&#47;databases&#47;GeoIPOrg.dat&quot;,Packages.com.maxmind.geoip.LookupService.GEOIP_MEMORY_CACHE);
+}
+
+var organization = service.getOrg(IP_ADDRESS_DESC);
+
+if (organization != null) {
+var WEB_ORGANIZATION_DESC = organization;
+}
+else {
+var WEB_ORGANIZATION_DESC = &quot;Missing&quot;;}
+
+</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>WEB_ORGANIZATION_DESC</name>
+        <rename>WEB_ORGANIZATION_DESC</rename>
+        <type>String</type>
+        <length>255</length>
+        <precision>-1</precision>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>174</xloc>
+      <yloc>258</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_STAGE_GEO_DMA</name>
+    <type>DBLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_amazon</connection>
+    <cache>Y</cache>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema/>
+      <table>STAGE_GEO_DMA</table>
+      <orderby/>
+      <fail_on_multiple>Y</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>DMA_CODE</name>
+        <field>DMA_CODE</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>DMA_NAME</name>
+        <rename>DMA_NAME</rename>
+        <default/>
+        <type>String</type>
+      </value>
+    </lookup>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>515</xloc>
+      <yloc>280</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_DETECT_ROBOTS</name>
+    <type>Mapping</type>
+    <description>This mapping includes a javascript step with robot&#47;crawler detection logic.</description>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_DETECT_ROBOTS</trans_name>
+    <filename>${ETL_OBJECTS_PATH}&#47;MAP_DETECT_ROBOTS.ktr</filename>
+    <directory_path/>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>WEB_BROWSER_OS_DESC</parent><child>WEB_BROWSER_OS_DESC</child></connector>
+       <connector><parent>BOT_NAME</parent><child>BOT_NAME</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>ROBOT_IND</parent><child>ROBOT_IND</child></connector>
+       <connector><parent>WEB_BROWSER_OS_DESC</parent><child>WEB_BROWSER_OS_DESC</child></connector>
+       <connector><parent>ROBOT_PAGE_VIEW_QTY</parent><child>ROBOT_QTY</child></connector>
+       <connector><parent>NEW_BOT_IND</parent><child>NEW_BOT_IND</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>358</xloc>
+      <yloc>257</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_EC2_LOOKUP_GEO_LOCATION</name>
+    <type>Mapping</type>
+    <description>This mapping includes a dimension lookup&#47;update step that returns the geographic location surrogate key.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_EC2_LOOKUP_GEOGRAPHIC_LOCATION</trans_name>
+    <filename>${ETL_OBJECTS_PATH}&#47;MAP_EC2_LOOKUP_GEOGRAPHIC_LOCATION.ktr</filename>
+    <directory_path/>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>DW_LOAD_DATE</parent><child>STREAM_DATE</child></connector>
+       <connector><parent>LATITUDE_NUMBER</parent><child>LATITUDE_NUMBER</child></connector>
+       <connector><parent>LONGITUDE_NUMBER</parent><child>LONGITUDE_NUMBER</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>GEO_LOCATION_SK</parent><child>GEO_LOCATION_SK</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+       <connector><parent>LATITUDE_NUMBER</parent><child>LATITUDE_NUMBER</child></connector>
+       <connector><parent>LONGITUDE_NUMBER</parent><child>LONGITUDE_NUMBER</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>688</xloc>
+      <yloc>291</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_EC2_LOOKUP_WEB_BROWSER_OS</name>
+    <type>Mapping</type>
+    <description>This mapping includes a dimension lookup&#47;update step that returns the web browser operating system surrogate key.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_EC2_LOOKUP_WEB_BROWSER_OS</trans_name>
+    <filename>${ETL_OBJECTS_PATH}&#47;MAP_EC2_LOOKUP_WEB_BROWSER_OS.ktr</filename>
+    <directory_path/>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>WEB_BROWSER_OS_DESC</parent><child>WEB_BROWSER_OS_DESC</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>WEB_BROWSER_OS_SK</parent><child>WEB_BROWSER_OS_SK</child></connector>
+       <connector><parent>WEB_BROWSER_OS_DESC</parent><child>WEB_BROWSER_OS_DESC</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>697</xloc>
+      <yloc>374</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_WEB_BOT_LIST</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_amazon</connection>
+    <commit>100</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema/>
+      <table>STAGE_WEB_BOT_LIST</table>
+      <key>
+        <name>IP_ADDRESS_DESC</name>
+        <field>IP_ADDRESS_DESC</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>IP_ADDRESS_DESC</name>
+        <rename>IP_ADDRESS_DESC</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>695</xloc>
+      <yloc>218</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_WEB_REQUEST</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_amazon</connection>
+    <sql>SELECT DISTINCT
+  W.HOSTED_CLIENT_SK
+, W.WEB_VISITOR_FULL_NAME
+, MAX(W.WEB_BROWSER_OS_DESC) AS WEB_BROWSER_OS_DESC
+, W.LONG_IP_NUMBER
+&#47;*, W.COOKIE_DESC *&#47;
+, MAX(W.IP_ADDRESS_DESC) AS IP_ADDRESS_DESC
+, (CASE WHEN X.BOT_NAME IS NULL THEN &apos;-&apos; ELSE X.BOT_NAME END) AS BOT_NAME
+, W.DW_LOAD_DATE
+FROM STAGE_WEB_REQUEST W
+LEFT OUTER JOIN STAGE_WEB_BOT_LIST X
+ON W.IP_ADDRESS_DESC = X.IP_ADDRESS_DESC
+GROUP BY W.HOSTED_CLIENT_SK, 
+&#47;* COOKIE_DESC, *&#47;
+W.WEB_VISITOR_FULL_NAME, 
+W.LONG_IP_NUMBER</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>66</xloc>
+      <yloc>222</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+   <slave-step-copy-partition-distribution>
+</slave-step-copy-partition-distribution>
+   <slave_transformation>N</slave_transformation>
+</transformation>

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job>
+  <name>JOB_S3_STAGE_WEB_FILE</name>
+    <description/>
+    <extended_description/>
+    <job_version/>
+    <job_status>0</job_status>
+  <directory>&#47;</directory>
+  <created_user>admin</created_user>
+  <created_date>2009&#47;01&#47;17 11:13:34.000</created_date>
+  <modified_user>admin</modified_user>
+  <modified_date>2009&#47;01&#47;17 11:13:34.000</modified_date>
+  <connection>
+    <name>mdw_mysql</name>
+    <server>10.10.10.3</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>3306</port>
+    <username>mdw</username>
+    <password>Encrypted 2be98afc86aa7f2e4a118bd79cbc3fd89</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_amazon</name>
+    <server>174.129.240.99</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>3306</port>
+    <username>mdw_user</username>
+    <password>Encrypted 2be98afc86aca9693940cbd75ccd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>174.129.240.99</name><hostname>174.129.240.99</hostname><port>8081</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+  <logconnection/>
+  <logtable/>
+   <use_batchid>Y</use_batchid>
+   <pass_batchid>N</pass_batchid>
+   <use_logfield>Y</use_logfield>
+   <shared_objects_file/>
+  <entries>
+    <entry>
+      <name>DELETE_OLD_FILE</name>
+      <description>Delete files</description>
+      <type>DELETE_FILES</type>
+      <launch_in_parallel>Delete files</launch_in_parallel>
+      <arg_from_previous>N</arg_from_previous>
+      <include_subfolders>N</include_subfolders>
+      <fields>
+        <field>
+          <name>D:\kettle\data\bbbi_web_logs.zip</name>
+          <filemask/>
+        </field>
+      </fields>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>187</xloc>
+      <yloc>121</yloc>
+      </entry>
+    <entry>
+      <name>CREATE_WEB_SITE_VISIT_START</name>
+      <description>Create file</description>
+      <type>CREATE_FILE</type>
+      <launch_in_parallel>Create file</launch_in_parallel>
+      <filename>J:\web_site_visit_start</filename>
+      <fail_if_file_exists>N</fail_if_file_exists>
+      <add_filename_result>N</add_filename_result>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>513</xloc>
+      <yloc>121</yloc>
+      </entry>
+    <entry>
+      <name>zip_move_file</name>
+      <description>Zip file</description>
+      <type>ZIP_FILE</type>
+      <launch_in_parallel>Zip file</launch_in_parallel>
+      <zipfilename>D:\kettle\data\bbbi_web_logs.zip</zipfilename>
+      <compressionrate>1</compressionrate>
+      <ifzipfileexists>2</ifzipfileexists>
+      <wildcard/>
+      <wildcardexclude/>
+      <sourcedirectory>D:\kettle\source_files\bbbi\</sourcedirectory>
+      <movetodirectory/>
+      <afterzip>0</afterzip>
+      <addfiletoresult>N</addfiletoresult>
+      <isfromprevious>N</isfromprevious>
+      <createparentfolder>N</createparentfolder>
+      <adddate>N</adddate>
+      <addtime>N</addtime>
+      <SpecifyFormat>N</SpecifyFormat>
+      <date_time_format/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>347</xloc>
+      <yloc>121</yloc>
+      </entry>
+    <entry>
+      <name>START</name>
+      <description>Special entries</description>
+      <type>SPECIAL</type>
+      <launch_in_parallel>Special entries</launch_in_parallel>
+      <start>Y</start>
+      <dummy>N</dummy>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
+      <intervalSeconds>0</intervalSeconds>
+      <intervalMinutes>60</intervalMinutes>
+      <hour>12</hour>
+      <minutes>0</minutes>
+      <weekDay>1</weekDay>
+      <DayOfMonth>1</DayOfMonth>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>45</xloc>
+      <yloc>121</yloc>
+      </entry>
+  </entries>
+  <hops>
+    <hop>
+      <from>DELETE_OLD_FILE</from>
+      <to>zip_move_file</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>START</from>
+      <to>DELETE_OLD_FILE</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>zip_move_file</from>
+      <to>CREATE_WEB_SITE_VISIT_START</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+  </hops>
+  <notepads>
+    <notepad>
+      <note>This simple job wraps two files into a zip file and moves the files to a local folder (to be later synched wth S3).</note>
+      <xloc>89</xloc>
+      <yloc>32</yloc>
+      <width>539</width>
+      <heigth>22</heigth>
+    </notepad>
+  </notepads>
+</job>

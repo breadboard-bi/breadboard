@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">  
+  <name>new_market.xaction</name>
+  <title>%title</title>
+  <version>2</version>
+  <documentation> 
+    <author>Breadboard BI, LLC</author>  
+    <description><![CDATA[%description]]></description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help>This xaction includes a SQL statement with the DBMS specific syntax function. MySQL and Oracle examples are provided. MySQL ==== SELECT V.WEB_ORGANIZATION_DESC, SUM(F.WEB_VISIT_QTY) AS DISTINCT_VISITOR_QTY, SUM(F.WEB_PAGE_VIEW_QTY) as WEB_PAGE_VIEW_QTY FROM FACT_WEB_SITE_VISIT F, DIMENSION_DAY D, DIMENSION_GEOGRAPHIC_LOCATION G, DIMENSION_WEB_VISITOR V WHERE F.VISIT_DATE_SK = D.DATE_SK AND F.GEO_LOCATION_SK = G.GEO_LOCATION_SK AND F.WEB_VISITOR_SK = V.WEB_VISITOR_SK AND D.MONTH_SK = '{MONTH_OF_YEAR}' AND G.ISO_3166_COUNTRY_CODE = '{COUNTRY}' AND G.REGION_NAME = '{REGION}' GROUP BY V.WEB_ORGANIZATION_DESC ORDER BY SUM(F.WEB_VISIT_QTY) DESC LIMIT 15 Oracle ==== select * from ( select RANK() over(order by SUM(F.WEB_VISIT_QTY) desc) as RANK, V.WEB_ORGANIZATION_DESC, SUM(F.WEB_VISIT_QTY) AS DISTINCT_VISITOR_QTY, SUM(F.WEB_PAGE_VIEW_QTY) as WEB_PAGE_VIEW_QTY FROM FACT_WEB_SITE_VISIT F, DIMENSION_DAY D, DIMENSION_GEOGRAPHIC_LOCATION G, DIMENSION_WEB_VISITOR V WHERE F.VISIT_DATE_SK = D.DATE_SK AND F.GEO_LOCATION_SK = G.GEO_LOCATION_SK AND F.WEB_VISITOR_SK = V.WEB_VISITOR_SK AND D.MONTH_SK = '{MONTH_OF_YEAR}' AND G.ISO_3166_COUNTRY_CODE = '{COUNTRY}' AND G.REGION_NAME = '{REGION}' GROUP BY V.WEB_ORGANIZATION_DESC) WHERE RANK &lt;=16</help>  
+    <result-type>report</result-type> 
+  </documentation>
+
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <MONTH_OF_YEAR type="string"> 
+      <sources> 
+        <request>MONTH_OF_YEAR</request> 
+      </sources> 
+    </MONTH_OF_YEAR>  
+    <COUNTRY type="string"> 
+      <sources> 
+        <request>COUNTRY</request> 
+      </sources> 
+    </COUNTRY>  
+    <REGION type="string"> 
+      <sources> 
+        <request>REGION</request> 
+      </sources> 
+    </REGION> 
+  </inputs>
+
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>
+
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>web_visit_dashboard_report.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <action-inputs> 
+        <output-type type="string"/>  
+        <COUNTRY type="string"/>  
+        <MONTH_OF_YEAR type="string"/>  
+        <REGION type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <report-output type="content" mapping="report"/>
+      </action-outputs>
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT V.WEB_ORGANIZATION_DESC, 
+        SUM(F.WEB_VISIT_QTY) AS DISTINCT_VISITOR_QTY, 
+        SUM(F.WEB_PAGE_VIEW_QTY) as WEB_PAGE_VIEW_QTY 
+        FROM FACT_WEB_SITE_VISIT F, 
+        DIMENSION_DAY D, 
+        DIMENSION_WEB_VISITOR V 
+        WHERE F.VISIT_DATE_SK = D.DATE_SK 
+        AND F.WEB_VISITOR_SK = V.WEB_VISITOR_SK 
+        AND D.MONTH_SK = '{MONTH_OF_YEAR}' 
+        AND V.COUNTRY_CODE = '{COUNTRY}' 
+        AND V.REGION_NAME = '{REGION}' 
+        GROUP BY V.WEB_ORGANIZATION_DESC 
+        ORDER BY SUM(F.WEB_VISIT_QTY) 
+        DESC LIMIT 15]]></query> 
+      </component-definition> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

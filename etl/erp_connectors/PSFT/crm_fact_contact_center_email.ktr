@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read></read>
+      <write></write>
+      <input></input>
+      <output></output>
+      <update></update>
+      <connection></connection>
+      <table></table>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection></connection>
+      <table></table>
+      <field></field>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts ship to type data from PeopleSoft CRM 8.8.</note>
+      <xloc>75</xloc>
+      <yloc>90</yloc>
+      <width>333</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_CRM_CONTACT_CENTER_EMAIL_METRICS</from><to>FACT_CONTACT_CENTER_EMAIL</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>FACT_CONTACT_CENTER_EMAIL</name>
+    <type>InsertUpdate</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <lookup>
+      <table>FACT_CONTACT_CENTER_EMAIL</table>
+      </lookup>
+    <GUI>
+      <xloc>476</xloc>
+      <yloc>206</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_CRM_CONTACT_CENTER_EMAIL_METRICS</name>
+    <type>TableInput</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT 
+IT.INTERACT_BEGIN AS EMAIL_DATE,  --ALSO INCLUDES TIME
+EM.BUSINESS_UNIT AS BUSINESS_UNIT_ID,
+EM.MCF_EMAIL_ID AS EMAIL_ID,
+EM.MAILBOX_ID, 
+EM.INTERACTION_ID,   
+EM.EMAIL_STATUS AS INTERACTION_STATUS_ID, 
+EM.CURRENT_WL AS WORKGROUP_NAME, 
+EM.MB_DUE_DTTM, 
+EM.WL_DUE_DTTM EMAIL_DUE_DATE,
+EM.BO_ID_CUST AS BO_CUSTOMER_ID, 
+EM.BO_ID_CONTACT AS BO_CONTACT_ID,
+EM.ROLE_TYPE_ID_CNTCT, 
+EM.ASSIGNED_TO AS AGENT_ID,  --OPERATOR LOGIC NEEDED FOR AGENT LOOKUP?
+EM.LANGUAGE_CD AS LANGUAGE_ID, 
+EM.TMPLT_CATEGRY_ID AS TEMPLATE_CATEGORY_ID, 
+EM.TMPLT_TYPE_ID AS TEMPLATE_TYPE_ID,
+EM.PRODUCT_GROUP AS PRODUCT_GROUP_ID, 
+EM.PRODUCT_ID, 
+EM.CLOSED_DTTM AS EMAIL_CLOSED_DATE, 
+EM.ASSIGNED_DTTM AS EMAIL_ASSIGNED_DATE
+FROM PS_RB_IN_EMAIL EM
+INNER JOIN PS_RI_INTERACTION IT
+ON EM.INTERACTION_ID = IT.INTERACTION_ID
+LEFT OUTER JOIN (SELECT MCF_EMAIL_ID, MAX(SEQ_NUM) AS SEQ_NUM, MAX(KB_THRESHOLD) AS KB_THRESHOLD,
+MAX(RTRIM(LTRIM(DESCR254))) AS DESCR254 FROM PS_RB_AMP_NLPOUTPT WHERE EML_NLP_RET_CATG = &apos;6&apos; GROUP BY MCF_EMAIL_ID) NLP
+ON EM.MCF_EMAIL_ID = NLP.MCF_EMAIL_ID
+
+
+--WHERE EM.LASTUPD_EW_DTTM &gt; last load date</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>140</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

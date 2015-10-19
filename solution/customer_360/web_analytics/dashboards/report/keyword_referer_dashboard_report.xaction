@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">  
+  <name>new_market.xaction</name>
+  <title>%title</title>
+  <version>1</version>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description><![CDATA[%description]]></description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help/>  
+    <result-type>report</result-type> 
+  </documentation>
+
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <WEEK_OF_YEAR type="string"> 
+      <sources> 
+        <request>WEEK_OF_YEAR</request> 
+      </sources> 
+    </WEEK_OF_YEAR> 
+  </inputs>
+
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>
+
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>keyword_referer_top_keyword_report.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <action-inputs> 
+        <output-type type="string"/>  
+        <WEEK_OF_YEAR type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <report-output type="content" mapping="report"/>
+      </action-outputs>
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <jndi>mdw</jndi>  
+        <query><![CDATA[SELECT * FROM (
+SELECT 
+RANK() OVER(ORDER BY SUM(F.REFERRAL_QTY) DESC) AS RANK,
+MAX(D.WEEK_SK) AS WEEK_SK,
+MAX(K.KEYWORD_SK) AS KEYWORD_SK,
+MAX(R.REFERER_URL_SK) AS REFERER_URL_SK,
+R.PARENT_REFERER_DESC,
+K.KEYWORD_DESC,
+SUM(F.REFERRAL_QTY) AS REFERRAL_QTY,
+SUM(F.PAID_REFERRAL_QTY) as PAID_REFERRAL_QTY,
+SUM(F.ORGANIC_REFERRAL_QTY) AS ORGANIC_REFERRAL_QTY,
+SUM(F.WEB_PAGE_VIEW_QTY) AS WEB_PAGE_VIEW_QTY,
+SUM(F.VIEW_SECONDS_QTY) AS VIEW_SECONDS_QTY
+FROM FACT_WEB_SITE_REFERER F, DIMENSION_DAY D, DIMENSION_KEYWORD_PHRASE K, DIMENSION_WEB_SITE_REFERER R
+WHERE F.REFERRAL_DATE_SK = D.DATE_SK
+AND F.REFERER_URL_SK = R.REFERER_URL_SK
+AND F.KEYWORD_SK = K.KEYWORD_SK
+AND F.KEYWORD_SK > 0
+AND D.WEEK_SK = '{WEEK_OF_YEAR}' 
+GROUP BY K.KEYWORD_DESC, R.PARENT_REFERER_DESC
+)
+WHERE RANK <=15 AND ROWNUM < 16]]></query> 
+      </component-definition> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

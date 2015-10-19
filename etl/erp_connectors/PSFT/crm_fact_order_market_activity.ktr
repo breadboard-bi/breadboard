@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>CRM_FACT_MARKET_BASKET</name>
+    <directory>/</directory>
+    <log>
+      <read></read>
+      <write></write>
+      <input></input>
+      <output></output>
+      <update></update>
+      <connection></connection>
+      <table></table>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection></connection>
+      <table></table>
+      <field></field>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts business unit marketing activity metrics from PeopleSoft CRM 8.8.  Source complete, all else incomplete.</note>
+      <xloc>23</xloc>
+      <yloc>15</yloc>
+      <width>620</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_CRM_MARKET_ACTIVITY_METRICS</from><to>LKP_DIMENSION_PRODUCT</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_BUSINESS_UNIT</from><to>FACT_MARKET_BASKET</to><enabled>Y</enabled> </hop>  <hop> <from>CON_BUSINESS_UNIT_TYPE</from><to>LKP_DIMENSION_BUSINESS_UNIT</to><enabled>Y</enabled> </hop>  <hop> <from>CON_BUSINESS_UNIT_TYPE</from><to>LKP_DIMENSION_BUSINESS_UNIT</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>CON_BUSINESS_UNIT_TYPE</name>
+    <type>Constant</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <fields>
+      <field>
+        <name>BUSINESS_UNIT_TYPE</name>
+        <type>String</type>
+        <format></format>
+        <currency></currency>
+        <decimal></decimal>
+        <group></group>
+        <nullif>RO</nullif>
+        <length>2</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+    <GUI>
+      <xloc>413</xloc>
+      <yloc>77</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>FACT_MARKET_BASKET</name>
+    <type>InsertUpdate</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <lookup>
+      <table>FACT_MARKET_BASKET</table>
+      </lookup>
+    <GUI>
+      <xloc>678</xloc>
+      <yloc>204</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_BUSINESS_UNIT</name>
+    <type>DimensionLookup</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_BUSINESS_UNIT</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>BUSINESS_UNIT_ID</name>
+          <lookup>BUSINESS_UNIT_ID</lookup>
+          </key>
+        <key>
+          <name>BUSINESS_UNIT_TYPE</name>
+          <lookup>BUSINESS_UNIT_TYPE</lookup>
+          </key>
+        <date>
+          <name>SALE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>BUSINESS_UNIT_SK</name>
+          <rename></rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence></sequence>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>532</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_PRODUCT</name>
+    <type>DimensionLookup</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_PRODUCT</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>PRODUCT1_ID</name>
+          <lookup>PRODUCT_ID</lookup>
+          </key>
+        <date>
+          <name>SALE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>PRODUCT_SK</name>
+          <rename>PRODUCT1_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence></sequence>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>274</xloc>
+      <yloc>77</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_CRM_MARKET_ACTIVITY_METRICS</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the PS_RA_CAMPAIGN table.  It maintains all marketing campaign program information, such as name, start and end dates, relationship to a parent (roll up), overall campaign status, objective and description.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT CW.BUSINESS_UNIT AS BUSINESS_UNIT_ID, 
+CW.RA_CAMPAIGN_ID AS CAMPAIGN_ID, 
+CW.RA_CMPGN_WAVE_ID AS CAMPAIGN_WAVE_ID, 
+CW.START_DATE AS ACTIVITY_START_DATE, 
+CW.END_DATE AS ACTIVITY_END_DATE, 
+CW.RA_CMPGN_STATUS_CD AS CAMPAIGN_STATUS_CODE,  
+CW.RA_LIST_ID AS LIST_ID, 
+CW.RA_CHANNEL_TYPE AS CHANNEL_TYPE, 
+CW.RA_CHANNEL AS CHANNEL, 
+CW.RA_ACTIVITY_CD AS ACTIVITY_CODE, 
+CW.RA_BUDGET_AMT AS BUDGET_AMT, 
+CW.RA_EXPENSE_AMT AS EXPENSE_AMT, 
+CW.RA_LEAD_ACCEPT_DT AS LEAD_ACCEPT_DATE, 
+CM.CURRENCY_CD AS CURRENCY_ID, 
+CM.START_DATE AS PROGRAM_START_DATE,
+LD.LEAD_QTY, 
+LD.LEAD_ACCEPTED_QTY,
+OP.OPPORTUNITY_QTY,
+QT.QUOTE_QTY,
+QT.OPPORTUNITY_CUSTOMER_QTY,
+QT.OPPORTUNITY_CLOSED_REVENUE_AMT,
+LEAD.LEAD_ORDER_QTY,
+LEAD_CUSTOMER_QTY,
+LEAD.LEAD_CLOSED_REVENUE_AMT,
+WC.RA_FORECAST_AMT AS ESTIMATED_REVENUE_AMT, 
+WC.RA_ACTUAL_AMT AS ACTUAL_COST_AMT,
+METRIC.TARGET_LEAD_QTY,
+METRIC.TARGET_REVENUE_QTY,
+LIST.LIST_CURR_COUNT,
+RESPONSE.RESPONSE_QTY
+FROM PS_RA_CMPGN_WAVE CW
+JOIN PS_RA_CAMPAIGN CM
+ON CW.RA_CAMPAIGN_ID = CM.RA_CAMPAIGN_ID
+AND CW.BUSINESS_UNIT = CM.BUSINESS_UNIT
+LEFT OUTER JOIN (SELECT BUSINESS_UNIT, RA_CMPGN_WAVE_ID, count(distinct LEAD_ID) AS LEAD_QTY, 
+		SUM(CASE WHEN LEAD_STATUS = &apos;A&apos; THEN 1 ELSE 0 END) AS LEAD_ACCEPTED_QTY
+		FROM PS_RSF_LEAD 
+		GROUP BY BUSINESS_UNIT, RA_CMPGN_WAVE_ID) LD
+ON LD.RA_CMPGN_WAVE_ID   =  CW.RA_CMPGN_WAVE_ID  and LD.BUSINESS_UNIT  =  CW.BUSINESS_UNIT 
+LEFT OUTER JOIN (SELECT BUSINESS_UNIT,  RA_CMPGN_WAVE_ID,  count(distinct OPPORTUNITY_ID) AS OPPORTUNITY_QTY
+FROM PS_RSF_OPPORTUNITY GROUP BY BUSINESS_UNIT, RA_CMPGN_WAVE_ID) OP
+ON OP.RA_CMPGN_WAVE_ID   =  CW.RA_CMPGN_WAVE_ID  and OP.BUSINESS_UNIT  =  CW.BUSINESS_UNIT
+LEFT OUTER JOIN (SELECT OH.BUSINESS_UNIT,  OP.RA_CMPGN_WAVE_ID, count(distinct OH.CAPTURE_ID) AS QUOTE_QTY,
+		COUNT(DISTINCT((CASE WHEN OH.CAPTURE_TYPE_CD  =  &apos;SO&apos; THEN OH.CAPTURE_ID END))) AS OPPORTUNITY_ORDER_QTY,
+		COUNT(DISTINCT((CASE WHEN OH.CAPTURE_TYPE_CD  =  &apos;SO&apos; THEN OH.UID20F_SOLD END))) AS OPPORTUNITY_CUSTOMER_QTY,
+		SUM((CASE WHEN OH.CAPTURE_TYPE_CD  =  &apos;SO&apos; THEN OH.TOT_PRICE END)) AS OPPORTUNITY_CLOSED_REVENUE_AMT
+		FROM PS_RO_HEADER OH, PS_RO_ASSOCIATION OA, PS_RSF_OPPORTUNITY OP
+		WHERE OH.CAPTURE_ID = OA.CAPTURE_ID
+ 		AND OA.OPPORTUNITY_ID  = OP.OPPORTUNITY_ID 
+		AND OH.CAPTURE_TYPE_CD  =  &apos;QUO&apos;		
+		GROUP BY OH.BUSINESS_UNIT, OP.RA_CMPGN_WAVE_ID) QT
+ON OP.RA_CMPGN_WAVE_ID  = CW.RA_CMPGN_WAVE_ID and OP.BUSINESS_UNIT  =  CW.BUSINESS_UNIT
+LEFT OUTER JOIN (SELECT OH.BUSINESS_UNIT,  LD.RA_CMPGN_WAVE_ID, count(distinct OH.CAPTURE_ID) AS LEAD_ORDER_QTY, 
+		count(distinct OH.UID20F_SOLD) AS LEAD_CUSTOMER_QTY, sum(OH.TOT_PRICE) AS LEAD_CLOSED_REVENUE_AMT
+		FROM PS_RO_HEADER OH, PS_RO_ASSOCIATION OA, PS_RSF_LEAD LD
+		WHERE OH.CAPTURE_ID = OA.CAPTURE_ID
+ AND OH.CAPTURE_TYPE_CD  =  &apos;SO&apos;
+ AND OA.LEAD_ID  = LD.LEAD_ID 
+		and LD.OPPORTUNITY_ID = &apos; &apos; 
+		GROUP BY OH.BUSINESS_UNIT, LD.RA_CMPGN_WAVE_ID) LEAD
+ON LEAD.RA_CMPGN_WAVE_ID = CW.RA_CMPGN_WAVE_ID and LEAD.BUSINESS_UNIT  =  CW.BUSINESS_UNIT
+LEFT OUTER JOIN PS_RA_WAVE_COST WC
+ON WC.RA_CMPGN_WAVE_ID   =  CW.RA_CMPGN_WAVE_ID AND WC.BUSINESS_UNIT  =  CW.BUSINESS_UNIT
+LEFT OUTER JOIN (SELECT BUSINESS_UNIT,  RA_CMPGN_WAVE_ID,
+ 		SUM(CASE WHEN RA_FORECAST_AMT = &apos;MET0000123&apos; THEN RA_FORECAST_AMT ELSE 0 END) AS TARGET_LEAD_QTY,
+ 		SUM(CASE WHEN RA_FORECAST_AMT = &apos;MET0000130&apos; THEN RA_FORECAST_AMT ELSE 0 END) AS TARGET_REVENUE_QTY
+		FROM PS_RA_WAVE_METRIC
+		WHERE RA_METRIC_ID in (&apos;MET0000123&apos;, &apos;MET0000130&apos;)
+		GROUP BY RA_CMPGN_WAVE_ID, BUSINESS_UNIT) METRIC
+ON CW.RA_CMPGN_WAVE_ID = METRIC.RA_CMPGN_WAVE_ID
+AND CW.BUSINESS_UNIT = METRIC.BUSINESS_UNIT											
+LEFT OUTER JOIN (SELECT S.SETCNTRLVALUE , L.RA_LIST_ID, L.LIST_CURR_COUNT
+		FROM PS_SET_CNTRL_REC S,PS_RA_LIST L
+		WHERE  S.SETID  =  L.SETID AND RECNAME = &apos;RA_LIST&apos;) LIST
+ON CW.BUSINESS_UNIT = LIST.SETCNTRLVALUE AND CW.RA_LIST_ID = LIST.RA_LIST_ID
+--Note no group by or aggregation here - may need to be added after test data exploration.		
+LEFT OUTER JOIN (SELECT B.BUSINESS_UNIT, B.RA_CMPGN_WAVE_ID, COUNT(C.TASK_TYPE) AS RESPONSE_QTY
+		FROM PS_RB_TSK_TXN A , PS_RSF_LEAD B , PS_RB_TSK C
+		WHERE A.REL_TXN_SYNCID = B.SYNCID AND A.TASK_ID = C.TASK_ID 
+		AND A.RB_TRANSACTION_ID = &apos;LEAD&apos; AND A.TXN_MARKET = &apos;GBL&apos;
+ 		AND C.TASK_TYPE = &apos;RESPONSE&apos;
+		GROUP BY B.BUSINESS_UNIT, B.RA_CMPGN_WAVE_ID) RESPONSE
+ON CW.RA_CMPGN_WAVE_ID=RESPONSE.RA_CMPGN_WAVE_ID AND RESPONSE.BUSINESS_UNIT=CW.BUSINESS_UNIT
+
+WHERE CW.RA_CMPGN_STATUS_CD IN (&apos;CMPL&apos;, &apos;APPR&apos;, &apos;EXEC&apos;)</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>104</xloc>
+      <yloc>188</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

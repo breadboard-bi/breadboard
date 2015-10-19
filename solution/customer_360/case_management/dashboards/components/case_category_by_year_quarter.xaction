@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <version>1</version>  
+  <title>Categories</title>  
+  <logging-level/>  
+  <documentation> 
+    <author/>  
+    <description>Return the case counts each category</description>  
+    <help/> 
+  </documentation>  
+  <inputs> 
+    <YEAR_QUARTER type="string"> 
+      <sources> 
+        <request>YEAR_QUARTER</request> 
+      </sources> 
+    </YEAR_QUARTER> 
+  </inputs>  
+  <!-- Define an output called 'rule-result' -->  
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>  
+  <!-- This action sequence does not require any external resources -->  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <action-inputs> 
+        <YEAR_QUARTER type="string"/> 
+      </action-inputs>  
+      <!-- Define a local output called 'rule-result' -->  
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>  
+      <!-- Specify the component to execute -->  
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>rule</action-type>  
+      <!-- Define the settings for the component -->  
+      <component-definition> 
+        <!-- Define the datasource for the query -->  
+        <!-- Define the query to execute. Note the parameter {REGION} in the query -->  
+        <query><![CDATA[SELECT C.CASE_SOURCE_NAME AS CATEGORY, COUNT(F.CASE_SK) AS COUNT
+FROM FACT_CASE F, DIMENSION_CASE C, DIMENSION_DAY D
+WHERE F.CASE_SK = C.CASE_SK 
+AND F.CASE_OPEN_DATE_SK = D.DATE_SK
+AND D.YEAR_QUARTER_NAME = '{YEAR_QUARTER}'
+GROUP BY C.CASE_SOURCE_NAME
+ORDER BY COUNT(F.CASE_SK)]]></query>  
+        <jndi>mdw_mysql</jndi> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

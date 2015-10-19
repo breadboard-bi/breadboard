@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read></read>
+      <write></write>
+      <input></input>
+      <output></output>
+      <update></update>
+      <connection></connection>
+      <table></table>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection></connection>
+      <table></table>
+      <field></field>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts sales lead metrics from JDE.  Only the input has been built.</note>
+      <xloc>75</xloc>
+      <yloc>90</yloc>
+      <width>405</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>JDE_CRM_SALES_OPPORTUNITY</from><to>FACT_SALES_LEAD</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>FACT_SALES_LEAD</name>
+    <type>InsertUpdate</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <lookup>
+      <table>FACT_SALES_LEAD</table>
+      </lookup>
+    <GUI>
+      <xloc>476</xloc>
+      <yloc>206</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>JDE_CRM_SALES_OPPORTUNITY</name>
+    <type>TableInput</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT OP.OTOPPID AS OPPORTUNITY_ID,
+OP.OTOPMCU AS BUSINESS_UNIT_ID,
+OP.OTLOBCO AS COMPANY_BUSINESS_UNIT_ID,
+OP_EMP.OEEMAN8 AS SALES_PERSON_ID,
+OP.OTDSCRP1 AS OPPORTUNITY_DESC,
+OP.OTOPTYCD AS OPPORTUNITY_TYPE_ID,
+OP.OTPRAN8 AS PARTNER_ID,
+OP.OTCUAN8 AS CUSTOMER_ID,
+OP.OTCUSAN8 AS SHIP_TO_CUSTOMER_ID,
+OP.OTLTAN8 AS BO_COMPETITOR_ID,
+OP.OTLRTXT AS FALLOUT_RSN_ID,
+OP.OTSLCYID AS SALES_STAGE_ID,
+OP.OTLOBCO AS LOB_COMPANY_ID,
+OP.OTLTAN8 AS LOST_TO_ID,
+OP.OTLRTXT AS LOST_TO_REASON,
+OP.OTQUFID AS QUALIFICATION_ID,
+OP.OTQUFSCR AS QUALIFICATION_SCORE,
+OP.OTQUFGL AS QUALIFICATION_GOAL,
+OP.OTSLCYID AS SALES_CYCLE_ID,
+OP.OTPBLTY AS OPPORTUNITY_CONFIDENCE_PCT,
+OP.OTCLDATE AS CLOSE_DATE,
+OP_EMP.OEPCNTG AS SALES_PERSON_PCT,
+((OP.OTBDAMT * OP_EMP.OEPCNTG) / 100) AS BUDGET_AMT,
+((OP.OTPTAMT * OP_EMP.OEPCNTG) / 100) AS ESTIMATED_REVENUE_AMT,
+(OP.OTPTAMT * OP.OTPBLTY) / 100 AS WEIGHTED_ESTIMATED_REVENUE_AMT,
+OP.OTCRCD AS CURRENCY_ID,
+OP.OTOPMCU AS OPPORTUNITY_BRANCH_PLANT_ID,
+(OP.OTCLDATE - OP.OTEDATE) AS EXPECTED_OPP_TO_CLOSE_QTY, --?DAYS?
+OP.OTEDATE AS OPPORTUNITY_ENTERED_DATE,
+OP.OTUDTTM AS OPPORTUNITY_UPDATED_DATE,
+OP_EMP.OEEDATE AS OPPORTUNITY_EMPL_ENTERED_DATE, 
+OP_EMP.OEUDTTM AS OPPORTUNITY_EMPL_UPDATE_DATE
+FROM PS_S_F90CB020 OP
+LEFT OUTER JOIN PS_S_F90CB02E OP_EMP
+ON OP.OTOPPID = OP_EMP.OEOPPID</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>140</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

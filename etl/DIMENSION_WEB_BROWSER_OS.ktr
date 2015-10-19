@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>DIMENSION_WEB_BROWSER_OS</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input>STAGE_WEB_REQUEST</input>
+      <output>DIMENSION_WEB_BROWSER_OS</output>
+      <update/>
+      <rejected/>
+      <connection>mdw_mysql</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <step_performance_table/>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>N</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>0</step_performance_capturing_delay>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2008&#47;08&#47;28 19:55:01.000</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI, LLC.  All rights reserved.</note>
+      <xloc>47</xloc>
+      <yloc>425</yloc>
+      <width>295</width>
+      <heigth>23</heigth>
+    </notepad>
+    <notepad>
+      <note>Change Log
+=============
+1.  Changed to use table max + 1 for surrogate key value.
+2.  Changed min&#47;max year from 1900&#47;2199 to 1970&#47;2036.
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>45</xloc>
+      <yloc>312</yloc>
+      <width>562</width>
+      <heigth>88</heigth>
+    </notepad>
+    <notepad>
+      <note>Breadboard BI - Customer 360 - Dimension Web Browser OS Data Flow - Version 2.1
+===================================================
+1.  This data flow extracts web browser and client operating system information from the staging area.
+
+2.  As delivered, this loads as a slowly changing dimension Type 1 (SCD1).  Add SCD2 Functionality by editing the 
+     settings in the dimension lookup&#47;update step.</note>
+      <xloc>7</xloc>
+      <yloc>15</yloc>
+      <width>574</width>
+      <heigth>88</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>jde</name>
+    <server>test</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server>localhost</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>3306</port>
+    <username>mdw</username>
+    <password>Encrypted 2be98afc86aa7f2e4a118bd79cbc3fd89</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>rds</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>rds</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server/>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database/>
+    <port/>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>STAGE_WEB_REQUEST</from><to>DIMENSION_WEB_BROWSER_OS</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>DIMENSION_WEB_BROWSER_OS</name>
+    <type>DimensionLookup</type>
+    <description>This dimension lookup&#47;update step inserts or updates rows according to a slowly changing dimension Type 1 (SCD1) or slowly changing dimension Type 2 (SCD2) strategy.  The default configuration is SCD1. </description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <schema/>
+      <table>DIMENSION_WEB_BROWSER_OS</table>
+      <connection>mdw_mysql</connection>
+      <commit>0</commit>
+      <update>Y</update>
+      <fields>
+        <key>
+          <name>WEB_BROWSER_OS_DESC</name>
+          <lookup>WEB_BROWSER_OS_DESC</lookup>
+        </key>
+        <date>
+          <name/>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+        </date>
+        <field>
+          <name>PARENT_OPERATING_SYSTEM_NAME</name>
+          <lookup>PARENT_OPERATING_SYSTEM_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>OPERATING_SYSTEM_NAME</name>
+          <lookup>OPERATING_SYSTEM_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>PARENT_WEB_BROWSER_NAME</name>
+          <lookup>PARENT_WEB_BROWSER_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>WEB_BROWSER_NAME</name>
+          <lookup>WEB_BROWSER_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <return>
+          <name>WEB_BROWSER_OS_SK</name>
+          <rename/>
+          <creation_method>tablemax</creation_method>
+          <use_autoinc>N</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1971</min_year>
+      <max_year>2036</max_year>
+      <cache_size>0</cache_size>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>251</xloc>
+      <yloc>182</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_WEB_REQUEST</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <sql>SELECT DISTINCT
+TRIM(WEB_BROWSER_OS_DESC) AS WEB_BROWSER_OS_DESC,
+CASE WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Windows &apos;) &gt; 0 THEN &apos;Windows&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Win 9x&apos;) &gt; 0 THEN &apos;Windows&apos; 
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Linux&apos;) &gt; 0 THEN &apos;Linux&apos; 
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Mac &apos;) &gt; 0 THEN &apos;Mac&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Sun&apos;) &gt; 0 THEN &apos;Sun&apos;
+ELSE &apos;Unknown&apos; END AS PARENT_OPERATING_SYSTEM_NAME,
+CASE WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Windows XP&apos;) &gt; 0 THEN &apos;Windows XP&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Windows NT 4.&apos;) &gt; 0 THEN &apos;Windows NT 4.x&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Windows NT 5.&apos;) &gt; 0 THEN &apos;Windows NT 5.x&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Windows-NT&apos;) &gt; 0 or INSTR(WEB_BROWSER_OS_DESC,&apos;Windows NT&apos;) &gt; 0 THEN &apos;Windows NT&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Windows 98&apos;) &gt; 0 or INSTR(WEB_BROWSER_OS_DESC,&apos;Win98&apos;) &gt; 0 THEN &apos;Windows 98&apos; 
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Win 9x&apos;) &gt; 0 THEN &apos;Windows 9x&apos; 
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Linux&apos;) &gt; 0 THEN &apos;Linux&apos; 
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Mac OS X&apos;) &gt; 0 THEN &apos;Mac OS X&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Sun OS&apos;) &gt; 0 THEN &apos;Sun OS&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;SunOS&apos;) &gt; 0 THEN &apos;Sun OS&apos;
+ELSE &apos;Unknown&apos; END AS OPERATING_SYSTEM_NAME,
+CASE WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;MSIE &apos;) &gt; 0 THEN &apos;IE&apos; 
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Firefox&apos;) &gt; 0 THEN &apos;Firefox&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Thunderbird&apos;) &gt; 0 THEN &apos;Thunderbird&apos; 
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Konqueror&apos;) &gt; 0 THEN &apos;Konqueror&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;AppleWebKit&apos;) &gt; 0 THEN &apos;Apple Web Kit&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Netscape&apos;) &gt; 0 THEN &apos;Netscape&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Opera&#47;&apos;) &gt; 0 THEN &apos;Opera&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Google Desktop&apos;) &gt; 0 THEN &apos;Google Desktop&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;sun4u&apos;) &gt; 0 THEN &apos;Sun4U&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Camino&apos;) &gt; 0 THEN &apos;Camino&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Lotus Notes&apos;) &gt; 0 THEN &apos;Lotus Notes&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Lynx&apos;) &gt; 0 THEN &apos;Lynx&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;SeaMonkey&apos;) &gt; 0 THEN &apos;SeaMonkey&apos;
+ELSE &apos;Unknown&apos; END AS PARENT_WEB_BROWSER_NAME,
+CASE WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;MSIE 5.&apos;) &gt; 0 THEN &apos;IE 5.x&apos; 
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;MSIE 6.&apos;) &gt; 0 THEN &apos;IE 6.x&apos; 
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;MSIE 7.&apos;) &gt; 0 THEN &apos;IE 7.x&apos; 
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Firefox&#47;2.&apos;) &gt; 0 THEN &apos;Firefox 2.x&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Firefox&#47;1.&apos;) &gt; 0 THEN &apos;Firefox 1.x&apos; 
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Firefox&#47;0.8&apos;) &gt; 0 THEN &apos;Firefox 0.8&apos; 
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Thunderbird&#47;1.5&apos;) &gt; 0 THEN &apos;Thunderbird 1.5x&apos; 
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Konqueror&#47;3.&apos;) &gt; 0 THEN &apos;Konqueror 3.x&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;AppleWebKit&apos;) &gt; 0 THEN &apos;Apple Web Kit&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Netscape&#47;8.&apos;) &gt; 0 THEN &apos;Netscape 8.x&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Opera&#47;9.&apos;) &gt; 0 THEN &apos;Opera 9.x&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Opera&#47;8.&apos;) &gt; 0 THEN &apos;Opera 8.x&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Google Desktop&apos;) &gt; 0 THEN &apos;Google Desktop&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;sun4u&apos;) &gt; 0 THEN &apos;Sun4U&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Camino&#47;1.&apos;) &gt; 0 THEN &apos;Camino 1.x&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Lotus Notes&#47;6.&apos;) &gt; 0 THEN &apos;Lotus Notes 6.x&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;Lynx&#47;2.&apos;) &gt; 0 THEN &apos;Lynx 2.x&apos;
+WHEN INSTR(WEB_BROWSER_OS_DESC,&apos;SeaMonkey&#47;1&apos;) &gt; 0 THEN &apos;SeaMonkey 1.x&apos;
+ELSE &apos;Unknown&apos; END AS WEB_BROWSER_NAME
+FROM STAGE_WEB_REQUEST
+WHERE TRIM(WEB_BROWSER_OS_DESC) IS NOT NULL</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>66</xloc>
+      <yloc>182</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+   <slave-step-copy-partition-distribution>
+</slave-step-copy-partition-distribution>
+   <slave_transformation>N</slave_transformation>
+</transformation>

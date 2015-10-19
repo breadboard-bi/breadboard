@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read></read>
+      <write></write>
+      <input></input>
+      <output></output>
+      <update></update>
+      <connection></connection>
+      <table></table>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection></connection>
+      <table></table>
+      <field></field>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts service entitlement information from PeopleSoft CRM 8.8.  Only the input has been built.</note>
+      <xloc>5</xloc>
+      <yloc>49</yloc>
+      <width>547</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_CRM_SERVICE_ENTITLEMENT</from><to>DIMENSION_SERVICE_ENTITLEMENT</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>DIMENSION_SERVICE_ENTITLEMENT</name>
+    <type>InsertUpdate</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <lookup>
+      <table>DIMENSION_SERVICE_ENTITLEMENT</table>
+      </lookup>
+    <GUI>
+      <xloc>476</xloc>
+      <yloc>206</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_CRM_SERVICE_ENTITLEMENT</name>
+    <type>TableInput</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT ET.SETID, 
+ET.ENTITLE_NAME AS ENTITLEMENT_NAME, 
+ET.ENTITLE_TYPE AS ENTITLEMENT_TYPE, 
+ENTITLE_TYPE.XLATSHORTNAME AS ENTITLEMENT_TYPE_DESC,
+ET.SERVICE_LVL_CD AS SERVICE_LEVEL_CODE, 
+ET.COVERAGE_TYPE,
+COVERAGE_TYPE.XLATSHORTNAME AS COVERAGE_TYPE_DESC,
+ET.DESCR AS ENTITLEMENT_DESC,
+DTL.ENTITLE_PLAN_NAME,
+HDR.DESCR AS ENTITLEMENT_PLAN_DESC
+FROM PS_RF_ENTITLEMENTS ET 
+LEFT OUTER JOIN PS_RF_ENTL_PL_DTL DTL
+ON ET.SETID = DTL.SETID and ET.ENTITLE_NAME = DTL.ENTITLE_NAME
+LEFT OUTER JOIN PS_RF_ENT_PL_HDR HDR
+ON DTL.SETID = HDR.SETID and DTL.ENTITLE_PLAN_NAME = HDR.ENTITLE_PLAN_NAME
+LEFT OUTER JOIN PSXLATITEM ENTITLE_TYPE
+ON ENTITLE_TYPE.FIELDNAME = &apos;ENTITLE_TYPE&apos;
+AND ET.ENTITLE_TYPE = ENTITLE_TYPE.FIELDVALUE
+AND ENTITLE_TYPE.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE ENTITLE_TYPE.FIELDNAME = A1.FIELDNAME 
+	AND ENTITLE_TYPE.FIELDVALUE = A1.FIELDVALUE
+	AND ENTITLE_TYPE.FIELDNAME = &apos;ENTITLE_TYPE&apos;)
+LEFT OUTER JOIN PSXLATITEM COVERAGE_TYPE
+ON COVERAGE_TYPE.FIELDNAME = &apos;COVERAGE_TYPE&apos;
+AND ET.COVERAGE_TYPE = COVERAGE_TYPE.FIELDVALUE
+AND COVERAGE_TYPE.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE COVERAGE_TYPE.FIELDNAME = A1.FIELDNAME 
+	AND COVERAGE_TYPE.FIELDVALUE = A1.FIELDVALUE
+	AND COVERAGE_TYPE.FIELDNAME = &apos;COVERAGE_TYPE&apos;)
+
+--WHERE ET.ROW_LASTMANT_DTTIM &gt; Last Load Date
+</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>140</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

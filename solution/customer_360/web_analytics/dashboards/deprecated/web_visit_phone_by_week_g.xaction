@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <version>1</version>  
+  <title>Web Visits by Week and Country and Region</title>  
+  <logging-level></logging-level>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Return the unique visitors by week and country and region.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <inputs> 
+    <WEEK_OF_YEAR type="string"> 
+      <sources> 
+        <request>WEEK_OF_YEAR</request> 
+      </sources> 
+    </WEEK_OF_YEAR>  
+    <REGION type="string"> 
+      <sources> 
+        <request>REGION</request> 
+      </sources> 
+    </REGION> 
+  </inputs>  
+  <!-- Define an output called 'rule-result' -->  
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>  
+  <!-- This action sequence does not require any external resources -->  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <action-inputs> 
+        <WEEK_OF_YEAR type="string"/>
+        <REGION type="string"/>
+      </action-inputs>  
+      <!-- Define a local output called 'rule-result' -->  
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>  
+      <!-- Specify the component to execute -->  
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>rule</action-type>  
+      <!-- Define the settings for the component -->  
+      <component-definition> 
+        <!-- Define the datasource for the query -->  
+        <!-- Define the query to execute. Note the parameter {REGION} in the query -->  
+        <query><![CDATA[SELECT CAST(G.PHONE_REGION_CODE AS CHAR(3)) AS "Area Code",SUM(F.WEB_VISIT_QTY)*7 AS "Unique Visits"
+FROM FACT_WEB_SITE_VISIT F, DIMENSION_DAY D, DIMENSION_GEOGRAPHIC_LOCATION G
+WHERE F.VISIT_DATE_SK = D.DATE_SK
+AND F.GEO_LOCATION_SK = G.GEO_LOCATION_SK
+AND D.WEEK_SK = '{WEEK_OF_YEAR}'
+AND G.ISO_3166_COUNTRY_CODE = 'US'
+AND G.REGION_CODE = '{REGION}'
+GROUP BY G.PHONE_REGION_CODE
+ORDER BY  SUM(F.WEB_VISIT_QTY) DESC]]></query>
+        <jndi>mdw</jndi>
+      <live>true</live></component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

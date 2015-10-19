@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>STAGE_WEB_SERVER_REQUEST_PAGE_TAGGER</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input>PAGE_TAGGER_STAGE_TABLE</input>
+      <output>STAGE_WEB_REQUEST</output>
+      <update/>
+      <rejected/>
+      <connection>mdw_mysql</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <step_performance_table/>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>N</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>0</step_performance_capturing_delay>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2008&#47;08&#47;28 19:54:34.000</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>14</xloc>
+      <yloc>333</yloc>
+      <width>562</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI, LLC.  All rights reserved.</note>
+      <xloc>13</xloc>
+      <yloc>286</yloc>
+      <width>295</width>
+      <heigth>23</heigth>
+    </notepad>
+    <notepad>
+      <note>Breadboard BI - Marketing - Stage Page Tagger Data - Version 2.0
+========================================
+1.  This data flow stages web server page tagging data into a common stage table.
+2.  The table input step includes incremental load logic in the where clause.</note>
+      <xloc>12</xloc>
+      <yloc>16</yloc>
+      <width>416</width>
+      <heigth>62</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>jde</name>
+    <server>test</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server>localhost</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>3306</port>
+    <username>mdw</username>
+    <password>Encrypted 2be98afc86aa7f2e4a118bd79cbc3fd89</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>rds</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>rds</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server/>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database/>
+    <port/>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>DETERMINE_SOURCE_AND_CLIENT</from><to>PARSE_DATE_TIME</to><enabled>Y</enabled> </hop>  <hop> <from>REMOVE_UNWANTED_REQUESTS</from><to>DETERMINE_SOURCE_AND_CLIENT</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_CREATE_LONG_IP</from><to>REMOVE_COLUMNS</to><enabled>Y</enabled> </hop>  <hop> <from>REMOVE_COLUMNS</from><to>STAGE_WEB_REQUEST</to><enabled>Y</enabled> </hop>  <hop> <from>PARSE_DATE_TIME</from><to>MAP_CREATE_LONG_IP</to><enabled>Y</enabled> </hop>  <hop> <from>PAGE_TAGGER_STAGE_TABLE</from><to>REMOVE_UNWANTED_REQUESTS</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>DETERMINE_SOURCE_AND_CLIENT</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>Y</compatible>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>var v_server_name = SERVER_NAME.getString();
+var SOURCE_SYSTEM_ID;
+
+if (v_server_name != null)
+
+{
+	if (v_server_name.indexOf(&quot;breadboard&quot;) &gt;= 0)
+	&#47;&#47; If above conditions met then
+	{
+	SOURCE_SYSTEM_ID = &quot;5&quot;;
+	HOSTED_CLIENT_SK = 0;
+	}
+
+	else if (v_server_name.indexOf(&quot;merador&quot;) &gt;= 0)
+	&#47;&#47; If above conditions met then
+	{
+	SOURCE_SYSTEM_ID = &quot;7&quot;;
+	HOSTED_CLIENT_SK = 1;
+	}
+
+	else if (v_server_name.indexOf(&quot;bizcubed&quot;) &gt;= 0)
+	&#47;&#47; If above conditions met then
+	{
+	SOURCE_SYSTEM_ID = &quot;11&quot;;
+	HOSTED_CLIENT_SK = 3;
+	}
+
+	else if (v_server_name.indexOf(&quot;breadboard.com.cn&quot;) &gt;= 0
+		|| v_server_name.indexOf(&quot;redsunbi&quot;) &gt;= 0)
+	&#47;&#47; If above conditions met then
+	{
+	SOURCE_SYSTEM_ID = &quot;8&quot;;
+	HOSTED_CLIENT_SK = 2;
+	}
+	else
+	{
+	SOURCE_SYSTEM_ID = &quot;0&quot;;
+	HOSTED_CLIENT_SK = 0;
+	}
+
+}</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>HOSTED_CLIENT_SK</name>
+        <rename>HOSTED_CLIENT_SK</rename>
+        <type>Integer</type>
+        <length>16</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>SOURCE_SYSTEM_ID</name>
+        <rename>SOURCE_SYSTEM_ID</rename>
+        <type>String</type>
+        <length>32</length>
+        <precision>-1</precision>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>272</xloc>
+      <yloc>184</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_CREATE_LONG_IP</name>
+    <type>Mapping</type>
+    <description>This mapping step includes a Java Script Value step that creates a long IP address.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CREATE_LONG_IP</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>IP_ADDRESS_DESC</parent><child>IP_ADDRESS_DESC</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>IP_ADDRESS_DESC</parent><child>IP_ADDRESS_DESC</child></connector>
+       <connector><parent>LONG_IP_NUMBER</parent><child>LONG_IP_NUMBER</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>426</xloc>
+      <yloc>183</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PAGE_TAGGER_STAGE_TABLE</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <sql>SELECT 
+  REMOTE_ADDRESS AS IP_ADDRESS_DESC
+, (CASE WHEN USER_NAME IS NULL THEN &apos;Missing&apos; ELSE USER_NAME END) AS WEB_VISITOR_LOGIN_NAME
+, (CASE WHEN USER_NAME IS NULL THEN &apos;demo&apos; ELSE USER_NAME END) AS WEB_VISITOR_FULL_NAME
+, DATE_ENTERED AS REQUEST_DATE
+, &apos;GET&apos; AS REQUEST_CAT 
+, (CASE WHEN URL_PARAMS IS NOT NULL THEN CONCAT(URL,URL_PARAMS) ELSE URL END) AS WEB_FILE_NAME
+, (CASE WHEN CONTENT_LENGTH IS NULL THEN 0 ELSE CONTENT_LENGTH END) AS WEB_FILE_BYTE_QTY
+, (CASE WHEN HTTP_REFERER IS NULL THEN &apos;Missing&apos; ELSE HTTP_REFERER END) AS REFERER_URL_DESC
+, (CASE WHEN BROWSER IS NULL THEN &apos;Missing&apos; ELSE BROWSER END) AS WEB_BROWSER_OS_DESC
+, COOKIE AS COOKIE_DESC
+, SCREEN_SIZE AS SCREEN_SIZE_CAT
+, SCREEN_PIXEL_DEPTH AS SCREEN_PIXEL_DEPTH_QTY
+, SCREEN_COLOR_DEPTH AS SCREEN_COLOR_DEPTH_QTY
+, (CASE WHEN JAVA_ENABLED = &apos;true&apos; THEN &apos;Y&apos; WHEN JAVA_ENABLED = &apos;false&apos; THEN &apos;N&apos; ELSE &apos;?&apos; END) AS JAVA_ENABLED_IND
+, URL_PARAMS AS URL_PARAMS_DESC
+, &apos;HTTP&apos; AS HTTP_VERSION_DESC
+, CLIENT_TIMESTAMP_ONLOAD AS CLIENT_PAGE_LOAD_TIMESTAMP
+, CLIENT_TIMESTAMP_ONLOAD AS CLIENT_PAGE_UNLOAD_TIMESTAMP
+, SERVER_NAME
+FROM WEB_ANALYTICS.WEB_LOG
+WHERE REMOTE_ADDRESS IS NOT NULL AND REMOTE_ADDRESS &lt;&gt; &apos;127.0.0.1&apos;
+AND DATE_ENTERED &gt;
+ (SELECT MAX(ADDDATE(STARTDATE,-1)) FROM ADMIN_TRANSFORMATION_CONTROL WHERE TRANSNAME = &apos;STAGE_WEB_SERVER_REQUEST_PAGE_TAGGER&apos;)</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>64</xloc>
+      <yloc>181</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PARSE_DATE_TIME</name>
+    <type>ScriptValue</type>
+    <description>This Java Script Value step cleanses and parses various fields.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>Y</compatible>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>ScriptValue</jsScript_name>
+        <jsScript_script>var REQUEST_DATE_SK =  REQUEST_DATE.Clone().dat2str(&quot;yyyyMMdd&quot;).getInteger();
+var REQUEST_TIME_ID =  REQUEST_DATE.Clone().dat2str(&quot;HHmm&quot;);
+var HOUR_24_QTY =  REQUEST_DATE.Clone().dat2str(&quot;HH&quot;);
+var MINUTE_QTY =  REQUEST_DATE.Clone().dat2str(&quot;mm&quot;);</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>HOUR_24_QTY</name>
+        <rename>HOUR_24_QTY</rename>
+        <type>Number</type>
+        <length>2</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>MINUTE_QTY</name>
+        <rename>MINUTE_QTY</rename>
+        <type>Number</type>
+        <length>2</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>REQUEST_DATE</name>
+        <rename>REQUEST_DATE</rename>
+        <type>Date</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>REQUEST_DATE_SK</name>
+        <rename>REQUEST_DATE_SK</rename>
+        <type>Integer</type>
+        <length>8</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>REQUEST_TIME_ID</name>
+        <rename>REQUEST_TIME_ID</rename>
+        <type>String</type>
+        <length>10</length>
+        <precision>-1</precision>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>364</xloc>
+      <yloc>109</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>REMOVE_COLUMNS</name>
+    <type>SelectValues</type>
+    <description>This Select Values step removes fields not used in the target table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>CLIENT_PAGE_LOAD_TIMESTAMP</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CLIENT_PAGE_UNLOAD_TIMESTAMP</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COOKIE_DESC</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>HOSTED_CLIENT_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>HOUR_24_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>HTTP_VERSION_DESC</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>IP_ADDRESS_DESC</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>JAVA_ENABLED_IND</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>LONG_IP_NUMBER</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>REFERER_URL_DESC</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>REQUEST_CAT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>REQUEST_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>REQUEST_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>REQUEST_TIME_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SCREEN_COLOR_DEPTH_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SCREEN_PIXEL_DEPTH_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SCREEN_SIZE_CAT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SOURCE_SYSTEM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>URL_PARAMS_DESC</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WEB_BROWSER_OS_DESC</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WEB_FILE_BYTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WEB_FILE_NAME</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WEB_VISITOR_FULL_NAME</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WEB_VISITOR_LOGIN_NAME</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>508</xloc>
+      <yloc>112</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>REMOVE_UNWANTED_REQUESTS</name>
+    <type>FilterRows</type>
+    <description>This filter step removes mondrian cache jsp page requests, ajax request, and javascript requests from the data flow.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+<send_true_to/>
+<send_false_to/>
+    <compare>
+<condition>
+ <negated>N</negated>
+ <conditions>
+  <condition>
+   <negated>Y</negated>
+   <leftvalue>WEB_FILE_NAME</leftvalue>
+   <function>CONTAINS</function>
+   <rightvalue/>
+   <value><name>constant</name><type>String</type><text>cache_flush</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value>   </condition>
+  <condition>
+   <negated>N</negated>
+   <operator>AND NOT</operator>
+   <leftvalue>WEB_FILE_NAME</leftvalue>
+   <function>CONTAINS</function>
+   <rightvalue/>
+   <value><name>constant</name><type>String</type><text>alytics&#47;javascript&#47;</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value>   </condition>
+  <condition>
+   <negated>N</negated>
+   <operator>AND NOT</operator>
+   <leftvalue>WEB_FILE_NAME</leftvalue>
+   <function>CONTAINS</function>
+   <rightvalue/>
+   <value><name>constant</name><type>String</type><text>.ajs</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value>   </condition>
+  </conditions>
+ </condition>
+    </compare>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>189</xloc>
+      <yloc>108</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_WEB_REQUEST</name>
+    <type>TableOutput</type>
+    <description>This table output step truncates and inserts rows to the target table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <schema/>
+    <table>STAGE_WEB_REQUEST</table>
+    <commit>100</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>597</xloc>
+      <yloc>186</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+   <slave-step-copy-partition-distribution>
+</slave-step-copy-partition-distribution>
+   <slave_transformation>N</slave_transformation>
+</transformation>

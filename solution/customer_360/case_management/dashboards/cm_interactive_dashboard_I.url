@@ -1,0 +1,12 @@
+[InternetShortcut]
+URL=http:/pentaho/cm_interactive_dashboard_I.jsp
+Modified=30E041B5D78BC5012E
+HotKey=0
+IDList=
+[navigation]
+Name=%url_name
+Description=%url_description
+Icon=file.png|dashboard.png
+Author=Breadboard BI
+[{000214A0-0000-0000-C000-000000000046}]
+Prop3=19,2

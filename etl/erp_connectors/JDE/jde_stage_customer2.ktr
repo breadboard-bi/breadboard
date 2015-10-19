@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>CRM_DIMENSION_CUSTOMER</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+  <modified_user/>
+  <modified_date>2006/12/15 18:35:11.872</modified_date>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts customer data from JDE.  The output could be used to create a customer dimension.</note>
+      <xloc>55</xloc>
+      <yloc>61</yloc>
+      <width>527</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>JDE_CRM_CUSTOMER</from><to>STAGE_JDE_CUSTOMER</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>JDE_CRM_CUSTOMER</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the column from the PS_BO_ROLE table.  The business object role defines the business contact.
+</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT F0301.A5AN8 AS CUSTOMER_ID, 
+F0101.ABALPH AS CUSTOMER_NAME,
+F0101.ABAC03 AS CUSTOMER_LEVEL3_ID, --USED TO GET LEVELS 2 &amp; 1
+F0301.A5ABC1 AS ABC_SALES, 
+F0301.A5ABC2 AS ABC_INVESTMENT, 
+F0301.A5ABC3 AS ABC_AVERAGE_DAY,
+F0115.WPAR1 AS PHONE_AREA_CODE,
+F0115.WPPH1 AS PHONE_NUMBER,
+F0116.ALADD1 AS ADDRESS1_LINE_DESC,
+F0116.ALADD2 AS ADDRESS2_LINE_DESC,
+F0116.ALADD3 AS ADDRESS3_LINE_DESC,
+F0116.ALADD4 AS ADDRESS4_LINE_DESC,
+F0116.ALCTY1 AS CITY_NAME,
+F0116.ALADDS AS STATE_PROVINCE_CODE,
+F0005_STATE.DRDL01 AS STATE_PROVINCE_NAME,
+F0116.ALCTR AS COUNTRY_CODE,
+F0005_COUNTRY.DRDL01 AS COUNTRY_NAME
+FROM
+ F0301
+LEFT OUTER JOIN F0115
+ON F0301.A5AN8 = F0115.WPAN8 AND F0115.WPIDLN = 0 AND F0115.WPRCK7 = 1
+LEFT OUTER JOIN F0101
+ON F0301.A5AN8 = F0101.ABAN8
+LEFT OUTER JOIN F0116
+ON F0301.A5AN8 = F0116.ALAN8 AND F0101.ABEFTB = F0116.ALEFTB
+LEFT OUTER JOIN ST_F0005 F0005_STATE
+ON F0116.ALADDS = F0005_STATE.DRKY
+AND F0005_STATE.DRSY = -- ??
+AND F0005_STATE.DRRT = -- ??
+LEFT OUTER JOIN ST_F0005 F0005_COUNTRY
+ON F0116.ALCTR = F0005_COUNTRY.DRKY
+AND F0005_COUNTRY.DRSY = -- ??
+AND F0005_COUNTRY.DRRT = -- ??</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI>
+      <xloc>93</xloc>
+      <yloc>204</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_JDE_CUSTOMER</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>STAGE_JDE_CUSTOMER</table>
+      </lookup>
+    <GUI>
+      <xloc>358</xloc>
+      <yloc>206</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

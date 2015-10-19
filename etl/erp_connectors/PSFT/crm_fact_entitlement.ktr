@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read></read>
+      <write></write>
+      <input></input>
+      <output></output>
+      <update></update>
+      <connection></connection>
+      <table></table>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection></connection>
+      <table></table>
+      <field></field>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts entitlement information from PeopleSoft CRM 8.8.  Only the input has been built.</note>
+      <xloc>5</xloc>
+      <yloc>49</yloc>
+      <width>510</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_CRM_ENTITLEMENT_METRICS</from><to>FACT_ENTITLEMENT</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>FACT_ENTITLEMENT</name>
+    <type>InsertUpdate</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <lookup>
+      <table>FACT_ENTITLEMENT</table>
+      </lookup>
+    <GUI>
+      <xloc>476</xloc>
+      <yloc>206</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_CRM_ENTITLEMENT_METRICS</name>
+    <type>TableInput</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT --snapshot      
+AG.RENEWAL_DATE AS AGREEMENT_RENEWAL_DATE,
+AG.SETID AS AGREEMENT_SETID, 
+AG.BO_ID_CUST AS BO_CUSTOMER_ID,
+AG.AGRT_STATUS AS AGREEMENT_STATUS,
+AL.AGREEMENT_CODE, 
+AL.AGR_RENEWAL_NUM AS AGREEMENT_RENEWAL_NUMBER, 
+AL.AGREEMENT_LINE AS AGREEMENT_LINE_NUMBER, 
+AL.SETID AS AGREEMENT_LINE_SETID,
+AL.PRODUCT_ID ,
+AL.AGRT_LN_STATUS AS AGREEMENT_LINE_STATUS,    
+AL.PRODUCT_ID,
+ET.ENTITLE_NAME, 
+ET.SETID AS ENTITLEMENT_SETID,
+AGREEMENT2.MAX_AGR_RENEWAL_NUM AS AGREEMENT_RENEWAL_QTY
+--compute this in transformation since date math is dbms specific (CASE WHEN RENEWAL_DATE IS NOT NULL THEN DATEDIFF (day, getDate(), RENEWAL_DATE) else 0 END) AS AGREEMENT_EXPIRE_DAYS
+FROM PS_RF_AGREEMENT AG 
+INNER JOIN PS_RF_AGREEMENT_LN AL
+ON AG.AGREEMENT_CODE  = AL.AGREEMENT_CODE      
+and AG.AGR_RENEWAL_NUM = AL.AGR_RENEWAL_NUM      
+INNER JOIN PS_RF_AG_LINE_ENTL ET      
+ON AG.SETID = AL.SETID      
+and AL.SETID = ET.SETID      
+and AL.AGREEMENT_CODE  = ET.AGREEMENT_CODE      
+and AL.AGR_RENEWAL_NUM = ET.AGR_RENEWAL_NUM      
+and AL.AGREEMENT_LINE  = ET.AGREEMENT_LINE
+INNER JOIN (SELECT MAX(AGR_RENEWAL_NUM) AS MAX_AGR_RENEWAL_NUM, SETID, AGREEMENT_CODE FROM PS_RF_AGREEMENT GROUP BY SETID, AGREEMENT_CODE) AGREEMENT2
+ON AGREEMENT2.SETID = AG.SETID and AGREEMENT2.AGREEMENT_CODE = AG.AGREEMENT_CODE</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>140</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

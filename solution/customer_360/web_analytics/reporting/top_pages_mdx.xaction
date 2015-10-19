@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>top_pages_mdw.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <help>The TRIM function is used in one of the queries to remove a trailing space. This space was added because the MySQL CONCAT function returns a NULL if one of the strings passed is NULL.</help>  
+    <result-type>rule</result-type>  
+    <description>%description</description>  
+    <icon>file.png|analysis.png</icon> 
+  </documentation>  
+  <inputs> 
+    <name type="string"> 
+      <sources> 
+        <session>name</session> 
+      </sources>  
+      <default-value>demo</default-value> 
+    </name>  
+    <year_mdx type="string"> 
+      <sources> 
+        <request>year_mdx</request> 
+      </sources>  
+      <default-value/> 
+    </year_mdx>  
+    <!--
+    <cube_name type="string"> 
+      <sources> 
+        <request>cube_name</request> 
+      </sources>  
+      <default-value>Web Page Views</default-value> 
+    </cube_name>  
+-->  
+    <quarter_mdx type="string"> 
+      <sources> 
+        <request>quarter_mdx</request> 
+      </sources>  
+      <default-value/> 
+    </quarter_mdx>  
+    <month_mdx type="string"> 
+      <sources> 
+        <request>month_mdx</request> 
+      </sources>  
+      <default-value/> 
+    </month_mdx>  
+    <week_mdx type="string"> 
+      <sources> 
+        <request>week_mdx</request> 
+      </sources>  
+      <default-value/> 
+    </week_mdx>  
+    <output-type type="string"> 
+      <sources> 
+        <request>type</request> 
+      </sources>  
+      <default-value>html</default-value> 
+    </output-type> 
+  </inputs>  
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>  
+  <resources> 
+    <catalog> 
+      <url> 
+        <location>breadboard/analysis/breadboardbi.mondrian.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </url> 
+    </catalog>  
+    <report-definition> 
+      <solution-file> 
+        <location>top_pages_mdx.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>SQL Query Cube Name</action-type>  
+      <action-inputs> 
+        <name type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <cube_name type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT TRIM(CONCAT('Web Page Views',B.MONDRIAN_CUBE_SUFFIX_NAME)) as cube_name
+FROM ADMIN_USER A, ADMIN_HOSTED_CLIENT B
+WHERE A.HOSTED_CLIENT_SK = B.HOSTED_CLIENT_SK 
+AND A.USER_NAME = '{name}']]></query> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>SQL Query Parent Source System</action-type>  
+      <action-inputs> 
+        <name type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <parent_source_system_name type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT DISTINCT S.PARENT_SOURCE_SYSTEM_NAME as parent_source_system_name
+FROM ADMIN_USER A, DIMENSION_SOURCE_SYSTEM S
+WHERE A.HOSTED_CLIENT_SK = S.HOSTED_CLIENT_SK 
+AND S.DEFAULT_WEB_SOURCE_IND = 'Y'
+AND A.USER_NAME = '{name}']]></query> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>MDXLookupRule</component-name>  
+      <action-type>OLAP Query For Report Data</action-type>  
+      <action-inputs> 
+        <year_mdx type="string"/>  
+        <quarter_mdx type="string"/>  
+        <month_mdx type="string"/>  
+        <week_mdx type="string"/>  
+        <cube_name type="string"/>  
+        <parent_source_system_name type="string"/> 
+      </action-inputs>  
+      <action-resources> 
+        <catalog type="resource"/> 
+      </action-resources>  
+      <action-outputs> 
+        <query-results type="result-set" mapping="reportData"/> 
+      </action-outputs>  
+      <component-definition> 
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[select NON EMPTY {[Measures].[Page Views], 
+[Measures].[Robot Views], 
+[Measures].[Average Page View Seconds],
+[Measures].[Single Entries]} ON COLUMNS,
+  NON EMPTY {[Top Ten Web Pages]} ON ROWS
+from [{cube_name}]
+where ([Source System.Source Systems].[All Source Systems].[WEB].[{parent_source_system_name}],
+[Time Period].[All Periods]{year_mdx}{quarter_mdx}{month_mdx}{week_mdx})]]></query>  
+        <location>mondrian</location> 
+      </component-definition>  
+      <action-name>Pivot View</action-name>  
+      <logging-level>DEBUG</logging-level> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>  
+      <action-type>Pentaho Report</action-type>  
+      <action-inputs> 
+        <data type="result-set" mapping="reportData"/>  
+        <output-type type="string"/> 
+      </action-inputs>  
+      <action-resources> 
+        <report-definition type="resource"/> 
+      </action-resources>  
+      <action-outputs> 
+        <report-output type="content" mapping="report"/> 
+      </action-outputs>  
+      <component-definition/> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

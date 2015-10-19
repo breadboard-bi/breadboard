@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <version>1</version>  
+  <title>Orders by Product Category, Customer Country, Year Quarter</title>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Returns the order amount for a particular quarter, customer country, and product category.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <!-- Define an input called 'REGION'. This will be passed in when the user clicks on a slice of the pie chart -->  
+  <inputs> 
+    <COUNTRY type="string"> 
+      <sources> 
+        <request>COUNTRY</request> 
+      </sources> 
+    </COUNTRY>  
+    <YEAR_QUARTER type="string"> 
+      <sources> 
+        <request>YEAR_QUARTER</request> 
+      </sources> 
+    </YEAR_QUARTER> 
+  </inputs>  
+  <!-- Define an output called 'rule-result' -->  
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>  
+  <!-- This action sequence does not require any external resources -->  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <!-- Define a local input called 'REGION' -->  
+      <action-inputs> 
+        <COUNTRY type="string"/>
+        <YEAR_QUARTER type="string"/>
+      </action-inputs>  
+      <!-- Define a local output called 'rule-result' -->  
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>  
+      <!-- Specify the component to execute -->  
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>rule</action-type>  
+      <!-- Define the settings for the component -->  
+      <component-definition> 
+        <!-- Define the datasource for the query -->  
+        <source>sql</source>  
+        <!-- Define the query to execute. Note the parameter {REGION} in the query -->  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT P.PARENT_PRODUCT_CATEGORY_NAME AS CATEGORY, 
+SUM(F.SHIP_AMT) AS "Shipment Amount"
+FROM FACT_SHIPMENT F, DIMENSION_CUSTOMER C, DIMENSION_DAY D, DIMENSION_PRODUCT P
+WHERE F.SHIP_CUSTOMER_SK = C.CUSTOMER_SK 
+AND F.SHIP_DATE_SK = D.DATE_SK
+AND F.PRODUCT_SK = P.PRODUCT_SK
+AND C.COUNTRY_NAME = '{COUNTRY}' 
+AND D.YEAR_QUARTER_NAME = '{YEAR_QUARTER}'
+GROUP BY P.PARENT_PRODUCT_CATEGORY_NAME
+ORDER BY SUM(F.SHIP_AMT)]]></query>
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

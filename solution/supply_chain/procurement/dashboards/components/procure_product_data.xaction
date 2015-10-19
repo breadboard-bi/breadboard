@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <version>1</version>  
+  <title>Warehouse Receipts by Period</title>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Return the warehouse receipts by period. It includes dynamic SQL that relies on the following columns &amp; formats from the date dimension: WEEK_NAME, YEAR_QUARTER_NAME, MONTH_SK, YEAR_SK, and DATE_SK. The formats for these columns should be as follows: YYYYQ[1-52], e.g, 1998W37 for WEEK_NAME; YYYYQ[1-4], e.g., 1998Q3 for YEAR_QUARTER_NAME; YYYYMM, e.g., 200509for MONTH_SK; YYYY, e.g., 2001 for YEAR_SK; and YYYYMMDD, e.g., 20061101 for DATE_SK.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <inputs> 
+    <PRODUCT_SK type="string"> 
+      <sources> 
+        <request>PRODUCT_SK</request> 
+      </sources> 
+    </PRODUCT_SK> 
+  </inputs>  
+  <!-- Define an output called 'rule-result' -->  
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>  
+  <!-- This action sequence does not require any external resources -->  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <action-inputs> 
+        <PRODUCT_SK type="string"/>
+      </action-inputs>  
+      <!-- Define a local output called 'rule-result' -->  
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>  
+      <!-- Specify the component to execute -->  
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>rule</action-type>  
+      <!-- Define the settings for the component -->  
+      <component-definition> 
+        <!-- Define the datasource for the query -->  
+        <!-- Define the query to execute. Note the parameter {REGION} in the query -->  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT P.PRODUCT_NAME,
+SUM(F.REQUISITION_QTY) AS "Requisition Qty",
+SUM(F.PURCHASE_ORDER_QTY) AS "PO Qty",
+SUM(F.SHIPPED_QTY) AS "Shipped Qty",
+SUM(F.RECEIVED_QTY) AS "Received Qty"
+FROM FACT_PROCUREMENT F, DIMENSION_PRODUCT P
+WHERE F.PRODUCT_SK = P.PRODUCT_SK
+AND F.PRODUCT_SK =  '{PRODUCT_SK}' 
+GROUP BY P.PRODUCT_NAME
+ORDER BY P.PRODUCT_NAME]]></query>
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

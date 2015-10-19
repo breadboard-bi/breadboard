@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>Keyword Referrals Grouped by Period</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Returns metrics for keyword referrals, grouped by period. Oracle ==== query = "SELECT TRIM(CAST(" + temporal_cat+"_SK AS CHAR(8))) AS "+temporal_cat+"_OF_YEAR, "; Note: First line of query only, remainder is ANSI standard. MySQL ==== query = "SELECT CAST(" + temporal_cat+"_SK AS CHAR) AS "+temporal_cat+"_OF_YEAR, "; Note: Oracle version will work on MySQL, but TRIM and character precision are not required.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <inputs> 
+    <TEMPORAL_VALUE type="string"> 
+      <sources> 
+        <request>TEMPORAL_VALUE</request> 
+      </sources> 
+    </TEMPORAL_VALUE>  
+    <SOURCE_SYSTEM_SK type="string"> 
+      <sources> 
+        <request>SOURCE_SYSTEM_SK</request> 
+      </sources>  
+      <default-value>6</default-value> 
+    </SOURCE_SYSTEM_SK>  
+    <HOSTED_CLIENT_SK type="string"> 
+      <sources> 
+        <request>HOSTED_CLIENT_SK</request> 
+      </sources>  
+      <default-value>0</default-value> 
+    </HOSTED_CLIENT_SK> 
+  </inputs>  
+  <outputs> 
+    <swresult type="result-set"/> 
+  </outputs>  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <component-name>JavascriptRule</component-name>  
+      <action-type>JavaScript DSQL</action-type>  
+      <action-inputs> 
+        <TEMPORAL_VALUE type="string"/>  
+        <SOURCE_SYSTEM_SK type="string"/>  
+        <HOSTED_CLIENT_SK type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <query type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <script><![CDATA[var temporal_cat = "";
+var column_name = "";
+// Only use this logic as a model for line graphs
+if ('{TEMPORAL_VALUE}'.indexOf("W") >= 0)
+{
+ temporal_cat = "DATE";
+ column_name = "WEEK_NAME";
+}
+
+else if ('{TEMPORAL_VALUE}'.indexOf("Q") >= 0)
+{
+ temporal_cat = "MONTH";
+ column_name = "YEAR_QUARTER_NAME";
+}
+
+else if ('{TEMPORAL_VALUE}'.length == 6)
+{
+ temporal_cat = "WEEK";
+ column_name ="MONTH_SK";
+}
+else if ('{TEMPORAL_VALUE}'.length == 4)
+{
+ temporal_cat = "QUARTER";
+ column_name ="YEAR_SK";
+}
+else if ('{TEMPORAL_VALUE}'.length == 8)
+{
+ temporal_cat = "DATE";
+ column_name ="DATE_SK";
+}
+query = "SELECT TRIM(CAST(" + temporal_cat+"_SK AS CHAR(8))) AS "+temporal_cat+"_OF_YEAR, ";
+query += "SUM(F.REFERRAL_QTY) AS Total_Referrals, ";
+query += "SUM(F.PAID_VIEW_QTY) AS Paid_Search_Referrals, ";
+query += "SUM(F.ORGANIC_VIEW_QTY) AS Organic_Search_Referrals, ";
+query += "SUM(F.SYNDICATION_VIEW_QTY) AS Paid_Content_Referrals ";
+query += "FROM FACT_WEB_SITE_REFERER F, DIMENSION_DAY D ";
+query += "WHERE F.REFERRAL_DATE_SK = D.DATE_SK ";
+query += "AND( F.KEYWORD_SK > 0 OR F.SYNDICATION_VIEW_QTY > 0) ";
+query += "AND D."+column_name+ " = '{TEMPORAL_VALUE}'  ";
+query += "AND F.SOURCE_SYSTEM_SK =  '{SOURCE_SYSTEM_SK}'  ";
+query += "AND F.HOSTED_CLIENT_SK = '{HOSTED_CLIENT_SK}'  ";
+query += "GROUP BY D."+temporal_cat+"_SK ";
+query += "ORDER BY D."+temporal_cat+"_SK ASC ";]]></script> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>rule</action-type>  
+      <action-inputs> 
+        <query type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <query-result type="result-set" mapping="swresult"/> 
+      </action-outputs>  
+      <component-definition> 
+        <jndi>mdw_mysql</jndi>  
+        <live>false</live> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

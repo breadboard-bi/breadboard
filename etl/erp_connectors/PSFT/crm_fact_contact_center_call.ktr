@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read></read>
+      <write></write>
+      <input></input>
+      <output></output>
+      <update></update>
+      <connection></connection>
+      <table></table>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection></connection>
+      <table></table>
+      <field></field>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts call center metrics from PeopleSoft CRM 8.8.  Only the input has been built.  It should be joined with sales representative and other data and loaded into a person target.</note>
+      <xloc>5</xloc>
+      <yloc>49</yloc>
+      <width>938</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_CRM_CONTACT_CENTER_CALL_METRICS</from><to>FACT_CONTACT_CENTER_CALL</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>FACT_CONTACT_CENTER_CALL</name>
+    <type>InsertUpdate</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <lookup>
+      <table>FACT_CONTACT_CENTER_CALL</table>
+      </lookup>
+    <GUI>
+      <xloc>476</xloc>
+      <yloc>206</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_CRM_CONTACT_CENTER_CALL_METRICS</name>
+    <type>TableInput</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT 
+CD.START_DTTM AS CALL_DATE, --CALL START TIME INCLUDED
+IT.BUSINESS_UNIT AS BUSINESS_UNIT_ID,
+CD.CONNECTION_ID, 
+IT.INTERACTION_ID, 
+CD.SWITCH_ID, 
+CD.END_DTTM END_CALL_DATE, --CALL END TIME INCLUDED
+IT.BO_ID_CUST AS BO_CUSTOMER_ID,
+CD.CALL_TYPE AS CALL_TYPE_ID, 
+CD.DNIS_ID, --NUMBER DIALED IN TO CALL CENTER 
+CD.ANI_DIGITS, --NUMBER DIALED IN TO CALL CENTER 
+SEGMENT.AGENT_CALL_QTY, --LIKELY REMOVE AND JOIN IN TRANSFORMATION
+SEGMENT.ABANDON_CALL_QTY,  --LIKELY REMOVE AND JOIN IN TRANSFORMATION
+SEGMENT.IVR_CALL_QTY,  --LIKELY REMOVE AND JOIN IN TRANSFORMATION
+SEGMENT.INTERNATIONAL_CALL_QTY,  --LIKELY REMOVE AND JOIN IN TRANSFORMATION
+CD.NUM_OF_CALL CALL_NUMBER_QTY, 
+CD.INBOUND_CALL AS INBOUND_CALL_QTY, 
+CD.OUTBOUND_CALL AS OUTBOUND_CALL_QTY, 
+CD.CONF_CALL AS CONF_CALL, 
+CD.INTERNAL_CALL INTERNAL_CALL_QTY, 
+CD.QUEUE_CALL AS QUEUE_CALL, 
+CD.TRANSFER_CALL AS TRANSFER_CALL, 
+CD.SHORT_CALL AS SHORT_CALL_QTY,
+CD.CALL_DUR AS CALL_DURATION_QTY, --IN SECONDS
+CD.CONN_DUR AS CONNECTION_DURATION_QTY, --IN SECONDS
+CD.INTERNAL_DUR AS INTERNAL_DURATION_QTY, --IN SECONDS
+CD.OUTBOUND_DUR AS OUTBOUND_DURATION_QTY, --IN SECONDS
+CD.FIRST_RING_TIME AS RING_TIME_QTY, --IN SECONDS
+CD.FIRST_WAIT_TIME AS WAIT_TIME_QTY, --IN SECONDS
+CD.FIRST_ROUTE_TIME AS ROUTE_TIME_QTY, --IN SECONDS
+CD.CALL_CONF_TIME AS CONFERENCE_TIME_QTY, --IN SECONDS
+CD.CALL_QUEUE_TIME AS QUEUE_TIME_QTY, --IN SECONDS
+CD.CALL_XFER_TIME AS TRANSFER_TIME_QTY, --IN SECONDS
+CD.CALL_DIAL_TIME AS DIAL_TIME_QTY, --IN SECONDS
+CD.CALL_RING_TIME AS RING_TIME_QTY  --IN SECONDS
+FROM PS_EW_CTI_DETAIL CD
+INNER JOIN PS_RI_INTERACTION IT
+ON CD.CONNECTION_ID = IT.CALL_ID
+LEFT OUTER JOIN PSOPRALIAS OPR
+ON CD.AGENT_ID = OPR.OPRID
+AND OPR.OPRALIASTYPE = &apos;PER&apos;
+
+ --LIKELY REMOVE AND JOIN IN TRANSFORMATION
+LEFT OUTER JOIN (SELECT CONNECTION_ID, COUNT(distinct AGENT_ID) AS AGENT_CALL_QTY, SUM(ABANDON_CALL) AS ABANDON_CALL_QTY, SUM(IVR_CALL) AS IVR_CALL_QTY, SUM(INTL_CALL) AS INTERNATIONAL_CALL_QTY
+FROM PS_EW_CTI_SEGMENT GROUP BY CONNECTION_ID) SEGMENT
+ON CD.CONNECTION_ID = SEGMENT.CONNECTION_ID
+--CD.LASTUPD_EW_DTTM &gt; Last Load Date</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>140</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

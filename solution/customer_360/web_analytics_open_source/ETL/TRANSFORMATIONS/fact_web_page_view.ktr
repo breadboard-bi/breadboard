@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>FACT_WEB_PAGE_VIEW</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <rejected/>
+      <connection>mdw_mysql</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>Y</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+  <modified_user/>
+  <modified_date>2007&#47;06&#47;09 09:31:14.456</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Breadboard BI - Customer 360 - Dimension Web Page View Data Flow - Version 1.1
+==================================================
+1.  This data flow extracts web site visitor page view information from the staging area.
+2.  This fact table represents the lowest grain fact table.</note>
+      <xloc>6</xloc>
+      <yloc>9</yloc>
+      <width>431</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>26</xloc>
+      <yloc>351</yloc>
+      <width>546</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI, LLC.  All rights reserved. 
+
+This component is free software; you can redistribute it and&#47;or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this data mart; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA</note>
+      <xloc>26</xloc>
+      <yloc>444</yloc>
+      <width>621</width>
+      <heigth>140</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>MAP_LOOKUP_WEB_SITE_REFERER</from><to>MAP_LOOKUP_WEB_FILE</to><enabled>Y</enabled> </hop>  <hop> <from>STAGE_WEB_REQUEST</from><to>MAP_LOOKUP_TIME</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_TIME</from><to>MAP_LOOKUP_WEB_VISITOR</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_WEB_FILE</from><to>MAP_LOOKUP_WEB_BROWSER_OS</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_WEB_BROWSER_OS</from><to>FACT_WEB_PAGE_VIEW</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_WEB_VISITOR</from><to>MAP_LOOKUP_WEB_SITE_REFERER</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>FACT_WEB_PAGE_VIEW</name>
+    <type>InsertUpdate</type>
+    <description>This Insert&#47;Update step inserts or updates rows in the fact table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <commit>100</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema/>
+      <table>FACT_WEB_PAGE_VIEW</table>
+      <key>
+        <name>REQUEST_DATE_SK</name>
+        <field>REQUEST_DATE_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>WEB_VISITOR_SK</name>
+        <field>WEB_VISITOR_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>GEO_LOCATION_SK</name>
+        <field>GEO_LOCATION_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>REFERER_URL_SK</name>
+        <field>REFERER_URL_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>WEB_FILE_SK</name>
+        <field>WEB_FILE_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>TIME_SK</name>
+        <field>REQUEST_TIME_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>WEB_PAGE_VIEW_QTY</name>
+        <rename>WEB_PAGE_VIEW_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>REQUEST_DATE_SK</name>
+        <rename>REQUEST_DATE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>REQUEST_DATE</name>
+        <rename>REQUEST_DATE</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WEB_VISITOR_SK</name>
+        <rename>WEB_VISITOR_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>GEO_LOCATION_SK</name>
+        <rename>GEO_LOCATION_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>REFERER_URL_SK</name>
+        <rename>REFERER_URL_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WEB_FILE_SK</name>
+        <rename>WEB_FILE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>REQUEST_TIME_SK</name>
+        <rename>TIME_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WEB_FILE_BYTE_QTY</name>
+        <rename>WEB_FILE_BYTE_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ROBOT_PAGE_VIEW_QTY</name>
+        <rename>ROBOT_PAGE_VIEW_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WEB_BROWSER_OS_SK</name>
+        <rename>WEB_BROWSER_OS_SK</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+     <cluster_schema/>
+    <GUI>
+      <xloc>701</xloc>
+      <yloc>286</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_TIME</name>
+    <type>Mapping</type>
+    <description>This Map step returns the time of day surrogate key.  As currently configured, the lowest grain of tme is every 30 minutes.  This can be changed by editing the SQL in the table input step and ensuring the appropriate values are available in the time dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>C:\Kettle-2.3.0B\tables transformations\GENERIC STAGE\MAPS\MAP_LOOKUP_TIME.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>HOUR_24_QTY</field>  <mapping>HOUR_24_QTY</mapping></connector>
+    <connector><field>MINUTE_QTY</field>  <mapping>MINUTE_QTY</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>TIME_SK</field>  <mapping>TIME_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>211</xloc>
+      <yloc>225</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_WEB_BROWSER_OS</name>
+    <type>Mapping</type>
+    <description>This Map step returns the web browser OS surrogate key.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>C:\Kettle-2.3.0B\tables transformations\GENERIC STAGE\MAPS\MAP_LOOKUP_WEB_BROWSER_OS.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>WEB_BROWSER_OS_DESC</field>  <mapping>WEB_BROWSER_OS_DESC</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>WEB_BROWSER_OS_SK</field>  <mapping>WEB_BROWSER_OS_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>627</xloc>
+      <yloc>226</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_WEB_FILE</name>
+    <type>Mapping</type>
+    <description>This Map step returns the web file surrogate key.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>C:\Kettle-2.3.0B\tables transformations\GENERIC STAGE\MAPS\MAP_LOOKUP_WEB_FILE.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>WEB_FILE_NAME</field>  <mapping>WEB_FILE_NAME</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>WEB_FILE_SK</field>  <mapping>WEB_FILE_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>520</xloc>
+      <yloc>286</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_WEB_SITE_REFERER</name>
+    <type>Mapping</type>
+    <description>This Map step returns the web site referer surrogate key.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>C:\Kettle-2.3.0B\tables transformations\GENERIC STAGE\MAPS\MAP_LOOKUP_WEB_SITE_REFERER.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>REFERER_URL_DESC</field>  <mapping>REFERER_URL_DESC</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>REFERER_URL_SK</field>  <mapping>REFERER_URL_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>409</xloc>
+      <yloc>228</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_WEB_VISITOR</name>
+    <type>Mapping</type>
+    <description>This Map step returns the web visitor surrogate key. As configured, an individual visitor is represented by the unique combination of long IP address and web visitor full name.  In practice, the web visitor full name is very rarely found in the log file.  If your log file has a method for uniquely identifying a visitor across visits, then change this step.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>C:\Kettle-2.3.0B\tables transformations\GENERIC STAGE\MAPS\MAP_LOOKUP_WEB_VISITOR.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>LONG_IP_NUMBER</field>  <mapping>LONG_IP_NUMBER</mapping></connector>
+    <connector><field>WEB_VISITOR_FULL_NAME</field>  <mapping>WEB_VISITOR_FULL_NAME</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>WEB_VISITOR_SK</field>  <mapping>WEB_VISITOR_SK</mapping></connector>
+    <connector><field>GEO_LOCATION_SK</field>  <mapping>GEO_LOCATION_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>305</xloc>
+      <yloc>283</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_WEB_REQUEST</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <sql>SELECT
+  WEB_VISITOR_FULL_NAME
+, WEB_FILE_NAME
+, COUNT(REQUEST_TIME_ID) AS WEB_PAGE_VIEW_QTY
+, SUM(WEB_FILE_BYTE_QTY) AS WEB_FILE_BYTE_QTY
+, SUM(ROBOT_PAGE_VIEW_QTY) AS ROBOT_PAGE_VIEW_QTY
+, REFERER_URL_DESC
+, REQUEST_DATE_SK
+, MAX(REQUEST_DATE) AS REQUEST_DATE
+, MAX(REQUEST_DATE) AS STREAM_DATE
+, MAX(HOUR_24_QTY) AS HOUR_24_QTY
+, (CASE WHEN MAX(MINUTE_QTY) &lt;= 15 THEN 0 ELSE 30 END) AS MINUTE_QTY
+, LONG_IP_NUMBER
+, MAX(WEB_BROWSER_OS_DESC) AS WEB_BROWSER_OS_DESC
+FROM STAGE_WEB_REQUEST
+WHERE (WEB_FILE_NAME LIKE &apos;%.htm%&apos; OR WEB_FILE_NAME LIKE &apos;%.pdf&apos;)
+&#47;* AND DW_LOAD_DATE &gt;= (SELECT MAX(REQUEST_DATE) FROM FACT_WEB_SITE_VISIT) *&#47;
+GROUP BY 
+  WEB_VISITOR_FULL_NAME
+, WEB_FILE_NAME
+, REFERER_URL_DESC
+, REQUEST_DATE_SK
+, LONG_IP_NUMBER
+, REQUEST_TIME_ID</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>85</xloc>
+      <yloc>278</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+</transformation>

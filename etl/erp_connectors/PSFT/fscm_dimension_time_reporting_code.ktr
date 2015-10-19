@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>CRM_DIMENSION_SALES_REP</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts time reporting code (TRC) data from PeopleSoft FSCM 8.8.</note>
+      <xloc>32</xloc>
+      <yloc>50</yloc>
+      <width>405</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_oracle_orcl</name>
+    <server>192.168.0.103</server>
+    <type>ORACLE</type>
+    <access>Native</access>
+    <database>orcl</database>
+    <port>1521</port>
+    <username>mdw</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_FSCM_TIME_REPORTING_CODE</from><to>DIMENSION_TIME_REPORTING_CODE</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>DIMENSION_TIME_REPORTING_CODE</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_oracle_orcl</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>DIMENSION_TIME_REPORTING_CODE</table>
+      <key>
+        <name>TRC_ID</name>
+        <field>TRC_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>TRC_ID</name>
+        <rename>TRC_ID</rename>
+        </value>
+      <value>
+        <name>EFFECTIVE_STATUS_CODE</name>
+        <rename>EFFECTIVE_STATUS_CODE</rename>
+        </value>
+      <value>
+        <name>TRC_NAME</name>
+        <rename>TRC_NAME</rename>
+        </value>
+      <value>
+        <name>TRC_DESC</name>
+        <rename>TRC_DESC</rename>
+        </value>
+      <value>
+        <name>TRC_TYPE_CODE</name>
+        <rename>TRC_TYPE_CODE</rename>
+        </value>
+      <value>
+        <name>TRC_TYPE_NAME</name>
+        <rename>TRC_TYPE_NAME</rename>
+        </value>
+      <value>
+        <name>TRC_TYPE_DESC</name>
+        <rename>TRC_TYPE_DESC</rename>
+        </value>
+      </lookup>
+    <GUI>
+      <xloc>640</xloc>
+      <yloc>190</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_FSCM_TIME_REPORTING_CODE</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the columns from the PS_RSF_SUSER table.  It maintains the basic sales user record with descriptors and settings.
+</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT 
+RTRIM(TRC.TRC) AS TRC_ID,
+RTRIM(TRC.EFF_STATUS) AS EFFECTIVE_STATUS_CODE,
+RTRIM(TRC.DESCRSHORT) AS TRC_NAME,
+RTRIM(TRC.DESCR) AS TRC_DESC,
+RTRIM(TRC.TRC_TYPE) AS TRC_TYPE_CODE,
+RTRIM(TRC_TYPE.XLATSHORTNAME) AS TRC_TYPE_NAME,
+RTRIM(TRC_TYPE.XLATLONGNAME) AS TRC_TYPE_DESC
+FROM PS_TL_TRC_TBL TRC
+LEFT OUTER JOIN PSXLATITEM TRC_TYPE
+ON TRC_TYPE.FIELDNAME = &apos;TRC_TYPE&apos;
+AND TRC.TRC_TYPE = TRC_TYPE.FIELDVALUE
+AND TRC_TYPE.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE TRC_TYPE.FIELDNAME = A1.FIELDNAME 
+	AND TRC_TYPE.FIELDVALUE = A1.FIELDVALUE
+	AND TRC_TYPE.FIELDNAME = &apos;TRC_TYPE&apos;)</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>193</xloc>
+      <yloc>190</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

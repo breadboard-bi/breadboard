@@ -1,0 +1,836 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>STAGE_PRODUCT_compiere</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write>STAGE_PRODUCT</write>
+      <input>COMPIERE_PRODUCT</input>
+      <output/>
+      <update/>
+      <rejected/>
+      <connection>mdw_mysql</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <step_performance_table/>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>N</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+  <modified_user>-</modified_user>
+  <modified_date>2008&#47;08&#47;05 14:13:24.500</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>26</xloc>
+      <yloc>516</yloc>
+      <width>562</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2008 Breadboard BI, Inc. All rights reserved.</note>
+      <xloc>26</xloc>
+      <yloc>463</yloc>
+      <width>287</width>
+      <heigth>23</heigth>
+    </notepad>
+    <notepad>
+      <note>Breadboard BI - Compiere - Product Stage
+=============================================
+1.  This data flow extracts product data from the Compiere ERP.
+
+2.  Incremental load logic is utilized in conjunction with the ADMIN_TRANSFORMATION_CONTROL table.  
+    This table must be built before running the transformation.</note>
+      <xloc>30</xloc>
+      <yloc>26</yloc>
+      <width>541</width>
+      <heigth>85</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>compiere</name>
+    <server/>
+    <type>ORACLE</type>
+    <access>JNDI</access>
+    <database>compiere</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_ORACLE.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_ORACLE.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>Get Transformation Last Start Date</from><to>COMPIERE_PRODUCT</to><enabled>N</enabled> </hop>  <hop> <from>MAP_2_BREADBOARD_product</from><to>STAGE_PRODUCT</to><enabled>Y</enabled> </hop>  <hop> <from>ADD_CONSTANTS_FOR_BBBI_DEMO_SERVER</from><to>MAP_2_BREADBOARD_product</to><enabled>Y</enabled> </hop>  <hop> <from>COMPIERE_PRODUCT</from><to>COMPUTE_PRODUCT_COLUMNS</to><enabled>Y</enabled> </hop>  <hop> <from>COMPUTE_PRODUCT_COLUMNS</from><to>ADD_CONSTANTS_FOR_BBBI_DEMO_SERVER</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>ADD_CONSTANTS_FOR_BBBI_DEMO_SERVER</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>SOURCE_SYSTEM_ID</name>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>19</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>HOSTED_CLIENT_SK</name>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>8</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>547</xloc>
+      <yloc>185</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>COMPIERE_PRODUCT</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>compiere</connection>
+    <sql>SELECT 
+  P.M_PRODUCT_ID
+, P.AD_CLIENT_ID
+, P.AD_ORG_ID
+, P.C_REVENUERECOGNITION_ID
+, P.C_SUBSCRIPTIONTYPE_ID
+, P.C_TAXCATEGORY_ID
+, P.C_UOM_ID
+, P.CLASSIFICATION
+, P.CREATED
+, P.CREATEDBY
+, P.DESCRIPTION
+, P.DESCRIPTIONURL
+, P.DISCONTINUED
+, P.DISCONTINUEDBY
+, P.DOCUMENTNOTE
+, P.DOWNLOADURL
+, P.GUARANTEEDAYS
+, P.GUARANTEEDAYSMIN
+, P.HELP
+, P.IMAGEURL
+, P.ISACTIVE
+, P.ISBOM
+, P.ISDROPSHIP
+, P.ISEXCLUDEAUTODELIVERY
+, P.ISINVOICEPRINTDETAILS
+, P.ISPICKLISTPRINTDETAILS
+, P.ISPURCHASED
+, P.ISSELFSERVICE
+, P.ISSOLD
+, P.ISSTOCKED
+, P.ISSUMMARY
+, P.ISVERIFIED
+, P.ISWEBSTOREFEATURED
+, P.LICENSEINFO
+, P.M_ATTRIBUTESETINSTANCE_ID
+, P.M_ATTRIBUTESET_ID
+, P.M_FREIGHTCATEGORY_ID
+, P.M_LOCATOR_ID
+, P.M_PRODUCT_CATEGORY_ID
+, P.NAME
+, P.PROCESSING
+, P.PRODUCTTYPE
+, P.R_MAILTEXT_ID
+, P.R_SOURCE_ID
+, P.SKU
+, P.S_EXPENSETYPE_ID
+, P.S_RESOURCE_ID
+, P.SALESREP_ID
+, P.SHELFDEPTH
+, P.SHELFHEIGHT
+, P.SHELFWIDTH
+, P.SUPPORTUNITS
+, P.TRIALPHASEDAYS
+, P.UPC
+, P.UNITSPERPALLET
+, P.UPDATED
+, P.UPDATEDBY
+, P.VALUE
+, P.VERSIONNO
+, P.VOLUME
+, P.WEIGHT
+, C.NAME AS M_PRODUCT_CATEGORY_NAME
+, C.DESCRIPTION AS M_PRODUCT_CATEGORY_DESC
+FROM COMPIERE.M_PRODUCT P
+LEFT OUTER JOIN COMPIERE.M_PRODUCT_CATEGORY C
+ON P.M_PRODUCT_CATEGORY_ID = C.M_PRODUCT_CATEGORY_ID</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>191</xloc>
+      <yloc>185</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>COMPUTE_PRODUCT_COLUMNS</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>Y</compatible>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>var PRODUCT_STATUS_CODE = &quot;&quot;;
+var PRODUCT_STATUS_NAME = &quot;&quot;;
+
+if (ISACTIVE.getString() == &quot;Y&quot;)
+{PRODUCT_STATUS_CODE  = &quot;A&quot;;
+PRODUCT_STATUS_NAME  = &quot;Active&quot;;}
+
+else 
+{PRODUCT_STATUS_CODE  = &quot;I&quot;;
+PRODUCT_STATUS_CODE = &quot;Inactive&quot;;}</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>PRODUCT_STATUS_CODE</name>
+        <rename>PRODUCT_STATUS_CODE</rename>
+        <type>String</type>
+        <length>1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>PRODUCT_STATUS_NAME</name>
+        <rename>PRODUCT_STATUS_NAME</rename>
+        <type>String</type>
+        <length>36</length>
+        <precision>-1</precision>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>337</xloc>
+      <yloc>185</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Get Transformation Last Start Date</name>
+    <type>SystemInfo</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>MAX</name>
+        <type>start date range</type>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>46</xloc>
+      <yloc>185</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_2_BREADBOARD_product</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>M_PRODUCT_ID</name>
+        <rename>PRODUCT_ID</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AD_CLIENT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AD_ORG_ID</name>
+        <rename>PRODUCT_SETID</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_REVENUERECOGNITION_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_SUBSCRIPTIONTYPE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_TAXCATEGORY_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_UOM_ID</name>
+        <rename>UNIT_UOM_ID</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CLASSIFICATION</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CREATED</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CREATEDBY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DESCRIPTION</name>
+        <rename>PRODUCT_DESC</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DESCRIPTIONURL</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DISCONTINUED</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DISCONTINUEDBY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DOCUMENTNOTE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DOWNLOADURL</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>GUARANTEEDAYS</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>GUARANTEEDAYSMIN</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>HELP</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>IMAGEURL</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISACTIVE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISBOM</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISDROPSHIP</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISEXCLUDEAUTODELIVERY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISINVOICEPRINTDETAILS</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISPICKLISTPRINTDETAILS</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISPURCHASED</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISSELFSERVICE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISSOLD</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISSTOCKED</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISSUMMARY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISVERIFIED</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISWEBSTOREFEATURED</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>LICENSEINFO</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>M_ATTRIBUTESETINSTANCE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>M_ATTRIBUTESET_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>M_FREIGHTCATEGORY_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>M_LOCATOR_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>M_PRODUCT_CATEGORY_ID</name>
+        <rename>PRODUCT_CATEGORY_CODE</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>M_PRODUCT_CATEGORY_NAME</name>
+        <rename>PRODUCT_CATEGORY_NAME</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>M_PRODUCT_CATEGORY_DESC</name>
+        <rename>PRODUCT_CATEGORY_DESC</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>M_PRODUCT_CATEGORY_ID</name>
+        <rename>PRODUCT_FAMILY_CODE</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>M_PRODUCT_CATEGORY_NAME</name>
+        <rename>PRODUCT_FAMILY_NAME</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>M_PRODUCT_CATEGORY_DESC</name>
+        <rename>PRODUCT_FAMILY_DESC</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>M_PRODUCT_CATEGORY_ID</name>
+        <rename>PRODUCT_SUBCATEGORY_CODE</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>M_PRODUCT_CATEGORY_NAME</name>
+        <rename>PRODUCT_SUBCATEGORY_NAME</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>M_PRODUCT_CATEGORY_DESC</name>
+        <rename>PRODUCT_SUBCATEGORY_DESC</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>NAME</name>
+        <rename>PRODUCT_NAME</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PROCESSING</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCTTYPE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>R_MAILTEXT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>R_SOURCE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SKU</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>S_EXPENSETYPE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>S_RESOURCE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SALESREP_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SHELFDEPTH</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SHELFHEIGHT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SHELFWIDTH</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SUPPORTUNITS</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>TRIALPHASEDAYS</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>UPC</name>
+        <rename>EAN_UPC_NUMBER</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>UNITSPERPALLET</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>UPDATED</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>UPDATEDBY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>VALUE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>VERSIONNO</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>VOLUME</name>
+        <rename>VOLUME_QTY</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WEIGHT</name>
+        <rename>WEIGHT_QTY</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SOURCE_SYSTEM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>HOSTED_CLIENT_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_STATUS_CODE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_STATUS_NAME</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>        <select_unspecified>N</select_unspecified>
+      <remove>        <name>AD_CLIENT_ID</name>
+      </remove>      <remove>        <name>C_REVENUERECOGNITION_ID</name>
+      </remove>      <remove>        <name>C_SUBSCRIPTIONTYPE_ID</name>
+      </remove>      <remove>        <name>C_TAXCATEGORY_ID</name>
+      </remove>      <remove>        <name>CLASSIFICATION</name>
+      </remove>      <remove>        <name>CREATED</name>
+      </remove>      <remove>        <name>CREATEDBY</name>
+      </remove>      <remove>        <name>DESCRIPTIONURL</name>
+      </remove>      <remove>        <name>DISCONTINUED</name>
+      </remove>      <remove>        <name>DISCONTINUEDBY</name>
+      </remove>      <remove>        <name>DOCUMENTNOTE</name>
+      </remove>      <remove>        <name>DOWNLOADURL</name>
+      </remove>      <remove>        <name>GUARANTEEDAYS</name>
+      </remove>      <remove>        <name>GUARANTEEDAYSMIN</name>
+      </remove>      <remove>        <name>HELP</name>
+      </remove>      <remove>        <name>IMAGEURL</name>
+      </remove>      <remove>        <name>ISACTIVE</name>
+      </remove>      <remove>        <name>ISBOM</name>
+      </remove>      <remove>        <name>ISDROPSHIP</name>
+      </remove>      <remove>        <name>ISEXCLUDEAUTODELIVERY</name>
+      </remove>      <remove>        <name>ISINVOICEPRINTDETAILS</name>
+      </remove>      <remove>        <name>ISPICKLISTPRINTDETAILS</name>
+      </remove>      <remove>        <name>ISPURCHASED</name>
+      </remove>      <remove>        <name>ISSELFSERVICE</name>
+      </remove>      <remove>        <name>ISSOLD</name>
+      </remove>      <remove>        <name>ISSTOCKED</name>
+      </remove>      <remove>        <name>ISSUMMARY</name>
+      </remove>      <remove>        <name>ISVERIFIED</name>
+      </remove>      <remove>        <name>ISWEBSTOREFEATURED</name>
+      </remove>      <remove>        <name>LICENSEINFO</name>
+      </remove>      <remove>        <name>M_ATTRIBUTESETINSTANCE_ID</name>
+      </remove>      <remove>        <name>M_ATTRIBUTESET_ID</name>
+      </remove>      <remove>        <name>M_FREIGHTCATEGORY_ID</name>
+      </remove>      <remove>        <name>M_LOCATOR_ID</name>
+      </remove>      <remove>        <name>PROCESSING</name>
+      </remove>      <remove>        <name>PRODUCTTYPE</name>
+      </remove>      <remove>        <name>R_MAILTEXT_ID</name>
+      </remove>      <remove>        <name>R_SOURCE_ID</name>
+      </remove>      <remove>        <name>SKU</name>
+      </remove>      <remove>        <name>S_EXPENSETYPE_ID</name>
+      </remove>      <remove>        <name>S_RESOURCE_ID</name>
+      </remove>      <remove>        <name>SALESREP_ID</name>
+      </remove>      <remove>        <name>SHELFDEPTH</name>
+      </remove>      <remove>        <name>SHELFHEIGHT</name>
+      </remove>      <remove>        <name>SHELFWIDTH</name>
+      </remove>      <remove>        <name>SUPPORTUNITS</name>
+      </remove>      <remove>        <name>TRIALPHASEDAYS</name>
+      </remove>      <remove>        <name>UNITSPERPALLET</name>
+      </remove>      <remove>        <name>UPDATED</name>
+      </remove>      <remove>        <name>UPDATEDBY</name>
+      </remove>      <remove>        <name>VALUE</name>
+      </remove>      <remove>        <name>VERSIONNO</name>
+      </remove>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>754</xloc>
+      <yloc>185</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_PRODUCT</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <commit>1000</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema/>
+      <table>STAGE_PRODUCT</table>
+      <key>
+        <name>PRODUCT_ID</name>
+        <field>PRODUCT_ID</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>SOURCE_SYSTEM_ID</name>
+        <field>SOURCE_SYSTEM_ID</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>PRODUCT_ID</name>
+        <rename>PRODUCT_ID</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>PRODUCT_SETID</name>
+        <rename>PRODUCT_SETID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>UNIT_UOM_ID</name>
+        <rename>UNIT_UOM_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT_DESC</name>
+        <rename>PRODUCT_DESC</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT_CATEGORY_CODE</name>
+        <rename>PRODUCT_CATEGORY_CODE</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT_CATEGORY_NAME</name>
+        <rename>PRODUCT_CATEGORY_NAME</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT_CATEGORY_DESC</name>
+        <rename>PRODUCT_CATEGORY_DESC</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT_FAMILY_CODE</name>
+        <rename>PRODUCT_FAMILY_CODE</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT_FAMILY_NAME</name>
+        <rename>PRODUCT_FAMILY_NAME</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT_FAMILY_DESC</name>
+        <rename>PRODUCT_FAMILY_DESC</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT_SUBCATEGORY_CODE</name>
+        <rename>PRODUCT_SUBCATEGORY_CODE</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT_SUBCATEGORY_NAME</name>
+        <rename>PRODUCT_SUBCATEGORY_NAME</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT_SUBCATEGORY_DESC</name>
+        <rename>PRODUCT_SUBCATEGORY_DESC</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT_NAME</name>
+        <rename>PRODUCT_NAME</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>EAN_UPC_NUMBER</name>
+        <rename>EAN_UPC_NUMBER</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>VOLUME_QTY</name>
+        <rename>VOLUME_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WEIGHT_QTY</name>
+        <rename>WEIGHT_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>SOURCE_SYSTEM_ID</name>
+        <rename>SOURCE_SYSTEM_ID</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>HOSTED_CLIENT_SK</name>
+        <rename>HOSTED_CLIENT_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT_STATUS_CODE</name>
+        <rename>PRODUCT_STATUS_CODE</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT_STATUS_NAME</name>
+        <rename>PRODUCT_STATUS_NAME</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>892</xloc>
+      <yloc>185</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+   <slave-step-copy-partition-distribution>
+</slave-step-copy-partition-distribution>
+   <slave_transformation>N</slave_transformation>
+</transformation>

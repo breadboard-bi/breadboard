@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <version>1</version>  
+  <title>Web Visits by Week and Referer</title>  
+  <logging-level>debug</logging-level>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Return the unique visitors by week and referer.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <inputs> 
+    <WEEK_OF_YEAR type="string"> 
+      <sources> 
+        <request>WEEK_OF_YEAR</request> 
+      </sources> 
+    </WEEK_OF_YEAR>  
+    
+  </inputs>  
+  <!-- Define an output called 'rule-result' -->  
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>  
+  <!-- This action sequence does not require any external resources -->  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <action-inputs> 
+        
+        
+      <WEEK_OF_YEAR type="string"/></action-inputs>  
+      <!-- Define a local output called 'rule-result' -->  
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>  
+      <!-- Specify the component to execute -->  
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>rule</action-type>  
+      <!-- Define the settings for the component -->  
+      <component-definition> 
+        <!-- Define the datasource for the query -->  
+        <!-- Define the query to execute. Note the parameter {REGION} in the query -->  
+        
+        <jndi>mdw</jndi>
+      <live>true</live><query><![CDATA[SELECT PARENT_REFERER_DESC AS REFERER, REFERRAL_QTY AS "Referrals" FROM (
+SELECT RANK() over(order by SUM(F.REFERRAL_QTY) desc) as referer_rank,
+R.PARENT_REFERER_DESC, 
+SUM(F.REFERRAL_QTY) AS REFERRAL_QTY
+FROM FACT_WEB_SITE_REFERER F, DIMENSION_DAY D, DIMENSION_WEB_SITE_REFERER R
+WHERE F.REFERRAL_DATE_SK = D.DATE_SK
+AND F.REFERER_URL_SK = R.REFERER_URL_SK
+AND (R.PARENT_REFERER_DESC NOT IN ('Missing') AND R.PARENT_REFERER_DESC IS NOT NULL AND R.EXTERNAL_IND = 'Y')
+AND D.WEEK_SK = '{WEEK_OF_YEAR}'
+GROUP BY R.PARENT_REFERER_DESC
+)
+where referer_rank < 6
+order by referer_rank]]></query></component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

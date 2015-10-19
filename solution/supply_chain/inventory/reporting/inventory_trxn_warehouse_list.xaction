@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>inventory_trxn_warehouse_list.xaction</name>
+  <title>%title</title>
+  <version>1</version>
+  <logging-level/>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>%description</description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help/>  
+    <result-type>rule</result-type> 
+  </documentation>
+
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <start_date type="string"> 
+      <sources> 
+        <request>start_date</request> 
+      </sources>  
+      <default-value>20000101</default-value> 
+    </start_date>  
+    <stop_date type="string"> 
+      <sources> 
+        <request>stop_date</request> 
+      </sources>  
+      <default-value>20000201</default-value> 
+    </stop_date> 
+  </inputs>
+
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>
+
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>inventory_trxn_warehouse_list.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>
+      <action-type>Transaction Date SQL Query</action-type>
+      <action-outputs> 
+        <trxn_date_list type="property-map-list"/> 
+      </action-outputs>
+      <component-definition> 
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT DISTINCT TRXN_DATE_SK
+FROM FACT_INVENTORY_TRANSACTION
+ORDER BY TRXN_DATE_SK ASC]]></query> 
+      </component-definition> 
+    </action-definition>
+    
+    <action-definition> 
+      <component-name>SecureFilterComponent</component-name>
+      <action-type>Secure Filter</action-type>
+      <action-inputs> 
+        <start_date type="string"/>  
+        <stop_date type="string"/>  
+        <trxn_date_list type="property-map-list"/>  
+      </action-inputs>
+      <component-definition> 
+        <selections> 
+          <start_date style="select" prompt-if-one-value="true"> 
+            <title>Please enter the start date for the analysis period.</title>  
+            <filter value-col-name="TRXN_DATE_SK" display-col-name="TRXN_DATE_SK">trxn_date_list</filter> 
+          </start_date>  
+          <stop_date style="select" prompt-if-one-value="true"> 
+            <title>Please enter the stop date for the analysis period.</title>  
+            <filter value-col-name="TRXN_DATE_SK" display-col-name="TRXN_DATE_SK">trxn_date_list</filter> 
+          </stop_date>  
+        </selections> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <action-inputs> 
+        <output-type type="string"/> 
+        <start_date type="string"/>  
+        <stop_date type="string"/>
+      </action-inputs>
+      <action-outputs> 
+        <report type="content"/> 
+      </action-outputs>
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT B.BUSINESS_UNIT_NAME, 
+W.WAREHOUSE_NAME, 
+P.PRODUCT_NAME, 
+M.UNIT_OF_MEASURE_ID,
+SUM(F.INV_TRXN_QTY) AS "Transaction Quantity", 
+SUM(F.INV_TRXN_COST_AMT * BASE_CURRENCY_EXCHANGE_RATE) AS INV_BASE_COST_AMT, 
+SUM(F.INV_TRXN_PRICE_AMT * BASE_CURRENCY_EXCHANGE_RATE) AS INV_BASE_PRICE_AMT
+FROM FACT_INVENTORY_TRANSACTION F, 
+DIMENSION_BUSINESS_UNIT B,
+DIMENSION_WAREHOUSE W, 
+DIMENSION_PRODUCT P, 
+DIMENSION_UNIT_OF_MEASURE M
+WHERE F.BUSINESS_UNIT_SK = B.BUSINESS_UNIT_SK
+AND F.WAREHOUSE_SK = W.WAREHOUSE_SK
+AND F.PRODUCT_SK = P.PRODUCT_SK
+AND F.INV_UOM_SK = M.UNIT_OF_MEASURE_SK
+AND F.TRXN_DATE_SK  >= '{start_date}'
+AND F.TRXN_DATE_SK  <= '{stop_date}'
+GROUP BY B.BUSINESS_UNIT_NAME, 
+W.WAREHOUSE_NAME, 
+P.PRODUCT_NAME,
+M.UNIT_OF_MEASURE_ID
+ORDER BY W.WAREHOUSE_NAME]]></query> 
+      </component-definition> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE report PUBLIC "-//JFreeReport//DTD report definition//EN//simple/version 0.8.5" "http://jfreereport.sourceforge.net/report-085.dtd">
+
+<report bottommargin="10" topmargin="10" rightmargin="10" leftmargin="10" pageformat="LETTER" orientation="landscape" name="teste.waqr.xreportspec">
+  <parser-config>
+    <property name="reportheader">teste teste</property>
+    <property name="reportfooter">relatorio</property>
+    <property name="pageheader"/>
+    <property name="pagefooter"/>
+  </parser-config>
+  <reportheader color="#133484" fontname="Arial" fontsize="16">
+    <message-field alignment="left" height="24" vertical-alignment="middle" width="100%" x="0%" y="0">${reportheader}</message-field>
+  </reportheader>
+  <reportfooter color="#133484" fontname="Arial" fontsize="16">
+    <message-field alignment="left" height="24" vertical-alignment="middle" width="100%" x="0%" y="0">${reportfooter}</message-field>
+  </reportfooter>
+  <pageheader color="#32384C" fontname="Arial" fontsize="8">
+    <round-rectangle height="18" arc-height="6" arc-width="6" color="#7EBAD2" width="100%" x="0%" y="0" fill="true" draw="true" dynamic="false" layout-cachable="false"/>
+    <message-field alignment="left" height="18" vertical-alignment="middle" width="50%" x="0%" y="0">${pageheader}</message-field>
+    <message-field alignment="right" height="18" vertical-alignment="middle" width="50%" x="50%" y="0">$(report.date, date, MMMM dd, yyyy @ hh:mm )</message-field>
+    <line color="#133346" height="3" weight="3" width="100%" x1="0%" x2="100%" y1="18" y2="18"/>
+  </pageheader>
+  <pagefooter color="#32384C" fontname="Arial" fontsize="8">
+    <round-rectangle height="18" arc-height="6" arc-width="6" color="#8689A0" width="100%" x="0%" y="0" fill="true" draw="true" dynamic="false" layout-cachable="false"/>
+    <line color="#133346" height="3" weight="3" width="100%" x1="0%" x2="100%" y1="0" y2="0"/>
+    <message-field alignment="left" height="18" width="50%" x="0" y="0">${pagefooter}</message-field>
+    <message-field alignment="right" height="18" width="50%" x="50%" y="0">Page $(PageofPages)</message-field>
+  </pagefooter>
+  <functions>
+    <property-ref name="report.date"/>
+    <function class="org.jfree.report.function.PageOfPagesFunction" name="PageofPages"/>
+    <function name="backgroundTrigger" class="org.jfree.report.function.ElementVisibilitySwitchFunction">
+      <properties>
+        <property name="element">rowBandingElement</property>
+        <property name="numberOfElements">1</property>
+        <property name="initialState">true</property>
+      </properties>
+    </function>
+    <expression class="org.jfree.report.function.HideElementIfDataAvailableExpression" name="DummyGroupNoDataBandElementHideIfNullTrigger">
+      <properties>
+        <property name="element">DummyGroupNoDataBandElement</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="DummyGroupDataBandElementHideIfNullTrigger">
+      <properties>
+        <property name="element">DummyGroupDataBandElement</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="dummyGroupFooterHideIfNullTrigger">
+      <properties>
+        <property name="element">dummyGroupFooter</property>
+      </properties>
+    </expression>
+  </functions>
+  <items color="#4F383C" fontname="Arial" fontsize="10" fontstyle="plain">
+    <rectangle name="rowBandingElement" color="#9CD8F1" draw="false" fill="true" height="12" x="0%" width="100%" y="0"/>
+    <string-field name="BC_DIMENSION_BUSINESS_UNIT_COUNTRY_NAMEElement" nullstring="-" fieldname="BC_DIMENSION_BUSINESS_UNIT_COUNTRY_NAME" vertical-alignment="middle" alignment="left" width="14.285714285714286%" x="0.0%" y="0" height="12" color="#000000" fontname="Arial" fontsize="10" fontstyle="plain"/>
+    <string-field name="BC_DIMENSION_BUSINESS_UNIT_CITY_NAMEElement" nullstring="-" fieldname="BC_DIMENSION_BUSINESS_UNIT_CITY_NAME" vertical-alignment="middle" alignment="left" width="14.285714285714286%" x="14.285714285714286%" y="0" height="12" color="#000000" fontname="Arial" fontsize="10" fontstyle="plain"/>
+    <string-field name="BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_TYPE_NAMEElement" nullstring="-" fieldname="BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_TYPE_NAME" vertical-alignment="middle" alignment="left" width="14.285714285714286%" x="28.571428571428573%" y="0" height="12" color="#000000" fontname="Arial" fontsize="10" fontstyle="plain"/>
+    <string-field name="BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_TYPE_DESCElement" nullstring="-" fieldname="BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_TYPE_DESC" vertical-alignment="middle" alignment="left" width="14.285714285714286%" x="42.85714285714286%" y="0" height="12" color="#000000" fontname="Arial" fontsize="10" fontstyle="plain"/>
+    <string-field name="BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_STATUS_DESCElement" nullstring="-" fieldname="BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_STATUS_DESC" vertical-alignment="middle" alignment="left" width="14.285714285714286%" x="57.142857142857146%" y="0" height="12" color="#000000" fontname="Arial" fontsize="10" fontstyle="plain"/>
+    <string-field name="BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_NAMEElement" nullstring="-" fieldname="BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_NAME" vertical-alignment="middle" alignment="left" width="14.285714285714286%" x="71.42857142857143%" y="0" height="12" color="#000000" fontname="Arial" fontsize="10" fontstyle="plain"/>
+    <number-field name="BC_FACT_BILLING_UNIT_QTYElement" nullstring="-" fieldname="BC_FACT_BILLING_UNIT_QTY" vertical-alignment="middle" alignment="right" width="14.285714285714278%" x="85.71428571428572%" y="0" height="12" color="#000000" fontname="Arial" fontsize="10" fontstyle="plain"/>
+    <line color="#7F887B" weight=".5" x1="0.0%" y1="0" x2="0.0%" y2="12"/>
+    <line color="#7F887B" weight=".5" x1="14.285714285714286%" y1="0" x2="14.285714285714286%" y2="12"/>
+    <line color="#7F887B" weight=".5" x1="28.571428571428573%" y1="0" x2="28.571428571428573%" y2="12"/>
+    <line color="#7F887B" weight=".5" x1="42.85714285714286%" y1="0" x2="42.85714285714286%" y2="12"/>
+    <line color="#7F887B" weight=".5" x1="57.142857142857146%" y1="0" x2="57.142857142857146%" y2="12"/>
+    <line color="#7F887B" weight=".5" x1="71.42857142857143%" y1="0" x2="71.42857142857143%" y2="12"/>
+    <line color="#7F887B" weight=".5" x1="85.71428571428572%" y1="0" x2="85.71428571428572%" y2="12"/>
+    <line color="#7F887B" weight=".5" x1="100%" y1="0" x2="100%" y2="12"/>
+    <line color="#7F887B" weight=".5" x1="0%" y1="0" x2="100%" y2="0"/>
+    <line color="#7F887B" weight=".5" x1="0%" y1="12" x2="100%" y2="12"/>
+  </items>
+  <groups>
+    <group name="dummy">
+      <groupheader repeat="true" height="24" color="#1A7439" fontname="Arial" fontsize="12" fontstyle="bold">
+        <band name="DummyGroupNoDataBandElement">
+          <label height="12" vertical-alignment="middle" alignment="left" width="100%" x="0%" y="0">No Data Available</label>
+        </band>
+        <band name="DummyGroupDataBandElement" y="2" height="24">
+          <rectangle color="#133346" draw="false" fill="true" height="18" width="100%" x="0%" y="0"/>
+          <label color="#5B778D" fontname="Arial" fontsize="10" fontstyle="plain" height="18" vertical-alignment="middle" alignment="left" width="14.285714285714286%" x="0.0%" y="0">BC_DIMENSION_BUSINESS_UNIT_COUNTRY_NAME</label>
+          <label color="#5B778D" fontname="Arial" fontsize="10" fontstyle="plain" height="18" vertical-alignment="middle" alignment="left" width="14.285714285714286%" x="14.285714285714286%" y="0">BC_DIMENSION_BUSINESS_UNIT_CITY_NAME</label>
+          <label color="#5B778D" fontname="Arial" fontsize="10" fontstyle="plain" height="18" vertical-alignment="middle" alignment="left" width="14.285714285714286%" x="28.571428571428573%" y="0">BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_TYPE_NAME</label>
+          <label color="#5B778D" fontname="Arial" fontsize="10" fontstyle="plain" height="18" vertical-alignment="middle" alignment="left" width="14.285714285714286%" x="42.85714285714286%" y="0">BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_TYPE_DESC</label>
+          <label color="#5B778D" fontname="Arial" fontsize="10" fontstyle="plain" height="18" vertical-alignment="middle" alignment="left" width="14.285714285714286%" x="57.142857142857146%" y="0">BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_STATUS_DESC</label>
+          <label color="#5B778D" fontname="Arial" fontsize="10" fontstyle="plain" height="18" vertical-alignment="middle" alignment="left" width="14.285714285714286%" x="71.42857142857143%" y="0">BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_NAME</label>
+          <label color="#5B778D" fontname="Arial" fontsize="10" fontstyle="plain" height="18" vertical-alignment="middle" alignment="right" width="14.285714285714278%" x="85.71428571428572%" y="0">BC_FACT_BILLING_UNIT_QTY</label>
+        </band>
+      </groupheader>
+      <groupfooter name="dummyGroupFooter" color="#1A7439" fontname="Arial" fontsize="12" fontstyle="bold"/>
+    </group>
+  </groups>
+</report>

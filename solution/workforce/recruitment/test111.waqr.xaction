@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<action-sequence>
+  <name>test111.waqr.xaction</name>
+  <version>1</version>
+  <title>test111</title>
+  <logging-level>warn</logging-level>
+  <documentation>
+    <author>demo</author>
+    <description>?????</description>
+    <icon>PentahoReporting.png</icon>
+    <help>Auto-generated action-sequence for WAQR.</help>
+    <result-type>report</result-type>
+  </documentation>
+  <inputs>
+    <output-type type="string">
+      <default-value>html</default-value>
+      <sources>
+        <request>type</request>
+      </sources>
+    </output-type>
+    <mimeTypes type="string-list">
+      <sources>
+        <request>mimeTypes</request>
+      </sources>
+      <default-value type="string-list">
+        <list-item>html</list-item>
+        <list-item>xls</list-item>
+        <list-item>pdf</list-item>
+        <list-item>csv</list-item>
+      </default-value>
+    </mimeTypes>
+  </inputs>
+  <outputs>
+    <report type="content">
+      <destinations>
+        <response>content</response>
+      </destinations>
+    </report>
+  </outputs>
+  <resources>
+    <report-definition>
+      <solution-file>
+        <location>test111.waqr.xml</location>
+        <mime-type>text/xml</mime-type>
+      </solution-file>
+    </report-definition>
+  </resources>
+  <actions>
+    <action-definition>
+      <component-name>SecureFilterComponent</component-name>
+      <action-type>Prompt/Secure Filter</action-type>
+      <action-inputs>
+        <output-type type="string"/>
+        <mimeTypes type="string-list"/>
+      </action-inputs>
+      <component-definition>
+        <selections>
+          <output-type prompt-if-one-value="true">
+            <title>Select output type:</title>
+            <filter>mimeTypes</filter>
+          </output-type>
+        </selections>
+      </component-definition>
+    </action-definition>
+    <action-definition>
+      <action-outputs>
+        <rule-result type="result-set"/>
+      </action-outputs>
+      <component-name>MQLRelationalDataComponent</component-name>
+      <action-type>rule</action-type>
+      <component-definition>
+        <mql> 
+          <domain_type>relational</domain_type>  
+          <domain_id><![CDATA[breadboard]]></domain_id>
+          <model_id><![CDATA[Sales Orders Model]]></model_id>  
+          <options> 
+            <disable_distinct>false</disable_distinct> 
+          </options>  
+          <selections> 
+            <selection>
+              <view>Calendar Order</view>
+              <column>BC_DIMENSION_DAY_MONTH_NAME</column>
+            </selection> 
+          </selections>  
+          <constraints></constraints>  
+          <orders></orders> 
+        </mql>
+        <live>true</live>
+        <display-names>false</display-names>
+      </component-definition>
+    </action-definition>
+    <action-definition>
+      <action-outputs>
+        <report type="content"/>
+      </action-outputs>
+      <action-inputs>
+        <output-type type="string"/>
+        <data type="result-set" mapping="rule-result"/>
+      </action-inputs>
+      <action-resources>
+        <report-definition type="resource"/>
+      </action-resources>
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <component-definition>
+        <output-type>html</output-type>
+      </component-definition>
+    </action-definition>
+  </actions>
+</action-sequence>

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+  <modified_user/>
+  <modified_date>2006/12/17 08:02:09.781</modified_date>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts general ledger metrics from JDE.  Only the input has been built.</note>
+      <xloc>75</xloc>
+      <yloc>90</yloc>
+      <width>427</width>
+      <heigth>23</heigth>
+      </notepad>
+    <notepad>
+      <note>Copyright © 2006 Breadboard BI, LLC. All rights reserved.</note>
+      <xloc>188</xloc>
+      <yloc>318</yloc>
+      <width>291</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>JDE_STAGE_GENERAL_LEDGER</from><to>STAGE_JDE_GENERAL_LEDGER</to><enabled>Y</enabled> </hop>  <hop> <from>JDE_STAGE_GENERAL_LEDGER_BALANCE</from><to>STAGE_JDE_GENERAL_LEDGER_BALANCE</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>JDE_STAGE_GENERAL_LEDGER</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT 
+F0911.GLDGJ AS GL_DATE_ID, --PK
+F0911.GLKCO AS DOC_CO, --?? --PK 
+F0911.GLDCT AS DOCUMENT_TYPE_ID, --PK
+F0911.GLDOC AS DOCUMENT_ID, --PK
+F0911.GLJELN AS LINE_NUMBER, --PK
+F0911.GLEXTL AS EXT_LINE,  --??? --PK
+F0911.GLLT AS LEDGER_TYPE_ID, --ledger type AA may require subsequent currency converion --PK
+F0911.GLCO AS COMPANY_ID, 
+F0911.GLAID AS ACCOUNT_ID, 
+F0911.GLMCU AS BUSINESS_UNIT_ID, 
+F0911.GLSBL AS SUB_LEDGER_ID, 
+F0911.GLSBLT AS SUB_LEDGER_TYPE_ID, 
+F0911.GLAA AS GL_AMOUNT,  --needs decimal shift, ledger type AA may require subsequent currency converion
+F0911.GLGLC AS GL_OFFSET_ID,
+CASE WHEN (LTRIM(RTRIM(F0911.GLLT)) =&apos;AA&apos; OR LTRIM(RTRIM(F0911.GLCRCD)) IS NULL) THEN F0010.CCCRCD ELSE F0911.GLCRCD END AS CURRENCY_ID
+F0010.CCCRCD AS BASE_CURRENCY_CODE
+FROM
+ F0911
+LEFT OUTER JOIN F0010
+ON F0911.GLCO = F0911.CCCO</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI>
+      <xloc>124</xloc>
+      <yloc>150</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>JDE_STAGE_GENERAL_LEDGER_BALANCE</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT 
+F0902.GBAID AS ACCOUNT_ID, --pk
+F0902.GBCO AS COMPANY_ID, 
+F0902.GBMCU AS BUSINESS_UNIT_ID, 
+F0902.GBCTRY AS CENTURY_NUMBER,  --pk
+F0902.GBFY AS FISCAL_YEAR_NUMBER,  --pk
+F0902.GBLT AS LEDGER_TYPE_ID,  --pk
+F0902.GBSBL AS SUBLEDGER_ID,  --pk
+F0902.GBSBLT AS SUBLEDGER_TYPE_ID,  --pk
+F0902.GBCRCD AS CURRENCY_ID,
+F0010.CCCRCD AS BASE_CURRENCY_ID, --for subsequent conversion (as needed), ledger type = &apos;AA&apos;
+F0902.GBAPYC AS BEGIN_BALANCE_AMT, --needs decimal shift, maybe currency conversion.
+F0902.GBBREQ AS REQUESTED_BUDGET_AMT,  --needs decimal shift, maybe currency conversion.
+F0902.GBBAPR AS APPROVED_BUDGET_AMT,  --needs decimal shift, maybe currency conversion.
+F0902.GBBORG AS FINAL_BUDGET_AMT,  --needs decimal shift, maybe currency conversion.
+F0902.GBAN01 AS PERIOD1_AMT,  --needs decimal shift, maybe currency conversion.
+F0902.GBAN02 AS PERIOD2_AMT,  --needs decimal shift, maybe currency conversion.
+F0902.GBAN03 AS PERIOD3_AMT,  --needs decimal shift, maybe currency conversion.
+F0902.GBAN04 AS PERIOD4_AMT,  --needs decimal shift, maybe currency conversion.
+F0902.GBAN05 AS PERIOD5_AMT,  --needs decimal shift, maybe currency conversion.
+F0902.GBAN06 AS PERIOD6_AMT,  --needs decimal shift, maybe currency conversion.
+F0902.GBAN07 AS PERIOD7_AMT,  --needs decimal shift, maybe currency conversion.
+F0902.GBAN08 AS PERIOD8_AMT,  --needs decimal shift, maybe currency conversion.
+F0902.GBAN09 AS PERIOD9_AMT,  --needs decimal shift, maybe currency conversion.
+F0902.GBAN10 AS PERIOD10_AMT,  --needs decimal shift, maybe currency conversion.
+F0902.GBAN11 AS PERIOD11_AMT,  --needs decimal shift, maybe currency conversion.
+F0902.GBAN12 AS PERIOD12_AMT,  --needs decimal shift, maybe currency conversion.
+F0902.GBAN13 AS PERIOD13_AMT,  --needs decimal shift, maybe currency conversion.
+F0902.GBAN14 AS PERIOD14_AMT --needs decimal shift, maybe currency conversion.
+F0902.GBCRCX
+FROM
+ F0902
+LEFT OUTER JOIN F0010
+ON F0902.GBCO = F0010.CCCO</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI>
+      <xloc>125</xloc>
+      <yloc>232</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_JDE_GENERAL_LEDGER</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>STAGE_JDE_GENERAL_LEDGER</table>
+      </lookup>
+    <GUI>
+      <xloc>460</xloc>
+      <yloc>148</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_JDE_GENERAL_LEDGER_BALANCE</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>STAGE_JDE_GENERAL_LEDGER_BALANCE</table>
+      </lookup>
+    <GUI>
+      <xloc>464</xloc>
+      <yloc>231</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

@@ -1,0 +1,1 @@
+The files are no longer used.  Use D:\pentaho\jboss\server\default\deploy\pentaho.war\WEB-INF\applicationContext-acegi-security-memory.xml

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>CRM_DIMENSION_SALES_REP</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts inventory item lot data from PeopleSoft FSCM.</note>
+      <xloc>32</xloc>
+      <yloc>50</yloc>
+      <width>346</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>24.5.206.117</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_oracle_orcl</name>
+    <server>24.5.206.117</server>
+    <type>ORACLE</type>
+    <access>Native</access>
+    <database>orcl</database>
+    <port>1521</port>
+    <username>mdw</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_FSCM_INVENTORY_ITEM_LOT</from><to>DIMENSION_INVENTORY_ITEM_LOT</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>DIMENSION_INVENTORY_ITEM_LOT</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_oracle_orcl</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>DIMENSION_LOT</table>
+      <key>
+        <name>LOT_ID</name>
+        <field>LOT_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>BUSINESS_UNIT_ID</name>
+        <field>BUSINESS_UNIT_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>INVENTORY_ITEM_ID</name>
+        <field>INVENTORY_ITEM_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>LOT_ID</name>
+        <rename>LOT_ID</rename>
+        </value>
+      <value>
+        <name>BUSINESS_UNIT_ID</name>
+        <rename>BUSINESS_UNIT_ID</rename>
+        </value>
+      <value>
+        <name>INVENTORY_ITEM_ID</name>
+        <rename>INVENTORY_ITEM_ID</rename>
+        </value>
+      <value>
+        <name>LOT_DESC</name>
+        <rename>LOT_DESC</rename>
+        </value>
+      </lookup>
+    <GUI>
+      <xloc>640</xloc>
+      <yloc>191</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_FSCM_INVENTORY_ITEM_LOT</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the columns from the PS_RSF_SUSER table.  It maintains the basic sales user record with descriptors and settings.
+</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT RTRIM(INV_LOT_ID) AS LOT_ID,
+RTRIM(BUSINESS_UNIT) AS BUSINESS_UNIT_ID,
+RTRIM(INV_ITEM_ID) AS INVENTORY_ITEM_ID,
+RTRIM(DESCR) AS LOT_DESC
+FROM PS_LOT_CONTROL_INV </sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>193</xloc>
+      <yloc>190</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

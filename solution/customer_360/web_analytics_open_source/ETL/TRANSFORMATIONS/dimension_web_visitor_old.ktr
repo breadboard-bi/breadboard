@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>DIMENSION_WEB_VISITOR</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <rejected/>
+      <connection>breadboardbi</connection>
+      <table>admin_transformation_control</table>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>Y</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+  <modified_user/>
+  <modified_date>2007&#47;06&#47;09 09:29:24.238</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Breadboard BI - Customer 360 - Dimension Web Visitor Data Flow - Version 1.1
+===============================================
+1.  This data flow extracts web site visitor information from the staging area.
+
+2.  As delivered, this loads as a slowly changing dimension Type 1 (SCD1).  Add SCD2 Functionality by 
+    editing the settings in the dimension lookup&#47;update step.</note>
+      <xloc>6</xloc>
+      <yloc>9</yloc>
+      <width>501</width>
+      <heigth>88</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>22</xloc>
+      <yloc>335</yloc>
+      <width>546</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI, LLC.  All rights reserved. 
+
+This component is free software; you can redistribute it and&#47;or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this data mart; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA</note>
+      <xloc>20</xloc>
+      <yloc>425</yloc>
+      <width>621</width>
+      <heigth>140</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>breadboardbi</name>
+    <server>192.168.0.103</server>
+    <type>ORACLE</type>
+    <access>Native</access>
+    <database>orcl</database>
+    <port>1521</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>MAP_DETECT_ROBOTS</from><to>MAP_LOOKUP_GEO_LOCATION</to><enabled>Y</enabled> </hop>  <hop> <from>STAGE_WEB_SERVER_REQUEST</from><to>MAP_DETECT_ROBOTS</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_GEO_LOCATION</from><to>MAP_LOOKUP_WEB_BROWSER_OS</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_WEB_BROWSER_OS</from><to>DIMENSION_WEB_VISITOR</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>DIMENSION_WEB_VISITOR</name>
+    <type>DimensionLookup</type>
+    <description>This dimension lookup&#47;update step inserts or updates rows according to a slowly changing dimension Type 1 (SCD1) or slowly changing dimension Type 2 (SCD2) strategy.  The default configuration is SCD1. </description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+      <schema/>
+      <table>DIMENSION_WEB_VISITOR</table>
+      <connection>breadboardbi</connection>
+      <commit>0</commit>
+      <update>Y</update>
+      <fields>
+        <key>
+          <name>LONG_IP_NUMBER</name>
+          <lookup>LONG_IP_NUMBER</lookup>
+        </key>
+        <key>
+          <name>WEB_VISITOR_FULL_NAME</name>
+          <lookup>WEB_VISITOR_FULL_NAME</lookup>
+        </key>
+        <date>
+          <name/>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+        </date>
+        <field>
+          <name>WEB_VISITOR_LOGIN_NAME</name>
+          <lookup>WEB_VISITOR_LOGIN_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>WEB_BROWSER_OS_DESC</name>
+          <lookup>WEB_BROWSER_OS_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>IP_ADDRESS_DESC</name>
+          <lookup>IP_ADDRESS_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>GEO_LOCATION_SK</name>
+          <lookup>GEO_LOCATION_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>WEB_ORGANIZATION_DESC</name>
+          <lookup>WEB_ORGANIZATION_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>ROBOT_IND</name>
+          <lookup>ROBOT_IND</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>WEB_BROWSER_OS_SK</name>
+          <lookup>WEB_BROWSER_OS_SK</lookup>
+          <update>Update</update>
+        </field>
+        <return>
+          <name>WEB_VISITOR_SK</name>
+          <rename/>
+          <creation_method>tablemax</creation_method>
+          <use_autoinc>N</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1971</min_year>
+      <max_year>2036</max_year>
+      <cache_size>-1</cache_size>
+     <cluster_schema/>
+    <GUI>
+      <xloc>523</xloc>
+      <yloc>252</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_DETECT_ROBOTS</name>
+    <type>Mapping</type>
+    <description>This mapping includes a javascript step with robot&#47;crawler detection logic.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>C:\Kettle-2.3.0B\tables transformations\GENERIC STAGE\MAPS\MAP_DETECT_ROBOTS.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>WEB_BROWSER_OS_DESC</field>  <mapping>WEB_BROWSER_OS_DESC</mapping></connector>
+    </input>
+  <output>
+    <connector><field>ROBOT_IND</field>  <mapping>ROBOT_IND</mapping></connector>
+    <connector><field>WEB_BROWSER_OS_DESC</field>  <mapping>WEB_BROWSER_OS_DESC</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>174</xloc>
+      <yloc>191</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_GEO_LOCATION</name>
+    <type>Mapping</type>
+    <description>This mapping includes a dimension lookup&#47;update step that returns the geographic location surrogate key.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>C:\Kettle-2.3.0B\tables transformations\GENERIC STAGE\MAPS\MAP_LOOKUP_GEOGRAPHIC_LOCATION.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>GEO_LOCATION_ID</field>  <mapping>GEO_LOCATION_ID</mapping></connector>
+    <connector><field>DW_LOAD_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>GEO_LOCATION_SK</field>  <mapping>GEO_LOCATION_SK</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>286</xloc>
+      <yloc>248</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_WEB_BROWSER_OS</name>
+    <type>Mapping</type>
+    <description>This mapping includes a dimension lookup&#47;update step that returns the web browser operating system surrogate key.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>C:\Kettle-2.3.0B\tables transformations\GENERIC STAGE\MAPS\MAP_LOOKUP_WEB_BROWSER_OS.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>WEB_BROWSER_OS_DESC</field>  <mapping>WEB_BROWSER_OS_DESC</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>WEB_BROWSER_OS_SK</field>  <mapping>WEB_BROWSER_OS_SK</mapping></connector>
+    <connector><field>WEB_BROWSER_OS_DESC</field>  <mapping>WEB_BROWSER_OS_DESC</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>416</xloc>
+      <yloc>190</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_WEB_SERVER_REQUEST</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>breadboardbi</connection>
+    <sql>SELECT 
+  W.WEB_VISITOR_LOGIN_NAME
+, W.WEB_VISITOR_FULL_NAME
+, W.WEB_BROWSER_OS_DESC
+, W.LONG_IP_NUMBER
+, W.IP_ADDRESS_DESC
+, B.GEO_LOCATION_ID
+, (CASE WHEN ORG.WEB_ORGANIZATION_DESC IS NULL THEN &apos;Missing&apos; ELSE ORG.WEB_ORGANIZATION_DESC END) AS WEB_ORGANIZATION_DESC
+, W.DW_LOAD_DATE
+FROM
+STAGE_WEB_VISITOR W
+LEFT OUTER JOIN STAGE_GEO_CITY_BLOCKS B
+ON W.LONG_IP_NUMBER BETWEEN B.LONG_IP_START_NUMBER AND B.LONG_IP_END_NUMBER
+LEFT OUTER JOIN STAGE_GEO_ORGANIZATION ORG
+ON W.LONG_IP_NUMBER BETWEEN ORG.LONG_IP_START_NUMBER AND ORG.LONG_IP_END_NUMBER
+--WHERE W.DW_LOAD_DATE</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>64</xloc>
+      <yloc>248</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+</transformation>

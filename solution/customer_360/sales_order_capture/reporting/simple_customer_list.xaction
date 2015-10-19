@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">  
+  <name>simple_customer_list.xaction</name>  
+  <version>1</version>  
+  <title>%title</title>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>%description</description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help/>  
+    <result-type>report</result-type> 
+  </documentation>  
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>pdf</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <country type="string">
+      <sources>
+        <request>country</request>
+      </sources>
+      <default-value>USA</default-value>
+    </country>
+  </inputs>  
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>  
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>simple_customer_list.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>  
+  <actions> 
+     <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>SQL Query</action-type>  
+      <action-outputs> 
+        <country_list type="property-map-list"/> 
+      </action-outputs>  
+      <component-definition> 
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT DISTINCT COUNTRY_NAME 
+FROM DIMENSION_CUSTOMER 
+WHERE COUNTRY_NAME IS NOT NULL AND HOSTED_CLIENT_SK = 0
+ORDER BY COUNTRY_NAME ASC]]></query> 
+      </component-definition> 
+    </action-definition>  
+  
+      <action-definition> 
+      <component-name>SecureFilterComponent</component-name>  
+      <action-type>Secure Filter</action-type>  
+      <action-inputs> 
+          <country type="string"/>  
+        <country_list type="property-map-list"/> 
+      </action-inputs>  
+      <component-definition> 
+        <selections> 
+            <country style="select"> 
+            <title>Please enter the country for analysis.</title>  
+            <filter value-col-name="country_name" display-col-name="country_name">country_list</filter> 
+          </country> 
+        </selections> 
+      </component-definition> 
+    </action-definition>  
+  
+    <action-definition> 
+      <action-inputs>  
+        <country type="string"/>   
+      </action-inputs>  
+      <action-outputs> 
+        <rule-result type="result-set"/> 
+      </action-outputs>  
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>rule</action-type>  
+      <component-definition> 
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT CUSTOMER_ID, CUSTOMER_NAME, PHONE_NUMBER, CITY_NAME, STATE_PROVINCE_NAME, CUSTOMER_TYPE_DESC, COUNTRY_NAME
+FROM DIMENSION_CUSTOMER 
+WHERE STATE_PROVINCE_NAME IS NOT NULL
+AND COUNTRY_NAME IN ('{country}')
+ORDER BY COUNTRY_NAME, CITY_NAME 
+LIMIT 100]]></query> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <action-resources> 
+        <report-definition type="resource"/> 
+      </action-resources>  
+      <action-inputs> 
+        <output-type type="string"/>  
+        <data type="result-set" mapping="rule-result"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <report type="content"/> 
+      </action-outputs>  
+      <component-name>JFreeReportComponent</component-name>  
+      <action-type>report</action-type>  
+      <component-definition/> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

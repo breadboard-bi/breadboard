@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<report name="web_visitor_sample" orientation="landscape" pageformat="LETTER" leftmargin="10" rightmargin="10" topmargin="10" bottommargin="10">
+  <parser-config/>
+
+<reportheader>
+<imageref src="http://breadboardbi.dnsalias.com/pentaho/images/logo.png" width="100%" height="30" keepAspectRatio="true" scale="true" x="0%" y="0"/>
+<label fontname="SansSerif" fontsize="15" fontstyle="bold" height="20" vertical-alignment="middle" alignment="center" width="100%" x="0%" y="40">Web Page Views By Day</label>
+</reportheader>
+
+  <groups>
+    <group name="dummy">
+      <groupheader name="dummyGroupHeader" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold" repeat="false">
+        <label name="noDataLabelElement" height="11" vertical-alignment="middle" alignment="left" width="100%" x="0%" y="0" visible="false">No Data Available</label>
+      </groupheader>
+      <groupfooter name="dummyGroupFooter" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold">
+        <rectangle color="#e0d0c0" draw="false" fill="true" height="16" width="100%" y="1" x="0%"/>
+ <number-field fieldname="Summary_VIEW_SECONDS_QTYExpression" height="15" vertical-alignment="middle" alignment="right" width="2%" x="98%" y="2"/>
+        <message-field height="15" x="0%" width="77%" y="2" alignment="left" vertical-alignment="middle">Grand Total</message-field>
+      </groupfooter>
+    </group>
+    <group name="REQUEST_PERIOD">
+      <fields>
+        <field>REQUEST_PERIOD</field>
+      </fields>
+      <groupheader name="REQUEST_PERIODGroupHeader" repeat="false" pagebreak-before-print="false" pagebreak-after-print="false" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold" height="20">
+        <rectangle color="#FFFFFF" draw="false" fill="false" height="16" width="100%" x="0%" y="0"/>
+        <rectangle color="#C0C0C0" draw="false" fill="true" height="18" width="100%" x="0%" y="16"/>
+        <message-field height="16" vertical-alignment="middle" alignment="left" width="100%" x="0%" y="0" nullstring="-">Period: $(REQUEST_PERIOD)</message-field>
+        <label color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold" height="18" vertical-alignment="middle" alignment="left" width="30%" x="0%" y="16">Organization</label>
+        <label color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold" height="18" vertical-alignment="middle" alignment="left" width="25%" x="30%" y="16">Referer</label>
+        <label color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold" height="18" vertical-alignment="middle" alignment="left" width="25%" x="55%" y="16">Web Page</label>       
+        <label color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold" height="18" vertical-alignment="middle" alignment="right" width="5%" x="85%" y="16">View Seconds</label>   
+      </groupheader>
+      <groupfooter name="REQUEST_PERIODGroupFooter" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold" pagebreak-before-print="false" pagebreak-after-print="false">
+        <rectangle color="#c0d0e0" draw="false" fill="true" height="16" width="100%" y="1" x="0%"/>
+        <number-field fieldname="REQUEST_PERIODWEB_PAGE_VIEW_QTYExpression" height="15" vertical-alignment="middle" alignment="right" width="12%" x="88%" y="2"/>
+        <message-field height="15" x="0%" width="77%" y="2" alignment="left" vertical-alignment="middle">$(REQUEST_PERIOD) Total</message-field>
+        <rectangle color="#c0d0e0" draw="false" fill="false" height="16" width="100%" y="17" x="0%"/>
+      </groupfooter>
+    </group>
+  </groups>
+  <items color="#000000" fontname="SansSerif" fontsize="9" fontstyle="bold">
+    <rectangle name="rowBandingElement" color="#E0E0E0" draw="false" fill="true" height="11" x="0%" width="100%" y="0"/>
+    <string-field name="ORGANIZATION_DESCElement" nullstring="-" fieldname="ORGANIZATION_DESC" vertical-alignment="middle" alignment="left" width="30%" x="0%" y="0" height="11"/>
+    <string-field name="REFERER_DESCElement" nullstring="-" fieldname="REFERER_DESC" vertical-alignment="middle" alignment="left" width="25%" x="30%" y="0" height="11"/>
+    <string-field name="WEB_FILE_NAMEElement" nullstring="-" fieldname="WEB_FILE_NAME" vertical-alignment="middle" alignment="left" width="25%" x="55%" y="0" height="11"/>
+    <number-field name="VIEW_SECONDS_QTYElement" nullstring="-" fieldname="VIEW_SECONDS_QTY" vertical-alignment="middle" alignment="right" width="5%" x="85%" y="0" height="11"/>
+  </items>
+  <functions>
+    <function name="backgroundTrigger" class="org.pentaho.jfreereport.functions.ElementVisibilitySwitchFunction">
+      <properties>
+        <property name="element">rowBandingElement</property>
+        <property name="numberOfElements">1</property>
+        <property name="initialState">true</property>
+      </properties>
+    </function>
+    <expression class="org.jfree.report.function.HideElementIfDataAvailableExpression" name="noDataLabelElementHideIfNullTrigger">
+      <properties>
+        <property name="element">noDataLabelElement</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="dummyGroupFooterHideIfNullTrigger">
+      <properties>
+        <property name="element">dummyGroupFooter</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ItemSumFunction" name="Summary_VIEW_SECONDS_QTYExpression">
+      <properties>
+        <property name="field">VIEW_SECONDS_QTY</property>
+      </properties>
+    </expression>
+
+
+    <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="REQUEST_PERIODGroupHeaderHideIfNullTrigger">
+      <properties>
+        <property name="element">REQUEST_PERIODGroupHeader</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="REQUEST_PERIODGroupFooterHideIfNullTrigger">
+      <properties>
+        <property name="element">REQUEST_PERIODGroupFooter</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ItemSumFunction" name="REQUEST_PERIODWEB_PAGE_VIEW_QTYExpression">
+      <properties>
+        <property name="field">VIEW_SECONDS_QTY</property>
+        <property name="group">REQUEST_PERIOD</property>
+      </properties>
+    </expression>    
+    
+  </functions>
+</report>

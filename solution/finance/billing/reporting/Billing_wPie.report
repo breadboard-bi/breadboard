@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report>
+    <property name="name">Billing</property>
+    <property name="position">0.0, 0.0</property>
+    <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+    <child type="org.pentaho.reportdesigner.crm.report.model.dataset.DataSetsReportElement">
+        <property name="name">Element@6215183</property>
+        <property name="position">0.0, 0.0</property>
+        <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+        <child type="org.pentaho.reportdesigner.crm.report.datasetplugin.multidataset.MultiDataSetReportElement">
+            <property name="name">Element@27020619</property>
+            <property name="position">0.0, 0.0</property>
+            <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+            <property name="connectionType">JNDI</property>
+            <property name="xQueryDataFile"></property>
+            <property name="xmiDefinitionFile"></property>
+            <property name="useMondrianCubeDefinition">false</property>
+            <property name="mondrianCubeDefinitionFile"></property>
+            <query queryName="default">
+                <property name="query">SELECT D.DAY_DATE,
+D.MONTH_NAME,
+D.QUARTER_NAME,
+D.YEAR_NUMBER,
+P.PRODUCT_NAME,
+P.PRODUCT_BRAND_NAME AS PRODUCT_BRAND, 
+C.CUSTOMER_NAME,
+C.CUSTOMER_TYPE_DESC AS CUSTOMER_TYPE,
+C.CITY_NAME,
+C.STATE_PROVINCE_NAME,
+C.POSTAL_CODE,
+C.COUNTRY_NAME,
+C.PHONE_REGION_CODE AS AREA_CODE,
+M.FULL_NAME,
+S.BILL_STATUS_NAME,
+B.BUSINESS_UNIT_TYPE_CODE,
+B.BUSINESS_UNIT_NAME,
+F.INVOICE_ID,
+F.UNIT_QTY,
+F.TRXN_INVOICE_AMT
+FROM FACT_BILLING F, DIMENSION_PRODUCT P, DIMENSION_DAY D, DIMENSION_CUSTOMER C, 
+DIMENSION_PERSON M,DIMENSION_BUSINESS_UNIT B, DIMENSION_BILL_STATUS S
+WHERE F.INVOICE_DATE_SK = D.DATE_SK 
+AND F.PRODUCT_SK = P.PRODUCT_SK 
+AND C.CUSTOMER_SK = F.CUSTOMER_BILL_TO_SK 
+AND F.SALES_REPRESENTATIVE_SK = M.PERSON_SK 
+AND F.BUSINESS_UNIT_SK = B.BUSINESS_UNIT_SK
+AND F.BILL_STATUS_SK = S.BILL_STATUS_SK
+AND F.INVOICE_DATE_SK = 20060311
+ORDER BY D.QUARTER_NAME, D.DAY_DATE, C.CUSTOMER_NAME</property>
+            </query>
+            <columnInfo columnName="DAY_DATE" columnClassName="java.sql.Timestamp" tableName=""></columnInfo>
+            <columnInfo columnName="MONTH_NAME" columnClassName="java.lang.String" tableName=""></columnInfo>
+            <columnInfo columnName="QUARTER_NAME" columnClassName="java.lang.String" tableName=""></columnInfo>
+            <columnInfo columnName="YEAR_NUMBER" columnClassName="java.lang.Integer" tableName=""></columnInfo>
+            <columnInfo columnName="PRODUCT_NAME" columnClassName="java.lang.String" tableName=""></columnInfo>
+            <columnInfo columnName="PRODUCT_BRAND" columnClassName="java.lang.String" tableName=""></columnInfo>
+            <columnInfo columnName="CUSTOMER_NAME" columnClassName="java.lang.String" tableName=""></columnInfo>
+            <columnInfo columnName="CUSTOMER_TYPE" columnClassName="java.lang.String" tableName=""></columnInfo>
+            <columnInfo columnName="CITY_NAME" columnClassName="java.lang.String" tableName=""></columnInfo>
+            <columnInfo columnName="STATE_PROVINCE_NAME" columnClassName="java.lang.String" tableName=""></columnInfo>
+            <columnInfo columnName="POSTAL_CODE" columnClassName="java.lang.String" tableName=""></columnInfo>
+            <columnInfo columnName="COUNTRY_NAME" columnClassName="java.lang.String" tableName=""></columnInfo>
+            <columnInfo columnName="AREA_CODE" columnClassName="java.lang.String" tableName=""></columnInfo>
+            <columnInfo columnName="FULL_NAME" columnClassName="java.lang.String" tableName=""></columnInfo>
+            <columnInfo columnName="BILL_STATUS_NAME" columnClassName="java.lang.String" tableName=""></columnInfo>
+            <columnInfo columnName="BUSINESS_UNIT_TYPE_CODE" columnClassName="java.lang.String" tableName=""></columnInfo>
+            <columnInfo columnName="BUSINESS_UNIT_NAME" columnClassName="java.lang.String" tableName=""></columnInfo>
+            <columnInfo columnName="INVOICE_ID" columnClassName="java.lang.String" tableName=""></columnInfo>
+            <columnInfo columnName="UNIT_QTY" columnClassName="java.math.BigDecimal" tableName=""></columnInfo>
+            <columnInfo columnName="TRXN_INVOICE_AMT" columnClassName="java.math.BigDecimal" tableName=""></columnInfo>
+            <selectedJNDIDataSource jndiName="mdw_mysql" driverClass="com.mysql.jdbc.Driver" connectionString="jdbc:mysql://10.10.10.3:3306/mdw" userName="mdw" password="jasiu123"></selectedJNDIDataSource>
+        </child>
+    </child>
+    <child type="org.pentaho.reportdesigner.crm.report.model.ReportFunctionsElement">
+        <property name="name">Element@29643392</property>
+        <property name="position">0.0, 0.0</property>
+        <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+        <child type="org.jfree.report.function.ItemSumFunction_DesignerWrapper">
+            <property name="name">Summary_UNIT_QTYExpression</property>
+            <property name="position">0.0, 0.0</property>
+            <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+            <property name="dependencyLevel">0</property>
+            <property name="field">UNIT_QTY</property>
+            <property name="preserve">false</property>
+        </child>
+        <child type="org.jfree.report.function.ItemSumFunction_DesignerWrapper">
+            <property name="name">Summary_TRXN_INVOICE_AMTExpression</property>
+            <property name="position">0.0, 0.0</property>
+            <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+            <property name="dependencyLevel">0</property>
+            <property name="field">TRXN_INVOICE_AMT</property>
+            <property name="preserve">false</property>
+        </child>
+        <child type="org.pentaho.plugin.jfreereport.reportcharts.PieSetCollectorFunction_DesignerWrapper">
+            <property name="name">pieData</property>
+            <property name="position">0.0, 0.0</property>
+            <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+            <property name="dependencyLevel">0</property>
+            <property name="preserve">false</property>
+            <property name="seriesColumn">BILL_STATUS_NAME</property>
+            <property name="summaryOnly">false</property>
+            <property name="valueColumn">TRXN_INVOICE_AMT</property>
+        </child>
+        <child type="org.pentaho.plugin.jfreereport.reportcharts.PieChartExpression_DesignerWrapper">
+            <property name="name">piechart</property>
+            <property name="position">0.0, 0.0</property>
+            <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+            <property name="antiAlias">true</property>
+            <property name="backgroundColor">#FFFFFF</property>
+            <property name="borderColor">#FFFFFF</property>
+            <property name="chartHeight">0</property>
+            <property name="chartSectionOutline">false</property>
+            <property name="chartWidth">0</property>
+            <property name="dataSource">pieData</property>
+            <property name="dependencyLevel">0</property>
+            <property name="drawLegendBorder">false</property>
+            <property name="ignoreNulls">true</property>
+            <property name="ignoreZeros">true</property>
+            <property name="labelFont">SansSerif--8</property>
+            <property name="legendFont">SansSerif--10</property>
+            <property name="legendLocation">bottom</property>
+            <property name="noDataMessage">!CHART.USER_NO_DATA_AVAILABLE!</property>
+            <property name="pieLabelFormat">{0} = {1}</property>
+            <property name="pieLegendLabelFormat">{0} = {1}</property>
+            <property name="preserve">false</property>
+            <property name="returnFileNameOnly">false</property>
+            <property name="returnImageReference">false</property>
+            <property name="rotationClockwise">true</property>
+            <property name="showBorder">false</property>
+            <property name="showLegend">true</property>
+            <property name="threeD">true</property>
+            <property name="title">Invoices by Status</property>
+            <property name="titleFont">SansSerif-BOLD-15</property>
+            <property name="useDrawable">true</property>
+        </child>
+        <child type="org.jfree.report.function.HideElementIfDataAvailableExpression_DesignerWrapper">
+            <property name="name">DummyGroupNoDataBandElementHideIfNullTrigger</property>
+            <property name="position">0.0, 0.0</property>
+            <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+            <property name="dependencyLevel">0</property>
+            <property name="element">DummyGroupNoDataBandElement</property>
+            <property name="preserve">false</property>
+        </child>
+        <child type="org.jfree.report.function.ShowElementIfDataAvailableExpression_DesignerWrapper">
+            <property name="name">DummyGroupDataBandElementHideIfNullTrigger</property>
+            <property name="position">0.0, 0.0</property>
+            <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+            <property name="dependencyLevel">0</property>
+            <property name="element">DummyGroupDataBandElement</property>
+            <property name="preserve">false</property>
+        </child>
+        <child type="org.jfree.report.function.ShowElementIfDataAvailableExpression_DesignerWrapper">
+            <property name="name">dummyGroupFooterHideIfNullTrigger</property>
+            <property name="position">0.0, 0.0</property>
+            <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+            <property name="dependencyLevel">0</property>
+            <property name="element">dummyGroupFooter</property>
+            <property name="preserve">false</property>
+        </child>
+    </child>
+    <child type="org.pentaho.reportdesigner.crm.report.model.BandToplevelPageReportElement" bandToplevelType="PAGE_HEADER">
+        <property name="name">anonymousBand@24685071</property>
+        <property name="position">0.0, 0.0</property>
+        <property name="maximumSize">32767.0, 32767.0</property>
+        <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+        <child type="org.pentaho.reportdesigner.crm.report.model.DrawableFieldReportElement">
+            <property name="name">Element@22496382</property>
+            <property name="position">48.0, 1.0</property>
+            <property name="minimumSize">678.0, 213.0</property>
+            <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+            <property name="font">dialog,12,0</property>
+            <property name="foreground">0, 0, 0, 255</property>
+            <property name="underline">false</property>
+            <property name="strikethrough">false</property>
+            <property name="embedFont">false</property>
+            <property name="lineHeight">0.0</property>
+            <property name="verticalAlignment">TOP</property>
+            <property name="horizontalAlignment">LEFT</property>
+            <property name="reservedLiteral">..</property>
+            <property name="trimTextContent">true</property>
+            <property name="wrapTextInExcel">false</property>
+            <property name="fieldName">piechart</property>
+            <formula>
+                <property name="text"></property>
+            </formula>
+        </child>
+        <property name="pageBreakBefore">false</property>
+        <property name="pageBreakAfter">false</property>
+        <property name="showInLayoutGUI">true</property>
+        <property name="visualHeight">229.0</property>
+        <verticalLinealModel></verticalLinealModel>
+        <property name="displayOnFirstPage">true</property>
+        <property name="displayOnLastPage">true</property>
+    </child>
+    <child type="org.pentaho.reportdesigner.crm.report.model.BandToplevelReportElement" bandToplevelType="REPORT_HEADER">
+        <property name="name">anonymousBand@20392293</property>
+        <property name="position">0.0, 0.0</property>
+        <property name="maximumSize">32767.0, 32767.0</property>
+        <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+        <property name="pageBreakBefore">false</property>
+        <property name="pageBreakAfter">false</property>
+        <property name="showInLayoutGUI">false</property>
+        <property name="visualHeight">219.0</property>
+        <verticalLinealModel></verticalLinealModel>
+    </child>
+    <child type="org.pentaho.reportdesigner.crm.report.model.BandToplevelItemReportElement" bandToplevelType="ITEM_BAND">
+        <property name="name">anonymousBand@29324651</property>
+        <property name="position">0.0, 0.0</property>
+        <property name="maximumSize">32767.0, 32767.0</property>
+        <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+        <child type="org.pentaho.reportdesigner.crm.report.model.DateFieldReportElement">
+            <property name="name">DAY_DATEElement</property>
+            <property name="position">-0.0, 0.0</property>
+            <property name="minimumSize">115.8, 11.0</property>
+            <property name="maximumSize">32767.0, 32767.0</property>
+            <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+            <property name="font">SansSerif,9,1</property>
+            <property name="foreground">0, 0, 0, 255</property>
+            <property name="underline">false</property>
+            <property name="strikethrough">false</property>
+            <property name="embedFont">false</property>
+            <property name="lineHeight">0.0</property>
+            <property name="verticalAlignment">MIDDLE</property>
+            <property name="horizontalAlignment">CENTER</property>
+            <property name="reservedLiteral">..</property>
+            <property name="trimTextContent">false</property>
+            <property name="wrapTextInExcel">false</property>
+            <property name="fieldName">DAY_DATE</property>
+            <property name="nullString"></property>
+            <formula>
+                <property name="text"></property>
+            </formula>
+            <property name="format">MM/dd/yyyy</property>
+            <property name="excelDateFormat"></property>
+        </child>
+        <child type="org.pentaho.reportdesigner.crm.report.model.TextFieldReportElement">
+            <property name="name">CUSTOMER_NAMEElement</property>
+            <property name="position">115.8, 0.0</property>
+            <property name="minimumSize">154.4, 11.0</property>
+            <property name="maximumSize">32767.0, 32767.0</property>
+            <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+            <property name="font">SansSerif,9,1</property>
+            <property name="foreground">0, 0, 0, 255</property>
+            <property name="underline">false</property>
+            <property name="strikethrough">false</property>
+            <property name="embedFont">false</property>
+            <property name="lineHeight">0.0</property>
+            <property name="verticalAlignment">MIDDLE</property>
+            <property name="horizontalAlignment">LEFT</property>
+            <property name="reservedLiteral">..</property>
+            <property name="trimTextContent">false</property>
+            <property name="wrapTextInExcel">false</property>
+            <property name="fieldName">CUSTOMER_NAME</property>
+            <property name="nullString"></property>
+            <formula>
+                <property name="text"></property>
+            </formula>
+        </child>
+        <child type="org.pentaho.reportdesigner.crm.report.model.TextFieldReportElement">
+            <property name="name">PROMOTION_NAMEElement</property>
+            <property name="position">270.2, 0.0</property>
+            <property name="minimumSize">115.8, 11.0</property>
+            <property name="maximumSize">32767.0, 32767.0</property>
+            <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+            <property name="font">SansSerif,9,1</property>
+            <property name="foreground">0, 0, 0, 255</property>
+            <property name="underline">false</property>
+            <property name="strikethrough">false</property>
+            <property name="embedFont">false</property>
+            <property name="lineHeight">0.0</property>
+            <property name="verticalAlignment">MIDDLE</property>
+            <property name="horizontalAlignment">LEFT</property>
+            <property name="reservedLiteral">..</property>
+            <property name="trimTextContent">false</property>
+            <property name="wrapTextInExcel">false</property>
+            <property name="fieldName">FULL_NAME</property>
+            <property name="nullString"></property>
+            <formula>
+                <property name="text"></property>
+            </formula>
+        </child>
+        <child type="org.pentaho.reportdesigner.crm.report.model.TextFieldReportElement">
+            <property name="name">PRODUCT_NAMEElement</property>
+            <property name="position">386.0, 0.0</property>
+            <property name="minimumSize">193.0, 11.0</property>
+            <property name="maximumSize">32767.0, 32767.0</property>
+            <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+            <property name="font">SansSerif,9,1</property>
+            <property name="foreground">0, 0, 0, 255</property>
+            <property name="underline">false</property>
+            <property name="strikethrough">false</property>
+            <property name="embedFont">false</property>
+            <property name="lineHeight">0.0</property>
+            <property name="verticalAlignment">MIDDLE</property>
+            <property name="horizontalAlignment">LEFT</property>
+            <property name="reservedLiteral">..</property>
+            <property name="trimTextContent">false</property>
+            <property name="wrapTextInExcel">false</property>
+            <property name="fieldName">PRODUCT_NAME</property>
+            <property name="nullString"></property>
+            <formula>
+                <property name="text"></property>
+            </formula>
+        </child>
+        <child type="org.pentaho.reportdesigner.crm.report.model.NumberFieldReportElement">
+            <property name="name">ORDER_QTYElement</property>
+            <property name="position">579.0, 0.0</property>
+            <property name="minimumSize">77.2, 11.0</property>
+            <property name="maximumSize">32767.0, 32767.0</property>
+            <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+            <property name="font">SansSerif,9,1</property>
+            <property name="foreground">0, 0, 0, 255</property>
+            <property name="underline">false</property>
+            <property name="strikethrough">false</property>
+            <property name="embedFont">false</property>
+            <property name="lineHeight">0.0</property>
+            <property name="verticalAlignment">MIDDLE</property>
+            <property name="horizontalAlignment">LEFT</property>
+            <property name="reservedLiteral">..</property>
+            <property name="trimTextContent">false</property>
+            <property name="wrapTextInExcel">false</property>
+            <property name="fieldName">UNIT_QTY</property>
+            <property name="nullString"></property>
+            <formula>
+                <property name="text"></property>
+            </formula>
+            <property name="format">#0.00</property>
+            <property name="excelNumberFormat"></property>
+        </child>
+        <child type="org.pentaho.reportdesigner.crm.report.model.NumberFieldReportElement">
+            <property name="name">TRXN_PRICE_AMTElement</property>
+            <property name="position">656.1999999999999, 0.0</property>
+            <property name="minimumSize">77.2, 11.0</property>
+            <property name="maximumSize">32767.0, 32767.0</property>
+            <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+            <property name="font">SansSerif,9,1</property>
+            <property name="foreground">0, 0, 0, 255</property>
+            <property name="underline">false</property>
+            <property name="strikethrough">false</property>
+            <property name="embedFont">false</property>
+            <property name="lineHeight">0.0</property>
+            <property name="verticalAlignment">MIDDLE</property>
+            <property name="horizontalAlignment">LEFT</property>
+            <property name="reservedLiteral">..</property>
+            <property name="trimTextContent">false</property>
+            <property name="wrapTextInExcel">false</property>
+            <property name="fieldName">TRXN_INVOICE_AMT</property>
+            <property name="nullString"></property>
+            <formula>
+                <property name="text"></property>
+            </formula>
+            <property name="format">&#164; #,##0.00</property>
+            <property name="excelNumberFormat"></property>
+        </child>
+        <property name="pageBreakBefore">false</property>
+        <property name="pageBreakAfter">false</property>
+        <property name="showInLayoutGUI">true</property>
+        <property name="visualHeight">13.0</property>
+        <verticalLinealModel></verticalLinealModel>
+        <rowBandingDefinition enabled="false" color="192, 192, 192, 255" startState="true" switchItemCount="1"></rowBandingDefinition>
+    </child>
+    <child type="org.pentaho.reportdesigner.crm.report.model.BandToplevelReportElement" bandToplevelType="REPORT_FOOTER">
+        <property name="name">anonymousBand@8316706</property>
+        <property name="position">0.0, 0.0</property>
+        <property name="maximumSize">32767.0, 32767.0</property>
+        <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+        <property name="pageBreakBefore">false</property>
+        <property name="pageBreakAfter">false</property>
+        <property name="showInLayoutGUI">true</property>
+        <property name="visualHeight">5.0</property>
+        <verticalLinealModel></verticalLinealModel>
+    </child>
+    <child type="org.pentaho.reportdesigner.crm.report.model.BandToplevelPageReportElement" bandToplevelType="PAGE_FOOTER">
+        <property name="name">anonymousBand@14999120</property>
+        <property name="position">0.0, 0.0</property>
+        <property name="maximumSize">32767.0, 32767.0</property>
+        <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+        <property name="pageBreakBefore">false</property>
+        <property name="pageBreakAfter">false</property>
+        <property name="showInLayoutGUI">true</property>
+        <property name="visualHeight">5.0</property>
+        <verticalLinealModel></verticalLinealModel>
+        <property name="displayOnFirstPage">true</property>
+        <property name="displayOnLastPage">true</property>
+    </child>
+    <child type="org.pentaho.reportdesigner.crm.report.model.BandToplevelReportElement" bandToplevelType="NO_DATA_BAND">
+        <property name="name">anonymousBand@9517564</property>
+        <property name="position">0.0, 0.0</property>
+        <property name="maximumSize">32767.0, 32767.0</property>
+        <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+        <child type="org.pentaho.reportdesigner.crm.report.model.ResourceLabelReportElement">
+            <property name="name">ResourceLabel@28826403</property>
+            <property name="position">4.0, 2.0</property>
+            <property name="minimumSize">100.0, 16.0</property>
+            <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+            <property name="font">SansSerif,11,1</property>
+            <property name="foreground">0, 0, 0, 255</property>
+            <property name="underline">false</property>
+            <property name="strikethrough">false</property>
+            <property name="embedFont">false</property>
+            <property name="lineHeight">0.0</property>
+            <property name="verticalAlignment">TOP</property>
+            <property name="horizontalAlignment">LEFT</property>
+            <property name="reservedLiteral">..</property>
+            <property name="trimTextContent">true</property>
+            <property name="wrapTextInExcel">false</property>
+            <property name="resourceBase">Billing</property>
+            <property name="resourceKey">NO_DATA_AVAILABLE</property>
+            <property name="nullString"></property>
+        </child>
+        <property name="pageBreakBefore">false</property>
+        <property name="pageBreakAfter">false</property>
+        <property name="showInLayoutGUI">true</property>
+        <property name="visualHeight">100.0</property>
+        <verticalLinealModel></verticalLinealModel>
+    </child>
+    <child type="org.pentaho.reportdesigner.crm.report.model.BandToplevelReportElement" bandToplevelType="WATERMARK">
+        <property name="name">anonymousBand@11923400</property>
+        <property name="position">0.0, 0.0</property>
+        <property name="minimumSize">772.0, 592.0</property>
+        <property name="maximumSize">32767.0, 32767.0</property>
+        <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+        <property name="pageBreakBefore">false</property>
+        <property name="pageBreakAfter">false</property>
+        <property name="showInLayoutGUI">false</property>
+        <property name="visualHeight">100.0</property>
+        <verticalLinealModel></verticalLinealModel>
+    </child>
+    <child type="org.pentaho.reportdesigner.crm.report.model.ReportGroups">
+        <property name="name">Element@8996527</property>
+        <property name="position">0.0, 0.0</property>
+        <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+        <child type="org.pentaho.reportdesigner.crm.report.model.ReportGroup">
+            <property name="name">default</property>
+            <property name="position">0.0, 0.0</property>
+            <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+            <child type="org.pentaho.reportdesigner.crm.report.model.BandToplevelGroupReportElement" bandToplevelType="GROUP_HEADER">
+                <property name="name">anonymousBand@1418057</property>
+                <property name="position">0.0, 0.0</property>
+                <property name="maximumSize">32767.0, 32767.0</property>
+                <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+                <child type="org.pentaho.reportdesigner.crm.report.model.BandReportElement">
+                    <property name="name">DummyGroupDataBandElement</property>
+                    <property name="position">0.0, 0.0</property>
+                    <property name="minimumSize">772.0, 38.0</property>
+                    <property name="maximumSize">32767.0, 32767.0</property>
+                    <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+                    <child type="org.pentaho.reportdesigner.crm.report.model.RectangleReportElement">
+                        <property name="name">anonymousElement@24708184</property>
+                        <property name="position">0.0, 19.0</property>
+                        <property name="minimumSize">772.0, 18.0</property>
+                        <property name="maximumSize">32767.0, 32767.0</property>
+                        <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+                        <property name="color">128, 128, 128, 255</property>
+                        <property name="arcWidth">0.0</property>
+                        <property name="arcHeight">0.0</property>
+                        <property name="drawBorder">false</property>
+                        <property name="fill">true</property>
+                        <borderDefinition color="128, 128, 128, 255" width="1.0" join="0" cap="2" miterlimit="10.0" dashPhase="0.0"></borderDefinition>
+                    </child>
+                    <child type="org.pentaho.reportdesigner.crm.report.model.ResourceLabelReportElement">
+                        <property name="name">ResourceLabel@12232439</property>
+                        <property name="position">0.0, 20.0</property>
+                        <property name="minimumSize">115.8, 18.0</property>
+                        <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+                        <property name="font">SansSerif,12,1</property>
+                        <property name="foreground">208, 208, 208, 255</property>
+                        <property name="underline">false</property>
+                        <property name="strikethrough">false</property>
+                        <property name="embedFont">false</property>
+                        <property name="lineHeight">0.0</property>
+                        <property name="verticalAlignment">MIDDLE</property>
+                        <property name="horizontalAlignment">CENTER</property>
+                        <property name="reservedLiteral">..</property>
+                        <property name="trimTextContent">true</property>
+                        <property name="wrapTextInExcel">false</property>
+                        <property name="resourceBase">Billing</property>
+                        <property name="resourceKey">INVOICE_DATE</property>
+                        <property name="nullString"></property>
+                    </child>
+                    <child type="org.pentaho.reportdesigner.crm.report.model.ResourceLabelReportElement">
+                        <property name="name">ResourceLabel@12232439</property>
+                        <property name="position">115.8, 20.0</property>
+                        <property name="minimumSize">154.39999999999998, 18.0</property>
+                        <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+                        <property name="font">SansSerif,12,1</property>
+                        <property name="foreground">208, 208, 208, 255</property>
+                        <property name="underline">false</property>
+                        <property name="strikethrough">false</property>
+                        <property name="embedFont">false</property>
+                        <property name="lineHeight">0.0</property>
+                        <property name="verticalAlignment">MIDDLE</property>
+                        <property name="horizontalAlignment">LEFT</property>
+                        <property name="reservedLiteral">..</property>
+                        <property name="trimTextContent">true</property>
+                        <property name="wrapTextInExcel">false</property>
+                        <property name="resourceBase">Billing</property>
+                        <property name="resourceKey">CUSTOMER</property>
+                        <property name="nullString"></property>
+                    </child>
+                    <child type="org.pentaho.reportdesigner.crm.report.model.ResourceLabelReportElement">
+                        <property name="name">ResourceLabel@12232439</property>
+                        <property name="position">270.2, 20.0</property>
+                        <property name="minimumSize">115.80000000000001, 18.0</property>
+                        <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+                        <property name="font">SansSerif,12,1</property>
+                        <property name="foreground">208, 208, 208, 255</property>
+                        <property name="underline">false</property>
+                        <property name="strikethrough">false</property>
+                        <property name="embedFont">false</property>
+                        <property name="lineHeight">0.0</property>
+                        <property name="verticalAlignment">MIDDLE</property>
+                        <property name="horizontalAlignment">LEFT</property>
+                        <property name="reservedLiteral">..</property>
+                        <property name="trimTextContent">true</property>
+                        <property name="wrapTextInExcel">false</property>
+                        <property name="resourceBase">Billing</property>
+                        <property name="resourceKey">SALES_REP</property>
+                        <property name="nullString"></property>
+                    </child>
+                    <child type="org.pentaho.reportdesigner.crm.report.model.ResourceLabelReportElement">
+                        <property name="name">ResourceLabel@12232439</property>
+                        <property name="position">386.0, 20.0</property>
+                        <property name="minimumSize">193.0, 18.0</property>
+                        <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+                        <property name="font">SansSerif,12,1</property>
+                        <property name="foreground">208, 208, 208, 255</property>
+                        <property name="underline">false</property>
+                        <property name="strikethrough">false</property>
+                        <property name="embedFont">false</property>
+                        <property name="lineHeight">0.0</property>
+                        <property name="verticalAlignment">MIDDLE</property>
+                        <property name="horizontalAlignment">LEFT</property>
+                        <property name="reservedLiteral">..</property>
+                        <property name="trimTextContent">true</property>
+                        <property name="wrapTextInExcel">false</property>
+                        <property name="resourceBase">Billing</property>
+                        <property name="resourceKey">PRODUCT</property>
+                        <property name="nullString"></property>
+                    </child>
+                    <child type="org.pentaho.reportdesigner.crm.report.model.ResourceLabelReportElement">
+                        <property name="name">ResourceLabel@12232439</property>
+                        <property name="position">579.0, 20.0</property>
+                        <property name="minimumSize">77.20000000000005, 18.0</property>
+                        <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+                        <property name="font">SansSerif,12,1</property>
+                        <property name="foreground">208, 208, 208, 255</property>
+                        <property name="underline">false</property>
+                        <property name="strikethrough">false</property>
+                        <property name="embedFont">false</property>
+                        <property name="lineHeight">0.0</property>
+                        <property name="verticalAlignment">MIDDLE</property>
+                        <property name="horizontalAlignment">LEFT</property>
+                        <property name="reservedLiteral">..</property>
+                        <property name="trimTextContent">true</property>
+                        <property name="wrapTextInExcel">false</property>
+                        <property name="resourceBase">Billing</property>
+                        <property name="resourceKey">QUANTITY</property>
+                        <property name="nullString"></property>
+                    </child>
+                    <child type="org.pentaho.reportdesigner.crm.report.model.ResourceLabelReportElement">
+                        <property name="name">ResourceLabel@12232439</property>
+                        <property name="position">656.2, 20.0</property>
+                        <property name="minimumSize">77.20000000000005, 18.0</property>
+                        <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+                        <property name="font">SansSerif,12,1</property>
+                        <property name="foreground">208, 208, 208, 255</property>
+                        <property name="underline">false</property>
+                        <property name="strikethrough">false</property>
+                        <property name="embedFont">false</property>
+                        <property name="lineHeight">0.0</property>
+                        <property name="verticalAlignment">MIDDLE</property>
+                        <property name="horizontalAlignment">LEFT</property>
+                        <property name="reservedLiteral">..</property>
+                        <property name="trimTextContent">true</property>
+                        <property name="wrapTextInExcel">false</property>
+                        <property name="resourceBase">Billing</property>
+                        <property name="resourceKey">INVOICE_AMT</property>
+                        <property name="nullString"></property>
+                    </child>
+                    <property name="reportLayoutManagerType">NULL</property>
+                    <property name="showInLayoutGUI">true</property>
+                </child>
+                <child type="org.pentaho.reportdesigner.crm.report.model.ResourceLabelReportElement">
+                    <property name="name">ResourceLabel@5857945</property>
+                    <property name="position">0.0, 0.0</property>
+                    <property name="minimumSize">252.8, 18.0</property>
+                    <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+                    <property name="font">Dialog,12,1</property>
+                    <property name="foreground">0, 0, 0, 255</property>
+                    <property name="underline">false</property>
+                    <property name="strikethrough">false</property>
+                    <property name="embedFont">false</property>
+                    <property name="lineHeight">0.0</property>
+                    <property name="verticalAlignment">TOP</property>
+                    <property name="horizontalAlignment">LEFT</property>
+                    <property name="reservedLiteral">..</property>
+                    <property name="trimTextContent">true</property>
+                    <property name="wrapTextInExcel">false</property>
+                    <property name="resourceBase">Billing</property>
+                    <property name="resourceKey">REPORT_TITLE</property>
+                    <property name="nullString"></property>
+                </child>
+                <property name="pageBreakBefore">false</property>
+                <property name="pageBreakAfter">false</property>
+                <property name="showInLayoutGUI">true</property>
+                <property name="visualHeight">55.0</property>
+                <verticalLinealModel></verticalLinealModel>
+                <property name="repeat">true</property>
+            </child>
+            <child type="org.pentaho.reportdesigner.crm.report.model.BandToplevelGroupReportElement" bandToplevelType="GROUP_FOOTER">
+                <property name="name">dummyGroupFooter</property>
+                <property name="position">0.0, 0.0</property>
+                <property name="maximumSize">32767.0, 32767.0</property>
+                <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+                <child type="org.pentaho.reportdesigner.crm.report.model.RectangleReportElement">
+                    <property name="name">anonymousElement@32653328</property>
+                    <property name="position">-0.0, 0.0</property>
+                    <property name="minimumSize">0.0, 18.0</property>
+                    <property name="maximumSize">32767.0, 32767.0</property>
+                    <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+                    <property name="color">255, 255, 255, 255</property>
+                    <property name="arcWidth">0.0</property>
+                    <property name="arcHeight">0.0</property>
+                    <property name="drawBorder">true</property>
+                    <property name="fill">false</property>
+                    <borderDefinition color="255, 255, 255, 255" width="1.0" join="0" cap="2" miterlimit="10.0" dashPhase="0.0"></borderDefinition>
+                </child>
+                <child type="org.pentaho.reportdesigner.crm.report.model.NumberFieldReportElement">
+                    <property name="name">anonymousElement@21752005</property>
+                    <property name="position">579.0, 2.0</property>
+                    <property name="minimumSize">77.2, 15.0</property>
+                    <property name="maximumSize">32767.0, 32767.0</property>
+                    <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+                    <property name="font">SansSerif,11,1</property>
+                    <property name="foreground">0, 0, 0, 255</property>
+                    <property name="underline">false</property>
+                    <property name="strikethrough">false</property>
+                    <property name="embedFont">false</property>
+                    <property name="lineHeight">0.0</property>
+                    <property name="verticalAlignment">MIDDLE</property>
+                    <property name="horizontalAlignment">LEFT</property>
+                    <property name="reservedLiteral">..</property>
+                    <property name="trimTextContent">false</property>
+                    <property name="wrapTextInExcel">false</property>
+                    <property name="fieldName">Summary_UNIT_QTYExpression</property>
+                    <property name="nullString"></property>
+                    <formula>
+                        <property name="text"></property>
+                    </formula>
+                    <property name="format">#0.00</property>
+                    <property name="excelNumberFormat"></property>
+                </child>
+                <child type="org.pentaho.reportdesigner.crm.report.model.NumberFieldReportElement">
+                    <property name="name">anonymousElement@10419443</property>
+                    <property name="position">656.1999999999999, 2.0</property>
+                    <property name="minimumSize">77.2, 15.0</property>
+                    <property name="maximumSize">32767.0, 32767.0</property>
+                    <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+                    <property name="font">SansSerif,11,1</property>
+                    <property name="foreground">0, 0, 0, 255</property>
+                    <property name="underline">false</property>
+                    <property name="strikethrough">false</property>
+                    <property name="embedFont">false</property>
+                    <property name="lineHeight">0.0</property>
+                    <property name="verticalAlignment">MIDDLE</property>
+                    <property name="horizontalAlignment">LEFT</property>
+                    <property name="reservedLiteral">..</property>
+                    <property name="trimTextContent">false</property>
+                    <property name="wrapTextInExcel">false</property>
+                    <property name="fieldName">Summary_TRXN_INVOICE_AMTExpression</property>
+                    <property name="nullString"></property>
+                    <formula>
+                        <property name="text"></property>
+                    </formula>
+                    <property name="format">&#164; #,##0.00</property>
+                    <property name="excelNumberFormat"></property>
+                </child>
+                <child type="org.pentaho.reportdesigner.crm.report.model.ResourceLabelReportElement">
+                    <property name="name">ResourceLabel@24474402</property>
+                    <property name="position">0.0, 2.0</property>
+                    <property name="minimumSize">579.0, 15.0</property>
+                    <padding top="0.0" bottom="0.0" left="0.0" right="0.0"></padding>
+                    <property name="font">SansSerif,11,1</property>
+                    <property name="foreground">0, 0, 0, 255</property>
+                    <property name="underline">false</property>
+                    <property name="strikethrough">false</property>
+                    <property name="embedFont">false</property>
+                    <property name="lineHeight">0.0</property>
+                    <property name="verticalAlignment">TOP</property>
+                    <property name="horizontalAlignment">LEFT</property>
+                    <property name="reservedLiteral">..</property>
+                    <property name="trimTextContent">true</property>
+                    <property name="wrapTextInExcel">false</property>
+                    <property name="resourceBase">Billing</property>
+                    <property name="resourceKey">GRAND_TOTAL</property>
+                    <property name="nullString"></property>
+                </child>
+                <property name="pageBreakBefore">false</property>
+                <property name="pageBreakAfter">false</property>
+                <property name="showInLayoutGUI">true</property>
+                <property name="visualHeight">18.0</property>
+                <verticalLinealModel></verticalLinealModel>
+                <property name="repeat">false</property>
+            </child>
+        </child>
+    </child>
+    <property name="defaultLocale">en_US_</property>
+    <property name="resourceBundleClasspath">file:/C:/</property>
+    <horizontalLinealModel></horizontalLinealModel>
+    <pageDefinition pageSize="792.0, 612.0" topBorder="10.0" bottomBorder="10.0" leftBorder="10.0" rightBorder="10.0"></pageDefinition>
+    <reportConfiguration></reportConfiguration>
+    <property name="useMaxCharBounds">false</property>
+</report>

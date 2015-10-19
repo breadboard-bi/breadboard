@@ -1,0 +1,1162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>FACT_EC2_WEB_PAGE_VIEW</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input>STAGE_WEB_REQUEST</input>
+      <output>FACT_WEB_PAGE_VIEW</output>
+      <update/>
+      <rejected/>
+      <connection>mdw_amazon</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <step_performance_table/>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>Y</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>0</step_performance_capturing_delay>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>174.129.240.99</name><hostname>174.129.240.99</hostname><port>8081</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2009&#47;01&#47;18 12:27:40.343</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Copyright © 2009 Breadboard BI, Inc.  All rights reserved.</note>
+      <xloc>23</xloc>
+      <yloc>592</yloc>
+      <width>290</width>
+      <heigth>22</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>19</xloc>
+      <yloc>504</yloc>
+      <width>562</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Breadboard BI - Customer 360 - Dimension Web Page View Data Flow - Version 2.0
+==================================================
+1.  This data flow extracts web site visitor page view information from the staging area.
+2.  This fact table represents the lowest grain fact table.</note>
+      <xloc>6</xloc>
+      <yloc>9</yloc>
+      <width>434</width>
+      <heigth>62</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>mdw_mysql</name>
+    <server>10.10.10.3</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>3306</port>
+    <username>mdw</username>
+    <password>Encrypted 2be98afc86aa7f2e4a118bd79cbc3fd89</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_amazon</name>
+    <server>174.129.240.99</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>3306</port>
+    <username>mdw_user</username>
+    <password>Encrypted 2be98afc86aca9693940cbd75ccd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>ADD_PAGE_VIEW_TIME</from><to>SORT_REQUEST_DATE_ASCENDING</to><enabled>Y</enabled> </hop>  <hop> <from>STAGE_WEB_REQUEST</from><to>ADD_PAGE_VIEW_TIME</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_WEB_SITE_REFERER</from><to>MAP_LOOKUP_WEB_FILE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_WEB_FILE</from><to>MAP_LOOKUP_WEB_BROWSER_OS</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_PARSE_KEYWORDS</from><to>MAP_LOOKUP_KEYWORD_PHRASE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_WEB_BROWSER_OS</from><to>MAP_PARSE_KEYWORDS</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_TIME</from><to>MAP_LOOKUP_WEB_VISITOR</to><enabled>Y</enabled> </hop>  <hop> <from>ADD_VIEW_ORDER_NUMBER</from><to>MAP_LOOKUP_TIME</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_KEYWORD_PHRASE</from><to>REMOVE_NULL_GEO_LOCATION_SK</to><enabled>Y</enabled> </hop>  <hop> <from>REMOVE_NULL_GEO_LOCATION_SK</from><to>FACT_WEB_PAGE_VIEW</to><enabled>Y</enabled> </hop>  <hop> <from>PARSE_WEB_FILE_NAME</from><to>ADD_VIEW_ORDER_NUMBER</to><enabled>Y</enabled> </hop>  <hop> <from>SORT_REQUEST_DATE_ASCENDING</from><to>PARSE_WEB_FILE_NAME</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_WEB_VISITOR</from><to>PARSE_REFERER</to><enabled>Y</enabled> </hop>  <hop> <from>PARSE_REFERER</from><to>MAP_LOOKUP_WEB_SITE_REFERER</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>ADD_PAGE_VIEW_TIME</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>Y</compatible>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>&#47;&#47; Declare Variables
+var curDate = STREAM2_DATE.dat2num();
+var curLongIP = LONG_IP_NUMBER.getNumber();
+var curVisitorName = WEB_VISITOR_FULL_NAME.getString();
+var VIEW_SECONDS_QTY = 1;
+var VIEW_MINUTES_QTY = 0;
+var cur_PARENT_SOURCE_SYSTEM_SK = PARENT_SOURCE_SYSTEM_SK.getNumber();
+var v_CLIENT_PAGE_LOAD_TIMESTAMP = CLIENT_PAGE_LOAD_TIMESTAMP.getString();
+var v_CLIENT_PAGE_UNLOAD_TIMESTAMP = CLIENT_PAGE_UNLOAD_TIMESTAMP.getString();
+var v_not_a_date = v_CLIENT_PAGE_UNLOAD_TIMESTAMP;
+
+&#47;&#47; Use the page tagger load and unload values if they exisit.
+if (v_not_a_date != null &amp;&amp; v_not_a_date.indexOf(&quot;2&quot;) &gt;= 0)
+{ var PAGE_LOAD_TIMESTAMP = v_CLIENT_PAGE_LOAD_TIMESTAMP.str2dat( &quot;yyyy-MM-dd HH:mm:ss&quot;).dat2num();
+  var PAGE_UNLOAD_TIMESTAMP = v_CLIENT_PAGE_UNLOAD_TIMESTAMP.str2dat( &quot;yyyy-MM-dd HH:mm:ss&quot;).dat2num();
+  VIEW_SECONDS_QTY = (PAGE_UNLOAD_TIMESTAMP - PAGE_LOAD_TIMESTAMP)&#47;1000;
+	if(VIEW_SECONDS_QTY=0) {VIEW_SECONDS_QTY=1;}
+  VIEW_MINUTES_QTY = VIEW_SECONDS_QTY&#47;60;
+}
+
+&#47;&#47; Else check time between page views.  Check Conditions if views from same IP are &gt; 30 minutes apart, time is reset.
+else if (prevLongIP != null &amp;&amp; prevLongIP == curLongIP 
+    &amp;&amp; cur_PARENT_SOURCE_SYSTEM_SK == prev_PARENT_SOURCE_SYSTEM_SK
+    &amp;&amp; prevDate != null &amp;&amp; (prevDate - curDate) &lt; 1800001
+    &amp;&amp; prevVisitorName.equals(curVisitorName)
+)
+&#47;&#47; If above conditions met then
+{
+VIEW_SECONDS_QTY = (prevDate - curDate)&#47;1000;
+VIEW_MINUTES_QTY = VIEW_SECONDS_QTY&#47;60;
+}
+&#47;&#47; If conditions NOT met then
+else
+{
+  VIEW_SECONDS_QTY = 1;
+  VIEW_MINUTES_QTY = 1&#47;60;
+}
+
+&#47;&#47; Set current values as previous for the next row
+var prevLongIP=0;
+var prev_view_minutes_qty = 0;
+var prevVisitorName = &quot;&quot;;
+var prevDate=0;
+var prev_PARENT_SOURCE_SYSTEM_SK=0;
+prevLongIP = curLongIP;
+prevVisitorName = curVisitorName;
+prevDate = curDate;
+prev_view_minutes_qty = VIEW_MINUTES_QTY;
+prev_PARENT_SOURCE_SYSTEM_SK = cur_PARENT_SOURCE_SYSTEM_SK;</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>VIEW_SECONDS_QTY</name>
+        <rename>VIEW_SECONDS_QTY</rename>
+        <type>Number</type>
+        <length>16</length>
+        <precision>2</precision>
+      </field>      <field>        <name>VIEW_MINUTES_QTY</name>
+        <rename>VIEW_MINUTES_QTY</rename>
+        <type>Number</type>
+        <length>16</length>
+        <precision>2</precision>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>75</xloc>
+      <yloc>234</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>ADD_VIEW_ORDER_NUMBER</name>
+    <type>ScriptValue</type>
+    <description>This javascript step computes the order a page was viewed in the viewing session.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>Y</compatible>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>ScriptValue</jsScript_name>
+        <jsScript_script>&#47;&#47; Declare Variables
+var v_curDate = REQUEST_DATE_SK.getNumber;
+var v_curLongIP = LONG_IP_NUMBER.getNumber();
+var v_curVisitorName = WEB_VISITOR_FULL_NAME.getString();
+var v_view_minutes_qty = VIEW_MINUTES_QTY.getNumber();
+var v_curPARENT_SOURCE_SYSTEM_SK = PARENT_SOURCE_SYSTEM_SK.getNumber;
+var VIEW_ORDER_NUMBER=0;
+&#47;&#47; var v_curCookieDesc = &quot;&quot;+COOKIE_DESC.getString();
+&#47;&#47; var v_prevCookieDesc;
+
+&#47;&#47; Check For First View if a cookie is present.  Cookie isn&apos;t null or &quot;null&quot; and current doesn&apos;t equal previous.
+&#47;&#47; if (v_curCookieDesc != null &amp;&amp; v_curCookieDesc != &quot;null&quot; &amp;&amp; v_curCookieDesc != v_prevCookieDesc)
+&#47;&#47;{
+&#47;&#47; VIEW_ORDER_NUMBER = 1;
+&#47;&#47; }
+
+&#47;&#47; Check Subsequent Views with cookie
+&#47;&#47; else if (v_curCookieDesc != null &amp;&amp; v_curCookieDesc != &quot;null&quot; &amp;&amp; v_curCookieDesc == v_prevCookieDesc &amp;&amp; v_prevPARENT_SOURCE_SYSTEM_SK == v_curPARENT_SOURCE_SYSTEM_SK)
+&#47;&#47; {
+&#47;&#47;  VIEW_ORDER_NUMBER = v_prevOrderNumber + 1;
+&#47;&#47; }
+
+&#47;&#47; Check For First View, no cookie.  Views from the same IP &gt; 30 minutes apart reset the count.
+if (v_curLongIP != v_prevLongIP || v_view_minutes_qty &gt; 30 || v_curPARENT_SOURCE_SYSTEM_SK != v_prevPARENT_SOURCE_SYSTEM_SK)
+{
+VIEW_ORDER_NUMBER = 1;
+}
+
+&#47;&#47; Check Subsequent Views with no cookie
+else if (v_prevDate == v_curDate 
+		&amp;&amp; v_prevLongIP == v_curLongIP 
+		&amp;&amp; v_prevPARENT_SOURCE_SYSTEM_SK == v_curPARENT_SOURCE_SYSTEM_SK
+		&amp;&amp; v_prevVisitorName.equals(v_curVisitorName)
+	)
+{
+VIEW_ORDER_NUMBER = v_prevOrderNumber + 1;
+}
+
+var v_prevLongIP;
+var v_prevVisitorName = &quot;&quot;;
+var v_prevDate =0;
+var v_prevOrderNumber =0;
+var v_prevPARENT_SOURCE_SYSTEM_SK=0;
+
+&#47;&#47; Set current values as previous for the next row
+v_prevLongIP = v_curLongIP;
+v_prevVisitorName = v_curVisitorName;
+v_prevDate = v_curDate;
+v_prevPARENT_SOURCE_SYSTEM_SK = v_curPARENT_SOURCE_SYSTEM_SK;
+v_prevOrderNumber = VIEW_ORDER_NUMBER;
+&#47;&#47; v_prevCookieDesc = v_curCookieDesc;</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>VIEW_ORDER_NUMBER</name>
+        <rename>VIEW_ORDER_NUMBER</rename>
+        <type>Integer</type>
+        <length>16</length>
+        <precision>-1</precision>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>369</xloc>
+      <yloc>104</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>FACT_WEB_PAGE_VIEW</name>
+    <type>InsertUpdate</type>
+    <description>This Insert&#47;Update step inserts or updates rows in the fact table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_amazon</connection>
+    <commit>100</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema/>
+      <table>FACT_WEB_PAGE_VIEW</table>
+      <key>
+        <name>HOSTED_CLIENT_SK</name>
+        <field>HOSTED_CLIENT_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>REQUEST_DATE</name>
+        <field>REQUEST_DATE</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>WEB_VISITOR_SK</name>
+        <field>WEB_VISITOR_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>WEB_FILE_SK</name>
+        <field>WEB_FILE_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>SOURCE_SYSTEM_ID</name>
+        <field>SOURCE_SYSTEM_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>HOSTED_CLIENT_SK</name>
+        <rename>HOSTED_CLIENT_SK</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>REQUEST_DATE</name>
+        <rename>REQUEST_DATE</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>WEB_VISITOR_SK</name>
+        <rename>WEB_VISITOR_SK</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>WEB_FILE_SK</name>
+        <rename>WEB_FILE_SK</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>SOURCE_SYSTEM_SK</name>
+        <rename>SOURCE_SYSTEM_ID</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>BOUNCE_QTY</name>
+        <rename>BOUNCE_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>CLICK_ID</name>
+        <rename>CLICK_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>EXIT_PAGE_QTY</name>
+        <rename>EXIT_PAGE_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>KEYWORD_SK</name>
+        <rename>KEYWORD_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>LANDING_PAGE_QTY</name>
+        <rename>LANDING_PAGE_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ORGANIC_VIEW_QTY</name>
+        <rename>ORGANIC_VIEW_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PAID_VIEW_QTY</name>
+        <rename>PAID_VIEW_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>REFERER_URL_SK</name>
+        <rename>REFERER_URL_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>REQUEST_DATE_SK</name>
+        <rename>REQUEST_DATE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ROBOT_PAGE_VIEW_QTY</name>
+        <rename>ROBOT_PAGE_VIEW_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>SYNDICATION_VIEW_QTY</name>
+        <rename>SYNDICATION_VIEW_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>REQUEST_TIME_SK</name>
+        <rename>TIME_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>GEO_LOCATION_SK</name>
+        <rename>v_GEO_LOCATION_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>VIEW_ORDER_NUMBER</name>
+        <rename>VIEW_ORDER_NUMBER</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>VIEW_SECONDS_QTY</name>
+        <rename>VIEW_SECONDS_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WEB_BROWSER_OS_SK</name>
+        <rename>WEB_BROWSER_OS_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WEB_FILE_BYTE_QTY</name>
+        <rename>WEB_FILE_BYTE_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WEB_PAGE_VIEW_QTY</name>
+        <rename>WEB_PAGE_VIEW_QTY</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>492</xloc>
+      <yloc>211</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_KEYWORD_PHRASE</name>
+    <type>Mapping</type>
+    <description>This Map step returns the web browser OS surrogate key.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_KEYWORD_PHRASE</trans_name>
+    <filename>${ETL_OBJECTS_PATH}&#47;MAP_EC2_LOOKUP_KEYWORD_PHRASE.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>KEYWORD_DESC</parent><child>KEYWORD_DESC</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+       <connector><parent>HOSTED_CLIENT_SK</parent><child>HOSTED_CLIENT_SK</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>KEYWORD_SK</parent><child>KEYWORD_SK</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>269</xloc>
+      <yloc>297</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_TIME</name>
+    <type>Mapping</type>
+    <description>This Map step returns the time of day surrogate key.  As currently configured, the lowest grain of time is every 30 minutes.  This can be changed by editing the SQL in the table input step and ensuring the appropriate values are available in the time dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_TIME</trans_name>
+    <filename>${ETL_OBJECTS_PATH}&#47;MAP_EC2_LOOKUP_TIME.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>HOUR_24_QTY</parent><child>HOUR_24_QTY</child></connector>
+       <connector><parent>MINUTE_QTY</parent><child>MINUTE_QTY</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>TIME_SK</parent><child>TIME_SK</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>492</xloc>
+      <yloc>88</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_WEB_BROWSER_OS</name>
+    <type>Mapping</type>
+    <description>This Map step returns the web browser OS surrogate key.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_WEB_BROWSER_OS</trans_name>
+    <filename>${ETL_OBJECTS_PATH}&#47;MAP_EC2_LOOKUP_WEB_BROWSER_OS.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>WEB_BROWSER_OS_DESC</parent><child>WEB_BROWSER_OS_DESC</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>WEB_BROWSER_OS_SK</parent><child>WEB_BROWSER_OS_SK</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>436</xloc>
+      <yloc>386</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_WEB_FILE</name>
+    <type>Mapping</type>
+    <description>This Map step returns the web file surrogate key.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_WEB_FILE</trans_name>
+    <filename>${ETL_OBJECTS_PATH}&#47;MAP_EC2_LOOKUP_WEB_FILE.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>HOSTED_CLIENT_SK</parent><child>HOSTED_CLIENT_SK</child></connector>
+       <connector><parent>NEW_WEB_FILE_NAME</parent><child>NEW_WEB_FILE_NAME</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>WEB_FILE_SK</parent><child>WEB_FILE_SK</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>607</xloc>
+      <yloc>430</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_WEB_SITE_REFERER</name>
+    <type>Mapping</type>
+    <description>This Map step returns the web site referer surrogate key.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_WEB_SITE_REFERER</trans_name>
+    <filename>${ETL_OBJECTS_PATH}&#47;MAP_EC2_LOOKUP_WEB_SITE_REFERER.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>HOSTED_CLIENT_SK</parent><child>HOSTED_CLIENT_SK</child></connector>
+       <connector><parent>v_REFERER_URL_DESC</parent><child>v_REFERER_URL_DESC</child></connector>
+       <connector><parent>WEB_FILE_NAME</parent><child>WEB_FILE_NAME</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+       <connector><parent>OLD_REFERER_URL_DESC</parent><child>OLD_REFERER_URL_DESC</child></connector>
+       <connector><parent>REFERER_URL_DESC</parent><child>REFERER_URL_DESC</child></connector>
+       <connector><parent>URL_PARAMS_DESC</parent><child>URL_PARAMS_DESC</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>REFERER_URL_SK</parent><child>REFERER_URL_SK</child></connector>
+       <connector><parent>PAID_VIEW_QTY</parent><child>PAID_VIEW_QTY</child></connector>
+       <connector><parent>OLD_REFERER_URL_DESC</parent><child>OLD_REFERER_URL_DESC</child></connector>
+       <connector><parent>REFERER_URL_DESC</parent><child>REFERER_URL_DESC</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>758</xloc>
+      <yloc>306</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_WEB_VISITOR</name>
+    <type>Mapping</type>
+    <description>This Map step returns the web visitor surrogate key. As configured, an individual visitor is represented by the unique combination of long IP address and web visitor full name.  In practice, the web visitor full name is very rarely found in the log file.  If your log file has a method for uniquely identifying a visitor across visits, then change this step.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_WEB_VISITOR</trans_name>
+    <filename>${ETL_OBJECTS_PATH}&#47;MAP_EC2_LOOKUP_WEB_VISITOR.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>HOSTED_CLIENT_SK</parent><child>HOSTED_CLIENT_SK</child></connector>
+       <connector><parent>LONG_IP_NUMBER</parent><child>LONG_IP_NUMBER</child></connector>
+       <connector><parent>WEB_VISITOR_FULL_NAME</parent><child>WEB_VISITOR_FULL_NAME</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>WEB_VISITOR_SK</parent><child>WEB_VISITOR_SK</child></connector>
+       <connector><parent>GEO_LOCATION_SK</parent><child>GEO_LOCATION_SK</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>663</xloc>
+      <yloc>43</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_PARSE_KEYWORDS</name>
+    <type>Mapping</type>
+    <description>This Map step returns the web browser OS surrogate key.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_PARSE_KEYWORDS</trans_name>
+    <filename>${ETL_OBJECTS_PATH}&#47;MAP_PARSE_KEYWORDS.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>REFERER_URL_DESC</parent><child>REFERER_URL_DESC</child></connector>
+       <connector><parent>WEB_FILE_NAME</parent><child>WEB_FILE_NAME</child></connector>
+       <connector><parent>URL_PARAMS_DESC</parent><child>URL_PARAMS_DESC</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>KEYWORD_DESC</parent><child>KEYWORD_DESC</child></connector>
+       <connector><parent>WEB_FILE_NAME</parent><child>WEB_FILE_NAME</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>269</xloc>
+      <yloc>386</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PARSE_REFERER</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>Y</compatible>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>var v_REFERER_URL_DESC = &quot;&quot;;
+var PARENT_REFERER_DESC = &quot;&quot;;
+var REFERER_DESC = &quot;&quot;;
+var REFERER_DOMAIN_DESC =&quot;&quot;;
+var SYNDICATION_VIEW_QTY = 0;
+
+if (REFERER_URL_DESC == null)
+{
+v_REFERER_URL_DESC = &quot;Missing&quot;;
+PARENT_REFERER_DESC = &quot;Missing&quot;;
+REFERER_DESC = &quot;Missing&quot;;
+REFERER_DOMAIN_DESC = &quot;Missing&quot;;
+REFERER_URL_DESC = &quot;Missing&quot;;
+} 
+
+else {
+
+var v_temp_referer_url_desc = &quot;&quot;+REFERER_URL_DESC;
+
+&#47;&#47; Define REFERRER_DESC
+var first_result = v_temp_referer_url_desc.replace( &#47;www.&#47;g,&quot;&quot;);
+var first_pieces = first_result.split(&quot;&#47;&quot;);
+var v_content_string = &quot;&quot;+first_pieces[2];
+REFERER_DESC = &quot;&quot;+first_pieces[2];
+
+&#47;&#47; REFERER_DESC != null &amp;&amp; needs to be lifted out and above to optimize.
+&#47;&#47; Define PARENT_REFERER_DESC
+if (REFERER_DESC != null)
+	{	
+	if (REFERER_DESC.indexOf(&quot;oogle&quot;) &gt;= 0 || REFERER_DESC.indexOf(&quot;gclid=&quot;) &gt;= 0)
+		{PARENT_REFERER_DESC = &quot;google&quot;;}
+	else if (REFERER_DESC.indexOf(&quot;.yahoo.&quot;) &gt;= 0 
+		|| REFERER_DESC.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0 
+		|| REFERER_DESC.indexOf(&quot;OVKEY=&quot;) &gt;= 0
+		|| (URL_PARAMS_DESC.getString() != null &amp;&amp;URL_PARAMS_DESC.getString().indexOf(&quot;OVKEY=&quot;) &gt;= 0))
+		{PARENT_REFERER_DESC = &quot;yahoo&quot;;}
+	else if (REFERER_DESC.indexOf(&quot;.msn.&quot;) &gt;= 0)
+	{PARENT_REFERER_DESC = &quot;msn&quot;;}
+	else if (REFERER_DESC.indexOf(&quot;breadboardbi&quot;) &gt;= 0 || REFERER_DESC.indexOf(&quot;192.168.0&quot;) &gt;= 0)
+	{PARENT_REFERER_DESC = &quot;breadboardbi.com&quot;;}
+	else {PARENT_REFERER_DESC = REFERER_DESC;}
+}
+
+&#47;&#47; Extract Intelligence from REFERER_DESC
+&#47;&#47; Google Syndication + parsing logic
+if (v_content_string != null)
+{
+	if (v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0 || v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+	{
+	SYNDICATION_VIEW_QTY = 1;
+	var result = v_content_string.replace( &#47;%3A&#47;g,&quot;:&quot;).replace( &#47;%2F&#47;g,&quot;&#47;&quot;).replace( &#47;%25&#47;g,&quot;%&quot;).replace( &#47;%26&#47;g,&quot;&amp;&quot;).replace( &#47;%3D&#47;g,&quot;=&quot;).replace( &#47;%3F&#47;g,&quot;?&quot;).replace( &#47;%2B&#47;g,&quot;+&quot;).replace( &#47;%2C&#47;g,&quot;,&quot;).replace( &#47;%2D&#47;g,&quot;-&quot;).replace( &#47;%2E&#47;g,&quot;.&quot;).replace( &#47;%27&#47;g,&quot;`&quot;).replace( &#47;%28&#47;g,&quot;(&quot;).replace( &#47;%29&#47;g,&quot;)&quot;).replace( &#47;%40&#47;g,&quot;@&quot;).replace( &#47;%7C&#47;g,&quot;|&quot;).replace( &#47;%20&#47;g,&quot;_&quot;);
+	var pieces = result.split(&quot;&amp;&quot;);
+
+	&#47;&#47; Google Parse
+		if (v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;=0)
+			{	
+			var i;
+			for (i=0;i&lt;50;i++)
+				{
+				if (pieces[i] != null &amp;&amp; pieces[i].indexOf(&quot;url=&quot;) &gt;= 0)
+					{ 
+					v_REFERER_URL_DESC = pieces[i].substr(4);
+					break;
+					}
+				}
+			}
+		&#47;&#47; Yahoo Parse
+		else if (v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;=0)
+			{
+			var j;
+			for (j=0;j&lt;50;j++)
+				{
+				if (pieces[j] != null &amp;&amp; pieces[j].indexOf(&quot;refUrl=&quot;) &gt;= 0)
+					{ 
+					v_REFERER_URL_DESC = pieces[j].substr(7);
+					break;
+					}
+				}
+			}
+
+		else {v_REFERER_URL_DESC = result;}
+	}
+&#47;&#47; assign non syndication value to variable
+else {v_REFERER_URL_DESC = v_content_string;}
+}
+v_REFERER_URL_DESC = v_REFERER_URL_DESC.replace( &#47;%26&#47;g,&quot;&amp;&quot;);
+
+
+
+&#47;&#47;remove junk from referrer
+if (v_REFERER_URL_DESC != null &amp;&amp; v_REFERER_URL_DESC.indexOf(&quot;?&quot;) &gt;= 0)
+	{
+	v_question_position = v_REFERER_URL_DESC.indexOf(&quot;?&quot;);
+	v_REFERER_URL_DESC = v_REFERER_URL_DESC.substr(0,v_question_position);
+	}
+
+&#47;&#47;Further parse, since syndication referrer URLs may be long.
+var domain_result = v_REFERER_URL_DESC;
+
+if (v_REFERER_URL_DESC != null &amp;&amp; v_REFERER_URL_DESC.indexOf(&quot;&#47;&#47;&quot;) &gt;=0)
+	{
+	var domain_pieces = domain_result.split(&quot;&#47;&quot;);
+	REFERER_DOMAIN_DESC = &quot;&quot; + domain_pieces[2];
+	}
+	else
+	{
+	REFERER_DOMAIN_DESC = v_REFERER_URL_DESC;
+	}
+
+}  &#47;&#47; ENDS ELSE NEAR TOP</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>v_REFERER_URL_DESC</name>
+        <rename>v_REFERER_URL_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>SYNDICATION_VIEW_QTY</name>
+        <rename>SYNDICATION_VIEW_QTY</rename>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>v_content_string</name>
+        <rename>OLD_REFERER_URL_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>REFERER_DOMAIN_DESC</name>
+        <rename>REFERER_DOMAIN_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>REFERER_DESC</name>
+        <rename>REFERER_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>PARENT_REFERER_DESC</name>
+        <rename>PARENT_REFERER_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>740</xloc>
+      <yloc>182</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PARSE_WEB_FILE_NAME</name>
+    <type>Mapping</type>
+    <description>This Map step returns the web file surrogate key.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_PARSE_WEB_FILE_NAME</trans_name>
+    <filename>${ETL_OBJECTS_PATH}&#47;MAP_PARSE_WEB_FILE_NAME.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>WEB_FILE_NAME</parent><child>WEB_FILE_NAME</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>NEW_WEB_FILE_NAME</parent><child>NEW_WEB_FILE_NAME</child></connector>
+       <connector><parent>CLICK_ID</parent><child>CLICK_ID</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>231</xloc>
+      <yloc>86</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>REMOVE_NULL_GEO_LOCATION_SK</name>
+    <type>ScriptValue</type>
+    <description>This Java Script step detects robot&#47;crawler&#47;spider visitors.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>Y</compatible>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>ScriptValue</jsScript_name>
+        <jsScript_script>var v_GEO_LOCATION_SK;
+
+if (
+WEB_VISITOR_SK.getInteger() ==  0
+)
+{
+v_GEO_LOCATION_SK = 0;
+}
+else { 
+v_GEO_LOCATION_SK = GEO_LOCATION_SK.getInteger();
+}
+
+var ORGANIC_VIEW_QTY = 0;
+if (KEYWORD_SK.getInteger() &gt; 0 &amp;&amp; PAID_VIEW_QTY.getInteger() == 0)
+{ 
+   ORGANIC_VIEW_QTY = 1;
+}
+else {
+   ORGANIC_VIEW_QTY = 0;
+}</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>v_GEO_LOCATION_SK</name>
+        <rename>v_GEO_LOCATION_SK</rename>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>ORGANIC_VIEW_QTY</name>
+        <rename>ORGANIC_VIEW_QTY</rename>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>270</xloc>
+      <yloc>213</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>SORT_REQUEST_DATE_ASCENDING</name>
+    <type>SortRows</type>
+    <description>This sort step changes rows from a descending request date sort order to an ascending request date sort order (in advance of the subsequent javascript step.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>%%java.io.tmpdir%%</directory>
+      <prefix>out</prefix>
+      <sort_size>5000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>PARENT_SOURCE_SYSTEM_SK</name>
+        <ascending>Y</ascending>
+        <case_sensitive>Y</case_sensitive>
+      </field>
+      <field>
+        <name>LONG_IP_NUMBER</name>
+        <ascending>Y</ascending>
+        <case_sensitive>Y</case_sensitive>
+      </field>
+      <field>
+        <name>WEB_VISITOR_FULL_NAME</name>
+        <ascending>Y</ascending>
+        <case_sensitive>Y</case_sensitive>
+      </field>
+      <field>
+        <name>REQUEST_DATE</name>
+        <ascending>Y</ascending>
+        <case_sensitive>Y</case_sensitive>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>77</xloc>
+      <yloc>108</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_WEB_REQUEST</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table. It includes an important order by clause required by a subsequent javascript step.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_amazon</connection>
+    <sql>SELECT
+  R.HOSTED_CLIENT_SK
+, R.LONG_IP_NUMBER
+, R.WEB_VISITOR_FULL_NAME
+, R.REQUEST_DATE
+, R.REQUEST_DATE_SK
+, R.REQUEST_DATE AS STREAM_DATE
+, R.REQUEST_DATE AS STREAM2_DATE
+, REPLACE(REPLACE(REPLACE(WEB_FILE_NAME,&apos;http:&#47;&#47;www.breadboardbi.com&apos;,&apos;&apos;),&apos;http:&#47;&#47;breadboardbi.dnsalias.com&apos;,&apos;&apos;),&apos;http:&#47;&#47;breadboardbi.com&apos;,&apos;&apos;) AS WEB_FILE_NAME
+, 1 AS WEB_PAGE_VIEW_QTY
+, R.WEB_FILE_BYTE_QTY
+, R.ROBOT_PAGE_VIEW_QTY
+, R.REFERER_URL_DESC
+&#47;* , (CASE WHEN R.REFERER_URL_DESC IS NULL THEN &apos;Missing&apos; ELSE R.REFERER_URL_DESC END) AS REFERER_URL_DESC *&#47;
+, R.HOUR_24_QTY
+, (CASE WHEN R.MINUTE_QTY &lt;= 29 THEN 0 ELSE 30 END) AS MINUTE_QTY
+, R.WEB_BROWSER_OS_DESC
+, (CASE WHEN R.REQUEST_DATE = X.SESSION_START_DATE THEN 1 ELSE 0 END) AS LANDING_PAGE_QTY
+, (CASE WHEN R.REQUEST_DATE = X.SESSION_END_DATE THEN 1 ELSE 0 END) AS EXIT_PAGE_QTY
+, (CASE WHEN X.SESSION_START_DATE = X.SESSION_END_DATE THEN 1 ELSE 0 END) AS BOUNCE_QTY
+, R.COOKIE_DESC
+, REPLACE(SUBSTR(CLIENT_PAGE_LOAD_TIMESTAMP,0,19),&apos;T&apos;,&apos; &apos;) AS CLIENT_PAGE_LOAD_TIMESTAMP
+, REPLACE(SUBSTR(CLIENT_PAGE_UNLOAD_TIMESTAMP,0,19),&apos;T&apos;,&apos; &apos;) AS CLIENT_PAGE_UNLOAD_TIMESTAMP
+, R.SOURCE_SYSTEM_ID
+, XS.PARENT_SOURCE_SYSTEM_SK
+, R.URL_PARAMS_DESC
+, R.DW_LOAD_DATE
+FROM STAGE_WEB_REQUEST R,
+&#47;* NESTED TABLE *&#47;
+(SELECT
+  LONG_IP_NUMBER
+, WEB_VISITOR_FULL_NAME
+, REQUEST_DATE_SK
+, S.PARENT_SOURCE_SYSTEM_SK
+, MIN(REQUEST_DATE) AS SESSION_START_DATE
+, MAX(REQUEST_DATE) AS SESSION_END_DATE
+FROM STAGE_WEB_REQUEST START_END, DIMENSION_SOURCE_SYSTEM S
+WHERE START_END.SOURCE_SYSTEM_ID = S.SOURCE_SYSTEM_ID AND
+(WEB_FILE_NAME LIKE &apos;%.htm%&apos; OR WEB_FILE_NAME LIKE &apos;%.pdf%&apos; OR WEB_FILE_NAME LIKE &apos;%.jsp%&apos; OR WEB_FILE_NAME LIKE &apos;%.xaction&apos; OR WEB_FILE_NAME LIKE &apos;%.asp%&apos; OR WEB_FILE_NAME LIKE &apos;%bt&#47;blog&#47;2%&apos; OR WEB_FILE_NAME=&apos;http:&#47;&#47;www.breadboardbi.com&#47;&apos; OR WEB_FILE_NAME LIKE &apos;%gclid%&apos; OR WEB_FILE_NAME LIKE &apos;%OVRAW=%&apos;) 
+&#47;* AND REQUEST_CAT = &apos;GET&apos;  *&#47;
+AND WEB_FILE_NAME NOT LIKE &apos;%cache_flush%&apos; AND WEB_FILE_NAME NOT LIKE &apos;%alytics&#47;javascript&#47;%&apos; AND WEB_FILE_NAME NOT LIKE &apos;%.ajs%&apos; AND WEB_FILE_NAME NOT LIKE &apos;%bbiWebCommon&#47;%&apos; AND WEB_FILE_NAME NOT LIKE &apos;%bbiUser&#47;%&apos;
+AND START_END.IP_ADDRESS_DESC NOT IN (&apos;192.168.0.103&apos;,&apos;breadboardbi.dnsalias.com&apos;,&apos;76.195.0.171&apos;,&apos;127.0.0.1&apos;,&apos;67.169.90.27&apos;,&apos;76.21.105.27&apos;,&apos;24.5.201.123&apos;)
+GROUP BY S.PARENT_SOURCE_SYSTEM_SK, LONG_IP_NUMBER, WEB_VISITOR_FULL_NAME, REQUEST_DATE_SK) X,&#47;* END NESTED TABLE *&#47;
+DIMENSION_SOURCE_SYSTEM XS
+WHERE (R.WEB_FILE_NAME LIKE &apos;%.htm%&apos; OR R.WEB_FILE_NAME LIKE &apos;%.pdf%&apos; OR R.WEB_FILE_NAME LIKE &apos;%.jsp%&apos; OR R.WEB_FILE_NAME LIKE &apos;%.xaction&apos;OR WEB_FILE_NAME LIKE &apos;%.asp%&apos; OR WEB_FILE_NAME LIKE &apos;%bt&#47;blog&#47;2%&apos; OR WEB_FILE_NAME=&apos;http:&#47;&#47;www.breadboardbi.com&#47;&apos; OR WEB_FILE_NAME LIKE &apos;%gclid%&apos; OR WEB_FILE_NAME LIKE &apos;%OVRAW=%&apos;)
+AND R.WEB_FILE_NAME NOT LIKE &apos;%cache_flush%&apos; AND R.WEB_FILE_NAME NOT LIKE &apos;%alytics&#47;javascript&#47;%&apos; AND WEB_FILE_NAME NOT LIKE &apos;%.ajs%&apos; AND WEB_FILE_NAME NOT LIKE &apos;%bbiWebCommon&#47;%&apos; AND WEB_FILE_NAME NOT LIKE &apos;%bbiUser&#47;%&apos;
+AND R.IP_ADDRESS_DESC NOT IN (&apos;192.168.0.103&apos;,&apos;breadboardbi.dnsalias.com&apos;,&apos;76.195.0.171&apos;,&apos;127.0.0.1&apos;,&apos;67.169.90.27&apos;,&apos;76.21.105.27&apos;,&apos;24.5.201.123&apos;)
+AND R.SOURCE_SYSTEM_ID = XS.SOURCE_SYSTEM_SK
+AND XS.PARENT_SOURCE_SYSTEM_SK = X.PARENT_SOURCE_SYSTEM_SK &#47;* ENSURES WEB LOG SOURCES JOIN ONLY TO OTHER WEB LOGS (INCLUDING PAGE TAGGERS WOULD ADD DUPLICATION) *&#47;
+AND R.LONG_IP_NUMBER = X.LONG_IP_NUMBER
+AND R.WEB_VISITOR_FULL_NAME = X.WEB_VISITOR_FULL_NAME
+AND R.REQUEST_DATE_SK = X.REQUEST_DATE_SK
+&#47;* The following order by is required by the ADD_PAGE_VIEW_SECONDS_QTY JavaScript Step.*&#47;
+ORDER BY R.HOSTED_CLIENT_SK
+&#47;* , R.COOKIE_DESC TEMP REMOVED, FULL VISIT MAY NOT BE ACROSS SERVERS.  *&#47;
+, R.LONG_IP_NUMBER
+, R.WEB_VISITOR_FULL_NAME
+, R.REQUEST_DATE DESC</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>77</xloc>
+      <yloc>379</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+   <slave-step-copy-partition-distribution>
+</slave-step-copy-partition-distribution>
+   <slave_transformation>N</slave_transformation>
+</transformation>

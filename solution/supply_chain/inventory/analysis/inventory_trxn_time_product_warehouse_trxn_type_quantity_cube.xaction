@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>inventory_trxn_product_warehouse_trxn_type_quantity_cube.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <help/>  
+    <result-type>report</result-type>  
+    <description>%description</description>  
+    <icon>file.png|analysis.png</icon> 
+  </documentation>  
+  <inputs> 
+    <mdx type="string"> 
+      <default-value/>  
+      <sources> 
+        <request>MDX</request> 
+      </sources> 
+    </mdx>  
+    <mode type="string"> 
+      <sources> 
+        <request>mode</request> 
+      </sources>  
+      <default-value/> 
+    </mode>  
+    <product type="string"> 
+      <sources> 
+        <request>product</request> 
+      </sources>  
+      <default-value/> 
+    </product> 
+  </inputs>  
+  <outputs> 
+    <model type="string"/>  
+    <connection type="string"/>  
+    <mdx type="string"/>  
+    <options type="list"/>  
+    <title type="string"/>  
+    <url type="string"> 
+      <destinations> 
+        <response>redirect</response> 
+      </destinations> 
+    </url> 
+  </outputs>  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <component-name>PivotViewComponent</component-name>  
+      <action-inputs> 
+        <mode type="string"/>  
+        <product type="string"/>
+      </action-inputs>  
+      <action-outputs> 
+        <model type="string"/>  
+        <connection type="string"/>  
+        <mdx type="string"/>  
+        <options type="list"/>  
+        <title type="string"/>  
+        <url type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <title>%title</title>  
+        <viewer>Pivot</viewer>  
+        <model>breadboard/analysis/breadboardbi.mondrian.xml</model>  
+        <jndi>mdw_mysql</jndi>  
+        <location>mondrian</location>  
+        <query><![CDATA[select NON EMPTY Crossjoin({[Warehouse.Warehouse Names].[All Warehouse Names].Children}, {[Inventory Adjustment.Inventory Adjustments].[All Inventory Adjustments].[IN], [Inventory Adjustment.Inventory Adjustments].[All Inventory Adjustments].[OUT]}) ON COLUMNS,
+  NON EMPTY {([Time Period.Time Periods].[All Periods], [Product.Categories].[All Categories], [Transaction Type.Transaction Types].[All Transaction Types])} ON ROWS
+from [Inventory Transaction]
+where [Measures].[Transaction Quantity]]]></query>  
+        <options> 
+          <personal/>  
+          <cube-nav/>  
+          <mdx-edit/>  
+          <sort-conf/>  
+          <spacer/>  
+          <level-style/>  
+          <hide-spans/>  
+          <properties/>  
+          <non-empty/>  
+          <swap-axes/>  
+          <spacer/>  
+          <drill-member/>  
+          <drill-position/>  
+          <drill-replace/>  
+          <drill-thru/>  
+          <spacer/>  
+          <chart/>  
+          <chart-conf/>  
+          <spacer/>  
+          <print-conf/>  
+          <print-pdf/>  
+          <spacer/>  
+          <excel/> 
+        </options> 
+      </component-definition>  
+      <action-name>Pivot View</action-name>  
+      <logging-level>DEBUG</logging-level> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>FACT_MARKET_BASKET</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input>FACT_ORDER_CAPTURE</input>
+      <output>FACT_MARKET_BASKET</output>
+      <update/>
+      <rejected/>
+      <connection>mdw_mysql</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <step_performance_table/>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>Y</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2008&#47;04&#47;02 12:58:30.250</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Copyright © 2008 Breadboard BI, Inc. All rights reserved.</note>
+      <xloc>9</xloc>
+      <yloc>242</yloc>
+      <width>287</width>
+      <heigth>22</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>6</xloc>
+      <yloc>291</yloc>
+      <width>562</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Breadboard BI - Customer 360 -  Market Basket Fact - Version 1.0
+========================================
+1.  This data flow extracts market basket&#47;product affinity information from the order capture fact table.
+
+2.  Incremental load logic is utilized in conjunction with the ADMIN_TRANSFORMATION_CONTROL table.  This table must be built
+     before running the transformation.</note>
+      <xloc>11</xloc>
+      <yloc>10</yloc>
+      <width>653</width>
+      <heigth>85</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>jde</name>
+    <server>test</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>rds</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>rds</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>FACT_ORDER_CAPTURE</from><to>FACT_MARKET_BASKET</to><enabled>Y</enabled> </hop>  <hop> <from>Get Transformation Last Start Date</from><to>FACT_ORDER_CAPTURE</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>FACT_MARKET_BASKET</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema/>
+      <table>FACT_MARKET_BASKET</table>
+      <key>
+        <name>SALE_DATE_SK</name>
+        <field>SALE_DATE_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>CUSTOMER_SK</name>
+        <field>CUSTOMER_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>BUSINESS_UNIT_SK</name>
+        <field>BUSINESS_UNIT_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>PRODUCT1_SK</name>
+        <field>PRODUCT1_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>PRODUCT2_SK</name>
+        <field>PRODUCT2_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>PRODUCT1_SK</name>
+        <rename>PRODUCT1_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT2_SK</name>
+        <rename>PRODUCT2_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>SALE_DATE_SK</name>
+        <rename>SALE_DATE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>SALE_DATE</name>
+        <rename>SALE_DATE</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT_UOM_SK</name>
+        <rename>PRODUCT_UOM_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TRXN_CURRENCY_SK</name>
+        <rename>TRXN_CURRENCY_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>BASE_CURRENCY_SK</name>
+        <rename>BASE_CURRENCY_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>BASE_CURRENCY_EXCHANGE_RATE</name>
+        <rename>BASE_CURRENCY_EXCHANGE_RATE</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>CUSTOMER_SK</name>
+        <rename>CUSTOMER_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>BUSINESS_UNIT_SK</name>
+        <rename>BUSINESS_UNIT_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>BASKET_QTY</name>
+        <rename>BASKET_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT1_SALES_QTY</name>
+        <rename>PRODUCT1_SALES_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT1_PRICE_AMT</name>
+        <rename>PRODUCT1_PRICE_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT1_RECURRING_PRICE_AMT</name>
+        <rename>PRODUCT1_RECURRING_PRICE_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT2_SALES_QTY</name>
+        <rename>PRODUCT2_SALES_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT2_PRICE_AMT</name>
+        <rename>PRODUCT2_PRICE_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT2_RECURRING_PRICE_AMT</name>
+        <rename>PRODUCT2_RECURRING_PRICE_AMT</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>628</xloc>
+      <yloc>133</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>FACT_ORDER_CAPTURE</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the PS_RA_CAMPAIGN table.  It maintains all marketing campaign program information, such as name, start and end dates, relationship to a parent (roll up), overall campaign status, objective and description.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <sql>SELECT X.PRODUCT_SK AS PRODUCT1_SK,
+Y.PRODUCT_SK AS PRODUCT2_SK,
+X.ORDER_CAPTURE_DATE_SK AS SALE_DATE_SK,
+MAX(X.ORDER_CAPTURE_DATE) AS SALE_DATE,
+MAX(X.UNIT_OF_MEASURE_SK) AS PRODUCT_UOM_SK, &#47;* Assumes consistent UOM, e.g., EACHES *&#47;
+MAX(X.TRXN_CURRENCY_SK) AS TRXN_CURRENCY_SK, &#47;* Assumes consistent currency *&#47;
+MAX(X.BASE_CURRENCY_SK) AS BASE_CURRENCY_SK, &#47;* Assumes consistent currency *&#47;
+MAX(X.BASE_CURRENCY_EXCHANGE_RATE) AS BASE_CURRENCY_EXCHANGE_RATE,
+X.CUSTOMER_SK,
+X.BUSINESS_UNIT_SK,
+COUNT(*) AS BASKET_QTY,
+SUM(X.ORDER_UNIT_QTY) AS PRODUCT1_SALES_QTY,
+SUM(X.TRXN_LIST_PRICE_AMT) AS PRODUCT1_PRICE_AMT,
+SUM(X.TRXN_RECURRING_PRICE_AMT) AS PRODUCT1_RECURRING_PRICE_AMT,
+SUM(Y.ORDER_UNIT_QTY) AS PRODUCT2_SALES_QTY,
+SUM(Y.TRXN_LIST_PRICE_AMT) AS PRODUCT2_PRICE_AMT,
+SUM(Y.TRXN_RECURRING_PRICE_AMT) AS PRODUCT2_RECURRING_PRICE_AMT
+FROM FACT_ORDER_CAPTURE X
+JOIN FACT_ORDER_CAPTURE Y
+ON X.ORDER_CAPTURE_SK = Y.ORDER_CAPTURE_SK
+&#47;* ADD MORE CONDITIONS *&#47;
+AND X.PRODUCT_SK &lt; Y.PRODUCT_SK
+AND X.ORDER_CAPTURE_SK != 0
+AND X.ORDER_CAPTURE_DATE &gt;= ?
+GROUP BY X.PRODUCT_SK,
+Y.PRODUCT_SK,
+X.ORDER_CAPTURE_DATE_SK,
+X.CUSTOMER_SK,
+X.BUSINESS_UNIT_SK
+&#47;* add more groups *&#47;
+ORDER BY 
+COUNT(*) DESC, 
+X.PRODUCT_SK,
+Y.PRODUCT_SK</sql>
+    <limit>0</limit>
+    <lookup>Get Transformation Last Start Date</lookup>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>Y</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>427</xloc>
+      <yloc>133</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Get Transformation Last Start Date</name>
+    <type>SystemInfo</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>MAX</name>
+        <type>start date range</type>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>211</xloc>
+      <yloc>133</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+   <slave-step-copy-partition-distribution>
+</slave-step-copy-partition-distribution>
+   <slave_transformation>N</slave_transformation>
+</transformation>

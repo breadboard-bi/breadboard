@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>Inventory Transactions by Product Category by Supplier Classification, Period</title>
+  <version>1</version>
+  <logging-level/>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Return the inventory transaction quantities by product category, supplier class, and period.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>
+
+  <inputs> 
+    <PRODUCT_CATEGORY type="string"> 
+      <sources> 
+        <request>PRODUCT_CATEGORY</request> 
+      </sources> 
+    </PRODUCT_CATEGORY>  
+    <TEMPORAL_VALUE type="string"> 
+      <sources> 
+        <request>TEMPORAL_VALUE</request> 
+      </sources> 
+    </TEMPORAL_VALUE> 
+  </inputs>
+
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>
+
+  <resources/>
+  
+  <!-- Define an input called 'REGION'. This will be passed in when the user clicks on a slice of the pie chart -->  
+  <!-- Define an output called 'rule-result' -->  
+  <!-- This action sequence does not require any external resources -->  
+  <actions> 
+    <action-definition> 
+      <component-name>JavascriptRule</component-name>
+      <action-type>JavaScript DSQL</action-type>
+      <action-inputs> 
+        <TEMPORAL_VALUE type="string"/>  
+        <PRODUCT_CATEGORY type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <query type="string"/> 
+      </action-outputs>
+      <component-definition> 
+        <script><![CDATA[var temporal_cat = "";
+var column_name = "";
+
+if ('{TEMPORAL_VALUE}'.indexOf("W") >= 0)
+{
+ temporal_cat = "WEEK";
+ column_name = "WEEK_NAME";
+}
+
+else if ('{TEMPORAL_VALUE}'.indexOf("Q") >= 0)
+{
+ temporal_cat = "QUARTER";
+ column_name = "YEAR_QUARTER_NAME";
+}
+
+else if ('{TEMPORAL_VALUE}'.length == 6)
+{
+ temporal_cat = "MONTH";
+ column_name ="MONTH_SK";
+}
+else if ('{TEMPORAL_VALUE}'.length == 4)
+{
+ temporal_cat = "YEAR";
+ column_name ="YEAR_SK";
+}
+else if ('{TEMPORAL_VALUE}'.length == 8)
+{
+ temporal_cat = "DATE";
+ column_name ="DATE_SK";
+}
+	     query = "SELECT S.SUPPLIER_CLASS_NAME, ";
+         query += "SUM(ABS(CASE WHEN A.INV_ADJUSTMENT_ID = 'IN' THEN F.INV_TRXN_QTY ELSE 0 END)) AS 'In Quantity', ";
+         query += "SUM(ABS(CASE WHEN A.INV_ADJUSTMENT_ID = 'OUT' THEN F.INV_TRXN_QTY ELSE 0 END)) AS 'Out Quantity' ";
+         query += "FROM FACT_INVENTORY_TRANSACTION F, DIMENSION_DAY D, DIMENSION_INVENTORY_ADJUSTMENT A, DIMENSION_PRODUCT P, DIMENSION_SUPPLIER S ";
+         query += "WHERE F.TRXN_DATE_SK = D.DATE_SK ";
+         query += "AND D."+column_name+ " = '{TEMPORAL_VALUE}'  ";
+		 query += "AND F.INV_ADJUSTMENT_SK = A.INV_ADJUSTMENT_SK ";
+		 query += "AND F.PRODUCT_SK = P.PRODUCT_SK ";
+		 query += "AND P.PRODUCT_CATEGORY_NAME = '{PRODUCT_CATEGORY}' ";
+		 query += "AND F.SUPPLIER_SK = S.SUPPLIER_SK ";
+ 		 query += "AND S.SUPPLIER_CLASS_NAME IS NOT NULL ";
+         query += "GROUP BY S.SUPPLIER_CLASS_NAME ";
+         query += "ORDER BY S.SUPPLIER_CLASS_NAME ";]]></script> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <!-- Define a local input called 'REGION' -->  
+      <component-name>SQLLookupRule</component-name>
+      <action-type>rule</action-type>
+      <action-inputs> 
+        <query type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>
+      <component-definition> 
+        <!-- Define the datasource for the query -->  
+        <source>sql</source>  
+        <!-- Define the query to execute. Note the parameter {REGION} in the query -->  
+        <jndi>mdw_mysql</jndi> 
+      </component-definition>  
+      <!-- Define a local output called 'rule-result' -->  
+      <!-- Specify the component to execute -->  
+      <!-- Define the settings for the component --> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>DIMENSION_GEO_LOCATION</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input>STAGE_GEO_CITY_LOCATION</input>
+      <output>DIMENSION_GEOGRAPHIC_LOCATION</output>
+      <update/>
+      <rejected/>
+      <connection>mdw_mysql</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>Y</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2007&#47;03&#47;22 21:49:38.000</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Breadboard BI - Customer 360 - Dimension Geographic Location Data Flow - Version 2.0
+=====================================================
+1.  This data flow extracts web site visitor geographic information from the staging area.
+      Because MaxMind recycles their geographic location identifier, latitude and longitude are used
+      to keep the surrogate keys pointing to the correct locations.
+
+2.  As delivered, this loads as a slowly changing dimension Type 1 (SCD1).  Add SCD2 Functionality by 
+    editing the settings in the dimension lookup&#47;update step.
+
+3.  Customers that wish to persist their staging tables and utilize incremental load logic can join to the 
+     ADMIN_LOAD_CONTROL table in the table input step.  The *_delete step should also be
+     removed from the transformation.</note>
+      <xloc>6</xloc>
+      <yloc>8</yloc>
+      <width>501</width>
+      <heigth>166</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>21</xloc>
+      <yloc>321</yloc>
+      <width>546</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI, LLC.  All rights reserved.</note>
+      <xloc>18</xloc>
+      <yloc>408</yloc>
+      <width>294</width>
+      <heigth>23</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>jde</name>
+    <server>test</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>rds</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>rds</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>STAGE_GEO_CITY_LOCATION</from><to>CREATE_GENERIC_REGION</to><enabled>Y</enabled> </hop>  <hop> <from>CREATE_GENERIC_REGION</from><to>DIMENSION_GEOGRAPHIC_LOCATION</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>CREATE_GENERIC_REGION</name>
+    <type>ScriptValue</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <script>var REGION_NAME;
+var v_ISO_3166_2_REGION_NAME = ISO_3166_2_REGION_NAME.getString();
+var v_FIPS_10_4_REGION_NAME = FIPS_10_4_REGION_NAME.getString();
+var REGION_CODE;
+var v_ISO_3166_2_REGION_CODE = ISO_3166_2_REGION_CODE.getString();
+var v_FIPS_10_4_REGION_CODE = FIPS_10_4_REGION_CODE.getString();
+
+if (v_ISO_3166_2_REGION_NAME != null )
+{
+  REGION_NAME = v_ISO_3166_2_REGION_NAME;
+  REGION_CODE = v_ISO_3166_2_REGION_CODE;
+}
+else
+{
+  REGION_NAME = v_FIPS_10_4_REGION_NAME; 
+  REGION_CODE = v_FIPS_10_4_REGION_CODE; 
+}</script>
+    <fields>      <field>        <name>REGION_NAME</name>
+        <rename>REGION_NAME</rename>
+        <type>String</type>
+        <length>60</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>REGION_CODE</name>
+        <rename>REGION_CODE</rename>
+        <type>String</type>
+        <length>32</length>
+        <precision>-1</precision>
+        </field>      </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>265</xloc>
+      <yloc>237</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>DIMENSION_GEOGRAPHIC_LOCATION</name>
+    <type>DimensionLookup</type>
+    <description>This dimension lookup&#47;update step inserts or updates rows according to a slowly changing dimension Type 1 (SCD1) or slowly changing dimension Type 2 (SCD2) strategy.  The default configuration is SCD1. </description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+      <schema/>
+      <table>DIMENSION_GEOGRAPHIC_LOCATION</table>
+      <connection>mdw_mysql</connection>
+      <commit>0</commit>
+      <update>Y</update>
+      <fields>
+        <key>
+          <name>LATITUDE_NUMBER</name>
+          <lookup>LATITUDE_NUMBER</lookup>
+        </key>
+        <key>
+          <name>LONGITUDE_NUMBER</name>
+          <lookup>LONGITUDE_NUMBER</lookup>
+        </key>
+        <date>
+          <name/>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+        </date>
+        <field>
+          <name>GEO_LOCATION_ID</name>
+          <lookup>GEO_LOCATION_ID</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>ISO_3166_2_REGION_CODE</name>
+          <lookup>ISO_3166_2_REGION_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>FIPS_10_4_REGION_CODE</name>
+          <lookup>FIPS_10_4_REGION_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>ISO_3166_2_REGION_NAME</name>
+          <lookup>ISO_3166_2_REGION_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>FIPS_10_4_REGION_NAME</name>
+          <lookup>FIPS_10_4_REGION_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>ISO_3166_COUNTRY_CODE</name>
+          <lookup>ISO_3166_COUNTRY_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>ISO_3166_COUNTRY_NAME</name>
+          <lookup>ISO_3166_COUNTRY_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>DMA_CODE</name>
+          <lookup>DMA_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>DMA_NAME</name>
+          <lookup>DMA_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>REGION_NAME</name>
+          <lookup>REGION_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>REGION_CODE</name>
+          <lookup>REGION_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>CITY_NAME</name>
+          <lookup>CITY_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>POSTAL_CODE</name>
+          <lookup>POSTAL_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>PHONE_REGION_CODE</name>
+          <lookup>PHONE_REGION_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <return>
+          <name>GEO_LOCATION_SK</name>
+          <rename/>
+          <creation_method>tablemax</creation_method>
+          <use_autoinc>N</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1970</min_year>
+      <max_year>2036</max_year>
+      <cache_size>-1</cache_size>
+     <cluster_schema/>
+    <GUI>
+      <xloc>464</xloc>
+      <yloc>236</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_GEO_CITY_LOCATION</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <sql>SELECT
+  L.GEO_LOCATION_ID
+, L.ISO_3166_COUNTRY_CODE
+, C. ISO_3166_COUNTRY_NAME
+, (CASE WHEN L.ISO_3166_COUNTRY_CODE  = &apos;US&apos; THEN L.GEO_REGION_CODE ELSE NULL  END) AS ISO_3166_2_REGION_CODE
+, (CASE WHEN L.ISO_3166_COUNTRY_CODE NOT IN (&apos;US&apos;,&apos;CA&apos;) THEN L.GEO_REGION_CODE ELSE NULL END) AS FIPS_10_4_REGION_CODE
+, IR.ISO_3166_2_REGION_NAME
+, FR.FIPS_10_4_REGION_NAME
+, L.CITY_NAME
+, L.POSTAL_CODE
+, L.LATITUDE_NUMBER
+, L.LONGITUDE_NUMBER
+, L.DMA_CODE
+, D.DMA_NAME
+, L.PHONE_REGION_CODE
+FROM STAGE_GEO_CITY_LOCATION L
+LEFT OUTER JOIN STAGE_GEO_ISO_COUNTRY C
+ON L.ISO_3166_COUNTRY_CODE = C.ISO_3166_COUNTRY_CODE
+LEFT OUTER JOIN STAGE_GEO_ISO_COUNTRY_ISO_REG IR
+ON L.ISO_3166_COUNTRY_CODE = IR.ISO_3166_COUNTRY_CODE
+AND L.GEO_REGION_CODE = IR.ISO_3166_2_REGION_CODE
+LEFT OUTER JOIN STAGE_GEO_ISO_COUNTRY_FIPS_REG FR
+ON L.ISO_3166_COUNTRY_CODE = FR.ISO_3166_COUNTRY_CODE
+AND L.GEO_REGION_CODE = FR.FIPS_10_4_REGION_CODE
+LEFT OUTER JOIN STAGE_GEO_DMA D
+ON L.DMA_CODE = D.DMA_CODE
+&#47;* WHERE L.DW_LOAD_DATE *&#47;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>72</xloc>
+      <yloc>236</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+</transformation>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>Accounts Payable by Period, Account Type, and BU</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Return the AP discount, discount lost, and late charge amounts for a particular period, account type, and product category.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <inputs> 
+    <ACCOUNT_TYPE type="string"> 
+      <sources> 
+        <request>ACCOUNT_TYPE</request> 
+      </sources> 
+    </ACCOUNT_TYPE>  
+    <BU_TYPE type="string"> 
+      <sources> 
+        <request>BU_TYPE</request> 
+      </sources> 
+    </BU_TYPE>  
+    <TEMPORAL_VALUE type="string"> 
+      <sources> 
+        <request>TEMPORAL_VALUE</request> 
+      </sources> 
+    </TEMPORAL_VALUE> 
+  </inputs>  
+  <outputs> 
+    <swresult type="result-set"/> 
+  </outputs>  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <component-name>JavascriptRule</component-name>  
+      <action-type>JavaScript DSQL</action-type>  
+      <action-inputs> 
+        <TEMPORAL_VALUE type="string"/>  
+        <ACCOUNT_TYPE type="string"/>  
+        <BU_TYPE type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <query type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <script><![CDATA[var temporal_cat = "";
+var column_name = "";
+// Only use this logic as a model for line graphs
+if ('{TEMPORAL_VALUE}'.indexOf("W") >= 0)
+{
+ temporal_cat = "DATE";
+ column_name = "WEEK_NAME";
+}
+
+else if ('{TEMPORAL_VALUE}'.indexOf("Q") >= 0)
+{
+ temporal_cat = "MONTH";
+ column_name = "YEAR_QUARTER_NAME";
+}
+
+else if ('{TEMPORAL_VALUE}'.length == 6)
+{
+ temporal_cat = "WEEK";
+ column_name ="MONTH_SK";
+}
+else if ('{TEMPORAL_VALUE}'.length == 4)
+{
+ temporal_cat = "QUARTER";
+ column_name ="YEAR_SK";
+}
+else if ('{TEMPORAL_VALUE}'.length == 8)
+{
+ temporal_cat = "DATE";
+ column_name ="DATE_SK";
+}
+query = "SELECT CAST(" + temporal_cat+"_SK AS CHAR(8)) AS "+temporal_cat+"_OF_YEAR, ";
+query += "SUM(F.TRXN_DISCOUNT_ON_PAID_AMT) AS Discount_Amount, ";
+query += "SUM(F.TRXN_DISCOUNT_LOST_ON_PAID_AMT) AS Discount_Lost_Amount, ";
+query += "SUM(F.TRXN_LATE_CHARGE_AMT) AS Late_Charge_Amount ";
+query += "FROM FACT_ACCOUNT_PAYABLE F, DIMENSION_ACCOUNT A, DIMENSION_DAY D, ";
+query += "DIMENSION_BUSINESS_UNIT B ";
+query += "WHERE F.ACCOUNT_SK = A.ACCOUNT_SK  ";
+query += "AND F.TRXN_DATE_SK = D.DATE_SK ";
+query += "AND F.BUSINESS_UNIT_SK = B.BUSINESS_UNIT_SK ";
+query += "AND A.ACCOUNT_TYPE_DESC = '{ACCOUNT_TYPE}'  ";
+query += "AND B.BUSINESS_UNIT_TYPE_NAME = '{BU_TYPE}' ";
+query += "AND D."+column_name+ " = '{TEMPORAL_VALUE}'  ";
+query += "GROUP BY D."+temporal_cat+"_SK ";
+query += "ORDER BY D."+temporal_cat+"_SK ASC ";]]></script> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>Sales Order Capture SQL Query with Country and Category Filters</action-type>  
+      <action-inputs> 
+        <query type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <query-result type="result-set" mapping="swresult"/> 
+      </action-outputs>  
+      <component-definition> 
+        <jndi>mdw_mysql</jndi> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

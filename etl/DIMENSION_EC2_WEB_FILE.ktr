@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>DIMENSION_EC2_WEB_FILE</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input>STAGE_WEB_REQUEST</input>
+      <output>DIMENSION_WEB_FILE</output>
+      <update/>
+      <rejected/>
+      <connection>mdw_amazon</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <step_performance_table/>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>N</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>0</step_performance_capturing_delay>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>174.129.240.99</name><hostname>174.129.240.99</hostname><port>8081</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2009&#47;01&#47;17 18:24:12.750</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Copyright © 2009 Breadboard BI, Inc.  All rights reserved.</note>
+      <xloc>9</xloc>
+      <yloc>344</yloc>
+      <width>290</width>
+      <heigth>22</heigth>
+    </notepad>
+    <notepad>
+      <note>Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>10</xloc>
+      <yloc>389</yloc>
+      <width>562</width>
+      <heigth>60</heigth>
+    </notepad>
+    <notepad>
+      <note>Breadboard BI - Customer 360 - Dimension Web File Data Flow - Version 2.1
+==============================================
+1.  This data flow extracts web file information from the staging area.
+
+2.  As delivered, this loads as a slowly changing dimension Type 1 (SCD1).  Add SCD2 Functionality by editing the settings in the 
+     dimension lookup&#47;update step.
+
+3.  Customers that wish to persist their staging tables and utilize incremental load logic can join to the 
+     ADMIN_LOAD_CONTROL table in the table input step.  The *_delete step should also be
+     removed from the transformation.</note>
+      <xloc>6</xloc>
+      <yloc>9</yloc>
+      <width>645</width>
+      <heigth>140</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>mdw_mysql</name>
+    <server>10.10.10.3</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>3306</port>
+    <username>mdw</username>
+    <password>Encrypted 2be98afc86aa7f2e4a118bd79cbc3fd89</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_amazon</name>
+    <server>174.129.240.99</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>3306</port>
+    <username>mdw_user</username>
+    <password>Encrypted 2be98afc86aca9693940cbd75ccd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>REMOVE_DUPLICATES</from><to>BUILD_WEB_FILE_URL</to><enabled>Y</enabled> </hop>  <hop> <from>STAGE_WEB_REQUEST</from><to>MAP_PARSE_WEB_FILE_NAME</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_PARSE_WEB_FILE_NAME</from><to>SORT_FILE_NAMES</to><enabled>Y</enabled> </hop>  <hop> <from>SORT_FILE_NAMES</from><to>REMOVE_DUPLICATES</to><enabled>Y</enabled> </hop>  <hop> <from>BUILD_WEB_FILE_URL</from><to>DIMENSION_WEB_FILE</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>BUILD_WEB_FILE_URL</name>
+    <type>ScriptValue</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>Y</compatible>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>ScriptValue</jsScript_name>
+        <jsScript_script>var WEB_FILE_URL_DESC = &quot;&quot;;
+
+if (HOSTED_CLIENT_SK == 0)
+{WEB_FILE_URL_DESC = &quot;http:&#47;&#47;www.breadboardbi.com&quot; + WEB_FILE_ROOT.getString();}
+
+else if (HOSTED_CLIENT_SK == 1)
+
+{WEB_FILE_URL_DESC = &quot;http:&#47;&#47;www.merador.com&quot; + WEB_FILE_ROOT.getString();}
+
+else {WEB_FILE_URL_DESC =WEB_FILE_ROOT.getString();}
+
+</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>WEB_FILE_URL_DESC</name>
+        <rename>WEB_FILE_URL_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>409</xloc>
+      <yloc>260</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>DIMENSION_WEB_FILE</name>
+    <type>DimensionLookup</type>
+    <description>This dimension lookup&#47;update step inserts or updates rows according to a slowly changing dimension Type 1 (SCD1) or slowly changing dimension Type 2 (SCD2) strategy.  The default configuration is SCD1. </description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <schema/>
+      <table>DIMENSION_WEB_FILE</table>
+      <connection>mdw_amazon</connection>
+      <commit>0</commit>
+      <update>Y</update>
+      <fields>
+        <key>
+          <name>NEW_WEB_FILE_NAME</name>
+          <lookup>WEB_FILE_NAME</lookup>
+        </key>
+        <key>
+          <name>HOSTED_CLIENT_SK</name>
+          <lookup>HOSTED_CLIENT_SK</lookup>
+        </key>
+        <date>
+          <name/>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+        </date>
+        <field>
+          <name>WEB_FILE_BYTE_QTY</name>
+          <lookup>WEB_FILE_BYTE_QTY</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>WEB_FILE_URL_DESC</name>
+          <lookup>WEB_FILE_URL_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>WEB_FILE_CAT</name>
+          <lookup>WEB_FILE_CAT</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>WEB_FILE_CAT_NAME</name>
+          <lookup>WEB_FILE_CAT_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <return>
+          <name>WEB_FILE_SK</name>
+          <rename/>
+          <creation_method>tablemax</creation_method>
+          <use_autoinc>N</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1970</min_year>
+      <max_year>2036</max_year>
+      <cache_size>0</cache_size>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>517</xloc>
+      <yloc>199</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_PARSE_WEB_FILE_NAME</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_PARSE_WEB_FILE_NAME</trans_name>
+    <filename>${ETL_OBJECTS_PATH}&#47;MAP_PARSE_WEB_FILE_NAME.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>WEB_FILE_NAME</parent><child>WEB_FILE_NAME</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>NEW_WEB_FILE_NAME</parent><child>NEW_WEB_FILE_NAME</child></connector>
+       <connector><parent>WEB_FILE_ROOT</parent><child>WEB_FILE_ROOT</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>152</xloc>
+      <yloc>198</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>REMOVE_DUPLICATES</name>
+    <type>Unique</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <count_rows>N</count_rows>
+      <count_field/>
+    <fields>      <field>        <name>HOSTED_CLIENT_SK</name>
+        <case_insensitive>Y</case_insensitive>
+        </field>      <field>        <name>NEW_WEB_FILE_NAME</name>
+        <case_insensitive>Y</case_insensitive>
+        </field>      </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>317</xloc>
+      <yloc>198</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>SORT_FILE_NAMES</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>%%java.io.tmpdir%%</directory>
+      <prefix>out</prefix>
+      <sort_size>5000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>HOSTED_CLIENT_SK</name>
+        <ascending>Y</ascending>
+        <case_sensitive>Y</case_sensitive>
+      </field>
+      <field>
+        <name>NEW_WEB_FILE_NAME</name>
+        <ascending>Y</ascending>
+        <case_sensitive>Y</case_sensitive>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>230</xloc>
+      <yloc>260</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_WEB_REQUEST</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_amazon</connection>
+    <sql>SELECT
+  HOSTED_CLIENT_SK
+, REPLACE(REPLACE(REPLACE(WEB_FILE_NAME,&apos;http:&#47;&#47;www.breadboardbi.com&apos;,&apos;&apos;),&apos;http:&#47;&#47;breadboardbi.dnsalias.com&apos;,&apos;&apos;),&apos;http:&#47;&#47;breadboardbi.com&apos;,&apos;&apos;) AS WEB_FILE_NAME
+, WEB_FILE_BYTE_QTY
+, (CASE 
+ 	WHEN WEB_FILE_NAME LIKE &apos;%.ajs%&apos; THEN &apos;ajax&apos;
+	WHEN (WEB_FILE_NAME LIKE &apos;%.htm%&apos; or WEB_FILE_NAME =&apos;&#47;&apos;) THEN &apos;html&apos;
+        WHEN WEB_FILE_NAME LIKE &apos;%.pdf%&apos; THEN &apos;pdf&apos;
+ 	WHEN WEB_FILE_NAME LIKE &apos;%cube.xactio%&apos; THEN &apos;pentaho cube&apos; &#47;* requires naming standard *&#47;
+        WHEN WEB_FILE_NAME LIKE &apos;%.ico&apos; THEN &apos;icon&apos;
+        WHEN WEB_FILE_NAME LIKE &apos;%.css&apos; THEN &apos;stylesheet&apos;
+        WHEN WEB_FILE_NAME LIKE &apos;%robots.txt&apos; THEN &apos;robots.txt&apos;
+        WHEN WEB_FILE_NAME LIKE &apos;%.png%&apos; or WEB_FILE_NAME LIKE &apos;%.jpg%&apos; or WEB_FILE_NAME LIKE &apos;%.gif%&apos; THEN &apos;image&apos; 
+        WHEN WEB_FILE_NAME LIKE &apos;%.log%&apos; THEN &apos;log&apos; 
+	WHEN WEB_FILE_NAME LIKE &apos;%.txt%&apos; THEN &apos;text&apos;
+	WHEN WEB_FILE_NAME LIKE &apos;%.jsp%&apos; THEN &apos;java server page&apos;
+	WHEN WEB_FILE_NAME LIKE &apos;%.asp%&apos; THEN &apos;application server page&apos;
+	WHEN WEB_FILE_NAME LIKE &apos;%.js%&apos; THEN &apos;javascript&apos;
+	WHEN WEB_FILE_NAME LIKE &apos;%avigate%&apos; THEN &apos;demo navigation&apos;
+	WHEN WEB_FILE_NAME LIKE &apos;%.zip%&apos; THEN &apos;zip&apos;
+	WHEN WEB_FILE_NAME LIKE &apos;%bt&#47;blog&#47;2%&apos; THEN &apos;blog&apos;        
+	ELSE &apos;unknown&apos; END) AS WEB_FILE_CAT
+, (CASE WHEN WEB_FILE_NAME LIKE &apos;%.ajs%&apos; THEN &apos;ajax&apos;
+        WHEN (WEB_FILE_NAME LIKE &apos;%.htm%&apos;  or WEB_FILE_NAME =&apos;&#47;&apos;) THEN &apos;html&apos;
+        WHEN WEB_FILE_NAME LIKE &apos;%.pdf%&apos; THEN &apos;pdf&apos;
+ 	WHEN WEB_FILE_NAME LIKE &apos;%cube.xactio%&apos; THEN &apos;pentaho cube&apos; &#47;* requires naming standard *&#47;
+        WHEN WEB_FILE_NAME LIKE &apos;%.ico&apos; THEN &apos;icon&apos;
+        WHEN WEB_FILE_NAME LIKE &apos;%.css&apos; THEN &apos;stylesheet&apos;
+        WHEN WEB_FILE_NAME LIKE &apos;%robots.txt&apos; THEN &apos;robots.txt&apos;
+        WHEN (WEB_FILE_NAME LIKE &apos;%.png%&apos; or WEB_FILE_NAME LIKE &apos;%.jpg%&apos; or WEB_FILE_NAME LIKE &apos;%.gif%&apos;) THEN &apos;image&apos; 
+        WHEN WEB_FILE_NAME LIKE &apos;%.log%&apos; THEN &apos;log&apos;
+	WHEN WEB_FILE_NAME LIKE &apos;%.txt%&apos; THEN &apos;text&apos;
+	WHEN WEB_FILE_NAME LIKE &apos;%.jsp%&apos; THEN &apos;java server page&apos;
+	WHEN WEB_FILE_NAME LIKE &apos;%.asp%&apos; THEN &apos;application server page&apos;
+	WHEN WEB_FILE_NAME LIKE &apos;%.js%&apos; THEN &apos;javascript&apos;
+	WHEN WEB_FILE_NAME LIKE &apos;%avigate%&apos; THEN &apos;demo navigation&apos;
+	WHEN WEB_FILE_NAME LIKE &apos;%.zip%&apos; THEN &apos;zip&apos;
+	WHEN WEB_FILE_NAME LIKE &apos;%bt&#47;blog&#47;2%&apos; THEN &apos;blog&apos;        
+	ELSE &apos;unknown&apos; END) AS WEB_FILE_CAT_NAME
+FROM STAGE_WEB_REQUEST
+&#47;* WHERE DW_LOAD_DATE *&#47;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>70</xloc>
+      <yloc>260</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+   <slave-step-copy-partition-distribution>
+</slave-step-copy-partition-distribution>
+   <slave_transformation>N</slave_transformation>
+</transformation>

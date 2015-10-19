@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name/>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    </notepads>
+  <connection>
+    <name>psft</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>mdw</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>breadboard</name>
+    <server>192.168.0.103</server>
+    <type>ORACLE</type>
+    <access>Native</access>
+    <database>orcl</database>
+    <port>1521</port>
+    <username>mdw</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_LEDGER_METRICS</from><to>STAGE_GL_POSTED_TRANSACTION</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>PSFT_LEDGER_METRICS</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>psft</connection>
+    <sql>SELECT
+  BUSINESS_UNIT AS GL_BUSINESS_UNIT_ID
+, LEDGER AS LEDGER_ID
+, ACCOUNT AS ACCOUNT_ID
+, ALTACCT AS ALTERNATE_ACCOUNT_ID
+, DEPTID AS DEPARTMENT_ID
+, OPERATING_UNIT AS OPERATING_UNIT_ID
+, PRODUCT AS PRODUCT_ID
+, FUND_CODE AS FUND_ID
+, CLASS_FLD AS CLASS_ID
+, PROGRAM_CODE AS PROGRAM_ID
+, BUDGET_REF AS BUDGET_REFERENCE_ID
+, AFFILIATE AS AFFILIATE_BUSINESS_UNIT_ID
+, CHARTFIELD1 AS CHARTFIELD1_ID
+, CHARTFIELD2  AS CHARTFIELD2_ID
+, CHARTFIELD3  AS CHARTFIELD3_ID
+, PROJECT_ID  AS PROJECT_ID
+, BOOK_CODE AS BOOK_ID
+, GL_ADJUST_TYPE AS GL_ADJUSTMENT_TYPE_ID
+, CURRENCY_CD AS TRXN_CURRENCY_ID
+, BASE_CURRENCY AS BASE_CURRENCY_ID
+, STATISTICS_CODE AS STATISTICS_ID
+, POSTED_BASE_AMT AS BASE_AMT
+, POSTED_TRAN_AMT AS TRXN_AMT
+FROM PS_LEDGER
+--WHERE DTTM_STAMP_SEC
+--, FISCAL_YEAR AS FISCAL_YEAR_NUMBER
+--, ACCOUNTING_PERIOD AS ACCOUNTING_PERIOD_NUMBER
+--, SRC_SYS_ID AS SOURCE_SYSTEM_ID
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>164</xloc>
+      <yloc>289</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_GL_POSTED_TRANSACTION</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>breadboard</connection>
+    <table>STAGE_GL_POSTED_TRANSACTION</table>
+    <commit>100</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <GUI>
+      <xloc>380</xloc>
+      <yloc>289</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

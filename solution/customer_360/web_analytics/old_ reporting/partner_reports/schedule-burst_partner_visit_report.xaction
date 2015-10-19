@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>%description</description>  
+    <help/>  
+    <result-type>email</result-type>  
+    <icon/> 
+  </documentation>  
+  <inputs/>  
+  <outputs/>  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <component-name>JobSchedulerComponent</component-name>  
+      <action-type>Schedule An Action Sequence</action-type>  
+      <component-definition> 
+        <jobAction>startJob</jobAction>  
+        <jobName>Job_Parter_Web_Visitor_Report</jobName>  
+        <solution>breadboard</solution>  
+        <path>customer_360/web_analytics/reporting/partner_reports</path>  
+        <action>burst_partner_visit_report.xaction</action>  
+        <triggerType>simple</triggerType>  
+        <triggerName>Trigger_Parter_Web_Visitor_Report</triggerName>  
+        <repeatCount>365</repeatCount>  
+        <repeatInterval>604800</repeatInterval> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

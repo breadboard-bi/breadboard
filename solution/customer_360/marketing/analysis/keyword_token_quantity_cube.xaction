@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>query_Oracle.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level></logging-level>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <help></help>  
+    <result-type>report</result-type>  
+    <description>%description</description>  
+    <icon>file.png|analysis.png</icon> 
+  </documentation>  
+  <inputs> 
+    <mdx type="string"> 
+      <default-value/>  
+      <sources> 
+        <request>MDX</request> 
+      </sources> 
+    </mdx>  
+    <mode type="string"> 
+      <sources> 
+        <request>mode</request> 
+      </sources>  
+      <default-value/> 
+    </mode>  
+    <token_quantity type="string"> 
+      <sources> 
+        <request>token_quantity</request> 
+      </sources>  
+      <default-value/> 
+    </token_quantity>  
+    <cube_suffix type="string"> 
+      <sources> 
+        <request>cube_suffix</request> 
+      </sources>  
+      <default-value/>
+    </cube_suffix> 
+  </inputs>  
+  <outputs> 
+    <model type="string"/>  
+    <connection type="string"/>  
+    <mdx type="string"/>  
+    <options type="list"/>  
+    <title type="string"/>  
+    <url type="string"> 
+      <destinations> 
+        <response>redirect</response> 
+      </destinations> 
+    </url> 
+  </outputs>  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <component-name>PivotViewComponent</component-name>  
+      <action-type/>  
+      <action-inputs> 
+        <mode type="string"/>  
+        <token_quantity type="string"/>  
+        <cube_suffix type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <model type="string"/>  
+        <connection type="string"/>  
+        <mdx type="string"/>  
+        <options type="list"/>  
+        <title type="string"/>  
+        <url type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <title>%title</title>  
+        <viewer>Pivot</viewer>  
+        <model>breadboard/analysis/breadboardbi.mondrian.xml</model>
+        <location>mondrian</location>  
+        <options> 
+          <personal/>  
+          <cube-nav/>  
+          <mdx-edit/>  
+          <sort-conf/>  
+          <spacer/>  
+          <level-style/>  
+          <hide-spans/>  
+          <properties/>  
+          <non-empty/>  
+          <swap-axes/>  
+          <spacer/>  
+          <drill-member/>  
+          <drill-position/>  
+          <drill-replace/>  
+          <drill-thru/>  
+          <spacer/>  
+          <chart/>  
+          <chart-conf/>  
+          <spacer/>  
+          <print-conf/>  
+          <print-pdf/>  
+          <spacer/>  
+          <excel/> 
+        </options>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[select NON EMPTY {[Measures].[Impression Quantity], [Measures].[Click Quantity], [Measures].[Click Percent], [Measures].[Ad Amount], [Measures].[Average CPC], [Measures].[Average Position]} ON COLUMNS,
+  NON EMPTY Hierarchize(Union({[Keyword Phrase.Token Quantites].[All Token Quantities]}, [Keyword Phrase.Token Quantites].[All Token Quantities].Children{token_quantity})) ON ROWS
+from [Advertisement Impression{cube_suffix}]
+where [Time Period].[All Periods]]]></query> 
+      </component-definition>  
+      <action-name>Pivot View</action-name>  
+      <logging-level>DEBUG</logging-level> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

@@ -1,0 +1,1 @@
+These ETL objects are built for Pentaho Data Integration (PDI) 2.5.2.  Some changes to the maps may be required to run on PDI 3.0.1.

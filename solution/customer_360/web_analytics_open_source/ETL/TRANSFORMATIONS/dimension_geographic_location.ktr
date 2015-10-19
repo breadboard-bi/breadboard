@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>DIMENSION_GEO_LOCATION</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <rejected/>
+      <connection>mdw_mysql</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>Y</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+  <modified_user/>
+  <modified_date>2007&#47;06&#47;09 09:20:07.085</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Breadboard BI - Customer 360 - Dimension Geographic Location Data Flow - Version 1.2
+=====================================================
+1.  This data flow extracts web site visitor geographic information from the staging area.  It should be 
+      loaded only when a new geo city location file has been provided.
+
+2.  As delivered, this loads as a slowly changing dimension Type 1 (SCD1).  Add SCD2 Functionality by 
+    editing the settings in the dimension lookup&#47;update step.
+
+3.  Customers that wish to persist their staging tables and utilize incremental load logic can utilize the 
+     admin_transformation_control table.  The *_delete step should also be removed from the transformation.</note>
+      <xloc>15</xloc>
+      <yloc>10</yloc>
+      <width>531</width>
+      <heigth>140</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+Changed to use longitude &amp; latitude for update.
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>370</xloc>
+      <yloc>308</yloc>
+      <width>546</width>
+      <heigth>75</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI, LLC.  All rights reserved. 
+
+This component is free software; you can redistribute it and&#47;or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this data mart; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA</note>
+      <xloc>23</xloc>
+      <yloc>470</yloc>
+      <width>621</width>
+      <heigth>140</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>DW_ERROR_IND</from><to>STAGE_GEO_CITY_LOCATION_errors</to><enabled>Y</enabled> </hop>  <hop> <from>ROUTE_ROWS_WITH_ERRORS</from><to>DW_ERROR_IND</to><enabled>Y</enabled> </hop>  <hop> <from>STAGE_GEO_CITY_LOCATION</from><to>ROUTE_ROWS_WITH_ERRORS</to><enabled>Y</enabled> </hop>  <hop> <from>ROUTE_ROWS_WITH_ERRORS</from><to>CREATE_GENERIC_REGION</to><enabled>Y</enabled> </hop>  <hop> <from>CREATE_GENERIC_REGION</from><to>DIMENSION_GEOGRAPHIC_LOCATION</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>CREATE_GENERIC_REGION</name>
+    <type>ScriptValue</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <script>var REGION_NAME;
+var v_ISO_3166_2_REGION_NAME = ISO_3166_2_REGION_NAME.getString();
+var v_FIPS_10_4_REGION_NAME = FIPS_10_4_REGION_NAME.getString();
+var REGION_CODE;
+var v_ISO_3166_2_REGION_CODE = ISO_3166_2_REGION_CODE.getString();
+var v_FIPS_10_4_REGION_CODE = FIPS_10_4_REGION_CODE.getString();
+
+if (v_ISO_3166_2_REGION_NAME != null )
+{
+  REGION_NAME = v_ISO_3166_2_REGION_NAME;
+  REGION_CODE = v_ISO_3166_2_REGION_CODE;
+}
+else
+{
+  REGION_NAME = v_FIPS_10_4_REGION_NAME; 
+  REGION_CODE = v_FIPS_10_4_REGION_CODE; 
+}</script>
+    <fields>      <field>        <name>REGION_NAME</name>
+        <rename>REGION_NAME</rename>
+        <type>String</type>
+        <length>60</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>REGION_CODE</name>
+        <rename>REGION_CODE</rename>
+        <type>String</type>
+        <length>32</length>
+        <precision>-1</precision>
+        </field>      </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>375</xloc>
+      <yloc>241</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>DIMENSION_GEOGRAPHIC_LOCATION</name>
+    <type>DimensionLookup</type>
+    <description>This dimension lookup&#47;update step inserts or updates rows according to a slowly changing dimension Type 1 (SCD1) or slowly changing dimension Type 2 (SCD2) strategy.  The default configuration is SCD1. </description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+      <schema/>
+      <table>DIMENSION_GEOGRAPHIC_LOCATION</table>
+      <connection>mdw_mysql</connection>
+      <commit>0</commit>
+      <update>Y</update>
+      <fields>
+        <key>
+          <name>LATITUDE_NUMBER</name>
+          <lookup>LATITUDE_NUMBER</lookup>
+        </key>
+        <key>
+          <name>LONGITUDE_NUMBER</name>
+          <lookup>LONGITUDE_NUMBER</lookup>
+        </key>
+        <date>
+          <name/>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+        </date>
+        <field>
+          <name>GEO_LOCATION_ID</name>
+          <lookup>GEO_LOCATION_ID</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>ISO_3166_2_REGION_CODE</name>
+          <lookup>ISO_3166_2_REGION_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>FIPS_10_4_REGION_CODE</name>
+          <lookup>FIPS_10_4_REGION_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>ISO_3166_2_REGION_NAME</name>
+          <lookup>ISO_3166_2_REGION_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>FIPS_10_4_REGION_NAME</name>
+          <lookup>FIPS_10_4_REGION_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>ISO_3166_COUNTRY_CODE</name>
+          <lookup>ISO_3166_COUNTRY_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>ISO_3166_COUNTRY_NAME</name>
+          <lookup>ISO_3166_COUNTRY_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>DMA_CODE</name>
+          <lookup>DMA_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>DMA_NAME</name>
+          <lookup>DMA_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>REGION_NAME</name>
+          <lookup>REGION_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>REGION_CODE</name>
+          <lookup>REGION_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>CITY_NAME</name>
+          <lookup>CITY_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>POSTAL_CODE</name>
+          <lookup>POSTAL_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>PHONE_REGION_CODE</name>
+          <lookup>PHONE_REGION_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <return>
+          <name>GEO_LOCATION_SK</name>
+          <rename/>
+          <creation_method>tablemax</creation_method>
+          <use_autoinc>N</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1971</min_year>
+      <max_year>2036</max_year>
+      <cache_size>-1</cache_size>
+     <cluster_schema/>
+    <GUI>
+      <xloc>565</xloc>
+      <yloc>241</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>DW_ERROR_IND</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>DW_ERROR_IND</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>Y</nullif>
+        <length>1</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+     <cluster_schema/>
+    <GUI>
+      <xloc>280</xloc>
+      <yloc>323</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>ROUTE_ROWS_WITH_ERRORS</name>
+    <type>FilterRows</type>
+    <description>This step routes rows with error conditions (as defined by the client) back to the stage table flagged as an error.  The current error logic is basic and is designed to be extended to meet the needs of individual customers.  Rows without errors proceed to the target table as inserts or updates, they are subsequently removed from the stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+<send_true_to>CREATE_GENERIC_REGION</send_true_to>
+<send_false_to>DW_ERROR_IND</send_false_to>
+    <compare>
+<condition>
+ <negated>Y</negated>
+ <leftvalue>GEO_LOCATION_ID</leftvalue>
+ <function>IS NULL</function>
+ <rightvalue/>
+ </condition>
+    </compare>
+     <cluster_schema/>
+    <GUI>
+      <xloc>222</xloc>
+      <yloc>241</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_GEO_CITY_LOCATION</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <sql>SELECT
+  L.GEO_LOCATION_ID
+, L.ISO_3166_COUNTRY_CODE
+, C. ISO_3166_COUNTRY_NAME
+, (CASE WHEN L.ISO_3166_COUNTRY_CODE  = &apos;US&apos; THEN L.GEO_REGION_CODE ELSE NULL  END) AS ISO_3166_2_REGION_CODE
+, (CASE WHEN L.ISO_3166_COUNTRY_CODE NOT IN (&apos;US&apos;,&apos;CA&apos;) THEN L.GEO_REGION_CODE ELSE NULL END) AS FIPS_10_4_REGION_CODE
+, IR.ISO_3166_2_REGION_NAME
+, FR.FIPS_10_4_REGION_NAME
+, L.CITY_NAME
+, L.POSTAL_CODE
+, L.LATITUDE_NUMBER
+, L.LONGITUDE_NUMBER
+, L.DMA_CODE
+, D.DMA_NAME
+, L.PHONE_REGION_CODE
+FROM STAGE_GEO_CITY_LOCATION L
+LEFT OUTER JOIN STAGE_GEO_ISO_COUNTRY C
+ON L.ISO_3166_COUNTRY_CODE = C.ISO_3166_COUNTRY_CODE
+LEFT OUTER JOIN STAGE_GEO_ISO_COUNTRY_ISO_REG IR
+ON L.ISO_3166_COUNTRY_CODE = IR.ISO_3166_COUNTRY_CODE
+AND L.GEO_REGION_CODE = IR.ISO_3166_2_REGION_CODE
+LEFT OUTER JOIN STAGE_GEO_ISO_COUNTRY_FIPS_REG FR
+ON L.ISO_3166_COUNTRY_CODE = FR.ISO_3166_COUNTRY_CODE
+AND L.GEO_REGION_CODE = FR.FIPS_10_4_REGION_CODE
+LEFT OUTER JOIN STAGE_GEO_DMA D
+ON L.DMA_CODE = D.DMA_CODE
+&#47;* WHERE L.DW_LOAD_DATE *&#47;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>61</xloc>
+      <yloc>240</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_GEO_CITY_LOCATION_errors</name>
+    <type>Update</type>
+    <description>This step updates rows in the stage table with an error flag.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <commit>0</commit>
+    <error_ignored>N</error_ignored>
+    <ignore_flag_field/>
+    <lookup>
+      <schema/>
+      <table>STAGE_GEO_CITY_LOCATION</table>
+      <key>
+        <name>GEO_LOCATION_ID</name>
+        <field>GEO_LOCATION_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>GEO_LOCATION_ID</name>
+        <rename>GEO_LOCATION_ID</rename>
+        </value>
+      <value>
+        <name>DW_ERROR_IND</name>
+        <rename>DW_ERROR_IND</rename>
+        </value>
+      </lookup>
+     <cluster_schema/>
+    <GUI>
+      <xloc>332</xloc>
+      <yloc>404</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+</transformation>

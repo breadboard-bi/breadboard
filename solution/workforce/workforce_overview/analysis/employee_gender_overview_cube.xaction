@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>query_Oracle.xaction</name>
+  <title>%title</title>
+  <version>1</version>
+  <logging-level/>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <help/>  
+    <result-type>report</result-type>  
+    <description>%description</description>  
+    <icon>file.png|analysis.png</icon> 
+  </documentation>
+
+  <inputs> 
+    <mdx type="string"> 
+      <default-value/>  
+      <sources> 
+        <request>MDX</request> 
+      </sources> 
+    </mdx>  
+    <mode type="string"> 
+      <sources> 
+        <request>mode</request> 
+      </sources>  
+      <default-value/> 
+    </mode>  
+    <employee type="string"> 
+      <sources> 
+        <request>employee</request> 
+      </sources>  
+      <default-value/> 
+    </employee> 
+  </inputs>
+
+  <outputs> 
+    <model type="string"/>  
+    <connection type="string"/>  
+    <mdx type="string"/>  
+    <options type="list"/>  
+    <title type="string"/>  
+    <url type="string"> 
+      <destinations> 
+        <response>redirect</response> 
+      </destinations> 
+    </url> 
+  </outputs>
+
+  <resources/>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>PivotViewComponent</component-name>
+      <action-inputs> 
+        <mode type="string"/>  
+         
+      <employee type="string"/></action-inputs>
+      <action-outputs> 
+        <model type="string"/>  
+        <connection type="string"/>  
+        <mdx type="string"/>  
+        <options type="list"/>  
+        <title type="string"/>  
+        <url type="string"/> 
+      </action-outputs>
+      <component-definition> 
+        <title>%title</title>  
+        <viewer>Pivot</viewer>  
+        <model>breadboard/analysis/breadboardbi.mondrian.xml</model>  
+        <jndi>mdw_mysql</jndi>  
+        <location>mondrian</location>  
+        <query><![CDATA[select NON EMPTY {[Measures].[Salary], [Measures].[Hours], [Measures].[Overtime], 
+[Measures].[Overtime Hours], [Measures].[Employer Retirement], 
+[Measures].[Employee Retirement], [Measures].[Sick Hours Accrued], 
+[Measures].[Sick Hours Taken], [Measures].[Sick Hours Balance], 
+[Measures].[Vacation Hours Accrued], [Measures].[Vacation Hours Taken], 
+[Measures].[Vacation Hours Balance]} ON COLUMNS,
+  NON EMPTY Crossjoin(Hierarchize(Union({[Month.Month].[All Months].[2006]}, 
+[Month.Month].[All Months].[2006].Children)), {[Employee.Gender].[All Genders]{employee}}) ON ROWS
+from [Workforce Overview]]]></query>  
+        <options> 
+          <personal/>  
+          <cube-nav/>  
+          <mdx-edit/>  
+          <sort-conf/>  
+          <spacer/>  
+          <level-style/>  
+          <hide-spans/>  
+          <properties/>  
+          <non-empty/>  
+          <swap-axes/>  
+          <spacer/>  
+          <drill-member/>  
+          <drill-position/>  
+          <drill-replace/>  
+          <drill-thru/>  
+          <spacer/>  
+          <chart/>  
+          <chart-conf/>  
+          <spacer/>  
+          <print-conf/>  
+          <print-pdf/>  
+          <spacer/>  
+          <excel/> 
+        </options>  
+        <jndi>mdw_mysql</jndi> 
+      </component-definition>
+      <action-name>Pivot View</action-name>  
+      <logging-level>DEBUG</logging-level> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read></read>
+      <write></write>
+      <input></input>
+      <output></output>
+      <update></update>
+      <connection></connection>
+      <table></table>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection></connection>
+      <table></table>
+      <field></field>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts case solution nformation from PeopleSoft CRM 8.8.  Only the input has been built.</note>
+      <xloc>5</xloc>
+      <yloc>49</yloc>
+      <width>516</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_CRM_CASE_SOLUTION</from><to>DIMENSION_CASE_SOLUTION</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>DIMENSION_CASE_SOLUTION</name>
+    <type>InsertUpdate</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <lookup>
+      <table>DIMENSION_CASE_SOLUTION</table>
+      </lookup>
+    <GUI>
+      <xloc>476</xloc>
+      <yloc>206</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_CRM_CASE_SOLUTION</name>
+    <type>TableInput</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT SO.SETID, 
+SO.SOLUTION_ID, 
+SO.LIBRARY_ID, 
+SO.RC_SOLUTION_TYPE AS SOLUTION_TYPE, 
+RC_SOLUTION_TYPE.XLATSHORTNAME AS SOLUTION_TYPE_DESC,
+RC_SOLUTION_TYPE.XLATLONGNAME AS SOLUTION_TYPE_LONG_DESC,
+SO.SYMPTOM_DESCR AS SOLUTION_DESC,
+SL.LIBRARY_NAME AS SOLUTION_LIBRARY_DESC,          
+SO.EXPIRY_IND, 
+SO.FAQ_FLAG AS FAQ_IND, 
+SL.LIBRARY_NAME
+FROM PS_RC_SOLUTION SO
+LEFT OUTER JOIN PS_RC_SOLN_LIB_TBL SL
+ON SL.SETID = SO.SETID 
+and SL.LIBRARY_ID = SO.LIBRARY_ID
+LEFT OUTER JOIN PSXLATITEM RC_SOLUTION_TYPE
+ON RC_SOLUTION_TYPE.FIELDNAME = &apos;RC_SOLUTION_TYPE&apos;
+AND SO.RC_SOLUTION_TYPE = RC_SOLUTION_TYPE.FIELDVALUE
+AND RC_SOLUTION_TYPE.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE RC_SOLUTION_TYPE.FIELDNAME = A1.FIELDNAME 
+	AND RC_SOLUTION_TYPE.FIELDVALUE = A1.FIELDVALUE
+	AND RC_SOLUTION_TYPE.FIELDNAME = &apos;RC_SOLUTION_TYPE&apos;)
+--where SO.ROW_LASTMANT_DTTIM &gt; Last Load Date</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>140</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

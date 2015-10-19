@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+  <modified_user/>
+  <modified_date>2006/12/15 13:40:51.795</modified_date>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts purchase order data from JDE.</note>
+      <xloc>44</xloc>
+      <yloc>44</yloc>
+      <width>271</width>
+      <heigth>23</heigth>
+      </notepad>
+    <notepad>
+      <note>Copyright © 2006 Breadboard BI, LLC. All rights reserved.</note>
+      <xloc>133</xloc>
+      <yloc>245</yloc>
+      <width>291</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>localhost</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>JDE_STAGE_PURCHASE_ORDER</from><to>STAGE_JDE_PURCHASE_ORDER</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>JDE_STAGE_PURCHASE_ORDER</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>--Note amounts and quantities require decimal shift, amounts may require currency conversion.
+SELECT F4311.PDKCOO AS PURCHASE_ORDER_CO, 
+F4311.PDDOCO AS PURCHASE_ORDER_NUMBER, 
+F4311.PDDCTO AS PURCHASE_ORDER_TYPE_ID, 
+F4311.PDSFXO AS PURCHASE_ORDER_SUFFIX_ID, 
+F4311.PDLNID AS PURCHASE_ORDER_LINE_NUMBER, 
+F4311.PDMCU AS BUSINESS_UNIT_ID, 
+F4311.PDAN8 AS SUPPLIER_ID, 
+F4311.PDSHAN AS CUST_SHIP_TO_ID, 
+F4311.PDDRQJ AS REQUEST_DATE_ID, 
+F4311.PDTRDJ AS ORDER_DATE_ID, 
+F4311.PDOPDJ AS ORGINAL_PROMISE_SHIP_DATE_ID, 
+F4311.PDPPDJ AS PROMISE_SHIP_DATE_ID, 
+F4311.PDDGL AS GL_DATE_ID, 
+F4311.PDITM AS ITEM_ID, 
+F4311.PDLNTY AS LINE_TYPE_ID, 
+F4311.PDNXTR AS NEXT_STATUS_ID, 
+F4311.PDLTTR AS LAST_STATUS_ID, 
+F4311.PDUOM AS TRXN_UOM_ID, 
+F4311.PDUORG AS ORDER_LINE_UNIT_QTY, 
+F4311.PDUCHG AS ON_HOLD_LINE_UNIT_QTY, 
+F4311.PDUOPN AS OPEN_LINE_UNIT_QTY, 
+F4311.PDUREC AS RECEIVED_LINE_UNIT_QTY, 
+F4311.PDURLV AS RELIEVED_LINE_UNIT_QTY, 
+F4311.PDPRRC AS LINE_UNIT_COST_AMT, 
+F4311.PDAEXP AS LINE_EXTENDED_COST_AMT, 
+F4311.PDACHG AS ON_HOLD_LINE_AMT, 
+F4311.PDAOPN AS OPEN_LINE_AMT, 
+F4311.PDAREC AS RECEIVED_LINE_AMT, 
+F4311.PDARLV AS RELIEVED_LINE_AMT, 
+F4311.PDANBY AS BUYER_ID, 
+F4311.PDUOM3 AS PURCHASING_UOM_ID, 
+F4311.PDAID AS ACCOUNT_ID, 
+F4311.PDSBLT AS SUBLEDGER_TYPE_ID, 
+F4311.PDSBL AS SUBLEDGER_ID
+FROM
+ F4311 --Purchase Order Line</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI>
+      <xloc>94</xloc>
+      <yloc>133</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_JDE_PURCHASE_ORDER</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <table>STAGE_JDE_PURCHASE_ORDER</table>
+    <commit>100</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <GUI>
+      <xloc>526</xloc>
+      <yloc>133</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

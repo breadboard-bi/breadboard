@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>Online Marketing Period Data</title>
+  <version>2</version>
+  <logging-level/>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Return the order amounts by period. It includes dynamic SQL that relies on the following columns &amp; formats from the date dimension: WEEK_NAME, YEAR_QUARTER_NAME, MONTH_SK, YEAR_SK, and DATE_SK. The formats for these columns should be as follows: YYYYQ[1-52], e.g, 1998W37 for WEEK_NAME; YYYYQ[1-4], e.g., 1998Q3 for YEAR_QUARTER_NAME; YYYYMM, e.g., 200509for MONTH_SK; YYYY, e.g., 2001 for YEAR_SK; and YYYYMMDD, e.g., 20061101 for DATE_SK.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>
+
+  <inputs> 
+    <TEMPORAL_VALUE type="string"> 
+      <sources> 
+        <request>TEMPORAL_VALUE</request> 
+      </sources> 
+    </TEMPORAL_VALUE>  
+    <HOSTED_CLIENT_SK type="string"> 
+      <sources> 
+        <request>HOSTED_CLIENT_SK</request> 
+      </sources>  
+      <default-value><![CDATA[0]]></default-value> 
+    </HOSTED_CLIENT_SK> 
+  </inputs>
+
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>
+
+  <resources/>
+  
+  <!-- Define an output called 'rule-result' -->  
+  <!-- This action sequence does not require any external resources -->  
+  <actions> 
+    <action-definition> 
+      <component-name>JavascriptRule</component-name>
+      <action-type>JavaScript DSQL</action-type>
+      <action-inputs> 
+        <TEMPORAL_VALUE type="string"/>  
+        <HOSTED_CLIENT_SK type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <query type="string"/> 
+      </action-outputs>
+      <component-definition> 
+        <script><![CDATA[var select_column_name = "";
+var select_label_name = "";
+var column_name = "";
+
+if ('{TEMPORAL_VALUE}'.indexOf("W") >= 0)
+{
+ select_column_name = "DATE_SK";
+ column_name = "WEEK_NAME";
+}
+
+else if ('{TEMPORAL_VALUE}'.indexOf("Q") >= 0)
+{
+ select_column_name = "MONTH_SK";
+ column_name = "YEAR_QUARTER_NAME";
+}
+
+else if ('{TEMPORAL_VALUE}'.length == 6)
+{
+ select_column_name = "WEEK_NAME";
+ column_name ="MONTH_SK";
+}
+else if ('{TEMPORAL_VALUE}'.length == 4)
+{
+select_column_name = "YEAR_QUARTER_NAME";
+ column_name ="YEAR_SK";
+}
+else if ('{TEMPORAL_VALUE}'.length == 8)
+{
+ select_column_name = "DATE_SK";
+ column_name ="DATE_SK";
+}
+	   query = "SELECT CAST(" + select_column_name + " AS CHAR(8)),  ";
+         query += "SUM(F.AD_IMPRESSION_QTY)  AS 'Impressions' ";
+         query += "FROM FACT_ADVERTISEMENT_IMPRESSION F, DIMENSION_DAY D ";
+         query += "WHERE F.IMPRESSION_DATE_SK = D.DATE_SK ";
+	     query += "AND D."+column_name+ " = '{TEMPORAL_VALUE}'  ";
+   	   	 query += "AND F.HOSTED_CLIENT_SK = '{HOSTED_CLIENT_SK}' ";
+         query += "GROUP BY D."+select_column_name+" ";
+         query += "ORDER BY D."+select_column_name+" ASC ";]]></script> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>
+      <action-type>rule</action-type>
+      <action-inputs> 
+        <query type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>
+      <component-definition> 
+        <!-- Define the datasource for the query -->  
+        <!-- Define the query to execute. Note the parameter {REGION} in the query -->  
+        <jndi>mdw_mysql</jndi> 
+      </component-definition>  
+      <!-- Define a local output called 'rule-result' -->  
+      <!-- Specify the component to execute -->  
+      <!-- Define the settings for the component --> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

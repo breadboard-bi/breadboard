@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">  
+  <name>sales_lead_top_products_report.xaction</name>
+  <title>Sales Lead Top Products by Period</title>
+  <version>1</version>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Lead top products. It includes dynamic SQL that relies on the following columns &amp; formats from the date dimension: WEEK_NAME, YEAR_QUARTER_NAME, MONTH_SK, YEAR_SK, and DATE_SK. The formats for these columns should be as follows: YYYYQ[1-52], e.g, 1998W37 for WEEK_NAME; YYYYQ[1-4], e.g., 1998Q3 for YEAR_QUARTER_NAME; YYYYMM, e.g., 200509 for MONTH_SK; YYYY, e.g., 2001 for YEAR_SK; and YYYYMMDD, e.g., 20061101 for DATE_SK. It also includes the Oracle RANK function that limits the data set to the top 15 products by transaction price. Non-Oracle implementations will need modification.</description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help>Oracle ==== query = "SELECT * FROM ( "; query += "SELECT RANK() OVER(ORDER BY SUM(F.TRXN_PRICE_AMT) desc) as RANK, "; query += "P.PRODUCT_DESC, "; query += "ROUND(SUM(F.ORDER_UNIT_QTY)) AS ORDER_UNIT_QTY, "; query += "ROUND(SUM(F.TRXN_PRICE_AMT)) AS ORDER_AMT, "; query += "ROUND(SUM(F.TRXN_COST_AMT)) AS COST_AMT, "; query += "ROUND(SUM(F.TRXN_PRICE_AMT - F.TRXN_COST_AMT)) AS GROSS_PROFIT_AMT "; query += "FROM FACT_ORDER_CAPTURE F, DIMENSION_CUSTOMER C, "; query += "DIMENSION_PRODUCT P,DIMENSION_DAY D "; query += "WHERE F.ORDER_CAPTURE_DATE_SK = D.DATE_SK "; query += "AND D."+column_name+ " = '{TEMPORAL_VALUE}' "; query += "AND C.COUNTRY_NAME = '{COUNTRY}' "; query += "AND P.PARENT_PRODUCT_CATEGORY_NAME = '{CATEGORY}' "; query += "AND F.CUSTOMER_SK = C.CUSTOMER_SK "; query += "AND F.PRODUCT_SK = P.PRODUCT_SK "; query += "GROUP BY P.PRODUCT_DESC) "; query += "WHERE RANK &lt; 16 "; MySQL ==== query = "SELECT 1 as RANK, "; query += "P.PRODUCT_DESC, "; query += "ROUND(SUM(F.ORDER_UNIT_QTY)) AS ORDER_UNIT_QTY, "; query += "ROUND(SUM(F.TRXN_PRICE_AMT)) AS ORDER_AMT, "; query += "ROUND(SUM(F.TRXN_COST_AMT)) AS COST_AMT, "; query += "ROUND(SUM(F.TRXN_PRICE_AMT - F.TRXN_COST_AMT)) AS GROSS_PROFIT_AMT "; query += "FROM FACT_ORDER_CAPTURE F, DIMENSION_CUSTOMER C, "; query += "DIMENSION_PRODUCT P,DIMENSION_DAY D "; query += "WHERE F.ORDER_CAPTURE_DATE_SK = D.DATE_SK "; query += "AND D."+column_name+ " = '{TEMPORAL_VALUE}' "; query += "AND C.COUNTRY_NAME = '{COUNTRY}' "; query += "AND P.PARENT_PRODUCT_CATEGORY_NAME = '{CATEGORY}' "; query += "AND F.CUSTOMER_SK = C.CUSTOMER_SK "; query += "AND F.PRODUCT_SK = P.PRODUCT_SK "; query += "GROUP BY P.PRODUCT_DESC "; query += "ORDER BY SUM(F.TRXN_PRICE_AMT) DESC "; query += "LIMIT 15 ";</help>  
+    <result-type>report</result-type> 
+  </documentation>
+
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <TEMPORAL_VALUE type="string"> 
+      <sources> 
+        <request>TEMPORAL_VALUE</request> 
+      </sources> 
+    </TEMPORAL_VALUE>  
+    <COUNTRY type="string"> 
+      <sources> 
+        <request>COUNTRY</request> 
+      </sources> 
+    </COUNTRY>  
+    <CATEGORY type="string"> 
+      <sources> 
+        <request>CATEGORY</request> 
+      </sources> 
+    </CATEGORY> 
+  </inputs>
+
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>
+
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>sales_lead_top_products_report.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>JavascriptRule</component-name>
+      <action-type>JavaScript DSQL</action-type>
+      <action-inputs> 
+        <TEMPORAL_VALUE type="string"/>  
+        <COUNTRY type="string"/>  
+        <CATEGORY type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <query type="string"/> 
+      </action-outputs>
+      <component-definition> 
+        <script><![CDATA[var temporal_cat = "";
+var column_name = "";
+
+if ('{TEMPORAL_VALUE}'.indexOf("W") >= 0)
+{
+ temporal_cat = "WEEK";
+ column_name = "WEEK_NAME";
+}
+
+else if ('{TEMPORAL_VALUE}'.indexOf("Q") >= 0)
+{
+ temporal_cat = "QUARTER";
+ column_name = "YEAR_QUARTER_NAME";
+}
+
+else if ('{TEMPORAL_VALUE}'.length == 6)
+{
+ temporal_cat = "MONTH";
+ column_name ="MONTH_SK";
+}
+else if ('{TEMPORAL_VALUE}'.length == 4)
+{
+ temporal_cat = "YEAR";
+ column_name ="YEAR_SK";
+}
+else if ('{TEMPORAL_VALUE}'.length == 8)
+{
+ temporal_cat = "DATE";
+ column_name ="DATE_SK";
+}
+
+query = "SELECT P.PRODUCT_DESC, "; 
+query += "ROUND(SUM(F.PRODUCT_QTY)) AS PRODUCT_QTY, ";
+query += "ROUND(AVG(F.PRODUCT_QTY)) AS AVG_PRODUCT_QTY, "; 
+query += "ROUND(SUM(F.SALES_LEAD_AMT)) AS SALES_LEAD_AMT, "; 
+query += "ROUND(AVG(F.SALES_LEAD_AMT)) AS AVG_SALES_LEAD_AMT "; 
+query += "FROM FACT_SALES_LEAD F, DIMENSION_CUSTOMER C, "; 
+query += "DIMENSION_PRODUCT P,DIMENSION_DAY D ";
+query += "WHERE F.CREATED_DATE_SK = D.DATE_SK "; 
+query += "AND D."+column_name+ " = '{TEMPORAL_VALUE}' "; 
+query += "AND C.COUNTRY_NAME = '{COUNTRY}' "; 
+query += "AND P.PARENT_PRODUCT_CATEGORY_NAME = '{CATEGORY}' "; 
+query += "AND F.CUSTOMER_SK = C.CUSTOMER_SK "; 
+query += "AND F.PRODUCT_SK = P.PRODUCT_SK "; 
+query += "GROUP BY P.PRODUCT_DESC "; 
+query += "ORDER BY SUM(F.SALES_LEAD_AMT) DESC "; 
+query += "LIMIT 15 ";]]></script> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <action-inputs> 
+        <output-type type="string"/>  
+        <query type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <report-output type="content" mapping="report"/>
+      </action-outputs>
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi> 
+      </component-definition> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

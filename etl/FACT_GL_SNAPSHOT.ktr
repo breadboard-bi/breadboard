@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>FACT_GL_SNAPSHOT</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input>FACT_GL_POSTED_TRANSACTION</input>
+      <output>FACT_GL_SNAPSHOT</output>
+      <update/>
+      <rejected/>
+      <connection/>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>Y</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2007&#47;03&#47;17 18:57:07.000</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Breadboard BI - Finance - Fact General Ledger Snaphot Data Flow - Version 1.0
+================================================
+1.  This data flow aggregates general ledger information to the fiscal period level.
+
+2.  If performance suffers, the insert&#47;update step could be replaced with an insert step (use incremental load logic to ensure inserts).
+
+3.  Rudimentary load logic is included in the table input step.</note>
+      <xloc>12</xloc>
+      <yloc>22</yloc>
+      <width>650</width>
+      <heigth>101</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>18</xloc>
+      <yloc>319</yloc>
+      <width>546</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI, LLC.  All rights reserved.</note>
+      <xloc>598</xloc>
+      <yloc>332</yloc>
+      <width>294</width>
+      <heigth>23</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>jde</name>
+    <server>test</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>rds</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>rds</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>COMPUTE_PERIOD_AMOUNTS</from><to>MAP_LOOKUP_FISCAL_PERIOD</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_FISCAL_PERIOD</from><to>FACT_GL_SNAPSHOT</to><enabled>Y</enabled> </hop>  <hop> <from>FACT_GL_POSTED_TRANSACTION</from><to>COMPUTE_PERIOD_AMOUNTS</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>COMPUTE_PERIOD_AMOUNTS</name>
+    <type>ScriptValue</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <script>&#47;&#47; Declare Variables
+var v_BUSINESS_UNIT_SK = BUSINESS_UNIT_SK.getNumber();
+var v_COST_CENTER_SK =  COST_CENTER_SK.getNumber();
+var v_LEDGER_SK = LEDGER_SK.getNumber();
+var v_SUBLEDGER_SK = SUBLEDGER_SK.getNumber();
+var v_ACCOUNT_SK = ACCOUNT_SK.getNumber();
+var v_DEPARTMENT_SK = DEPARTMENT_SK.getNumber();
+var v_OPERATING_UNIT_SK = OPERATING_UNIT_SK.getNumber();
+var v_BUDGET_SK = BUDGET_SK.getNumber();
+var v_GL_BOOK_SK = GL_BOOK_SK.getNumber();
+var v_PERIOD_CREDIT_AMT = PERIOD_CREDIT_AMT.getNumber();
+var v_PERIOD_DEBIT_AMT = PERIOD_DEBIT_AMT.getNumber();
+
+
+&#47;&#47; Check Subsequent Balances
+if (prev_BUSINESS_UNIT_SK == v_BUSINESS_UNIT_SK
+&amp;&amp; prev_COST_CENTER_SK == v_COST_CENTER_SK
+&amp;&amp; prev_LEDGER_SK == v_LEDGER_SK
+&amp;&amp; prev_SUBLEDGER_SK == v_SUBLEDGER_SK
+&amp;&amp; prev_ACCOUNT_SK == v_ACCOUNT_SK
+&amp;&amp; prev_DEPARTMENT_SK == v_DEPARTMENT_SK
+&amp;&amp; prev_OPERATING_UNIT_SK == v_OPERATING_UNIT_SK
+&amp;&amp; prev_BUDGET_SK == v_BUDGET_SK
+&amp;&amp; prev_GL_BOOK_SK == v_GL_BOOK_SK)
+{
+
+var PERIOD_END_BALANCE_AMT = prev_PERIOD_END_BALANCE_AMT + v_PERIOD_CREDIT_AMT - v_PERIOD_DEBIT_AMT;
+var PERIOD_NET_CHANGE_AMT = prev_PERIOD_END_BALANCE_AMT - PERIOD_END_BALANCE_AMT;
+
+}
+
+&#47;&#47; No previous period value
+else {
+var prev_PERIOD_END_BALANCE_AMT = 0;
+var PERIOD_END_BALANCE_AMT = v_PERIOD_CREDIT_AMT - v_PERIOD_DEBIT_AMT;
+var PERIOD_NET_CHANGE_AMT = PERIOD_END_BALANCE_AMT ;
+}
+
+&#47;&#47; Set current values as previous for the next row
+var prev_PERIOD_END_BALANCE_AMT = PERIOD_END_BALANCE_AMT;
+var prev_BUSINESS_UNIT_SK = v_BUSINESS_UNIT_SK;
+var prev_COST_CENTER_SK = v_COST_CENTER_SK;
+var prev_LEDGER_SK = v_LEDGER_SK;
+var prev_SUBLEDGER_SK = v_SUBLEDGER_SK;
+var prev_ACCOUNT_SK = v_ACCOUNT_SK;
+var prev_DEPARTMENT_SK = v_DEPARTMENT_SK;
+var prev_OPERATING_UNIT_SK = v_OPERATING_UNIT_SK;
+var prev_BUDGET_SK = v_BUDGET_SK;
+var prev_GL_BOOK_SK = v_GL_BOOK_SK;</script>
+    <fields>      <field>        <name>PERIOD_NET_CHANGE_AMT</name>
+        <rename>PERIOD_NET_CHANGE_AMT</rename>
+        <type>Number</type>
+        <length>16</length>
+        <precision>2</precision>
+        </field>      <field>        <name>PERIOD_END_BALANCE_AMT</name>
+        <rename>PERIOD_END_BALANCE_AMT</rename>
+        <type>Number</type>
+        <length>16</length>
+        <precision>2</precision>
+        </field>      </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>387</xloc>
+      <yloc>188</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>FACT_GL_POSTED_TRANSACTION</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI web page view grain fact table</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection/>
+    <sql>SELECT
+  MAX(F.TRXN_DATE) AS STREAM_DATE
+, D.FISCAL_PERIOD_ID
+, F.BUSINESS_UNIT_SK
+, F.LEDGER_SK
+, F.SUBLEDGER_SK
+, F.ACCOUNT_SK
+, F.TRXN_CURRENCY_SK
+, F.BASE_CURRENCY_SK
+, MAX(F.SOURCE_SYSTEM_SK) AS SOURCE_SYSTEM_SK
+, F.DEPARTMENT_SK
+, F.OPERATING_UNIT_SK
+, F.BUDGET_SK
+, F.GL_BOOK_SK
+, F.COST_CENTER_SK
+, SUM(CASE WHEN A.GL_ADJUSTMENT_NAME = &apos;Credit&apos; THEN F.TRXN_AMT ELSE 0 END) AS PERIOD_CREDIT_AMT
+, SUM(CASE WHEN A.GL_ADJUSTMENT_NAME = &apos;Debit&apos; THEN F.TRXN_AMT ELSE 0 END) AS PERIOD_DEBIT_AMT
+, AVG(BASE_CURRENCY_EXCHANGE_RATE) AS BASE_CURRENCY_EXCHANGE_RATE
+FROM FACT_GL_POSTED_TRANSACTION F, DIMENSION_DAY D, DIMENSION_GL_ADJUSTMENT A
+WHERE F.TRXN_DATE_SK =  D.DATE_SK AND F.GL_ADJUSTMENT_SK = A.GL_ADJUSTMENT_SK
+GROUP BY 
+  D.FISCAL_PERIOD_ID
+, F.BUSINESS_UNIT_SK
+, F.COST_CENTER_SK
+, F.LEDGER_SK
+, F.SUBLEDGER_SK
+, F.ACCOUNT_SK
+, F.TRXN_CURRENCY_SK
+, F.BASE_CURRENCY_SK
+, F.DEPARTMENT_SK
+, F.OPERATING_UNIT_SK
+, F.BUDGET_SK
+, F.GL_BOOK_SK
+ORDER BY D.FISCAL_PERIOD_ID DESC
+, F.BUSINESS_UNIT_SK
+, F.COST_CENTER_SK
+, F.LEDGER_SK
+, F.SUBLEDGER_SK
+, F.ACCOUNT_SK
+, F.DEPARTMENT_SK
+, F.OPERATING_UNIT_SK
+, F.BUDGET_SK
+, F.GL_BOOK_SK
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>209</xloc>
+      <yloc>189</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>FACT_GL_SNAPSHOT</name>
+    <type>InsertUpdate</type>
+    <description>This update step inserts or updates data into the fact table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection/>
+    <commit>100</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema/>
+      <table>FACT_GL_SNAPSHOT</table>
+      <key>
+        <name>BUSINESS_UNIT_SK</name>
+        <field>BUSINESS_UNIT_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>LEDGER_SK</name>
+        <field>LEDGER_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>SUBLEDGER_SK</name>
+        <field>SUBLEDGER_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>ACCOUNT_SK</name>
+        <field>ACCOUNT_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>BASE_CURRENCY_SK</name>
+        <field>BASE_CURRENCY_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>TRXN_CURRENCY_SK</name>
+        <field>TRXN_CURRENCY_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>DEPARTMENT_SK</name>
+        <field>DEPARTMENT_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>OPERATING_UNIT_SK</name>
+        <field>OPERATING_UNIT_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>BUDGET_SK</name>
+        <field>BUDGET_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>GL_BOOK_SK</name>
+        <field>GL_BOOK_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>COST_CENTER_SK</name>
+        <field>COST_CENTER_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>FISCAL_PERIOD_SK</name>
+        <field>FISCAL_PERIOD_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>BUSINESS_UNIT_SK</name>
+        <rename>BUSINESS_UNIT_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>LEDGER_SK</name>
+        <rename>LEDGER_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>SUBLEDGER_SK</name>
+        <rename>SUBLEDGER_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ACCOUNT_SK</name>
+        <rename>ACCOUNT_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>BASE_CURRENCY_SK</name>
+        <rename>BASE_CURRENCY_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TRXN_CURRENCY_SK</name>
+        <rename>TRXN_CURRENCY_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>DEPARTMENT_SK</name>
+        <rename>DEPARTMENT_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>OPERATING_UNIT_SK</name>
+        <rename>OPERATING_UNIT_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>BUDGET_SK</name>
+        <rename>BUDGET_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>GL_BOOK_SK</name>
+        <rename>GL_BOOK_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>COST_CENTER_SK</name>
+        <rename>COST_CENTER_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PERIOD_CREDIT_AMT</name>
+        <rename>PERIOD_CREDIT_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PERIOD_DEBIT_AMT</name>
+        <rename>PERIOD_DEBIT_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PERIOD_NET_CHANGE_AMT</name>
+        <rename>PERIOD_NET_CHANGE_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PERIOD_END_BALANCE_AMT</name>
+        <rename>PERIOD_END_BALANCE_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>FISCAL_PERIOD_SK</name>
+        <rename>FISCAL_PERIOD_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>BASE_CURRENCY_EXCHANGE_RATE</name>
+        <rename>BASE_CURRENCY_EXCHANGE_RATE</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+     <cluster_schema/>
+    <GUI>
+      <xloc>750</xloc>
+      <yloc>187</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_FISCAL_PERIOD</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_FISCAL_PERIOD</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_FISCAL_PERIOD.ktr</filename>
+    <directory_path/>
+  <input>
+    <connector><field>FISCAL_PERIOD_ID</field>  <mapping>FISCAL_PERIOD_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_SK</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>FISCAL_PERIOD_SK</field>  <mapping>FISCAL_PERIOD_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>556</xloc>
+      <yloc>188</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+</transformation>

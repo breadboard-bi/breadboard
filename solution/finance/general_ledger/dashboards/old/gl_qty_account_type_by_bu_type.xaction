@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>GL Posted Transactions by Account Type by Business Unit by Quarter</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Return the general ledger posted transaction amounts by account type, business unit, and quarter</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <inputs> 
+    <ACCOUNT_TYPE type="string"> 
+      <sources> 
+        <request>ACCOUNT_TYPE</request> 
+      </sources> 
+    </ACCOUNT_TYPE>  
+    <BU_TYPE type="string"> 
+      <sources> 
+        <request>BU_TYPE</request> 
+      </sources> 
+    </BU_TYPE> 
+  </inputs>  
+  <outputs> 
+    <swresult type="result-set"/> 
+  </outputs>  
+  <resources/>  
+  <actions> 
+    <actions> 
+      <action-definition> 
+        <component-name>SQLLookupRule</component-name>  
+        <action-type>Sales Order Capture SQL Query with Country and Category Filters</action-type>  
+        <action-inputs> 
+          <ACCOUNT_TYPE type="string"/>  
+          <BU_TYPE type="string"/> 
+        </action-inputs>  
+        <action-outputs> 
+          <query-result type="result-set" mapping="swresult"/> 
+        </action-outputs>  
+        <component-definition> 
+          <query><![CDATA[SELECT D.YEAR_QUARTER_NAME, COUNT(F.ACCOUNT_SK) AS "Transaction Quantity"
+FROM FACT_GL_POSTED_TRANSACTION F, DIMENSION_ACCOUNT A, DIMENSION_DAY D, DIMENSION_BUSINESS_UNIT B
+WHERE F.ACCOUNT_SK = A.ACCOUNT_SK 
+AND F.TRXN_DATE_SK = D.DATE_SK
+AND F.BUSINESS_UNIT_SK = B.BUSINESS_UNIT_SK
+AND A.ACCOUNT_TYPE_DESC = '{ACCOUNT_TYPE}' 
+AND B.BUSINESS_UNIT_TYPE_NAME = '{BU_TYPE}'
+GROUP BY D.YEAR_QUARTER_NAME
+ORDER BY D.YEAR_QUARTER_NAME]]></query>  
+          <jndi>mdw</jndi> 
+        </component-definition> 
+      </action-definition> 
+    </actions> 
+  </actions> 
+</action-sequence>

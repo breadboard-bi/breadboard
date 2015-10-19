@@ -1,0 +1,905 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>STAGE_ORDER_compiere</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write>STAGE_ORDER</write>
+      <input>COMPIERE_ORDER 1</input>
+      <output/>
+      <update/>
+      <rejected/>
+      <connection>mdw_mysql</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <step_performance_table/>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>N</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+  <modified_user>-</modified_user>
+  <modified_date>2008&#47;08&#47;05 14:13:24.500</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>26</xloc>
+      <yloc>516</yloc>
+      <width>562</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2008 Breadboard BI, Inc. All rights reserved.</note>
+      <xloc>26</xloc>
+      <yloc>463</yloc>
+      <width>287</width>
+      <heigth>23</heigth>
+    </notepad>
+    <notepad>
+      <note>Breadboard BI - Compiere - Order Stage
+=============================================
+1.  This data flow extracts order data from the Compiere ERP.
+
+2.  Incremental load logic is utilized in conjunction with the ADMIN_TRANSFORMATION_CONTROL table.  
+    This table must be built before running the transformation.</note>
+      <xloc>30</xloc>
+      <yloc>26</yloc>
+      <width>541</width>
+      <heigth>85</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>compiere</name>
+    <server/>
+    <type>ORACLE</type>
+    <access>JNDI</access>
+    <database>compiere</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_ORACLE.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_ORACLE.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>Get Transformation Last Start Date</from><to>COMPIERE_ORDER 1</to><enabled>N</enabled> </hop>  <hop> <from>MAP_2_BREADBOARD_order</from><to>STAGE_ORDER</to><enabled>Y</enabled> </hop>  <hop> <from>COMPIERE_ORDER 1</from><to>UNION</to><enabled>Y</enabled> </hop>  <hop> <from>UNION</from><to>ADD_CONSTANTS_FOR_BBBI_DEMO_SERVER</to><enabled>Y</enabled> </hop>  <hop> <from>COMPIERE_ORDER 2</from><to>UNION</to><enabled>Y</enabled> </hop>  <hop> <from>COMPIERE_ORDER 3</from><to>UNION</to><enabled>N</enabled> </hop>  <hop> <from>COMPIERE_ORDER 4</from><to>UNION</to><enabled>Y</enabled> </hop>  <hop> <from>Get Transformation Last Start Date</from><to>COMPIERE_ORDER 2</to><enabled>N</enabled> </hop>  <hop> <from>Get Transformation Last Start Date</from><to>COMPIERE_ORDER 3</to><enabled>N</enabled> </hop>  <hop> <from>Get Transformation Last Start Date</from><to>COMPIERE_ORDER 4</to><enabled>N</enabled> </hop>  <hop> <from>ADD_CONSTANTS_FOR_BBBI_DEMO_SERVER</from><to>COMPUTE_ORDER_STATUS</to><enabled>Y</enabled> </hop>  <hop> <from>COMPUTE_ORDER_STATUS</from><to>MAP_2_BREADBOARD_order</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>ADD_CONSTANTS_FOR_BBBI_DEMO_SERVER</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>SOURCE_SYSTEM_ID</name>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>19</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>HOSTED_CLIENT_SK</name>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>8</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>608</xloc>
+      <yloc>263</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>COMPIERE_ORDER 1</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>compiere</connection>
+    <sql>    SELECT CAST(ol.AD_Client_ID AS CHAR(10)) AS AD_Client_ID, 
+    CAST(ol.AD_Org_ID AS CHAR(10)) AS AD_Org_ID, 
+    ol.IsActive AS IsActive, 
+    ol.Created AS Created,
+    ol.CreatedBy AS CreatedBy, 
+    ol.Updated AS Updated, 
+    ol.UpdatedBy AS UpdatedBy,  
+    CAST(ol.C_Order_ID AS CHAR(10)) AS C_Order_ID, 
+    CAST(ol.C_OrderLine_ID AS CHAR(10)) AS C_OrderLine_ID, 
+    CAST(ol.C_Tax_ID AS CHAR(10)) AS C_Tax_ID, 
+    CAST(ol.C_BPartner_ID AS CHAR(10)) AS C_BPartner_ID, 
+    CAST(ol.C_BPartner_Location_ID AS CHAR(10)) AS C_BPartner_Location_ID, 
+    CAST(bpl.C_Location_ID AS CHAR(10)) AS C_Location_ID,  
+    CAST(ol.Line AS CHAR(10)) AS Line, 
+    CAST(ol.M_Product_ID AS CHAR(10)) AS M_Product_ID,  
+    CAST(ol.C_Campaign_ID AS CHAR(10)) AS C_Campaign_ID, 
+    CAST(ol.C_Project_ID AS CHAR(10)) AS C_Project_ID, 
+    CAST(ol.C_Activity_ID AS CHAR(10)) AS C_Activity_ID, 
+    CAST(ol.C_ProjectPhase_ID AS CHAR(10)) AS C_ProjectPhase_ID, 
+    CAST(ol.C_ProjectTask_ID AS CHAR(10)) AS C_ProjectTask_ID,
+    CAST(ol.S_ResourceAssignment_ID AS CHAR(10)) AS S_ResourceAssignment_ID,
+    CAST(ol.C_Charge_ID AS CHAR(10)) AS C_Charge_ID,
+    CAST(ol.C_UOM_ID AS CHAR(10)) AS C_UOM_ID,
+    CAST(ol.C_CURRENCY_ID AS CHAR(10)) AS C_CURRENCY_ID,
+    CAST(ol.M_SHIPPER_ID AS CHAR(10)) AS M_SHIPPER_ID,
+    CAST(ol.M_WAREHOUSE_ID AS CHAR(10)) AS WAREHOUSE_ID,
+    CAST(i.C_DOCTYPE_ID AS CHAR(10)) AS C_DOCTYPE_ID,
+    DATEORDERED,
+    CASE WHEN ol.QtyOrdered&lt;&gt;0 OR ol.M_Product_ID IS NOT NULL THEN ol.QtyOrdered END AS QtyOrdered,      
+    CASE WHEN ol.QtyEntered&lt;&gt;0 OR ol.M_Product_ID IS NOT NULL THEN ol.QtyEntered END AS QtyEntered,       
+    CASE WHEN i.IsDiscountPrinted=&apos;Y&apos; AND ol.PriceList&lt;&gt;0         THEN ol.PriceList END AS PriceList,  
+    CASE WHEN i.IsDiscountPrinted=&apos;Y&apos; AND ol.PriceList&lt;&gt;0 AND ol.QtyEntered&lt;&gt;0         THEN ol.PriceList*ol.QtyOrdered&#47;ol.QtyEntered END AS PriceEnteredList,  
+    CASE WHEN i.IsDiscountPrinted=&apos;Y&apos; AND ol.PriceList&gt;ol.PriceActual AND ol.PriceList&lt;&gt;0         THEN (ol.PriceList-ol.PriceActual)&#47;ol.PriceList*100 END AS Discount,
+    CASE WHEN ol.PriceActual&lt;&gt;0 OR ol.M_Product_ID IS NOT NULL THEN ol.PriceActual END AS PriceActual,   
+    CASE WHEN ol.PriceEntered&lt;&gt;0 OR ol.M_Product_ID IS NOT NULL THEN ol.PriceEntered END AS PriceEntered,   
+    CASE WHEN ol.LineNetAmt&lt;&gt;0 OR ol.M_Product_ID IS NOT NULL THEN ol.LineNetAmt END AS LineNetAmt,
+    ol.QTYDELIVERED,
+    ol.QTYINVOICED,
+    ol.QTYLOSTSALES,
+    ol.QTYRESERVED,
+    ol.QTYRETURNED
+    FROM  COMPIERE.C_OrderLine ol  
+    INNER JOIN COMPIERE.C_UOM uom ON (ol.C_UOM_ID=uom.C_UOM_ID)  
+    INNER JOIN COMPIERE.C_Order i ON (ol.C_Order_ID=i.C_Order_ID)  
+    INNER JOIN COMPIERE.C_BPartner bp ON (ol.C_BPartner_ID=bp.C_BPartner_ID)  
+    INNER JOIN COMPIERE.C_BPartner_Location bpl ON (ol.C_BPartner_Location_ID=bpl.C_BPartner_Location_ID)  
+    LEFT OUTER JOIN COMPIERE.C_Tax t ON (ol.C_Tax_ID=t.C_Tax_ID)</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>212</xloc>
+      <yloc>184</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>COMPIERE_ORDER 2</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>compiere</connection>
+    <sql>SELECT CAST(ol.AD_Client_ID AS CHAR(10)) AS AD_Client_ID, 
+    CAST(ol.AD_Org_ID AS CHAR(10)) AS AD_Org_ID, 
+    ol.IsActive AS IsActive, 
+    ol.Created AS Created, 
+    ol.CreatedBy AS CreatedBy, 
+    ol.Updated AS Updated, 
+    ol.UpdatedBy AS UpdatedBy,  
+    CAST(ol.C_Order_ID AS CHAR(10)) AS C_Order_ID, 
+    CAST(ol.C_OrderLine_ID AS CHAR(10)) AS C_OrderLine_ID, 
+    CAST(ol.C_Tax_ID AS CHAR(10)) AS C_Tax_ID,     
+    NULL AS C_BPartner_ID, 
+    NULL AS C_BPartner_Location_ID, 
+    NULL AS C_Location_ID,  
+    CAST(ol.Line+(b.Line&#47;100) AS CHAR(10)) AS Line, 
+    CAST(p.M_Product_ID AS CHAR(10)) AS M_Product_ID,
+    CAST(ol.C_Campaign_ID AS CHAR(10)) AS C_Campaign_ID, 
+    CAST(ol.C_Project_ID AS CHAR(10)) AS C_Project_ID, 
+    CAST(ol.C_Activity_ID AS CHAR(10)) AS C_Activity_ID, 
+    CAST(ol.C_ProjectPhase_ID AS CHAR(10)) AS C_ProjectPhase_ID, 
+    CAST(ol.C_ProjectTask_ID AS CHAR(10)) AS C_ProjectTask_ID, 
+    null AS S_ResourceAssignment_ID,
+    null AS C_Charge_ID,
+    CAST(ol.C_UOM_ID AS CHAR(10)) AS C_UOM_ID,
+    CAST(ol.C_CURRENCY_ID AS CHAR(10)) AS C_CURRENCY_ID,
+    CAST(ol.M_SHIPPER_ID AS CHAR(10)) AS M_SHIPPER_ID,
+    CAST(ol.M_WAREHOUSE_ID AS CHAR(10)) AS WAREHOUSE_ID,
+    NULL AS C_DOCTYPE_ID,
+    ol.DATEORDERED,
+    ol.QtyOrdered*b.BOMQty AS QtyOrdered, 
+    ol.QtyEntered*b.BOMQty AS QtyEntered, 
+    nullif(1,1) AS PriceList, 
+    NULLIF(1,1) AS PriceEnteredList, 
+    NULLIF(1,1) AS Discount, 
+    NULLIF(1,1) AS PriceActual, 
+    NULLIF(1,1) AS PriceEntered, 
+    NULLIF(1,1) AS LineNetAmt,
+    ol.QTYDELIVERED*b.BOMQty as QTYDELIVERED, &#47;* ?Correct *&#47;
+    ol.QTYINVOICED*b.BOMQty as QTYINVOICED,  &#47;* ?Correct *&#47;
+    ol.QTYLOSTSALES*b.BOMQty as QTYLOSTSALES,  &#47;* ?Correct *&#47;
+    ol.QTYRESERVED*b.BOMQty as QTYRESERVED,  &#47;* ?Correct *&#47;
+    ol.QTYRETURNED*b.BOMQty as QTYRETURNED  &#47;* ?Correct *&#47;
+    FROM  COMPIERE.M_Product_BOM b   
+    INNER JOIN COMPIERE.C_OrderLine ol ON (b.M_Product_ID=ol.M_Product_ID)  
+    INNER JOIN COMPIERE.M_Product bp ON (bp.M_Product_ID=ol.M_Product_ID    AND bp.IsBOM=&apos;Y&apos; AND bp.IsVerified=&apos;Y&apos; AND bp.IsInvoicePrintDetails=&apos;Y&apos;)  
+    INNER JOIN COMPIERE.M_Product p ON (b.M_ProductBOM_ID=p.M_Product_ID)   
+    INNER JOIN COMPIERE.C_UOM uom ON (p.C_UOM_ID=uom.C_UOM_ID)</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>213</xloc>
+      <yloc>251</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>COMPIERE_ORDER 3</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>compiere</connection>
+    <sql> SELECT CAST(AD_Client_ID AS CHAR(10)) AS AD_Client_ID, 
+    CAST(AD_Org_ID AS CHAR(10)) AS AD_Org_ID, 
+    IsActive AS IsActive, 
+    Created AS Created, 
+    CreatedBy AS CreatedBy, 
+    Updated AS Updated, 
+    UpdatedBy AS UpdatedBy,  
+    CAST(C_Order_ID AS CHAR(10)) AS C_Order_ID, 
+    &apos;0&apos; AS C_OrderLine_ID, 
+    NULL AS C_Tax_ID, 
+    NULL AS C_BPartner_ID, 
+    NULL AS C_BPartner_Location_ID, 
+    NULL AS C_Location_ID,     
+    &apos;0&apos; AS Line, 
+    NULL AS M_Product_ID,
+    null AS C_Campaign_ID, 
+    NULL AS C_Project_ID, 
+    NULL AS C_Activity_ID, 
+    NULL AS C_ProjectPhase_ID, 
+    NULL AS C_ProjectTask_ID, 
+    null AS S_ResourceAssignment_ID,
+    null AS C_Charge_ID,
+    null AS C_UOM_ID,
+    CAST(C_CURRENCY_ID AS CHAR(10)) AS C_CURRENCY_ID,
+    CAST(M_SHIPPER_ID AS CHAR(10)) AS M_SHIPPER_ID,
+    CAST(M_WAREHOUSE_ID AS CHAR(10)) AS WAREHOUSE_ID,
+    CAST(C_DOCTYPE_ID AS CHAR(10)) AS C_DOCTYPE_ID,
+    DATEORDERED,
+    nullif(1,1) AS QtyOrdered, 
+    NULLIF(1,1) AS QtyEntered, 
+    nullif(1,1) AS PriceList, 
+    NULLIF(1,1) AS PriceEnteredList, 
+    NULLIF(1,1) AS Discount, 
+    NULLIF(1,1) AS PriceActual, 
+    NULLIF(1,1) AS PriceEntered, 
+    NULLIF(1,1) AS LineNetAmt,
+    0 as QTYDELIVERED,
+    0 as QTYINVOICED,
+    0 as QTYLOSTSALES,
+    0 as QTYRESERVED,
+    0 as QTYRETURNED
+    FROM  COMPIERE.C_Order</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>215</xloc>
+      <yloc>316</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>COMPIERE_ORDER 4</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>compiere</connection>
+    <sql>SELECT CAST(ot.AD_Client_ID AS CHAR(10)) AS AD_Client_ID,
+CAST(ot.AD_Org_ID AS CHAR(10)) AS AD_Org_ID, 
+ot.IsActive AS IsActive,
+ot.Created AS Created,
+ot.CreatedBy AS CreatedBy,
+ot.Updated AS Updated,
+ot.UpdatedBy AS UpdatedBy,
+CAST(ot.C_Order_ID AS CHAR(10)) AS C_Order_ID,
+&apos;0&apos; AS C_OrderLine_ID,
+CAST(ot.C_Tax_ID AS CHAR(10)) AS C_Tax_ID,
+NULL AS C_BPartner_ID,
+NULL AS C_BPartner_Location_ID,
+NULL AS C_Location_ID,
+&apos;0&apos; AS Line,
+NULL AS M_Product_ID,
+null AS C_Campaign_ID,
+NULL AS C_Project_ID,
+NULL AS C_Activity_ID,
+NULL AS C_ProjectPhase_ID,
+NULL AS C_ProjectTask_ID,
+null AS S_ResourceAssignment_ID,
+null AS C_Charge_ID,
+null AS C_UOM_ID,
+CAST(o.C_CURRENCY_ID AS CHAR(10)) AS C_CURRENCY_ID,
+CAST(o.M_SHIPPER_ID AS CHAR(10)) AS M_SHIPPER_ID,
+CAST(o.M_WAREHOUSE_ID AS CHAR(10)) AS WAREHOUSE_ID,
+CAST(o.C_DOCTYPE_ID AS CHAR(10)) AS C_DOCTYPE_ID,
+o.DATEORDERED,
+nullif(1,1) AS QtyOrdered,
+NULLIF(1,1) AS QtyEntered,
+nullif(1,1) AS PriceList,
+NULLIF(1,1) AS PriceEnteredList,
+NULLIF(1,1) AS Discount,
+CASE WHEN ot.IsTaxIncluded=&apos;Y&apos; THEN ot.TaxAmt ELSE ot.TaxBaseAmt END AS PriceActual,
+CASE WHEN ot.IsTaxIncluded=&apos;Y&apos; THEN ot.TaxAmt ELSE ot.TaxBaseAmt END AS PriceEntered,
+CASE WHEN ot.IsTaxIncluded=&apos;Y&apos; THEN 0 ELSE ot.TaxAmt END AS LineNetAmt,
+    0 as QTYDELIVERED,
+    0 as QTYINVOICED,
+    0 as QTYLOSTSALES,
+    0 as QTYRESERVED,
+    0 as QTYRETURNED
+FROM COMPIERE.C_OrderTax ot
+INNER JOIN COMPIERE.C_Tax t ON (ot.C_Tax_ID=t.C_Tax_ID)
+INNER JOIN COMPIERE.C_Order o ON (ot.C_Order_ID = o.C_Order_ID)</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>216</xloc>
+      <yloc>380</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Get Transformation Last Start Date</name>
+    <type>SystemInfo</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>MAX</name>
+        <type>start date range</type>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>37</xloc>
+      <yloc>259</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_2_BREADBOARD_order</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>AD_CLIENT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AD_ORG_ID</name>
+        <rename>PRODUCT_SETID</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISACTIVE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CREATED</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CREATEDBY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>UPDATED</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>UPDATEDBY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_ORDER_ID</name>
+        <rename>ORDER_ID</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_ORDERLINE_ID</name>
+        <rename>ORDER_LINE_NUMBER</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_ORDER_ID</name>
+        <rename>ORDER_NUMBER</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_TAX_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_BPARTNER_ID</name>
+        <rename>CUSTOMER_ID</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_BPARTNER_LOCATION_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_LOCATION_ID</name>
+        <rename>LOCATION_ID</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>LINE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>M_PRODUCT_ID</name>
+        <rename>PRODUCT_ID</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_CAMPAIGN_ID</name>
+        <rename>CAMPAIGN_WAVE_ID</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_PROJECT_ID</name>
+        <rename>PROJECT_ID</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_ACTIVITY_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_PROJECTPHASE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_PROJECTTASK_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>S_RESOURCEASSIGNMENT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_CHARGE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_UOM_ID</name>
+        <rename>UNIT_OF_MEASURE_ID</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_CURRENCY_ID</name>
+        <rename>CURRENCY_ID</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>M_SHIPPER_ID</name>
+        <rename>CARRIER_ID</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WAREHOUSE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_DOCTYPE_ID</name>
+        <rename>ORDER_TYPE_ID</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DATEORDERED</name>
+        <rename>ORDER_CAPTURE_DATE</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>QTYORDERED</name>
+        <rename>ORDER_QTY</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>QTYENTERED</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRICELIST</name>
+        <rename>LIST_PRICE_AMT</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRICEENTEREDLIST</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DISCOUNT</name>
+        <rename>DISCOUNT_AMT</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRICEACTUAL</name>
+        <rename>PRICE_AMT</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRICEENTERED</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>LINENETAMT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SOURCE_SYSTEM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>HOSTED_CLIENT_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORDER_STATUS_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>QTYDELIVERED</name>
+        <rename>SHIPPED_QTY</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>QTYINVOICED</name>
+        <rename>BILLED_QTY</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>QTYLOSTSALES</name>
+        <rename>LOST_SALES_QTY</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>QTYRESERVED</name>
+        <rename>RESERVED_QTY</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>QTYRETURNED</name>
+        <rename>RETURN_QTY</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>        <select_unspecified>N</select_unspecified>
+      <remove>        <name>AD_CLIENT_ID</name>
+      </remove>      <remove>        <name>ISACTIVE</name>
+      </remove>      <remove>        <name>CREATED</name>
+      </remove>      <remove>        <name>CREATEDBY</name>
+      </remove>      <remove>        <name>UPDATED</name>
+      </remove>      <remove>        <name>UPDATEDBY</name>
+      </remove>      <remove>        <name>C_TAX_ID</name>
+      </remove>      <remove>        <name>C_BPARTNER_LOCATION_ID</name>
+      </remove>      <remove>        <name>LINE</name>
+      </remove>      <remove>        <name>C_ACTIVITY_ID</name>
+      </remove>      <remove>        <name>C_PROJECTPHASE_ID</name>
+      </remove>      <remove>        <name>C_PROJECTTASK_ID</name>
+      </remove>      <remove>        <name>S_RESOURCEASSIGNMENT_ID</name>
+      </remove>      <remove>        <name>C_CHARGE_ID</name>
+      </remove>      <remove>        <name>QTYENTERED</name>
+      </remove>      <remove>        <name>PRICEENTEREDLIST</name>
+      </remove>      <remove>        <name>PRICEENTERED</name>
+      </remove>      <remove>        <name>LINENETAMT</name>
+      </remove>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1003</xloc>
+      <yloc>264</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_ORDER</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <commit>1000</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema/>
+      <table>STAGE_ORDER</table>
+      <key>
+        <name>ORDER_ID</name>
+        <field>ORDER_ID</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>ORDER_LINE_NUMBER</name>
+        <field>ORDER_LINE_NUMBER</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>SOURCE_SYSTEM_ID</name>
+        <field>SOURCE_SYSTEM_ID</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>PRODUCT_SETID</name>
+        <rename>PRODUCT_SETID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ORDER_ID</name>
+        <rename>ORDER_ID</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>ORDER_LINE_NUMBER</name>
+        <rename>ORDER_LINE_NUMBER</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>ORDER_NUMBER</name>
+        <rename>ORDER_NUMBER</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>CUSTOMER_ID</name>
+        <rename>CUSTOMER_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>LOCATION_ID</name>
+        <rename>LOCATION_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT_ID</name>
+        <rename>PRODUCT_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>CAMPAIGN_WAVE_ID</name>
+        <rename>CAMPAIGN_WAVE_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>UNIT_OF_MEASURE_ID</name>
+        <rename>UNIT_OF_MEASURE_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>CURRENCY_ID</name>
+        <rename>CURRENCY_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ORDER_TYPE_ID</name>
+        <rename>ORDER_TYPE_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ORDER_CAPTURE_DATE</name>
+        <rename>ORDER_CAPTURE_DATE</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ORDER_QTY</name>
+        <rename>ORDER_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>LIST_PRICE_AMT</name>
+        <rename>LIST_PRICE_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>DISCOUNT_AMT</name>
+        <rename>DISCOUNT_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRICE_AMT</name>
+        <rename>PRICE_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>SOURCE_SYSTEM_ID</name>
+        <rename>SOURCE_SYSTEM_ID</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>HOSTED_CLIENT_SK</name>
+        <rename>HOSTED_CLIENT_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ORDER_STATUS_ID</name>
+        <rename>ORDER_STATUS_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>SHIPPED_QTY</name>
+        <rename>SHIPPED_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>BILLED_QTY</name>
+        <rename>BILLED_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>LOST_SALES_QTY</name>
+        <rename>LOST_SALES_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>RESERVED_QTY</name>
+        <rename>RESERVED_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>RETURN_QTY</name>
+        <rename>RETURN_QTY</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>1146</xloc>
+      <yloc>263</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>UNION</name>
+    <type>Dummy</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>430</xloc>
+      <yloc>263</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>COMPUTE_ORDER_STATUS</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>Y</compatible>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>var ORDER_STATUS_ID = &quot;&quot;;
+
+if (ISACTIVE.getString() == &quot;Y&quot;)
+{ORDER_STATUS_ID  = &quot;A&quot;;}
+
+else 
+{ORDER_STATUS_ID  = &quot;I&quot;;}</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>ORDER_STATUS_ID</name>
+        <rename>ORDER_STATUS_ID</rename>
+        <type>String</type>
+        <length>1</length>
+        <precision>-1</precision>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>823</xloc>
+      <yloc>263</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+   <slave-step-copy-partition-distribution>
+</slave-step-copy-partition-distribution>
+   <slave_transformation>N</slave_transformation>
+</transformation>

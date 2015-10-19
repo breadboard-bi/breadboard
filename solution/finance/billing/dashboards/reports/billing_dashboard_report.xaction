@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">  
+  <name>new_market.xaction</name>
+  <title>%title</title>
+  <version>1</version>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description><![CDATA[%description]]></description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help>MySQL ==== SELECT SUBSTR(F.INVOICE_NUMBER,0,9) AS INVOICE_NUMBER, F.INVOICE_DATE, P.PRODUCT_DESC, S.FULL_NAME,F.TRXN_INVOICE_AMT AS INVOICE_AMT FROM FACT_BILLING F, DIMENSION_PERSON S, DIMENSION_CUSTOMER C, DIMENSION_PRODUCT P,DIMENSION_DAY D, DIMENSION_SALES_CHANNEL SC WHERE D.YEAR_QUARTER_NAME = '{YEAR_QUARTER}' AND SC.SALES_CHANNEL_NAME = '{CHANNEL}' AND P.PARENT_PRODUCT_CATEGORY_NAME = '{CATEGORY}' AND F.SALES_REPRESENTATIVE_SK = S.PERSON_SK AND F.CUSTOMER_BILL_TO_SK = C.CUSTOMER_SK AND F.PRODUCT_SK = P.PRODUCT_SK AND F.INVOICE_DATE_SK = D.DATE_SK AND F.SALES_CHANNEL_SK = SC.SALES_CHANNEL_SK ORDER BY F.TRXN_INVOICE_AMT DESC LIMIT = 5 Oracle ==== select * from ( select RANK() over(order by F.TRXN_INVOICE_AMT desc) as RANK, SUBSTR(F.INVOICE_NUMBER,0,9) AS INVOICE_NUMBER, F.INVOICE_DATE, P.PRODUCT_DESC, S.FULL_NAME,F.TRXN_INVOICE_AMT AS INVOICE_AMT FROM FACT_BILLING F, DIMENSION_PERSON S, DIMENSION_CUSTOMER C, DIMENSION_PRODUCT P,DIMENSION_DAY D, DIMENSION_SALES_CHANNEL SC WHERE D.YEAR_QUARTER_NAME = '{YEAR_QUARTER}' AND SC.SALES_CHANNEL_NAME = '{CHANNEL}' AND P.PARENT_PRODUCT_CATEGORY_NAME = '{CATEGORY}' AND F.SALES_REPRESENTATIVE_SK = S.PERSON_SK AND F.CUSTOMER_BILL_TO_SK = C.CUSTOMER_SK AND F.PRODUCT_SK = P.PRODUCT_SK AND F.INVOICE_DATE_SK = D.DATE_SK AND F.SALES_CHANNEL_SK = SC.SALES_CHANNEL_SK) WHERE RANK &lt;=5</help>  
+    <result-type>report</result-type> 
+  </documentation>
+
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <YEAR_QUARTER type="string"> 
+      <sources> 
+        <request>YEAR_QUARTER</request> 
+      </sources> 
+    </YEAR_QUARTER>  
+    <CHANNEL type="string"> 
+      <sources> 
+        <request>CHANNEL</request> 
+      </sources> 
+    </CHANNEL>  
+    <CATEGORY type="string"> 
+      <sources> 
+        <request>CATEGORY</request> 
+      </sources> 
+    </CATEGORY> 
+  </inputs>
+
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>
+
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>billing_dashboard_report.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <action-inputs> 
+        <output-type type="string"/>  
+        <CHANNEL type="string"/>
+        <YEAR_QUARTER type="string"/>
+        <CATEGORY type="string"/>
+      </action-inputs>
+      <action-outputs> 
+        <report-output type="content" mapping="report"/>
+      </action-outputs>
+      <component-definition> 
+        <source>sql</source>  
+        <live>true</live>  
+        <live>true</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT SUBSTR(F.INVOICE_NUMBER,0,9) AS INVOICE_NUMBER, F.INVOICE_DATE, P.PRODUCT_DESC, 
+S.FULL_NAME,F.TRXN_INVOICE_AMT AS INVOICE_AMT
+FROM FACT_BILLING F, DIMENSION_PERSON S, DIMENSION_CUSTOMER C, 
+DIMENSION_PRODUCT P,DIMENSION_DAY D, DIMENSION_SALES_CHANNEL SC
+WHERE D.YEAR_QUARTER_NAME = '{YEAR_QUARTER}'  
+AND SC.SALES_CHANNEL_NAME = '{CHANNEL}' 
+AND P.PARENT_PRODUCT_CATEGORY_NAME = '{CATEGORY}' 
+AND F.SALES_REPRESENTATIVE_SK = S.PERSON_SK
+AND F.CUSTOMER_BILL_TO_SK = C.CUSTOMER_SK
+AND F.PRODUCT_SK = P.PRODUCT_SK
+AND F.INVOICE_DATE_SK = D.DATE_SK
+AND F.SALES_CHANNEL_SK = SC.SALES_CHANNEL_SK
+ORDER BY F.TRXN_INVOICE_AMT DESC
+LIMIT = 5]]></query>
+      </component-definition> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

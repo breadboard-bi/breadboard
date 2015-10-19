@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>DIMENSION_REGION</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>1.  Attach the SET_ADMIN_LOAD_CONTROL step to a database table output step (current input and output are only placeholders).
+2.  The source should have adequate data to produce more inserts than the number of rows in the rowset (default 350).
+3.  I was experiencing the failure using Oracle DBMS target tables and Windows 2003 Small Business Server OS.</note>
+      <xloc>19</xloc>
+      <yloc>43</yloc>
+      <width>642</width>
+      <heigth>49</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>breadboardbi</name>
+    <server>192.168.0.103</server>
+    <type>ORACLE</type>
+    <access>Native</access>
+    <database>orcl</database>
+    <port>1521</port>
+    <username>mdw</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>SET_ADMIN_LOAD_CONTROL</from><to>ADMIN_LOAD_CONTROL</to><enabled>Y</enabled> </hop>  <hop> <from>Dimension lookup/update</from><to>SET_ADMIN_LOAD_CONTROL</to><enabled>Y</enabled> </hop>  <hop> <from>Table input</from><to>Dimension lookup/update</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>ADMIN_LOAD_CONTROL</name>
+    <type>InsertUpdate</type>
+    <description>This step loads the load control table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>breadboardbi</connection>
+    <commit>100</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>ADMIN_LOAD_CONTROL</table>
+      <key>
+        <name>TRANSFORMATION_NAME</name>
+        <field>TRANSFORMATION_NAME</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>LAST_RUN_DATE</name>
+        <rename>SYSTEM_DATE</rename>
+        </value>
+      <value>
+        <name>TRANSFORMATION_NAME</name>
+        <rename>TRANSFORMATION_NAME</rename>
+        </value>
+      </lookup>
+    <GUI>
+      <xloc>675</xloc>
+      <yloc>244</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>SET_ADMIN_LOAD_CONTROL</name>
+    <type>SystemInfo</type>
+    <description>This step passes the system date and transformation name to the load control table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <fields>
+      <field>
+        <name>SYSTEM_DATE</name>
+        <type>system date (variable)</type>
+        </field>
+      <field>
+        <name>TRANSFORMATION_NAME</name>
+        <type>transformation name</type>
+        </field>
+      </fields>
+    <GUI>
+      <xloc>503</xloc>
+      <yloc>244</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Dimension lookup/update</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>dim table name</table>
+      <connection/>
+      <commit>0</commit>
+      <update>Y</update>
+      <fields>
+        <date>
+          <name/>
+          <from>date_from</from>
+          <to>date_to</to>
+          </date>
+        <return>
+          <name/>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>version</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>334</xloc>
+      <yloc>244</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Table input</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection/>
+    <sql>SELECT &lt;values&gt; FROM &lt;table name&gt; WHERE &lt;conditions&gt;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>113</xloc>
+      <yloc>242</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>CRM_DIMENSION_MARKETING_SEGMENT</name>
+    <directory>/</directory>
+    <log>
+      <read></read>
+      <write></write>
+      <input></input>
+      <output></output>
+      <update></update>
+      <connection></connection>
+      <table></table>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection></connection>
+      <table></table>
+      <field></field>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts sales marketing segment data from PeopleSoft CRM 8.8.  The output could be used to create a marketing segment dimension.</note>
+      <xloc>91</xloc>
+      <yloc>30</yloc>
+      <width>726</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_CRM_MARKETING_SEGMENT</from><to>DIMENSION_MARKETING_SEGMENT</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>DIMENSION_MARKETING_SEGMENT</name>
+    <type>InsertUpdate</type>
+    <description>This step is a placeholder, it can be replaced with a table (e.g., a marketing segment dimension).  The dimension has the recursive hierarchy:  segment   -&gt; segment level1 -&gt; …….segment level 15 -&gt; segment.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <lookup>
+      <table>DIMENSION_MARKETING_SEGMENT</table>
+      <key>
+        <name>AUDIENCE_LIST_ID</name>
+        <field>AUDIENCE_LIST_ID</field>
+        <condition>=</condition>
+        <name2></name2>
+        </key>
+      <key>
+        <name>SETID</name>
+        <field>SETID</field>
+        <condition>=</condition>
+        <name2></name2>
+        </key>
+      <value>
+        <name>AUDIENCE_LIST_ID</name>
+        <rename>AUDIENCE_LIST_ID</rename>
+        </value>
+      <value>
+        <name>SETID</name>
+        <rename>SETID</rename>
+        </value>
+      <value>
+        <name>AUDIENCE_LIST_NAME</name>
+        <rename>AUDIENCE_LIST_NAME</rename>
+        </value>
+      <value>
+        <name>SEGMENT_GROUP_ID</name>
+        <rename>SEGMENT_GROUP_ID</rename>
+        </value>
+      <value>
+        <name>SEGMENT_GROUP_NAME</name>
+        <rename>SEGMENT_GROUP_NAME</rename>
+        </value>
+      <value>
+        <name>INTERNAL_EXTERNAL_INDICATOR</name>
+        <rename>INTERNAL_EXTERNAL_INDICATOR</rename>
+        </value>
+      <value>
+        <name>INTERNAL_EXTERNAL_DESC</name>
+        <rename>INTERNAL_EXTERNAL_DESC</rename>
+        </value>
+      <value>
+        <name>AUDIENCE_LIST_SOURCE</name>
+        <rename>AUDIENCE_LIST_SOURCE</rename>
+        </value>
+      <value>
+        <name>AUDIENCE_LIST_DESC</name>
+        <rename>AUDIENCE_LIST_DESC</rename>
+        </value>
+      <value>
+        <name>FIXED_DYNAMIC_INDICATOR</name>
+        <rename>FIXED_DYNAMIC_INDICATOR</rename>
+        </value>
+      <value>
+        <name>AUDIENCE_LIST_GENERATED_DATE</name>
+        <rename>AUDIENCE_LIST_GENERATED_DATE</rename>
+        </value>
+      <value>
+        <name>AUDIENCE_LIST_UPDATED_DATE</name>
+        <rename>AUDIENCE_LIST_UPDATED_DATE</rename>
+        </value>
+      <value>
+        <name>CURRENT_LIST_COUNT</name>
+        <rename>CURRENT_LIST_COUNT</rename>
+        </value>
+      </lookup>
+    <GUI>
+      <xloc>461</xloc>
+      <yloc>165</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_CRM_MARKETING_SEGMENT</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the columns from the PS_RA_LIST table.  It maintains audience definition primary level 0 information.
+
+
+</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>Select 
+LIST.RA_LIST_ID AS AUDIENCE_LIST_ID,
+LIST.SETID, 
+LIST.RA_LIST_NAME AS AUDIENCE_LIST_NAME,
+LIST.RA_SEGMENT_GRP_ID AS SEGMENT_GROUP_ID,
+SEGMENT_GROUP.RA_SEGMENT_GROUP AS SEGMENT_GROUP_NAME,
+LIST.RA_INT_EXT_IND AS INTERNAL_EXTERNAL_INDICATOR,
+INT_EXT.XLATLONGNAME AS INTERNAL_EXTERNAL_DESC,
+LIST.RA_LIST_SOURCE AS AUDIENCE_LIST_SOURCE, 
+LIST_SOURCE.XLATLONGNAME AS AUDIENCE_LIST_DESC,
+LIST.RA_STAT_DYN_IND AS FIXED_DYNAMIC_INDICATOR, 
+LIST.LIST_GENERATE_DTTM AS AUDIENCE_LIST_GENERATED_DATE, 
+LIST.LIST_LAST_UPD_DTTM AS AUDIENCE_LIST_UPDATED_DATE, 
+LIST.LIST_CURR_COUNT AS CURRENT_LIST_COUNT
+FROM PS_RA_LIST LIST
+
+LEFT OUTER JOIN PS_RA_SEG_GRP_TBL SEGMENT_GROUP
+ON LIST.RA_SEGMENT_GRP_ID = SEGMENT_GROUP.RA_SEGMENT_GRP_ID
+
+LEFT OUTER JOIN PSXLATITEM INT_EXT
+ON INT_EXT.FIELDNAME = &apos;RA_INT_EXT_IND&apos;
+AND LIST.RA_INT_EXT_IND = INT_EXT.FIELDVALUE
+AND INT_EXT.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1 
+	WHERE INT_EXT.FIELDNAME = A1.FIELDNAME 
+	AND INT_EXT.FIELDVALUE = A1.FIELDVALUE
+	AND A1.FIELDNAME = &apos;RA_INT_EXT_IND&apos;)
+
+LEFT OUTER JOIN PSXLATITEM LIST_SOURCE
+ON LIST_SOURCE.FIELDNAME = &apos;RA_LIST_SOURCE&apos;
+AND LIST.RA_LIST_SOURCE = LIST_SOURCE.FIELDVALUE
+AND LIST_SOURCE.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1 
+	WHERE LIST_SOURCE.FIELDNAME = A1.FIELDNAME 
+	AND LIST_SOURCE.FIELDVALUE = A1.FIELDVALUE
+	AND A1.FIELDNAME = &apos;RA_LIST_SOURCE&apos;)</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>133</xloc>
+      <yloc>163</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

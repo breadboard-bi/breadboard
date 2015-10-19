@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read></read>
+      <write></write>
+      <input></input>
+      <output></output>
+      <update></update>
+      <connection></connection>
+      <table></table>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection></connection>
+      <table></table>
+      <field></field>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts contact center interaction metrics from PeopleSoft CRM 8.8.  Only the input has been built.  It should be joined with sales representative and other data and loaded into a person target.</note>
+      <xloc>5</xloc>
+      <yloc>49</yloc>
+      <width>1013</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_CRM_CONTACT_CENTER_INTERACTION</from><to>FACT_INTERACTION</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>FACT_INTERACTION</name>
+    <type>InsertUpdate</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <lookup>
+      <table>FACT_INTERACTION</table>
+      </lookup>
+    <GUI>
+      <xloc>476</xloc>
+      <yloc>206</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_CRM_CONTACT_CENTER_INTERACTION</name>
+    <type>TableInput</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT 
+IT.INTERACT_BEGIN AS INTERACTION_START_DATE, --ALSO INCLUDES TIME
+IT.INTERACT_END AS INTERACTION_END_DATE,
+IT.BUSINESS_UNIT AS BUSINESS_UNIT_ID,
+IT.INTERACTION_ID,  
+0 AS SEQUENCE_NUMBER,
+IT.INTERACT_STATUS AS INTERACTION_STATUS_ID,
+IT.RB_MCF_DETAIL_TYPE AS INTERACTION_TYPE_ID, 
+IT.BO_ID_CUST AS BO_CUSTOMER_ID,    
+IT.ROW_ADDED_OPRID AS AGENT_OPERATOR_ID,
+OPR.PERSON_ID AS AGENT_PERSON_ID, 
+IT.INTERACTION_MTHD AS INTERACTION_METHOD_ID,
+NULL AS ASSOCIATION_TYPE_ID,
+NULL AS LEAD_ID,
+NULL AS OPPORTUNITY_ID,
+NULL AS CASE_ID,
+NULL AS SERVICE_ORDER_ID,
+NULL AS ORDER_CAPTURE_ID,
+(CASE WHEN IT.INTERACT_END IS NOT NULL THEN IT.INTERACT_END - IT.INTERACT_BEGIN ELSE 0 END) AS INTERACTION_DURATION_QTY,
+(CASE WHEN IT.INTERACTION_MTHD IN (&apos;IPHN&apos;, &apos;OPHN&apos;) THEN 1 ELSE 0 END) AS CALL_QTY,
+(CASE WHEN IT.INTERACTION_MTHD in (&apos;IEML&apos;, &apos;OEML&apos;) THEN 1 ELSE 0 END) AS EMAIL_QTY,
+(CASE WHEN IT.INTERACTION_MTHD = &apos;ICHT&apos; THEN 1 ELSE 0 END) AS CHAT_QTY
+FROM PS_RI_INTERACTION IT
+LEFT OUTER JOIN PSOPRALIAS OPR
+ON IT.ROW_ADDED_OPRID = OPR.OPRID
+AND OPR.OPRALIASTYPE = &apos;PER&apos;
+WHERE NOT EXISTS (SELECT &apos;1&apos; FROM PS_RI_SUB_INTERACT SI WHERE SI.INTERACTION_ID = IT.INTERACTION_ID)
+--and IT.LASTUPD_EW_DTTM &gt; last load date
+UNION ALL
+SELECT SI.INTERACT_BEGIN AS INTERACTION_START_DATE, --ALSO INCLUDES TIME
+SI.INTERACT_END AS INTERACTION_END_DATE,
+SI.BUSINESS_UNIT_RI AS BUSINESS_UNIT_ID,
+SI.INTERACTION_ID,
+SI.SEQNUM AS SEQUENCE_NUMBER, 
+IT.INTERACT_STATUS AS INTERACTION_STATUS_ID,
+IT.RB_MCF_DETAIL_TYPE AS INTERACTION_TYPE_ID, 
+SI.BO_ID_CUST AS BO_CUSTOMER_ID, 
+SI.ROW_ADDED_OPRID AS AGENT_OPERATOR_ID,
+OPR.PERSON_ID AS AGENT_PERSON_ID, 
+IT.INTERACTION_MTHD AS INTERACTION_METHOD_ID, 
+SI.SUBINT_OBJ_TYPE AS ASSOCIATION_TYPE_ID, 
+SI.LEAD_ID, 
+SI.OPPORTUNITY_ID, 
+SI.CASE_ID, 
+SI.SO_ID AS SERVICE_ORDER_ID, 
+SI.CAPTURE_ID AS ORDER_CAPTURE_ID,
+(CASE WHEN SI.INTERACT_END IS NOT NULL THEN SI.INTERACT_END - SI.INTERACT_BEGIN ELSE 0 END) AS INTERACTION_DURATION_QTY,
+(CASE WHEN IT.INTERACTION_MTHD IN (&apos;IPHN&apos;, &apos;OPHN&apos;) THEN 1 ELSE 0 END) AS CALL_QTY,
+(CASE WHEN IT.INTERACTION_MTHD in (&apos;IEML&apos;, &apos;OEML&apos;) THEN 1 ELSE 0 END) AS EMAIL_QTY,
+(CASE WHEN IT.INTERACTION_MTHD = &apos;ICHT&apos; THEN 1 ELSE 0 END) AS CHAT_QTY
+FROM PS_RI_SUB_INTERACT SI
+INNER JOIN PS_RI_INTERACTION IT
+ON IT.INTERACTION_ID = SI.INTERACTION_ID
+LEFT OUTER JOIN PSOPRALIAS OPR
+ON IT.ROW_ADDED_OPRID = OPR.OPRID
+AND OPR.OPRALIASTYPE = &apos;PER&apos;
+--WHERE SI.LASTUPD_EW_DTTM &gt; last load date</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>140</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

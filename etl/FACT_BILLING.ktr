@@ -1,0 +1,1289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>FACT_BILLING</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input>STAGE_BILLING</input>
+      <output>FACT_BILLING</output>
+      <update/>
+      <rejected/>
+      <connection>mdw_mysql</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <step_performance_table/>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>Y</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>1000</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2007&#47;10&#47;07 13:10:29.000</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Breadboard BI - Customer 360 -  Billing Fact
+==================================
+1.  This data flow extracts billing information from the staging area.
+
+2.  The error logic is basic and designed to be extended to meet the needs of individual customers.  
+      Error rows are flagged as errors in the stage table.  Rows without errors proceed to the target 
+      table as inserts or updates.  They are removed from the stage table.
+
+3.  Incremental load logic is utilized in conjunction with the ADMIN_TRANSFORMATION_CONTROL table.  \
+     This table must be built before running the transformation.
+
+4.  If performance suffers in your environment, remove some or all lookups and convert to outer joins
+     in the table input step.</note>
+      <xloc>7</xloc>
+      <yloc>32</yloc>
+      <width>544</width>
+      <heigth>172</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2008 Breadboard BI, Inc. All rights reserved.</note>
+      <xloc>21</xloc>
+      <yloc>574</yloc>
+      <width>287</width>
+      <heigth>22</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>413</xloc>
+      <yloc>534</yloc>
+      <width>562</width>
+      <heigth>62</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>Get Transformation Last Start Date</from><to>STAGE_BILLING</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_BUSINESS_UNIT</from><to>MAP_LOOKUP_CURRENCY_TRXN</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_ORDER_CAPTURE</from><to>MAP_LOOKUP_PRODUCT</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_PERSON_SALES</from><to>MAP_LOOKUP_ORDER_CAPTURE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_CURRENCY_BASE</from><to>MAP_LOOKUP_CUSTOMER_BILL</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_CURRENCY_TRXN</from><to>MAP_LOOKUP_CURRENCY_BASE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_DATE_TO_SK_ORDER</from><to>MAP_DATE_TO_SK_INVOICE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_PRODUCT</from><to>MAP_LOOKUP_UNIT_OF_MEASURE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_CUSTOMER_SHIP</from><to>MAP_LOOKUP_SALES_CHANNEL</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_CUSTOMER_BILL</from><to>MAP_LOOKUP_CUSTOMER_SHIP</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_DATE_TO_SK_ACCOUNTING</from><to>MAP_LOOKUP_BUSINESS_UNIT</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_DATE_TO_SK_INVOICE</from><to>MAP_DATE_TO_SK_ACCOUNTING</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_UNIT_OF_MEASURE</from><to>FACT_BILLING</to><enabled>Y</enabled> </hop>  <hop> <from>ROUTE_ROWS_WITH_ERRORS</from><to>DW_ERROR_IND</to><enabled>N</enabled> </hop>  <hop> <from>DW_ERROR_IND</from><to>STAGE_BILLING_errors</to><enabled>N</enabled> </hop>  <hop> <from>STAGE_BILLING</from><to>MAP_DATE_TO_SK_ORDER</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_ORDER_TYPE</from><to>MAP_LOOKUP_PERSON_SALES</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_BILL_TYPE</from><to>MAP_LOOKUP_ORDER_TYPE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_SALES_CHANNEL</from><to>MAP_LOOKUP_BILL_STATUS</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_BILL_STATUS</from><to>MAP_LOOKUP_BILL_TYPE</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>DW_ERROR_IND</name>
+    <type>Constant</type>
+    <description>This step adds the Y string constant to the data flow.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>DW_ERROR_IND</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>Y</nullif>
+        <length>1</length>
+        <precision>-1</precision>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>215</xloc>
+      <yloc>493</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>FACT_BILLING</name>
+    <type>InsertUpdate</type>
+    <description>This step loads the fact table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <commit>100</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema/>
+      <table>FACT_BILLING</table>
+      <key>
+        <name>INVOICE_ID</name>
+        <field>INVOICE__ID</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>INVOICE_LINE_ID</name>
+        <field>INVOICE_LINE_ID</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>BUSINESS_UNIT_ID</name>
+        <field>BUSINESS_UNIT_ID</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>SOURCE_SYSTEM_ID</name>
+        <field>SOURCE_SYSTEM_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>SOURCE_SYSTEM_SK</name>
+        <rename>SOURCE_SYSTEM_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>INVOICE_ID</name>
+        <rename>INVOICE_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>INVOICE_LINE_ID</name>
+        <rename>INVOICE_LINE_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>BUSINESS_UNIT_ID</name>
+        <rename>BUSINESS_UNIT_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ORDER_CAPTURE_ID</name>
+        <rename>ORDER_CAPTURE_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ORDER_CAPTURE_LINE_ID</name>
+        <rename>ORDER_CAPTURE_LINE_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PURCHASE_ORDER_ID</name>
+        <rename>PURCHASE_ORDER_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PURCHASE_ORDER_LINE_ID</name>
+        <rename>PURCHASE_ORDER_LINE_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TRXN_DISCOUNT_AMT</name>
+        <rename>DISCOUNT_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TRXN_SURCHARGE_AMT</name>
+        <rename>SURCHARGE_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TRXN_TAX_AMT</name>
+        <rename>TAX_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TRXN_GROSS_EXTENDED_AMT</name>
+        <rename>GROSS_EXTENDED_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TRXN_NET_EXTENDED_AMT</name>
+        <rename>NET_EXTENDED_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>BILLED_QTY</name>
+        <rename>BILLED_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TRXN_COST_AMT</name>
+        <rename>COST_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TRXN_FREIGHT_AMT</name>
+        <rename>FREIGHT_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TRXN_CREDIT_AMT</name>
+        <rename>CREDIT_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TRXN_LIST_AMT</name>
+        <rename>LIST_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TRXN_REBATE_AMT</name>
+        <rename>REBATE_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TRXN_SERVICE_FEE_AMT</name>
+        <rename>SERVICE_FEE_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ORDER_CAPTURE_DATE_SK</name>
+        <rename>ORDER_CAPTURE_DATE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ORDER_CAPTURE_DATE</name>
+        <rename>ORDER_CAPTURE_DATE</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>INVOICE_DATE_SK</name>
+        <rename>INVOICE_DATE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>INVOICE_DATE</name>
+        <rename>INVOICE_DATE</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ACCOUNTING_DATE_SK</name>
+        <rename>ACCOUNTING_DATE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ACCOUNTING_DATE</name>
+        <rename>ACCOUNTING_DATE</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>BUSINESS_UNIT_SK</name>
+        <rename>BUSINESS_UNIT_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TRXN_CURRENCY_SK</name>
+        <rename>CURRENCY_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>CUSTOMER_BILL_TO_SK</name>
+        <rename>CUSTOMER_BILL_TO_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>CUSTOMER_SHIP_TO_SK</name>
+        <rename>CUSTOMER_SHIP_TO_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>SALES_CHANNEL_SK</name>
+        <rename>SALES_CHANNEL_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>BILL_TYPE_SK</name>
+        <rename>BILL_TYPE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ORDER_TYPE_SK</name>
+        <rename>ORDER_TYPE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>BILL_STATUS_SK</name>
+        <rename>BILL_STATUS_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>SALES_REPRESENTATIVE_SK</name>
+        <rename>SALES_REPRESENTATIVE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT_SK</name>
+        <rename>PRODUCT_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>UNIT_OF_MEASURE_SK</name>
+        <rename>UNIT_OF_MEASURE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>BASE_CURRENCY_EXCHANGE_RATE</name>
+        <rename>BASE_CURRENCY_EXCHANGE_RATE</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>BASE_CURRENCY_SK</name>
+        <rename>BASE_CURRENCY_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>TRXN_INVOICE_AMT</name>
+        <rename>INVOICE_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ORDER_CAPTURE_SK</name>
+        <rename>ORDER_CAPTURE_SK</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>611</xloc>
+      <yloc>261</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Get Transformation Last Start Date</name>
+    <type>SystemInfo</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>MAX</name>
+        <type>start date range</type>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>82</xloc>
+      <yloc>286</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_DATE_TO_SK_ACCOUNTING</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_CONVERT_DATE_TO_SK.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>ACCOUNTING_DATE</parent><child>IN_DATE</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>DATE_SK</parent><child>ACCOUNTING_DATE_SK</child></connector>
+       <connector><parent>OUT_DATE</parent><child>ACCOUNTING_DATE</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>292</xloc>
+      <yloc>420</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_DATE_TO_SK_INVOICE</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_CONVERT_DATE_TO_SK.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>INVOICE_DATE</parent><child>IN_DATE</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>DATE_SK</parent><child>INVOICE_DATE_SK</child></connector>
+       <connector><parent>OUT_DATE</parent><child>INVOICE_DATE</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>200</xloc>
+      <yloc>351</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_DATE_TO_SK_ORDER</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_CONVERT_DATE_TO_SK.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>ORDER_CAPTURE_DATE</parent><child>IN_DATE</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>DATE_SK</parent><child>ORDER_CAPTURE_DATE_SK</child></connector>
+       <connector><parent>OUT_DATE</parent><child>ORDER_CAPTURE_DATE</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>135</xloc>
+      <yloc>421</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_BILL_STATUS</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_BILL_STATUS.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>BILL_STATUS_ID</parent><child>BILL_STATUS_ID</child></connector>
+       <connector><parent>SOURCE_SYSTEM_ID</parent><child>SOURCE_SYSTEM_ID</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>BILL_STATUS_SK</parent><child>BILL_STATUS_SK</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>875</xloc>
+      <yloc>303</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_BILL_TYPE</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_BILL_TYPE.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>BILL_TYPE_ID</parent><child>BILL_TYPE_ID</child></connector>
+       <connector><parent>BILL_TYPE_SETID</parent><child>BILL_TYPE_SETID</child></connector>
+       <connector><parent>SOURCE_SYSTEM_ID</parent><child>SOURCE_SYSTEM_ID</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>BILL_TYPE_SK</parent><child>BILL_TYPE_SK</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>874</xloc>
+      <yloc>204</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_BUSINESS_UNIT</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_BUSINESS_UNIT.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>BUSINESS_UNIT_ID</parent><child>BUSINESS_UNIT_ID</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+       <connector><parent>SOURCE_SYSTEM_ID</parent><child>SOURCE_SYSTEM_ID</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>BUSINESS_UNIT_SK</parent><child>BUSINESS_UNIT_SK</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>378</xloc>
+      <yloc>345</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_CURRENCY_BASE</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_CURRENCY.ktr</filename>
+    <directory_path/>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>CURRENCY_ID</parent><child>CURRENCY_ID</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+       <connector><parent>SOURCE_SYSTEM_ID</parent><child>SOURCE_SYSTEM_ID</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>Y</rename_on_output>
+    <description/>
+       <connector><parent>CURRENCY_SK</parent><child>BASE_CURRENCY_SK</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>535</xloc>
+      <yloc>345</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_CURRENCY_TRXN</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_CURRENCY.ktr</filename>
+    <directory_path/>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>CURRENCY_ID</parent><child>CURRENCY_ID</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+       <connector><parent>SOURCE_SYSTEM_ID</parent><child>SOURCE_SYSTEM_ID</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>Y</rename_on_output>
+    <description/>
+       <connector><parent>CURRENCY_SK</parent><child>TRXN_CURRENCY_SK</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>468</xloc>
+      <yloc>426</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_CUSTOMER_BILL</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_CUSTOMER.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>CUSTOMER_BILL_TO_ID</parent><child>CUSTOMER_ID</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+       <connector><parent>CUSTOMER_BILL_TO_SETID</parent><child>CUSTOMER_SETID</child></connector>
+       <connector><parent>SOURCE_SYSTEM_ID</parent><child>SOURCE_SYSTEM_ID</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>Y</rename_on_output>
+    <description/>
+       <connector><parent>CUSTOMER_SK</parent><child>CUSTOMER_BILL_TO_SK</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>635</xloc>
+      <yloc>426</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_CUSTOMER_SHIP</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_CUSTOMER.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>CUSTOMER_SHIP_TO_ID</parent><child>CUSTOMER_ID</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+       <connector><parent>CUSTOMER_SHIP_TO_SETID</parent><child>CUSTOMER_SETID</child></connector>
+       <connector><parent>SOURCE_SYSTEM_ID</parent><child>SOURCE_SYSTEM_ID</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>Y</rename_on_output>
+    <description/>
+       <connector><parent>CUSTOMER_SK</parent><child>CUSTOMER_SHIP_TO_SK</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>701</xloc>
+      <yloc>348</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_ORDER_CAPTURE</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_ORDER_CAPTURE.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>ORDER_CAPTURE_ID</parent><child>ORDER_ID</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+       <connector><parent>BUSINESS_UNIT_ID</parent><child>BUSINESS_UNIT_ID</child></connector>
+       <connector><parent>SOURCE_SYSTEM_ID</parent><child>SOURCE_SYSTEM_ID</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>ORDER_CAPTURE_SK</parent><child>ORDER_CAPTURE_SK</child></connector>
+       <connector><parent>ORDER_ID</parent><child>ORDER_CAPTURE_ID</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>731</xloc>
+      <yloc>40</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_ORDER_TYPE</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_ORDER_TYPE.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>ORDER_TYPE_ID</parent><child>ORDER_TYPE_ID</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+       <connector><parent>SOURCE_SYSTEM_ID</parent><child>SOURCE_SYSTEM_ID</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>ORDER_TYPE_SK</parent><child>ORDER_TYPE_SK</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>870</xloc>
+      <yloc>117</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_PERSON_SALES</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_PERSON.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>EMPLOYEE_ID</parent><child>EMPLOYEE_ID</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+       <connector><parent>SOURCE_SYSTEM_ID</parent><child>SOURCE_SYSTEM_ID</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>PERSON_SK</parent><child>SALES_REPRESENTATIVE_SK</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>870</xloc>
+      <yloc>23</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_PRODUCT</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_PRODUCT.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>PRODUCT_ID</parent><child>PRODUCT_ID</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+       <connector><parent>PRODUCT_SETID</parent><child>PRODUCT_SETID</child></connector>
+       <connector><parent>SOURCE_SYSTEM_ID</parent><child>SOURCE_SYSTEM_ID</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>PRODUCT_SK</parent><child>PRODUCT_SK</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>603</xloc>
+      <yloc>19</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_SALES_CHANNEL</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_SALES_CHANNEL.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>SALES_CHANNEL_ID</parent><child>SALES_CHANNEL_ID</child></connector>
+       <connector><parent>SALES_CHANNEL_SETID</parent><child>SALES_CHANNEL_SETID</child></connector>
+       <connector><parent>SOURCE_SYSTEM_ID</parent><child>SOURCE_SYSTEM_ID</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>SALES_CHANNEL_SK</parent><child>SALES_CHANNEL_SK</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>878</xloc>
+      <yloc>440</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_UNIT_OF_MEASURE</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_UNIT_OF_MEASURE.ktr</filename>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>UNIT_OF_MEASURE_ID</parent><child>UNIT_OF_MEASURE_ID</child></connector>
+       <connector><parent>STREAM_DATE</parent><child>STREAM_DATE</child></connector>
+       <connector><parent>SOURCE_SYSTEM_ID</parent><child>SOURCE_SYSTEM_ID</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>UNIT_OF_MEASURE_SK</parent><child>UNIT_OF_MEASURE_SK</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>607</xloc>
+      <yloc>153</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>ROUTE_ROWS_WITH_ERRORS</name>
+    <type>FilterRows</type>
+    <description>This step routes rows with error conditions (as defined by the client) back to the stage table flagged as an error.  The current error logic is basic and is designed to be extended to meet the needs of individual customers.  Rows without errors proceed to the target table as inserts or updates, they are subsequently removed from the stage table.</description>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+<send_true_to>MAP_DATE_TO_SK_INVOICE</send_true_to>
+<send_false_to>DW_ERROR_IND</send_false_to>
+    <compare>
+<condition>
+ <negated>N</negated>
+ <leftvalue>INVOICE_ID</leftvalue>
+ <function>IS NOT NULL</function>
+ <rightvalue/>
+ <value><name>constant</name><type>String</type><text>Y</text><length>-1</length><precision>-1</precision><isnull>N</isnull></value> </condition>
+    </compare>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>58</xloc>
+      <yloc>492</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_BILLING</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <sql>SELECT
+  SOURCE_SYSTEM_ID
+, INVOICE_ID
+, INVOICE_LINE_ID
+, BUSINESS_UNIT_ID
+, CUSTOMER_BILL_TO_ID
+, CUSTOMER_SHIP_TO_ID
+, CUSTOMER_BILL_TO_SETID
+, CUSTOMER_SHIP_TO_SETID
+, PRODUCT_ID
+, PRODUCT_SETID
+, UNIT_OF_MEASURE_ID
+, CURRENCY_ID
+, EMPLOYEE_ID
+, ORDER_TYPE_ID
+, SALES_CHANNEL_ID
+, SALES_CHANNEL_SETID
+, BILL_TYPE_ID
+, BILL_TYPE_SETID
+, BILL_STATUS_ID
+, ACCOUNTING_DATE
+, ORDER_CAPTURE_DATE
+, INVOICE_DATE
+, INVOICE_DATE AS STREAM_DATE
+, ORDER_CAPTURE_ID
+, ORDER_CAPTURE_LINE_ID
+, PURCHASE_ORDER_ID
+, PURCHASE_ORDER_LINE_ID
+, INVOICE_AMT
+, DISCOUNT_AMT
+, SURCHARGE_AMT
+, TAX_AMT
+, GROSS_EXTENDED_AMT
+, NET_EXTENDED_AMT
+, BILLED_QTY
+, COST_AMT
+, FREIGHT_AMT
+, CREDIT_AMT
+, LIST_AMT
+, REBATE_AMT
+, SERVICE_FEE_AMT
+, BASE_CURRENCY_EXCHANGE_RATE
+FROM STAGE_BILLING
+WHERE DW_LOAD_DATE &gt;= ?</sql>
+    <limit>0</limit>
+    <lookup>Get Transformation Last Start Date</lookup>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>Y</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>35</xloc>
+      <yloc>377</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_BILLING_errors</name>
+    <type>Update</type>
+    <description>This step updates rows in the stage table with an error flag.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection/>
+    <commit>0</commit>
+    <error_ignored>N</error_ignored>
+    <ignore_flag_field/>
+    <lookup>
+      <schema/>
+      <table>STAGE_BILLING</table>
+      <key>
+        <name>INVOICE_ID</name>
+        <field>INVOICE_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>INVOICE_LINE_NUMBER</name>
+        <field>INVOICE_LINE_NUMBER</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>BUSINESS_UNIT_ID</name>
+        <field>BUSINESS_UNIT_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>SOURCE_SYSTEM_ID</name>
+        <field>SOURCE_SYSTEM_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>INVOICE_ID</name>
+        <rename>INVOICE_ID</rename>
+        </value>
+      <value>
+        <name>INVOICE_LINE_NUMBER</name>
+        <rename>INVOICE_LINE_NUMBER</rename>
+        </value>
+      <value>
+        <name>BUSINESS_UNIT_ID</name>
+        <rename>BUSINESS_UNIT_ID</rename>
+        </value>
+      <value>
+        <name>SOURCE_SYSTEM_ID</name>
+        <rename>SOURCE_SYSTEM_ID</rename>
+        </value>
+      <value>
+        <name>DW_ERROR_IND</name>
+        <rename>DW_ERROR_IND</rename>
+        </value>
+      </lookup>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>334</xloc>
+      <yloc>492</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+   <slave-step-copy-partition-distribution>
+</slave-step-copy-partition-distribution>
+   <slave_transformation>N</slave_transformation>
+</transformation>

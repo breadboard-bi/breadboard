@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts company paygroup information from PeopleSoft HCM 8.8.</note>
+      <xloc>52</xloc>
+      <yloc>87</yloc>
+      <width>400</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_orcl</name>
+    <server>192.168.0.103</server>
+    <type>ORACLE</type>
+    <access>Native</access>
+    <database>orcl</database>
+    <port>1521</port>
+    <username>mdw</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_HCM_COMPANY_PAYGROUP</from><to>DIMENSION_COMPANY_PAYGROUP</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>DIMENSION_COMPANY_PAYGROUP</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_orcl</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>DIMENSION_COMPANY_PAYGROUP</table>
+      <key>
+        <name>COMPANY_ID</name>
+        <field>COMPANY_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>PAYGROUP_ID</name>
+        <field>PAYGROUP_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>EFFECTIVE_DATE</name>
+        <field>EFFECTIVE_DATE</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>COMPANY_ID</name>
+        <rename>COMPANY_ID</rename>
+        </value>
+      <value>
+        <name>PAYGROUP_ID</name>
+        <rename>PAYGROUP_ID</rename>
+        </value>
+      <value>
+        <name>EFFECTIVE_DATE</name>
+        <rename>EFFECTIVE_DATE</rename>
+        </value>
+      <value>
+        <name>EFFECTIVE_STATUS</name>
+        <rename>EFFECTIVE_STATUS</rename>
+        </value>
+      <value>
+        <name>PAYGROUP_NAME</name>
+        <rename>PAYGROUP_NAME</rename>
+        </value>
+      <value>
+        <name>PAYGROUP_DESC</name>
+        <rename>PAYGROUP_DESC</rename>
+        </value>
+      <value>
+        <name>PAY_FREQUENCY_CODE</name>
+        <rename>PAY_FREQUENCY_CODE</rename>
+        </value>
+      <value>
+        <name>PAY_FREQUENCY_NAME</name>
+        <rename>PAY_FREQUENCY_NAME</rename>
+        </value>
+      <value>
+        <name>PAY_FREQUENCY_DESC</name>
+        <rename>PAY_FREQUENCY_DESC</rename>
+        </value>
+      </lookup>
+    <GUI>
+      <xloc>476</xloc>
+      <yloc>206</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_HCM_COMPANY_PAYGROUP</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT RTRIM(PAYGROUP.COMPANY) AS COMPANY_ID
+,RTRIM(PAYGROUP.PAYGROUP) AS PAYGROUP_ID
+,PAYGROUP.EFFDT AS EFFECTIVE_DATE
+,RTRIM(PAYGROUP.EFF_STATUS) AS EFFECTIVE_STATUS
+,RTRIM(PAYGROUP.DESCRSHORT) AS PAYGROUP_NAME
+,RTRIM(PAYGROUP.DESCR) AS PAYGROUP_DESC
+,RTRIM(PAYGROUP.PAY_FREQUENCY) AS PAY_FREQUENCY_CODE
+,RTRIM(PAY_FREQUENCY.XLATSHORTNAME) AS PAY_FREQUENCY_NAME
+,RTRIM(PAY_FREQUENCY.XLATLONGNAME) AS PAY_FREQUENCY_DESC
+FROM PS_PAYGROUP_TBL PAYGROUP
+LEFT OUTER JOIN PSXLATITEM PAY_FREQUENCY
+ON PAY_FREQUENCY.FIELDNAME = &apos;PAY_FREQUENCY&apos;
+AND PAYGROUP.PAY_FREQUENCY = PAY_FREQUENCY.FIELDVALUE
+AND PAY_FREQUENCY.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE PAY_FREQUENCY.FIELDNAME = A1.FIELDNAME 
+	AND PAY_FREQUENCY.FIELDVALUE = A1.FIELDVALUE
+	AND PAY_FREQUENCY.FIELDNAME = &apos;PAY_FREQUENCY&apos;)</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>140</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

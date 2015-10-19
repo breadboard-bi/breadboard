@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <version>2</version>  
+  <title>Web Visits by Top Cities for a Month and Country and Region</title>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI, LLC</author>  
+    <description>Return the unique visitors for top cities by month and country and region.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <inputs> 
+    <MONTH_OF_YEAR type="string"> 
+      <sources> 
+        <request>MONTH_OF_YEAR</request> 
+      </sources> 
+    </MONTH_OF_YEAR>  
+    <REGION type="string"> 
+      <sources> 
+        <request>REGION</request> 
+      </sources>  
+      <default-value>California</default-value> 
+    </REGION>  
+    <COUNTRY type="string"> 
+      <sources> 
+        <request>COUNTRY</request> 
+      </sources>  
+      <default-value>US</default-value> 
+    </COUNTRY> 
+  </inputs>  
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <action-inputs> 
+        <MONTH_OF_YEAR type="string"/>  
+        <COUNTRY type="string"/>  
+        <REGION type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>  
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>rule</action-type>  
+      <component-definition> 
+        <query><![CDATA[SELECT V.CITY_NAME AS CITY, 
+        SUM(F.WEB_VISIT_QTY) AS "Unique Visits"
+FROM FACT_WEB_SITE_VISIT F, DIMENSION_DAY D, 
+DIMENSION_WEB_VISITOR V
+WHERE F.VISIT_DATE_SK = D.DATE_SK
+AND F.WEB_VISITOR_SK = V.WEB_VISITOR_SK
+AND D.MONTH_SK = '{MONTH_OF_YEAR}'
+AND V.COUNTRY_CODE = '{COUNTRY}'
+AND V.REGION_NAME = '{REGION}'
+AND V.CITY_NAME IS NOT NULL
+GROUP BY V.CITY_NAME
+ORDER BY SUM(F.WEB_VISIT_QTY) DESC
+LIMIT 10]]></query>  
+        <jndi>mdw_mysql</jndi>  
+        <live>false</live> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

@@ -1,0 +1,7 @@
+<index>
+	<name>%name</name>
+	<description>%description</description>
+	<icon>folder.png|folder2.png</icon>
+	<visible>false</visible>
+	<display-type>icons</display-type>
+</index>

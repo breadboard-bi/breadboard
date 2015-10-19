@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>web visit_google_chart.xaction</name>  
+  <title>Query and Create the Chart for the Web Visit Google Dashboard.</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author/>  
+    <description/>  
+    <icon/>  
+    <help>Help rule '{SOURCE_SYSTEM_SK}'</help>  
+    <result-type/> 
+  </documentation>  
+  <inputs> 
+    <chart-type type="string"> 
+      <default-value>.png</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </chart-type>  
+    <customer type="string"> 
+      <sources> 
+        <request>customer</request> 
+      </sources> 
+    </customer>  
+    <SOURCE_SYSTEM_SK type="string"> 
+      <sources> 
+        <request>SOURCE_SYSTEM_SK</request> 
+      </sources>  
+      <default-value>6</default-value> 
+    </SOURCE_SYSTEM_SK> 
+  </inputs>  
+  <outputs> 
+    <chart_url type="string"/> 
+  </outputs>  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>Query For Chart Data</action-type>  
+      <action-inputs> 
+        <customer type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <query-result type="result-set" mapping="chartData"/> 
+      </action-outputs>  
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[select 
+W.WEB_FILE_NAME AS PRODUCTLINE, 
+SUM(F.WEB_PAGE_VIEW_QTY) as "TOTAL SALES" 
+from 
+DIMENSION_WEB_FILE W,
+DIMENSION_SOURCE_SYSTEM S, 
+FACT_WEB_PAGE_VIEW F
+where
+F.WEB_VISITOR_SK = {PREPARE:customer} AND
+F.WEB_FILE_SK = W.WEB_FILE_SK AND
+F.SOURCE_SYSTEM_SK = S.SOURCE_SYSTEM_SK
+AND S.PARENT_SOURCE_SYSTEM_SK = 
+(SELECT DISTINCT PARENT_SOURCE_SYSTEM_SK FROM DIMENSION_SOURCE_SYSTEM X
+WHERE F.HOSTED_CLIENT_SK = X.HOSTED_CLIENT_SK AND X.DEFAULT_WEB_SOURCE_IND = 'Y')
+GROUP BY W.WEB_FILE_NAME]]></query> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>ChartComponent</component-name>  
+      <action-type>Create The Chart</action-type>  
+      <action-inputs> 
+        <output-type type="string" mapping="chart-type"/>  
+        <chart-data type="result-set" mapping="chartData"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <chart-filename type="string"/>  
+        <base-url type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <by-row>false</by-row>  
+        <height>250</height>  
+        <width>300</width>  
+        <title>Visitor Page Mix</title>  
+        <chart-attributes> 
+          <chart-type>PieChart</chart-type>  
+          <title-position>TOP</title-position>  
+          <height/>  
+          <width/>  
+          <title/>  
+          <title-font> 
+            <font-family>Tahoma</font-family>  
+            <size>14</size>  
+            <is-bold>false</is-bold>  
+            <is-italic>false</is-italic> 
+          </title-font>  
+          <range-title/>  
+          <chart-background type="color">#e5e5e5</chart-background>  
+          <plot-background type="color">#e5e5e5</plot-background>  
+          <orientation>Horizontal</orientation>  
+          <is-3D>false</is-3D>  
+          <is-stacked>false</is-stacked>  
+          <category-label-rotation>90</category-label-rotation>  
+          <border-visible>false</border-visible>  
+          <border-paint>#3399FF</border-paint>  
+          <display-labels>true</display-labels>  
+          <include-legend>true</include-legend>  
+          <color-palette> 
+            <color>#ee7733</color>  
+            <color>#9EAA36</color>  
+            <color>#BF0000</color>  
+            <color>#FCCF12</color>  
+            <color>#467AA9</color>  
+            <color>#772200</color>  
+            <color>#ddcc88</color>  
+            <color>#123D82</color>  
+            <color>#4A0866</color>  
+            <color>#445500</color>  
+            <color>#FFAA00</color>  
+            <color>#1E8AD3</color>  
+            <color>#AA6611</color>  
+            <color>#772200</color> 
+          </color-palette> 
+        </chart-attributes> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>JavascriptRule</component-name>  
+      <action-type>Get The Chart URL</action-type>  
+      <action-inputs> 
+        <CHARTOUTPUT type="string" mapping="chart-filename"/>  
+        <BASEURL type="string" mapping="base-url"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <chart_url type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <script> <![CDATA[ 
+			      function getImageURL( fileName ) {
+			        return '<img src="' + BASEURL + "getImage?image=" + fileName + '" />';
+			      }
+			    getImageURL( CHARTOUTPUT ); 
+		      ]]> </script> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

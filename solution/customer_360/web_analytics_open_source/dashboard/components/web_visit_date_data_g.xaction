@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <version>2</version>  
+  <title>Web Visits By Week</title>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI, LLC</author>  
+    <description>Return the web visits by week.</description>  
+    <help>The SQL includes the MySQL LIMIT clause. Remove it (or replace with equivalent) for Oracle or other DBMS that do not use LIMIT.</help>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <inputs>
+    <COUNTRY type="string">
+      <sources>
+        <request>COUNTRY</request>
+      </sources>
+      <default-value>US</default-value>
+    </COUNTRY>
+  </inputs>  
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <action-inputs>
+      <COUNTRY type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>  
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>rule</action-type>  
+      <component-definition> 
+        <query><![CDATA[SELECT CAST(MONTH_SK AS CHAR(6)) AS MONTH_OF_YEAR, 
+        SUM(F.WEB_VISIT_QTY) AS "Unique Visits"
+FROM FACT_WEB_SITE_VISIT F, DIMENSION_DAY D, 
+DIMENSION_WEB_VISITOR V
+WHERE F.VISIT_DATE_SK = D.DATE_SK
+AND F.WEB_VISITOR_SK = V.WEB_VISITOR_SK
+AND V.COUNTRY_CODE = '{COUNTRY}'
+GROUP BY D.MONTH_SK
+ORDER BY D.MONTH_SK ASC
+LIMIT 10]]></query>  
+        <jndi>mdw_mysql</jndi>  
+        <live>false</live> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

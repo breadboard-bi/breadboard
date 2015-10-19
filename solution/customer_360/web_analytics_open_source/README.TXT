@@ -1,0 +1,1 @@
+Visit http://www.breadboardbi.com/clickstream_implementation.html for implementation instructions.

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>MDX_report.xaction</name>
+  <title>%title</title>
+  <version>1</version>
+  <logging-level>debug</logging-level>
+  <documentation> 
+    <author></author>  
+    <description>%description</description>  
+    <help/>  
+    <result-type>rule</result-type>  
+    <icon>MDX_report.png</icon> 
+  </documentation>
+
+  <inputs> 
+    <vendedor type="string"> 
+      <sources> 
+        <request>vendedor</request> 
+      </sources>  
+      <default-value><![CDATA[5]]></default-value> 
+    </vendedor> 
+  </inputs>
+
+  <outputs> 
+    <anos_disponiveis type="result-set"/> 
+  </outputs>
+
+  <resources/>
+  
+  <actions> 
+    <actions> 
+      <condition><![CDATA[vendedor.equals("Children")==true]]></condition>  
+      <action-definition> 
+        <component-name>SQLLookupRule</component-name>
+        <action-type>Relational</action-type>
+        <action-inputs/>
+        <action-outputs> 
+          <query-result type="result-set" mapping="anos_disponiveis"/> 
+        </action-outputs>
+        <component-definition> 
+          <jndi><![CDATA[mdw_mysql]]></jndi>  
+          <query><![CDATA[select distinct substring(order_capture_date,1,4) anos from FACT_ORDER_CAPTURE]]></query>  
+          <live><![CDATA[true]]></live> 
+        </component-definition> 
+      </action-definition>
+ 
+    </actions>
+  
+    <actions> 
+      <condition><![CDATA[vendedor.equals("Children")==false]]></condition>  
+      <action-definition> 
+        <component-name>SQLLookupRule</component-name>
+        <action-type>Relational</action-type>
+        <action-inputs> 
+          <vendedor type="string"/> 
+        </action-inputs>
+        <action-outputs> 
+          <query-result type="result-set" mapping="anos_disponiveis"/> 
+        </action-outputs>
+        <component-definition> 
+          <jndi><![CDATA[mdw_mysql]]></jndi>  
+          <live><![CDATA[true]]></live>  
+          <query><![CDATA[select distinct substring(order_capture_date,1,4) anos from FACT_ORDER_CAPTURE inner join DIMENSION_PERSON on person_sk= sales_representative_sk
+where person_sk={PREPARE:vendedor}]]></query> 
+        </component-definition> 
+      </action-definition>
+ 
+    </actions>
+ 
+  </actions> 
+</action-sequence>

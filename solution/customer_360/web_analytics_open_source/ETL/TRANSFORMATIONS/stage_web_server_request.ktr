@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>stage_web_request</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <rejected/>
+      <connection>mdw_mysql</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>Y</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+  <modified_user/>
+  <modified_date>2007&#47;06&#47;09 09:35:37.323</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Breadboard BI - Marketing - Stage Web Server Log - Version 1.2
+=======================================
+1.  This data flow stages web server log file data into a stage table.
+2.  The text file input step is designed for Apache web server log files.  Changes to this step will be required
+      depending on the format of your web log file.  Please share your changed step with the project.</note>
+      <xloc>12</xloc>
+      <yloc>16</yloc>
+      <width>527</width>
+      <heigth>75</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>16</xloc>
+      <yloc>331</yloc>
+      <width>546</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI, LLC.  All rights reserved. 
+
+This component is free software; you can redistribute it and&#47;or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this data mart; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA</note>
+      <xloc>16</xloc>
+      <yloc>420</yloc>
+      <width>621</width>
+      <heigth>140</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>WEB_SERVER_LOG_FILE</from><to>CLEANSE_REQUEST_DATE</to><enabled>Y</enabled> </hop>  <hop> <from>CLEANSE_REQUEST_DATE</from><to>CLEANSE_AND_PARSE_COLUMNS</to><enabled>Y</enabled> </hop>  <hop> <from>CLEANSE_AND_PARSE_COLUMNS</from><to>CREATE_LONG_IP</to><enabled>Y</enabled> </hop>  <hop> <from>REMOVE_COLUMNS</from><to>STAGE_WEB_REQUEST</to><enabled>Y</enabled> </hop>  <hop> <from>CREATE_LONG_IP</from><to>MAP_DETECT_ROBOTS</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_DETECT_ROBOTS</from><to>REMOVE_COLUMNS</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>CLEANSE_AND_PARSE_COLUMNS</name>
+    <type>ScriptValue</type>
+    <description>This Java Script Value step cleanses and parses various fields.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <script>var REQUEST_DATE = v_request_date.Clone().str2dat(&quot;dd&#47;MMM&#47;yyyy:HH:mm:ss&quot;);
+var REQUEST_DATE_SK =  REQUEST_DATE.Clone().dat2str(&quot;yyyyMMdd&quot;).getInteger();
+var REQUEST_TIME_ID =  REQUEST_DATE.Clone().dat2str(&quot;HHmm&quot;);
+var HOUR_24_QTY =  REQUEST_DATE.Clone().dat2str(&quot;HH&quot;);
+var MINUTE_QTY =  REQUEST_DATE.Clone().dat2str(&quot;mm&quot;);
+var GMT_OFFSET_CAT = GMT_OFFSET.getString().replace(&apos;]&apos;,&apos;&apos;);
+var file_request_pieces = WEB_FILE_DESC.getString().split(&quot;\\ &quot;);
+var REQUEST_CAT = file_request_pieces[0];
+var WEB_FILE_NAME = file_request_pieces[1];
+var HTTP_VERSION_NAME = file_request_pieces[2];
+var ip_pieces = IP_ADDRESS_DESC.getString().split(&quot;\\.&quot;);
+var v_part1_str = ip_pieces[0];
+var v_part2_str = ip_pieces[1];
+var v_part3_str = ip_pieces[2];
+var v_part4_str = ip_pieces[3];</script>
+    <fields>      <field>        <name>GMT_OFFSET_CAT</name>
+        <rename>GMT_OFFSET_CAT</rename>
+        <type>String</type>
+        <length>32</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>HOUR_24_QTY</name>
+        <rename>HOUR_24_QTY</rename>
+        <type>Number</type>
+        <length>2</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>HTTP_VERSION_NAME</name>
+        <rename>HTTP_VERSION_NAME</rename>
+        <type>String</type>
+        <length>10</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>MINUTE_QTY</name>
+        <rename>MINUTE_QTY</rename>
+        <type>Number</type>
+        <length>2</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>REQUEST_CAT</name>
+        <rename>REQUEST_CAT</rename>
+        <type>String</type>
+        <length>10</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>REQUEST_DATE</name>
+        <rename>REQUEST_DATE</rename>
+        <type>Date</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>REQUEST_DATE_SK</name>
+        <rename>REQUEST_DATE_SK</rename>
+        <type>Integer</type>
+        <length>8</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>REQUEST_TIME_ID</name>
+        <rename>REQUEST_TIME_ID</rename>
+        <type>String</type>
+        <length>10</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>v_part1_str</name>
+        <rename>v_part1_str</rename>
+        <type>String</type>
+        <length>3</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>v_part2_str</name>
+        <rename>v_part2_str</rename>
+        <type>String</type>
+        <length>3</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>v_part3_str</name>
+        <rename>v_part3_str</rename>
+        <type>String</type>
+        <length>3</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>v_part4_str</name>
+        <rename>v_part4_str</rename>
+        <type>String</type>
+        <length>3</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>WEB_FILE_NAME</name>
+        <rename>WEB_FILE_NAME</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        </field>      </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>303</xloc>
+      <yloc>170</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>CLEANSE_REQUEST_DATE</name>
+    <type>ScriptValue</type>
+    <description>This Java Script Value step cleanses the request date.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <script>var v_request_date = REQUEST_DATE_TIME.getString().replace(&apos;[&apos;,&apos;&apos;).trim();
+
+
+
+
+</script>
+    <fields>      <field>        <name>v_request_date</name>
+        <rename>v_request_date</rename>
+        <type>String</type>
+        <length>20</length>
+        <precision>-1</precision>
+        </field>      </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>185</xloc>
+      <yloc>255</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>CREATE_LONG_IP</name>
+    <type>ScriptValue</type>
+    <description>This Java Script Value step cleanses the long IP address for subsequent use in determining the organization and geographic location of the visitor.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <script>var v_part1 = v_part1_str.getInteger() * 16777216;
+var v_part2 = v_part2_str.getInteger() * 65536;
+var v_part3 = v_part3_str.getInteger() * 256;
+var v_part4 = v_part4_str.getInteger();
+var LONG_IP_NUMBER = v_part1 + v_part2 + v_part3 + v_part4;
+</script>
+    <fields>      <field>        <name>LONG_IP_NUMBER</name>
+        <rename>LONG_IP_NUMBER</rename>
+        <type>Number</type>
+        <length>16</length>
+        <precision>2</precision>
+        </field>      </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>410</xloc>
+      <yloc>256</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_DETECT_ROBOTS</name>
+    <type>Mapping</type>
+    <description>This mapping step includes a Java Script Value step that detects if a visitor is a robot&#47;crawler&#47;spider.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name/>
+    <filename>C:\Kettle-2.3.0B\tables transformations\GENERIC STAGE\MAPS\MAP_DETECT_ROBOTS.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>WEB_BROWSER_OS_DESC</field>  <mapping>WEB_BROWSER_OS_DESC</mapping></connector>
+    </input>
+  <output>
+    <connector><field>ROBOT_PAGE_VIEW_QTY</field>  <mapping>ROBOT_PAGE_VIEW_QTY</mapping></connector>
+    <connector><field>WEB_BROWSER_OS_DESC</field>  <mapping>WEB_BROWSER_OS_DESC</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>495</xloc>
+      <yloc>172</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>REMOVE_COLUMNS</name>
+    <type>SelectValues</type>
+    <description>This Select Values step removes fields not used in the target table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>IP_ADDRESS_DESC</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WEB_VISITOR_LOGIN_NAME</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WEB_VISITOR_FULL_NAME</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>REQUEST_DATE_TIME</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>GMT_OFFSET</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WEB_FILE_DESC</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SERVER_STATUS_CODE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WEB_FILE_BYTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>REFERER_URL_DESC</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WEB_BROWSER_OS_DESC</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>v_request_date</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>REQUEST_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>REQUEST_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>REQUEST_TIME_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>GMT_OFFSET_CAT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>REQUEST_CAT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WEB_FILE_NAME</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>HTTP_VERSION_NAME</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>v_part1_str</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>v_part2_str</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>v_part3_str</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>v_part4_str</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>LONG_IP_NUMBER</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>HOUR_24_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ROBOT_PAGE_VIEW_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <remove>        <name>REQUEST_DATE_TIME</name>
+      </remove>      <remove>        <name>GMT_OFFSET</name>
+      </remove>      <remove>        <name>v_request_date</name>
+      </remove>      <remove>        <name>v_part1_str</name>
+      </remove>      <remove>        <name>v_part2_str</name>
+      </remove>      <remove>        <name>v_part3_str</name>
+      </remove>      <remove>        <name>v_part4_str</name>
+      </remove>      <remove>        <name>WEB_FILE_DESC</name>
+      </remove>    </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>587</xloc>
+      <yloc>255</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_WEB_REQUEST</name>
+    <type>TableOutput</type>
+    <description>This table output step truncates and inserts rows to the target table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <schema/>
+    <table>STAGE_WEB_REQUEST</table>
+    <commit>100</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+     <cluster_schema/>
+    <GUI>
+      <xloc>671</xloc>
+      <yloc>170</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>WEB_SERVER_LOG_FILE</name>
+    <type>TextFileInput</type>
+    <description>This text file input step is designed for Yahoo Small Business log files.  Changes to this step will be required depending on the format of your web log file.  Please share your changed step with the project.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <accept_filenames>N</accept_filenames>
+    <accept_field/>
+    <accept_stepname/>
+    <separator> </separator>
+    <enclosure>&quot;</enclosure>
+    <enclosure_breaks>Y</enclosure_breaks>
+    <escapechar/>
+    <header>N</header>
+    <nr_headerlines>1</nr_headerlines>
+    <footer>N</footer>
+    <nr_footerlines>1</nr_footerlines>
+    <line_wrapped>N</line_wrapped>
+    <nr_wraps>1</nr_wraps>
+    <layout_paged>N</layout_paged>
+    <nr_lines_per_page>80</nr_lines_per_page>
+    <nr_lines_doc_header>0</nr_lines_doc_header>
+    <noempty>Y</noempty>
+    <include>N</include>
+    <include_field/>
+    <rownum>N</rownum>
+    <rownumByFile>N</rownumByFile>
+    <rownum_field/>
+    <format>Unix</format>
+    <encoding/>
+    <file>
+      <name>C:\Kettle-2.3.0B\source_files\access.log</name>
+      <filemask/>
+      <file_required/>
+      <type>CSV</type>
+      <compression/>
+    </file>
+    <filters>
+    </filters>
+    <fields>
+      <field>
+        <name>IP_ADDRESS_DESC</name>
+        <type>String</type>
+        <format/>
+        <currency>$</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>255</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>WEB_VISITOR_LOGIN_NAME</name>
+        <type>String</type>
+        <format/>
+        <currency>$</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull>Missing</ifnull>
+        <position>-1</position>
+        <length>60</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>WEB_VISITOR_FULL_NAME</name>
+        <type>String</type>
+        <format/>
+        <currency>$</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull>Missing</ifnull>
+        <position>-1</position>
+        <length>60</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>REQUEST_DATE_TIME</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>32</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>GMT_OFFSET</name>
+        <type>String</type>
+        <format/>
+        <currency>$</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull>Missing</ifnull>
+        <position>-1</position>
+        <length>32</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>WEB_FILE_DESC</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>-</nullif>
+        <ifnull>Missing</ifnull>
+        <position>-1</position>
+        <length>2000</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>SERVER_STATUS_CODE</name>
+        <type>String</type>
+        <format/>
+        <currency>$</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull>Missing</ifnull>
+        <position>-1</position>
+        <length>32</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>WEB_FILE_BYTE_QTY</name>
+        <type>String</type>
+        <format/>
+        <currency>$</currency>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull>0</ifnull>
+        <position>-1</position>
+        <length>10</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>REFERER_URL_DESC</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>-</nullif>
+        <ifnull>Missing</ifnull>
+        <position>-1</position>
+        <length>2000</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>WEB_BROWSER_OS_DESC</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>-</nullif>
+        <ifnull>Missing</ifnull>
+        <position>-1</position>
+        <length>2000</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+    </fields>
+    <limit>0</limit>
+    <error_ignored>N</error_ignored>
+    <error_line_skipped>N</error_line_skipped>
+    <error_count_field/>
+    <error_fields_field/>
+    <error_text_field/>
+    <bad_line_files_destination_directory/>
+    <bad_line_files_extension>warning</bad_line_files_extension>
+    <error_line_files_destination_directory/>
+    <error_line_files_extension>error</error_line_files_extension>
+    <line_number_files_destination_directory/>
+    <line_number_files_extension>line</line_number_files_extension>
+    <date_format_lenient>Y</date_format_lenient>
+    <date_format_locale>en_us</date_format_locale>
+     <cluster_schema/>
+    <GUI>
+      <xloc>91</xloc>
+      <yloc>167</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+</transformation>

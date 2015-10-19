@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <version>1</version>  
+  <title>Syndication Web Visits By Week</title>  
+  <logging-level>debug</logging-level>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Return the web visits by week.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <inputs/>  
+  <!-- Define an output called 'rule-result' -->  
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>  
+  <!-- This action sequence does not require any external resources -->  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <action-inputs/>  
+      <!-- Define a local output called 'rule-result' -->  
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>  
+      <!-- Specify the component to execute -->  
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>rule</action-type>  
+      <!-- Define the settings for the component -->  
+      <component-definition> 
+        <!-- Define the datasource for the query -->  
+        <!-- Define the query to execute. Note the parameter {REGION} in the query -->  
+        <jndi>mdw</jndi>  
+        <live>false</live>  
+        <query><![CDATA[SELECT TO_CHAR(WEEK_SK) AS WEEK_OF_YEAR,SUM(F.SYNDICATION_VIEW_QTY) + SUM(F.PAID_REFERRAL_QTY)AS "Paid Referrals"
+FROM FACT_WEB_SITE_REFERER F, DIMENSION_DAY D
+WHERE F.REFERRAL_DATE_SK = D.DATE_SK AND (F.SYNDICATION_VIEW_QTY > 0 OR F.PAID_REFERRAL_QTY > 0)
+GROUP BY D.WEEK_SK
+ORDER BY D.WEEK_SK ASC]]></query>
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

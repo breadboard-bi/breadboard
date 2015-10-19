@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">  
+  <name>new_market.xaction</name>
+  <title>%title</title>
+  <version>1</version>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description><![CDATA[%description]]></description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help/>  
+    <result-type>report</result-type> 
+  </documentation>
+
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <CATEGORY type="string"> 
+      <sources> 
+        <request>CATEGORY</request> 
+      </sources> 
+    </CATEGORY>  
+    <TYPE type="string"> 
+      <sources> 
+        <request>TYPE</request> 
+      </sources> 
+    </TYPE>  
+    <STATUS type="string"> 
+      <sources> 
+        <request>STATUS</request> 
+      </sources> 
+    </STATUS> 
+  </inputs>
+
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>
+
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>case_dashboard_report.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <action-inputs> 
+        <output-type type="string"/>  
+        <TYPE type="string"/>  
+        <STATUS type="string"/>  
+        <CATEGORY type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <report-output type="content" mapping="report"/>
+      </action-outputs>
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <query><![CDATA[select DATEDIFF(IFNULL(F.CASE_CLOSED_DATE,SYSDATE()),F.CASE_OPEN_DATE) as AGE_RANK,
+F.CASE_ID, F.CASE_OPEN_DATE, F.CASE_CLOSED_DATE, D.AGENT_NAME,
+ROUND(DATEDIFF(IFNULL(F.CASE_CLOSED_DATE,SYSDATE()),F.CASE_OPEN_DATE)) AS AVG_CASE_AGE
+FROM FACT_CASE F, DIMENSION_CASE D
+WHERE D.CASE_SOURCE_NAME = '{CATEGORY}'  
+AND D.CASE_TYPE_NAME = '{TYPE}' 
+AND D.CASE_STATUS_NAME = '{STATUS}' 
+AND F.CASE_SK = D.CASE_SK
+ORDER BY DATEDIFF(IFNULL(F.CASE_CLOSED_DATE,SYSDATE()),F.CASE_OPEN_DATE) DESC
+LIMIT 5]]></query>  
+        <jndi>mdw_mysql</jndi> 
+      </component-definition> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

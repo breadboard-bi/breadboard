@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>ShipmentList.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>%description</description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help/>  
+    <result-type>rule</result-type> 
+  </documentation>  
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <min_date type="string"> 
+      <sources> 
+        <request>min_date</request> 
+      </sources>  
+      <default-value>20060622</default-value> 
+    </min_date>  
+    <max_date type="string"> 
+      <sources> 
+        <request>max_date</request> 
+      </sources>  
+      <default-value>20060624</default-value> 
+    </max_date>  
+    <carrier type="string"> 
+      <sources> 
+        <request>carrier</request> 
+      </sources>  
+      <default-value>Tokyo Shippers</default-value> 
+    </carrier> 
+  </inputs>  
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>  
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>ShipmentList.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>SQL Query</action-type>  
+      <action-outputs> 
+        <carrier_list type="property-map-list"/> 
+      </action-outputs>  
+      <component-definition> 
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT DISTINCT carrier_desc 
+FROM dimension_carrier 
+WHERE carrier_desc IS NOT NULL 
+ORDER BY carrier_desc ASC]]></query> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>SecureFilterComponent</component-name>  
+      <action-type>Secure Filter</action-type>  
+      <action-inputs> 
+        <min_date type="string"/>  
+        <max_date type="string"/>  
+        <carrier type="string"/>  
+        <carrier_list type="property-map-list"/> 
+      </action-inputs>  
+      <component-definition> 
+        <selections> 
+          <min_date filter="none"> 
+            <title>Enter the minimum date for the shipment date range (format YYYYMMDD).</title> 
+          </min_date>  
+          <max_date filter="none"> 
+            <title>Enter the maximum date for the shipment date range (format YYYYMMDD).</title> 
+          </max_date>  
+          <carrier style="select"> 
+            <title>Please enter the carrier for analysis.</title>  
+            <filter value-col-name="carrier_desc" display-col-name="carrier_desc">carrier_list</filter> 
+          </carrier> 
+        </selections> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>  
+      <action-type>report</action-type>  
+      <action-inputs> 
+        <output-type type="string"/>  
+        <min_date type="string"/>  
+        <carrier type="string"/>  
+        <max_date type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <report type="content"/> 
+      </action-outputs>  
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT F.SHIPMENT_ID, F.ORDER_CAPTURE_DATE AS ORDER_DATE, F.PACK_DATE, 
+F.LOAD_DATE, F.SHIP_DATE, F.DELIVER_DATE, C.CARRIER_DESC, SC.CUSTOMER_NAME,P.PRODUCT_DESC, F.SHIPPED_QTY, F.SHIP_AMT
+FROM FACT_SHIPMENT F, DIMENSION_CARRIER C,DIMENSION_CUSTOMER SC, DIMENSION_PRODUCT P
+WHERE F.CARRIER_SK = C.CARRIER_SK
+AND F.SHIP_CUSTOMER_SK = SC.CUSTOMER_SK
+AND F.PRODUCT_SK = P.PRODUCT_SK
+AND F.SHIP_DATE_SK BETWEEN '{min_date}' AND '{max_date}'
+AND C.CARRIER_DESC = '{carrier}'
+ORDER BY F.SHIPMENT_ID]]></query> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

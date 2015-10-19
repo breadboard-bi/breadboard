@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+  <modified_user/>
+  <modified_date>2006/12/17 08:02:09.781</modified_date>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts billing metrics from JDE.  Only the input has been built.</note>
+      <xloc>75</xloc>
+      <yloc>90</yloc>
+      <width>384</width>
+      <heigth>23</heigth>
+      </notepad>
+    <notepad>
+      <note>Copyright © 2006 Breadboard BI, LLC. All rights reserved.</note>
+      <xloc>188</xloc>
+      <yloc>318</yloc>
+      <width>291</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>JDE_STAGE_INVOICE</from><to>STAGE_JDE_INVOICE</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>JDE_STAGE_INVOICE</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT
+F4201.SHKCOO AS ORDER_DOCUMENT_COMPANY_ID, --AK
+F4201.SHDOCO ORDER_NUMBER, --AK
+F4211.SDLNID AS ORDER_LINE_NUMBER, --AK
+F4211.SDDCTO AS ORDER_TYPE_ID, --AK
+F4211.SDDOC AS INVOICE_NUMBER,
+F4211.SDTRDJ AS ORDER_DATE --JDE JULIAN
+F4211.SDIVD AS INVOICE_DATE, --JDE JULIAN
+F4211.SDTRDJ AS ACCOUNTING_DATE, --JDE JULIAN
+F4211.SDMCU AS BUSINESS_UNIT_ID, --OM BU
+F4201.SHITAN AS BILL_CUSTOMER_ID,
+F4211.SDSHAN AS SHIP_CUSTOMER_ID,
+F4211.SDOPPID AS OPPORTUNITY_ID,
+F4201.SHPRAN8 AS PARTNER_ID,
+F4101.IMUOM1 AS UNIT_OF_MEASURE_ID,
+F4211.SDITM AS PRODUCT_ID,
+(CASE WHEN F4211.SDSLSM &gt; 0 F4211.SDSLSM ELSE F4211.SDSLM2 END) AS SALES_ORG_ID,
+F4211.SDITM AS INVENTORY_ITEM_ID,
+F4211.SDDCT AS BILL_TYPE_ID,
+F0010.COCRCD AS BASE_CURRENCY_ID,
+F4211.SDUPRC AS BASE_UNIT_AMT,
+F4211.SDTRDC AS BASE_DISCOUNT_AMT,
+F4211.SDAEXP AS BASE_GROSS_AMT,
+F4211.SDCRCD AS TRXN_CURRENCY_ID,
+F4211.SDFPRC AS TRXN_UNIT_AMT,
+F4211.SDFEA AS TRXN_GROSS_AMT
+
+FROM F4201 --ORDER HEADER
+
+INNER JOIN F4211 --ORDER FOOTER
+ON F4201.SHKCOO = F4211.SDKCOO 
+AND F4201.SHDOCO = F4211.SDDOCO 
+AND F4201.SHDCTO = F4211.SDDCTO 
+AND F4211.SDLNTY != &apos;F&apos;
+AND F4211.SDDOC != 0 
+
+LEFT OUTER JOIN F4101
+ON F4101.IMITM = F4211.SDITM
+
+LEFT OUTER JOIN F0010
+ON F4211.SDKCOO= F0010.CCCO</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI>
+      <xloc>140</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_JDE_INVOICE</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>STAGE_JDE_INVOICE</table>
+      </lookup>
+    <GUI>
+      <xloc>476</xloc>
+      <yloc>206</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

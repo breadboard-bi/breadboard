@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts business unit data from PeopleSoft CRM 8.8.  The output could be used to create a region dimension.</note>
+      <xloc>75</xloc>
+      <yloc>90</yloc>
+      <width>609</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_oracle_server</name>
+    <server>192.168.0.103</server>
+    <type>ORACLE</type>
+    <access>Native</access>
+    <database>orcl</database>
+    <port>1521</port>
+    <username>mdw</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_CRM_BUSINESS_UNIT</from><to>DIMENSION_BUSINESS_UNIT</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>DIMENSION_BUSINESS_UNIT</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_oracle_server</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>DIMENSION_BUSINESS_UNIT</table>
+      <key>
+        <name>BUSINESS_UNIT_ID</name>
+        <field>BUSINESS_UNIT_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>BUSINESS_UNIT_TYPE</name>
+        <field>BUSINESS_UNIT_TYPE</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>BUSINESS_UNIT_ID</name>
+        <rename>BUSINESS_UNIT_ID</rename>
+        </value>
+      <value>
+        <name>BUSINESS_UNIT_TYPE</name>
+        <rename>BUSINESS_UNIT_TYPE</rename>
+        </value>
+      <value>
+        <name>BUSINESS_UNIT_DESC</name>
+        <rename>BUSINESS_UNIT_DESC</rename>
+        </value>
+      <value>
+        <name>BUSINESS_UNIT_STATUS_CODE</name>
+        <rename>BUSINESS_UNIT_STATUS_CODE</rename>
+        </value>
+      </lookup>
+    <GUI>
+      <xloc>476</xloc>
+      <yloc>206</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_CRM_BUSINESS_UNIT</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the columns from the PS_RB_REGION table.  It only includes geographical regions (recursive hierarchy).</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT RTRIM(BUSINESS_UNIT) AS BUSINESS_UNIT_ID,
+&apos;RSF&apos; AS BUSINESS_UNIT_TYPE,
+RTRIM(BUSINESS_UNIT) AS BUSINESS_UNIT_DESC,
+RTRIM(BU_STATUS) AS BUSINESS_UNIT_STATUS_CODE,
+RTRIM(CURRENCY_CD) AS CURRENCY_CODE
+FROM PS_BUS_UNIT_TBLRSF --Sales Lead
+UNION
+SELECT RTRIM(BUSINESS_UNIT) AS BUSINESS_UNIT_ID,
+&apos;RO&apos; AS BUSINESS_UNIT_TYPE,
+RTRIM(BUSINESS_UNIT) AS BUSINESS_UNIT_DESC,
+RTRIM(BU_STATUS) AS BUSINESS_UNIT_STATUS_CODE,
+RTRIM(CURRENCY_CD_BASE) AS BASE_CURRENCY_CODE
+FROM PS_BUS_UNIT_TBL_RO --Order Capture 
+--PS_BUS_UNIT_TBL_R --Marketing
+--PS_BUS_UNIT_TBL_RC --Support
+--PS_BUS_UNIT_TBL_RF --Service
+
+
+
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>140</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

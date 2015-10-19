@@ -1,0 +1,838 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>STAGE_ADVERTISEMENT_IMPRESSION_valueclick</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <rejected/>
+      <connection/>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>Y</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2007&#47;12&#47;07 18:29:07.000</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI, LLC. All rights reserved.</note>
+      <xloc>6</xloc>
+      <yloc>369</yloc>
+      <width>291</width>
+      <heigth>23</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>3</xloc>
+      <yloc>282</yloc>
+      <width>546</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Breadboard BI - Customer 360 - Fact Advertisement (ValueClick) Data Flow - Version 1.0
+=====================================================
+1.  This data flow extracts from a ValueClick Report.</note>
+      <xloc>5</xloc>
+      <yloc>20</yloc>
+      <width>434</width>
+      <heigth>49</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>jde</name>
+    <server>test</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>rds</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>rds</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PREPARE_AD_IMPRESSION_COLUMNS 2</from><to>STAGE_ADVERTISEMENT_IMPRESSION</to><enabled>Y</enabled> </hop>  <hop> <from>REMOVE_HEADER_ROWS</from><to>PREPARE_AD_IMPRESSION_COLUMNS 2</to><enabled>Y</enabled> </hop>  <hop> <from>CREATE_CAMPAIGN_WAVE_NAME</from><to>REMOVE_HEADER_ROWS</to><enabled>Y</enabled> </hop>  <hop> <from>CREATE_CAMPAIGN_WAVE_MEDIA_TYPE_REMOVE_%$</from><to>CREATE_CAMPAIGN_WAVE_NAME</to><enabled>Y</enabled> </hop>  <hop> <from>ADD_CAMPAIGN_CONSTANT</from><to>CREATE_CAMPAIGN_WAVE_MEDIA_TYPE_REMOVE_%$</to><enabled>Y</enabled> </hop>  <hop> <from>ValueClick_Report</from><to>ADD_CAMPAIGN_CONSTANT</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>ADD_CAMPAIGN_CONSTANT</name>
+    <type>Constant</type>
+    <description>This constant step adds the Google Adwords constant to the data flow.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>CAMPAIGN_NAME</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>ValueClick</nullif>
+        <length>60</length>
+        <precision>-1</precision>
+        </field>
+      <field>
+        <name>SOURCE_SYSTEM_ID</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>16</nullif>
+        <length>1</length>
+        <precision>-1</precision>
+        </field>
+      <field>
+        <name>HOSTED_CLIENT_SK</name>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>6</nullif>
+        <length>2</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+     <cluster_schema/>
+    <GUI>
+      <xloc>221</xloc>
+      <yloc>193</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>CREATE_CAMPAIGN_WAVE_MEDIA_TYPE_REMOVE_%$</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <script/>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>&#47;&#47;Script here
+
+var MEDIA_TYPE;
+if (indexOf(CAMPAIGN_WAVE_ID.getString(),&quot;Media Type:&quot;) &gt;= 0)
+{MEDIA_TYPE = CAMPAIGN_WAVE_ID.Clone().replace(&quot;Media Type: &quot;,&quot;&quot;);}
+else {MEDIA_TYPE = PREV_MEDIA_TYPE;}
+var PREV_MEDIA_TYPE = MEDIA_TYPE;
+
+var vCAMPAIGN_WAVE_NAME;
+if (indexOf(CAMPAIGN_WAVE_ID.getString(),&quot;Campaign Name:&quot;) &gt;= 0)
+{vCAMPAIGN_WAVE_NAME = CAMPAIGN_WAVE_ID.Clone().replace(&quot;Campaign Name: &quot;,&quot;&quot;);}
+else {vCAMPAIGN_WAVE_NAME = vPREV_CAMPAIGN_WAVE_NAME;}
+var vPREV_CAMPAIGN_WAVE_NAME = vCAMPAIGN_WAVE_NAME;
+
+var AD_CLICK_RATE = IN_AD_CLICK_RATE.Clone().replace(&quot;%&quot;,&quot;&quot;);
+var CPC_AVERAGE_AMT = IN_CPC_AVERAGE_AMT.Clone().replace(&quot;$&quot;,&quot;&quot;);
+var CPM_AVERAGE_AMT = IN_CPM_AVERAGE_AMT.Clone().replace(&quot;$&quot;,&quot;&quot;);
+var CAMPAIGN_WAVE_BUDGET_AMT = IN_CAMPAIGN_WAVE_BUDGET_AMT.Clone().replace(&quot;$&quot;,&quot;&quot;);
+var AD_COST_AMT = IN_AD_COST_AMT.Clone().replace(&quot;$&quot;,&quot;&quot;);</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>AD_CLICK_RATE</name>
+        <rename>AD_CLICK_RATE</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>CPC_AVERAGE_AMT</name>
+        <rename>CPC_AVERAGE_AMT</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>CPM_AVERAGE_AMT</name>
+        <rename>CPM_AVERAGE_AMT</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>CAMPAIGN_WAVE_BUDGET_AMT</name>
+        <rename>CAMPAIGN_WAVE_BUDGET_AMT</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>AD_COST_AMT</name>
+        <rename>AD_COST_AMT</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>vCAMPAIGN_WAVE_NAME</name>
+        <rename>vCAMPAIGN_WAVE_NAME</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>MEDIA_TYPE</name>
+        <rename>MEDIA_TYPE</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>    </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>287</xloc>
+      <yloc>108</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>CREATE_CAMPAIGN_WAVE_NAME</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <script/>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>&#47;&#47; Tried this in previous step, extra spaces could not be trimmed due to bug.
+var CAMPAIGN_WAVE_NAME = vCAMPAIGN_WAVE_NAME.getString() + &quot;-&quot; + MEDIA_TYPE.getString()</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>CAMPAIGN_WAVE_NAME</name>
+        <rename>CAMPAIGN_WAVE_NAME</rename>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>    </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>523</xloc>
+      <yloc>108</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PREPARE_AD_IMPRESSION_COLUMNS</name>
+    <type>SelectValues</type>
+    <description>This step prepares columns in the data flow for the stage table load.  It applies standard naming and size conventions.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>IMPRESSION_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>KEYWORD_DESC</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AD_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AD_ID</name>
+        <rename>AD_NAME</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CAMPAIGN_WAVE_NAME</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AD_IMPRESSION_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AD_CLICK_RATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AD_CLICK_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CPC_AVERAGE_AMT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AD_COST_AMT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AVERAGE_POSITION_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CAMPAIGN_NAME</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SOURCE_SYSTEM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>HOSTED_CLIENT_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>    </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>606</xloc>
+      <yloc>412</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PREPARE_AD_IMPRESSION_COLUMNS 2</name>
+    <type>SelectValues</type>
+    <description>This step prepares columns in the data flow for the stage table load.  It applies standard naming and size conventions.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>CAMPAIGN_WAVE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>IMPRESSION_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AD_IMPRESSION_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AD_CLICK_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>IN_AD_CLICK_RATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>IN_CPC_AVERAGE_AMT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>IN_CPM_AVERAGE_AMT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>IN_CAMPAIGN_WAVE_BUDGET_AMT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>IN_AD_COST_AMT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CAMPAIGN_NAME</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SOURCE_SYSTEM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>HOSTED_CLIENT_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AD_CLICK_RATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CPC_AVERAGE_AMT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CPM_AVERAGE_AMT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CAMPAIGN_WAVE_BUDGET_AMT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AD_COST_AMT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>vCAMPAIGN_WAVE_NAME</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>MEDIA_TYPE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CAMPAIGN_WAVE_NAME</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <remove>        <name>IN_AD_CLICK_RATE</name>
+      </remove>      <remove>        <name>IN_CPC_AVERAGE_AMT</name>
+      </remove>      <remove>        <name>IN_CPM_AVERAGE_AMT</name>
+      </remove>      <remove>        <name>IN_CAMPAIGN_WAVE_BUDGET_AMT</name>
+      </remove>      <remove>        <name>IN_AD_COST_AMT</name>
+      </remove>      <remove>        <name>vCAMPAIGN_WAVE_NAME</name>
+      </remove>      <remove>        <name>MEDIA_TYPE</name>
+      </remove>      <meta>        <name>CAMPAIGN_WAVE_ID</name>
+        <rename/>
+        <type>-</type>
+        <length>255</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>IMPRESSION_DATE</name>
+        <rename/>
+        <type>-</type>
+        <length>255</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>AD_IMPRESSION_QTY</name>
+        <rename/>
+        <type>-</type>
+        <length>-2</length>
+        <precision>0</precision>
+      </meta>      <meta>        <name>AD_CLICK_QTY</name>
+        <rename/>
+        <type>-</type>
+        <length>-2</length>
+        <precision>0</precision>
+      </meta>      <meta>        <name>CAMPAIGN_NAME</name>
+        <rename/>
+        <type>-</type>
+        <length>60</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>SOURCE_SYSTEM_ID</name>
+        <rename/>
+        <type>-</type>
+        <length>1</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>HOSTED_CLIENT_SK</name>
+        <rename/>
+        <type>-</type>
+        <length>2</length>
+        <precision>0</precision>
+      </meta>      <meta>        <name>AD_CLICK_RATE</name>
+        <rename/>
+        <type>Number</type>
+        <length>-2</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>CPC_AVERAGE_AMT</name>
+        <rename/>
+        <type>Number</type>
+        <length>-2</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>CPM_AVERAGE_AMT</name>
+        <rename/>
+        <type>Number</type>
+        <length>-2</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>CAMPAIGN_WAVE_BUDGET_AMT</name>
+        <rename/>
+        <type>Number</type>
+        <length>-2</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>AD_COST_AMT</name>
+        <rename/>
+        <type>Number</type>
+        <length>-2</length>
+        <precision>-2</precision>
+      </meta>    </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>660</xloc>
+      <yloc>292</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>REMOVE_HEADER_ROWS</name>
+    <type>FilterRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+<send_true_to/>
+<send_false_to/>
+    <compare>
+<condition>
+ <negated>N</negated>
+ <leftvalue>IMPRESSION_DATE</leftvalue>
+ <function>IS NOT NULL</function>
+ <rightvalue/>
+ </condition>
+    </compare>
+     <cluster_schema/>
+    <GUI>
+      <xloc>582</xloc>
+      <yloc>194</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_ADVERTISEMENT_IMPRESSION</name>
+    <type>TableOutput</type>
+    <description>This step truncates and loads the advertisement impression stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <schema/>
+    <table>STAGE_ADVERTISEMENT_IMPRESSION</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+     <cluster_schema/>
+    <GUI>
+      <xloc>770</xloc>
+      <yloc>193</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>ValueClick_Report</name>
+    <type>TextFileInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <accept_filenames>N</accept_filenames>
+    <accept_field/>
+    <accept_stepname/>
+    <separator>	</separator>
+    <enclosure>&quot;</enclosure>
+    <enclosure_breaks>N</enclosure_breaks>
+    <escapechar/>
+    <header>N</header>
+    <nr_headerlines>1</nr_headerlines>
+    <footer>N</footer>
+    <nr_footerlines>1</nr_footerlines>
+    <line_wrapped>N</line_wrapped>
+    <nr_wraps>1</nr_wraps>
+    <layout_paged>N</layout_paged>
+    <nr_lines_per_page>80</nr_lines_per_page>
+    <nr_lines_doc_header>0</nr_lines_doc_header>
+    <noempty>Y</noempty>
+    <include>N</include>
+    <include_field/>
+    <rownum>N</rownum>
+    <rownumByFile>N</rownumByFile>
+    <rownum_field/>
+    <format>DOS</format>
+    <encoding/>
+    <file>
+      <name>C:\kettle\catzilla\catzilla_value_click.txt</name>
+      <filemask/>
+      <file_required>N</file_required>
+      <type>CSV</type>
+      <compression>None</compression>
+    </file>
+    <filters>
+      <filter>
+        <filter_string>Base64: Q0lE</filter_string>        <filter_position>0</filter_position>        <filter_is_last_line>N</filter_is_last_line>      </filter>
+      <filter>
+        <filter_string>Base64: VG90YWw=</filter_string>        <filter_position>0</filter_position>        <filter_is_last_line>N</filter_is_last_line>      </filter>
+    </filters>
+    <fields>
+      <field>
+        <name>CAMPAIGN_WAVE_ID</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>-</nullif>
+        <ifnull>-</ifnull>
+        <position>-1</position>
+        <length>255</length>
+        <precision>-1</precision>
+        <trim_type>both</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>IMPRESSION_DATE</name>
+        <type>Date</type>
+        <format>MM&#47;dd&#47;yyyy</format>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>255</length>
+        <precision>-1</precision>
+        <trim_type>right</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>AD_IMPRESSION_QTY</name>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull>0</ifnull>
+        <position>-1</position>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>AD_CLICK_QTY</name>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull>0</ifnull>
+        <position>-1</position>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>IN_AD_CLICK_RATE</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>-</nullif>
+        <ifnull>0</ifnull>
+        <position>-1</position>
+        <length>255</length>
+        <precision>-1</precision>
+        <trim_type>right</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>IN_CPC_AVERAGE_AMT</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>-</nullif>
+        <ifnull>0</ifnull>
+        <position>-1</position>
+        <length>255</length>
+        <precision>-1</precision>
+        <trim_type>right</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>IN_CPM_AVERAGE_AMT</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <ifnull>0</ifnull>
+        <position>-1</position>
+        <length>255</length>
+        <precision>-1</precision>
+        <trim_type>right</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>IN_CAMPAIGN_WAVE_BUDGET_AMT</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>-</nullif>
+        <ifnull>0</ifnull>
+        <position>-1</position>
+        <length>255</length>
+        <precision>-1</precision>
+        <trim_type>right</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>IN_AD_COST_AMT</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>-</nullif>
+        <ifnull>0</ifnull>
+        <position>-1</position>
+        <length>255</length>
+        <precision>-1</precision>
+        <trim_type>right</trim_type>
+        <repeat>N</repeat>
+      </field>
+    </fields>
+    <limit>0</limit>
+    <error_ignored>N</error_ignored>
+    <error_line_skipped>N</error_line_skipped>
+    <error_count_field/>
+    <error_fields_field/>
+    <error_text_field/>
+    <bad_line_files_destination_directory/>
+    <bad_line_files_extension>warning</bad_line_files_extension>
+    <error_line_files_destination_directory/>
+    <error_line_files_extension>error</error_line_files_extension>
+    <line_number_files_destination_directory/>
+    <line_number_files_extension>line</line_number_files_extension>
+    <date_format_lenient>Y</date_format_lenient>
+    <date_format_locale>en_us</date_format_locale>
+     <cluster_schema/>
+    <GUI>
+      <xloc>87</xloc>
+      <yloc>193</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+</transformation>

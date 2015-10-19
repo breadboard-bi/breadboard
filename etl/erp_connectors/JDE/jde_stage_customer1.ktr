@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>CRM_DIMENSION_CUSTOMER</name>
+    <directory>/</directory>
+    <log>
+      <read></read>
+      <write></write>
+      <input></input>
+      <output></output>
+      <update></update>
+      <connection></connection>
+      <table></table>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection></connection>
+      <table></table>
+      <field></field>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts customer organization data from JDE.  The output could be used to create a customer dimension.</note>
+      <xloc>173</xloc>
+      <yloc>121</yloc>
+      <width>589</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>JDE_CRM_CUSTOMER_ORGANIZATION</from><to>DIMENSION_CUSTOMER_ORGANIZATION</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>DIMENSION_CUSTOMER_ORGANIZATION</name>
+    <type>InsertUpdate</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <lookup>
+      <table>DIMENSION_CUSTOMER</table>
+      </lookup>
+    <GUI>
+      <xloc>358</xloc>
+      <yloc>206</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>JDE_CRM_CUSTOMER_ORGANIZATION</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the column from the PS_BO_ROLE table.  The business object role defines the business contact.
+</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT
+S1.AIAN8 AS CUSTOMER_ID,
+S1.AICO AS COMPANY_ID,
+S2.ABALPH AS CUSTOMER_NAME,
+S2.ABTICKER AS STOCK_SYMBOL,
+S2.ABTAX AS TAXPAYER_ID,
+S2.ABSIC AS SIC_ID,
+S3. DRDL01 AS SIC_DESC,
+S1.AICIG AS CUSTOMER_INDUSTRY_GROUP_ID,
+S1.AICUSTS AS CUSTOMER_STATUS_ID,
+S4.DRDL01 AS CUSTOMER_STATUS_DESC,
+S1.AIDAOJ AS ACCOUNT_OPENED_DATE,
+S2.ABNOE AS EMPLOYEE_QTY,
+S2.ABDUNS AS DUNS_NUMBER,
+S5.RFPLYN AS CREDIT_RISK_ID,
+S1.AIDB AS CREDIT_CLASS_ID,
+S1.AIHDAR AS CREDIT_HOLD_STATUS_CODE,
+S1.AIACL AS CREDIT_LIMIT_AMT,
+S1.AICRCD AS CREDIT_CURRENCY_ID,
+S1.AITIER1 AS CUSTOMER_TIER_ID,
+S6.DRDL01 AS CUSTOMER_TIER_DESC,
+S1.AITERRID AS TERRITORY_ID,
+S7.DRDL02 AS CREDIT_MANAGER_ID,
+S8.DRDL02 AS COLLECTION_MANAGER_ID,
+S1.AIMAN8 AS DEDUCTION_MANAGER_ID,
+S1.AIABC3 AS ABC_AVG_DAYS, --IND?
+S1.AIABC2 AS ABC_INVESTMENT, --IND?
+S1.AIABC1 AS ABC_SALES --IND?
+FROM PS_S_F03012 S1
+LEFT OUTER JOIN PS_S_F0101 S2
+ON S1.AIAN8 = S2.ABAN8
+LEFT OUTER JOIN PS_S_F0005 S3
+ON S2.ABSIC = S3.DRKY
+AND S3.DRSY = &apos;01&apos; AND S3.DRRT = &apos;SC&apos;
+LEFT OUTER JOIN PS_S_F0005 S4
+ON S4.DRKY = S1.AICUSTS
+AND S4.DRSY = &apos;01&apos; AND S4.DRRT = &apos;TY&apos;
+LEFT OUTER JOIN PS_S_F03B25 S5
+ON S1.AIPLY = S5.RFPLY
+LEFT OUTER JOIN PS_S_F0005 S6
+ON S6.DRKY = S1.AITIER1
+AND S6.DRSY = &apos;01&apos; AND S6.DRRT = &apos;T1&apos;
+LEFT OUTER JOIN PS_S_F0005 S7
+ON S7.DRDL01 = S1.AICMGR
+AND S7.DRSY = &apos;01&apos; AND S7.DRRT = &apos;CR&apos;
+LEFT OUTER JOIN PS_S_F0005 S8
+ON S8.DRDL01 = S1.AICLMG
+AND S8.DRSY = &apos;01&apos; AND S7.DRRT = &apos;CM&apos;</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>93</xloc>
+      <yloc>204</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

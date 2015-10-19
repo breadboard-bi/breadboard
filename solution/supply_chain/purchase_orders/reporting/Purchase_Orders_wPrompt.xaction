@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>Purchase_Orders_wPrompt.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>%description</description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help>Please enter the parameters required by the report.</help>  
+    <result-type>rule</result-type> 
+  </documentation>  
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <min_date type="string"> 
+      <sources> 
+        <request>min_date</request> 
+      </sources>  
+      <default-value>20050103</default-value> 
+    </min_date>  
+    <max_date type="string"> 
+      <sources> 
+        <request>max_date</request> 
+      </sources>  
+      <default-value>20050103</default-value> 
+    </max_date> 
+  </inputs>  
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>  
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>Purchase_Orders_wPrompt.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>  
+  <actions> 
+    <action-definition> 
+      <component-name>SecureFilterComponent</component-name>  
+      <action-type>Secure Filter</action-type>  
+      <component-definition> 
+        <selections> 
+          <min_date filter="none"> 
+            <title>Enter the minimum date for the order date range (format YYYYMMDD).</title> 
+          </min_date>  
+          <max_date filter="none"> 
+            <title>Enter the maximum date for the order date range (format YYYYMMDD).</title> 
+          </max_date> 
+        </selections> 
+      </component-definition>  
+      <action-inputs> 
+        <min_date type="string"/>  
+        <max_date type="string"/> 
+      </action-inputs> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>  
+      <action-type>report</action-type>  
+      <action-inputs> 
+        <output-type type="string"/>  
+        <min_date type="string"/>  
+        <max_date type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <report type="content"/> 
+      </action-outputs>  
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT F.PURCHASE_ORDER_DATE, S.SUPPLIER_NAME, D.FULL_NAME, P.PRODUCT_CATEGORY_NAME, P.PRODUCT_NAME,
+SUM(F.PURCHASE_ORDER_QTY) AS PURCHASE_ORDER_QTY,
+SUM(F.PURCHASE_ORDER_TRXN_AMT) AS PURCHASE_ORDER_TRXN_AMT
+FROM FACT_PURCHASE_ORDER F, DIMENSION_PRODUCT P, DIMENSION_SUPPLIER S, DIMENSION_PERSON D
+WHERE F.PRODUCT_SK = P.PRODUCT_SK AND F.SUPPLIER_SK = S.SUPPLIER_SK AND F.PURCHASER_SK = D.PERSON_SK
+AND F.PURCHASE_ORDER_DATE BETWEEN '{min_date}' AND '{max_date}'
+GROUP BY F.PURCHASE_ORDER_DATE, S.SUPPLIER_NAME, D.FULL_NAME, P.PRODUCT_CATEGORY_NAME, P.PRODUCT_NAME
+ORDER BY F.PURCHASE_ORDER_DATE, S.SUPPLIER_NAME, P.PRODUCT_NAME]]></query> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

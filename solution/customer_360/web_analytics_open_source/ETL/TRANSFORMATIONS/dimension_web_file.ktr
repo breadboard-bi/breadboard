@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>DIMENSION_WEB_FILE</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <rejected/>
+      <connection>mdw_mysql</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>Y</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+  <modified_user/>
+  <modified_date>2007&#47;06&#47;09 09:25:44.005</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Breadboard BI - Customer 360 - Dimension Web File Data Flow - Version 1.1
+==============================================
+1.  This data flow extracts web file information from the staging area.
+
+2.  As delivered, this loads as a slowly changing dimension Type 1 (SCD1).  Add SCD2 Functionality by editing the settings in the 
+     dimension lookup&#47;update step.
+
+3.  Customers that wish to persist their staging tables and utilize incremental load logic can utilize the 
+     admin_transformation_control table.  The *_delete step should also be removed from the transformation.</note>
+      <xloc>6</xloc>
+      <yloc>9</yloc>
+      <width>626</width>
+      <heigth>127</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>21</xloc>
+      <yloc>369</yloc>
+      <width>546</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI, LLC.  All rights reserved. 
+
+This component is free software; you can redistribute it and&#47;or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this data mart; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA</note>
+      <xloc>22</xloc>
+      <yloc>455</yloc>
+      <width>621</width>
+      <heigth>140</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>ADD_BASE_PATH</from><to>BUILD_WEB_FILE_URL</to><enabled>Y</enabled> </hop>  <hop> <from>BUILD_WEB_FILE_URL</from><to>DIMENSION_WEB_FILE</to><enabled>Y</enabled> </hop>  <hop> <from>STAGE_WEB_SERVER_REQUEST</from><to>CLEANSE_WEB_FILE_NAME</to><enabled>Y</enabled> </hop>  <hop> <from>CLEANSE_WEB_FILE_NAME</from><to>SORT_FILE_NAMES</to><enabled>Y</enabled> </hop>  <hop> <from>SORT_FILE_NAMES</from><to>REMOVE_DUPLICATES</to><enabled>Y</enabled> </hop>  <hop> <from>REMOVE_DUPLICATES</from><to>ADD_BASE_PATH</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>ADD_BASE_PATH</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>BASE_PATH_DESC</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>http:&#47;&#47;www.breadboardbi.com</nullif>
+        <length>255</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+     <cluster_schema/>
+    <GUI>
+      <xloc>366</xloc>
+      <yloc>262</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>BUILD_WEB_FILE_URL</name>
+    <type>ScriptValue</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <script>var WEB_FILE_URL_DESC = BASE_PATH_DESC.getString() + NEW_WEB_FILE_NAME.getString();
+</script>
+    <fields>      <field>        <name>WEB_FILE_URL_DESC</name>
+        <rename>WEB_FILE_URL_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        </field>      </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>446</xloc>
+      <yloc>197</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>CLEANSE_WEB_FILE_NAME</name>
+    <type>ScriptValue</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <script>var v_in_web_file_name = WEB_FILE_NAME.getString();
+var NEW_WEB_FILE_NAME;
+var string_pieces;
+
+if (
+v_in_web_file_name.indexOf(&quot;&#47;?)&quot;) &gt;= 0
+)
+{
+NEW_WEB_FILE_NAME = &apos;&#47;index.html&apos;;
+}
+
+if (
+v_in_web_file_name.indexOf(&quot;?&quot;) &gt;= 0 
+)
+{
+string_pieces = v_in_web_file_name.split(&quot;\\?&quot;);
+NEW_WEB_FILE_NAME = string_pieces[0];
+}
+
+else { 
+NEW_WEB_FILE_NAME = v_in_web_file_name;
+}</script>
+    <fields>      <field>        <name>NEW_WEB_FILE_NAME</name>
+        <rename>NEW_WEB_FILE_NAME</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        </field>      </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>157</xloc>
+      <yloc>196</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>DIMENSION_WEB_FILE</name>
+    <type>DimensionLookup</type>
+    <description>This dimension lookup&#47;update step inserts or updates rows according to a slowly changing dimension Type 1 (SCD1) or slowly changing dimension Type 2 (SCD2) strategy.  The default configuration is SCD1. </description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+      <schema/>
+      <table>DIMENSION_WEB_FILE</table>
+      <connection>mdw_mysql</connection>
+      <commit>0</commit>
+      <update>Y</update>
+      <fields>
+        <key>
+          <name>NEW_WEB_FILE_NAME</name>
+          <lookup>WEB_FILE_NAME</lookup>
+        </key>
+        <date>
+          <name/>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+        </date>
+        <field>
+          <name>WEB_FILE_BYTE_QTY</name>
+          <lookup>WEB_FILE_BYTE_QTY</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>WEB_FILE_URL_DESC</name>
+          <lookup>WEB_FILE_URL_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>WEB_FILE_CAT</name>
+          <lookup>WEB_FILE_CAT</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>WEB_FILE_CAT_NAME</name>
+          <lookup>WEB_FILE_CAT_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <return>
+          <name>WEB_FILE_SK</name>
+          <rename/>
+          <creation_method>tablemax</creation_method>
+          <use_autoinc>N</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1971</min_year>
+      <max_year>2036</max_year>
+      <cache_size>-1</cache_size>
+     <cluster_schema/>
+    <GUI>
+      <xloc>540</xloc>
+      <yloc>267</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>REMOVE_DUPLICATES</name>
+    <type>Unique</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+      <count_rows>N</count_rows>
+      <count_field/>
+    <fields>      <field>        <name>NEW_WEB_FILE_NAME</name>
+        <case_insensitive>Y</case_insensitive>
+        </field>      </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>311</xloc>
+      <yloc>198</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>SORT_FILE_NAMES</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+      <directory>%%java.io.tmpdir%%</directory>
+      <prefix>out</prefix>
+      <sort_size>5000</sort_size>
+      <compress>N</compress>
+    <fields>
+      <field>
+        <name>NEW_WEB_FILE_NAME</name>
+        <ascending>Y</ascending>
+        </field>
+      </fields>
+     <cluster_schema/>
+    <GUI>
+      <xloc>234</xloc>
+      <yloc>259</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_WEB_SERVER_REQUEST</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <sql>SELECT
+  WEB_FILE_NAME
+, WEB_FILE_BYTE_QTY
+, (CASE WHEN (WEB_FILE_NAME LIKE &apos;%.htm%&apos; or WEB_FILE_NAME =&apos;&#47;&apos;) THEN &apos;html&apos;
+        WHEN WEB_FILE_NAME LIKE &apos;%.pdf%&apos; THEN &apos;pdf&apos;
+        WHEN WEB_FILE_NAME LIKE &apos;%.ico&apos; THEN &apos;icon&apos;
+        WHEN WEB_FILE_NAME LIKE &apos;%.css&apos; THEN &apos;stylesheet&apos;
+        WHEN WEB_FILE_NAME LIKE &apos;%robots.txt&apos; THEN &apos;robots.txt&apos;
+        WHEN WEB_FILE_NAME LIKE &apos;%.png%&apos; or WEB_FILE_NAME LIKE &apos;%.jpg%&apos; or WEB_FILE_NAME LIKE &apos;%.gif%&apos; THEN &apos;image&apos; 
+        WHEN WEB_FILE_NAME LIKE &apos;%.log%&apos; THEN &apos;log&apos; 
+        ELSE &apos;unknown&apos; END) AS WEB_FILE_CAT
+, (CASE WHEN (WEB_FILE_NAME LIKE &apos;%.htm%&apos;  or WEB_FILE_NAME =&apos;&#47;&apos;) THEN &apos;html&apos;
+        WHEN WEB_FILE_NAME LIKE &apos;%.pdf%&apos; THEN &apos;pdf&apos;
+        WHEN WEB_FILE_NAME LIKE &apos;%.ico&apos; THEN &apos;icon&apos;
+        WHEN WEB_FILE_NAME LIKE &apos;%.css&apos; THEN &apos;stylesheet&apos;
+        WHEN WEB_FILE_NAME LIKE &apos;%robots.txt&apos; THEN &apos;robots.txt&apos;
+        WHEN (WEB_FILE_NAME LIKE &apos;%.png%&apos; or WEB_FILE_NAME LIKE &apos;%.jpg%&apos; or WEB_FILE_NAME LIKE &apos;%.gif%&apos;) THEN &apos;image&apos; 
+        WHEN WEB_FILE_NAME LIKE &apos;%.log%&apos; THEN &apos;log&apos;
+        ELSE &apos;unknown&apos; END) AS WEB_FILE_CAT_NAME
+FROM STAGE_WEB_REQUEST
+&#47;* WHERE DW_LOAD_DATE *&#47;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>67</xloc>
+      <yloc>256</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+</transformation>

@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>DIMENSION_KEYWORD_PHRASE</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input>STAGE_WEB_REQUEST</input>
+      <output>DIMENSION_KEYWORD_PHRASE</output>
+      <update/>
+      <rejected/>
+      <connection>mdw_mysql</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <step_performance_table/>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>N</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>0</step_performance_capturing_delay>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2008&#47;08&#47;28 19:59:03.000</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI, LLC.  All rights reserved.</note>
+      <xloc>31</xloc>
+      <yloc>516</yloc>
+      <width>295</width>
+      <heigth>23</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+1. Use max value +1 rather than database sequence.
+2.  Changed min&#47;max year from 1900&#47;2199 to 1970&#47;2036.
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>34</xloc>
+      <yloc>399</yloc>
+      <width>562</width>
+      <heigth>88</heigth>
+    </notepad>
+    <notepad>
+      <note>Breadboard BI - Customer 360 - Dimension Keyword Phrase Data Flow - Version 2.1
+===================================================
+1.  This data flow extracts keyword phrase information from the staging area.
+
+2.  As delivered, this loads as a slowly changing dimension Type 1 (SCD1).  Add SCD2 Functionality by 
+    editing the settings in the dimension lookup&#47;update step.
+
+3.  Customers that wish to persist their staging tables and utilize incremental load logic can join to the 
+     ADMIN_LOAD_CONTROL table in the table input step.  The *_delete step should also be
+     removed from the transformation.</note>
+      <xloc>5</xloc>
+      <yloc>6</yloc>
+      <width>520</width>
+      <heigth>140</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>jde</name>
+    <server>test</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server>localhost</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>3306</port>
+    <username>mdw</username>
+    <password>Encrypted 2be98afc86aa7f2e4a118bd79cbc3fd89</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>rds</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>rds</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server/>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database/>
+    <port/>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>MAP_PARSE_KEYWORDS</from><to>SORT_KEYWORDS</to><enabled>Y</enabled> </hop>  <hop> <from>Add Dummy Web File Name</from><to>MAP_PARSE_KEYWORDS</to><enabled>Y</enabled> </hop>  <hop> <from>REMOVE_ROWS_WITHOUT_SEARCH_STRING</from><to>Add Dummy Web File Name</to><enabled>Y</enabled> </hop>  <hop> <from>REMOVE_NULL_ROWS</from><to>DIMENSION_KEYWORD_PHRASE</to><enabled>Y</enabled> </hop>  <hop> <from>KEYWORD_LENGTH</from><to>REMOVE_NULL_ROWS</to><enabled>Y</enabled> </hop>  <hop> <from>STAGE_WEB_REQUEST</from><to>REMOVE_ROWS_WITHOUT_SEARCH_STRING</to><enabled>Y</enabled> </hop>  <hop> <from>REMOVE_DUPLICATE_KEYWORDS</from><to>KEYWORD_LENGTH</to><enabled>Y</enabled> </hop>  <hop> <from>SORT_KEYWORDS</from><to>REMOVE_DUPLICATE_KEYWORDS</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>Add Dummy Web File Name</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>WEB_FILE_NAME</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>&apos;Missing&apos;</nullif>
+        <length>2000</length>
+        <precision>-1</precision>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>237</xloc>
+      <yloc>260</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>DIMENSION_KEYWORD_PHRASE</name>
+    <type>DimensionLookup</type>
+    <description>This dimension lookup&#47;update step inserts or updates rows according to a slowly changing dimension Type 1 (SCD1) or slowly changing dimension Type 2 (SCD2) strategy.  The default configuration is SCD1. </description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <schema/>
+      <table>DIMENSION_KEYWORD_PHRASE</table>
+      <connection>mdw_mysql</connection>
+      <commit>0</commit>
+      <update>Y</update>
+      <fields>
+        <key>
+          <name>KEYWORD_DESC</name>
+          <lookup>KEYWORD_DESC</lookup>
+        </key>
+        <key>
+          <name>HOSTED_CLIENT_SK</name>
+          <lookup>HOSTED_CLIENT_SK</lookup>
+        </key>
+        <date>
+          <name/>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+        </date>
+        <field>
+          <name>KEYWORD_LENGTH_QTY</name>
+          <lookup>KEYWORD_LENGTH_QTY</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>KEYWORD_LENGTH_BUCKET_NAME</name>
+          <lookup>KEYWORD_LENGTH_BUCKET_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>TOKEN_QTY</name>
+          <lookup>TOKEN_QTY</lookup>
+          <update>Update</update>
+        </field>
+        <return>
+          <name>KEYWORD_SK</name>
+          <rename/>
+          <creation_method>tablemax</creation_method>
+          <use_autoinc>N</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1970</min_year>
+      <max_year>2036</max_year>
+      <cache_size>0</cache_size>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>758</xloc>
+      <yloc>262</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>KEYWORD_LENGTH</name>
+    <type>ScriptValue</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>Y</compatible>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>ScriptValue</jsScript_name>
+        <jsScript_script>var KEYWORD_LENGTH_QTY = KEYWORD_DESC.getString().length();
+var KEYWORD_LENGTH_BUCKET_NAME = &quot;&quot;;
+
+if (KEYWORD_LENGTH_QTY &gt; 0 &amp;&amp; KEYWORD_LENGTH_QTY &lt;= 10 )
+{
+KEYWORD_LENGTH_BUCKET_NAME = &quot;1 - 10&quot;;
+}
+else if (KEYWORD_LENGTH_QTY &gt; 10 &amp;&amp; KEYWORD_LENGTH_QTY &lt;= 20 )
+{
+KEYWORD_LENGTH_BUCKET_NAME = &quot;11 - 20&quot;;
+}
+else if (KEYWORD_LENGTH_QTY &gt; 20 &amp;&amp; KEYWORD_LENGTH_QTY &lt;= 30 )
+{
+KEYWORD_LENGTH_BUCKET_NAME = &quot;21 - 30&quot;;
+}
+else if (KEYWORD_LENGTH_QTY &gt; 30 &amp;&amp; KEYWORD_LENGTH_QTY &lt;= 40 )
+{
+KEYWORD_LENGTH_BUCKET_NAME = &quot;31 - 40&quot;;
+}
+else if (KEYWORD_LENGTH_QTY &gt; 40 &amp;&amp; KEYWORD_LENGTH_QTY &lt;= 50 )
+{
+KEYWORD_LENGTH_BUCKET_NAME = &quot;41 - 50&quot;;
+}
+else if (KEYWORD_LENGTH_QTY &gt; 50)
+{
+KEYWORD_LENGTH_BUCKET_NAME = &quot;51+&quot;;
+}
+else 
+{
+KEYWORD_LENGTH_BUCKET_NAME = &quot;Unknown&quot;;
+}
+
+var TOKEN_QTY = KEYWORD_DESC.getString().split(&quot; &quot;).length;
+
+</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>KEYWORD_LENGTH_QTY</name>
+        <rename>KEYWORD_LENGTH_QTY</rename>
+        <type>Integer</type>
+        <length>10</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>KEYWORD_LENGTH_BUCKET_NAME</name>
+        <rename>KEYWORD_LENGTH_BUCKET_NAME</rename>
+        <type>String</type>
+        <length>60</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>TOKEN_QTY</name>
+        <rename>TOKEN_QTY</rename>
+        <type>Integer</type>
+        <length>10</length>
+        <precision>-1</precision>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>582</xloc>
+      <yloc>258</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_PARSE_KEYWORDS</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_PARSE_KEYWORDS</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+    <mappings>
+      <input>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>REFERER_URL_DESC</parent><child>REFERER_URL_DESC</child></connector>
+       <connector><parent>WEB_FILE_NAME</parent><child>WEB_FILE_NAME</child></connector>
+       <connector><parent>URL_PARAMS_DESC</parent><child>URL_PARAMS_DESC</child></connector>
+    </mapping>      </input>
+      <output>
+    <mapping>    <input_step/>
+    <output_step/>
+    <main_path>Y</main_path>
+    <rename_on_output>N</rename_on_output>
+    <description/>
+       <connector><parent>KEYWORD_DESC</parent><child>KEYWORD_DESC</child></connector>
+       <connector><parent>ORGANIC_IND</parent><child>ORGANIC_IND</child></connector>
+       <connector><parent>ADWORD_CAMPAIGN_IND</parent><child>ADWORD_CAMPAIGN_IND</child></connector>
+       <connector><parent>WEB_FILE_NAME</parent><child>WEB_FILE_NAME</child></connector>
+    </mapping>      </output>
+          <parameters>    </parameters>
+    </mappings>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>349</xloc>
+      <yloc>195</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>REMOVE_DUPLICATE_KEYWORDS</name>
+    <type>Unique</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <count_rows>N</count_rows>
+      <count_field/>
+    <fields>      <field>        <name>HOSTED_CLIENT_SK</name>
+        <case_insensitive>Y</case_insensitive>
+        </field>      <field>        <name>KEYWORD_DESC</name>
+        <case_insensitive>Y</case_insensitive>
+        </field>      </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>508</xloc>
+      <yloc>193</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>REMOVE_NULL_ROWS</name>
+    <type>FilterRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+<send_true_to/>
+<send_false_to/>
+    <compare>
+<condition>
+ <negated>N</negated>
+ <conditions>
+  <condition>
+   <negated>N</negated>
+   <leftvalue>KEYWORD_LENGTH_QTY</leftvalue>
+   <function>&gt;</function>
+   <rightvalue/>
+   <value><name>constant</name><type>Number</type><text>0.0</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask>#.#</mask></value>   </condition>
+  </conditions>
+ </condition>
+    </compare>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>660</xloc>
+      <yloc>191</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>REMOVE_ROWS_WITHOUT_SEARCH_STRING</name>
+    <type>FilterRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+<send_true_to/>
+<send_false_to/>
+    <compare>
+<condition>
+ <negated>N</negated>
+ <conditions>
+  <condition>
+   <negated>N</negated>
+   <conditions>
+    <condition>
+     <negated>N</negated>
+     <conditions>
+      <condition>
+       <negated>N</negated>
+       <operator>OR</operator>
+       <leftvalue>REFERER_URL_DESC</leftvalue>
+       <function>CONTAINS</function>
+       <rightvalue/>
+       <value><name>constant</name><type>String</type><text>search</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value>       </condition>
+      <condition>
+       <negated>N</negated>
+       <operator>OR</operator>
+       <leftvalue>REFERER_URL_DESC</leftvalue>
+       <function>CONTAINS</function>
+       <rightvalue/>
+       <value><name>constant</name><type>String</type><text>query</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value>       </condition>
+      <condition>
+       <negated>N</negated>
+       <operator>OR</operator>
+       <leftvalue>REFERER_URL_DESC</leftvalue>
+       <function>CONTAINS</function>
+       <rightvalue/>
+       <value><name>constant</name><type>String</type><text>OVKEY</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value>       </condition>
+      <condition>
+       <negated>N</negated>
+       <operator>OR</operator>
+       <leftvalue>URL_PARAMS_DESC</leftvalue>
+       <function>CONTAINS</function>
+       <rightvalue/>
+       <value><name>constant</name><type>String</type><text>OVKEY</text><length>-1</length><precision>-1</precision><isnull>N</isnull><mask/></value>       </condition>
+      </conditions>
+     </condition>
+    </conditions>
+   </condition>
+  </conditions>
+ </condition>
+    </compare>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>165</xloc>
+      <yloc>193</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>SORT_KEYWORDS</name>
+    <type>SortRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <directory>%%java.io.tmpdir%%</directory>
+      <prefix>out</prefix>
+      <sort_size>5000</sort_size>
+      <free_memory/>
+      <compress>N</compress>
+      <compress_variable/>
+      <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>HOSTED_CLIENT_SK</name>
+        <ascending>Y</ascending>
+        <case_sensitive>Y</case_sensitive>
+      </field>
+      <field>
+        <name>KEYWORD_DESC</name>
+        <ascending>Y</ascending>
+        <case_sensitive>Y</case_sensitive>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>412</xloc>
+      <yloc>261</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_WEB_REQUEST</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <sql>SELECT DISTINCT
+HOSTED_CLIENT_SK, 
+COALESCE(LOWER(URL_PARAMS_DESC),&quot; &quot;) AS URL_PARAMS_DESC,
+COALESCE(LOWER(REFERER_URL_DESC),&quot; &quot;) AS REFERER_URL_DESC
+FROM STAGE_WEB_REQUEST
+WHERE (REFERER_URL_DESC NOT IN (&apos;Missing&apos;) AND REFERER_URL_DESC NOT LIKE &apos;%bbiuser&#47;inforeqsearch%&apos;) OR URL_PARAMS_DESC LIKE &apos;%OVKEY%&apos;
+&#47;* Functions can be removed using later versions of Kettle *&#47;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>65</xloc>
+      <yloc>262</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+   <slave-step-copy-partition-distribution>
+</slave-step-copy-partition-distribution>
+   <slave_transformation>N</slave_transformation>
+</transformation>

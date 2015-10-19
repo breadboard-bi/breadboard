@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>Source Report</title>
+  <version>1</version>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>A sample source report.</description>  
+    <icon>PentahoReporting.png</icon>  
+    <help>Choose Report Output Format.</help>  
+    <result-type>report</result-type> 
+  </documentation>
+
+  <inputs> 
+    <outputType type="string"> 
+      <sources> 
+        <request>outputType</request>  
+        <request>type</request> 
+      </sources>  
+      <default-value><![CDATA[pdf]]></default-value> 
+    </outputType>  
+    <outputTypeList type="property-map-list"> 
+      <sources> 
+        <runtime>outputTypeList</runtime> 
+      </sources>  
+      <default-value type="property-map-list"> 
+        <property-map> 
+          <entry key="report-output-desc">PDF</entry>  
+          <entry key="report-output-type-id">pdf</entry> 
+        </property-map>  
+        <property-map> 
+          <entry key="report-output-desc">Excel</entry>  
+          <entry key="report-output-type-id">xls</entry> 
+        </property-map>  
+        <property-map> 
+          <entry key="report-output-desc">Word</entry>  
+          <entry key="report-output-type-id">rtf</entry> 
+        </property-map>  
+        <property-map> 
+          <entry key="report-output-desc">Web Page</entry>  
+          <entry key="report-output-type-id">html</entry> 
+        </property-map>  
+        <property-map> 
+          <entry key="report-output-desc">Comma Separated Value</entry>  
+          <entry key="report-output-type-id">csv</entry> 
+        </property-map> 
+      </default-value> 
+    </outputTypeList>  
+    <customer_sk type="string"> 
+      <sources> 
+        <request>customer_sk</request> 
+      </sources> 
+    </customer_sk>  
+    <campaign_id type="string"> 
+      <sources> 
+        <request>campaign_id</request> 
+      </sources> 
+    </campaign_id>  
+    <date_start type="string"> 
+      <sources> 
+        <request>date_start</request> 
+      </sources> 
+    </date_start>  
+    <date_end type="string"> 
+      <sources> 
+        <request>date_end</request> 
+      </sources> 
+    </date_end>  
+    <source_id type="string"> 
+      <sources> 
+        <request>source_id</request> 
+      </sources> 
+    </source_id>  
+    <ad_network_name type="string"> 
+      <sources> 
+        <request>ad_network_name</request> 
+      </sources> 
+    </ad_network_name>  
+    <campaign_name type="string"> 
+      <sources> 
+        <request>campaign_name</request> 
+      </sources> 
+    </campaign_name>  
+    <date_end type="string"> 
+      <sources> 
+        <request>date_end</request> 
+      </sources> 
+    </date_end>  
+    <date_start type="string"> 
+      <sources> 
+        <request>date_start</request> 
+      </sources> 
+    </date_start>  
+    <advertiser_name type="string"> 
+      <sources> 
+        <request>advertiser_name</request> 
+      </sources> 
+    </advertiser_name> 
+  </inputs>
+
+  <outputs> 
+    <content type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </content> 
+  </outputs>
+
+  <resources> 
+    <report-definition> 
+      <solution-file> 
+        <location>source_report.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>SecureFilterComponent</component-name>
+      <action-type>Prompt for Report Export Type</action-type>
+      <action-inputs> 
+        <outputTypeList type="property-map-list"/>  
+        <outputType type="string"/>  
+        <ad_network_name type="string"/>  
+        <campaign_name type="string"/>  
+        <advertiser_name type="string"/>  
+        <date_start type="string"/>  
+        <date_end type="string"/> 
+      </action-inputs>
+      <component-definition> 
+        <selections> 
+          <outputType style="radio"> 
+            <title>Choose Report Format</title>  
+            <filter value-col-name="report-output-type-id" display-col-name="report-output-desc">outputTypeList</filter> 
+          </outputType>  
+          <ad_network_name filter="none" optional="true"/>  
+          <campaign_name filter="none" optional="true"/>  
+          <advertiser_name filter="none" optional="true"/>  
+          <date_start filter="none" optional="true"/>  
+          <date_end filter="none" optional="true"/> 
+        </selections> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>JavascriptRule</component-name>
+      <action-type>QueryBuilder</action-type>
+      <action-inputs> 
+        <campaign_id type="string"/>  
+        <date_start type="string"/>  
+        <date_end type="string"/>  
+        <customer_sk type="string"/>  
+        <source_id type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <query_string type="string"/> 
+      </action-outputs>
+      <component-definition> 
+        <script><![CDATA[function getQuery(source_id,customer_sk,campaign_id,date_start,date_end) {
+
+var where_clause="";
+
+if(customer_sk.length>0){
+ 	where_clause+=" AND dimension_campaign_wave.CUSTOMER_SK="+customer_sk+" ";
+ }
+ if(source_id.length>0){
+ 	where_clause+=" AND dimension_advertisement.SOURCE_SYSTEM_SK="+source_id+" ";
+ }
+ if(campaign_id.length>0){
+ 	where_clause+=" AND dimension_campaign_wave.campaign_wave_sk in ('"+campaign_id+"') ";
+ }
+if(date_start.length>0 && date_end.length>0){
+	where_clause+=" AND (  fact_advertisement_impression.IMPRESSION_DATE>= STR_TO_DATE('"+date_start+"', '%m/%d/%Y') AND fact_advertisement_impression.IMPRESSION_DATE< STR_TO_DATE('"+date_end+"', '%m/%d/%Y') ) "; 
+}
+
+
+
+
+
+
+var query=
+"SELECT "+
+"dimension_campaign_wave.CAMPAIGN_NAME, "+
+"SUM(AD_CLICK_QTY)AS SUM_AD_CLICK_QTY "+
+"FROM "+
+"fact_advertisement_impression, "+
+"dimension_campaign_wave, "+
+"dimension_advertisement, "+
+"dimension_source_system "+
+"WHERE "+
+"fact_advertisement_impression.campaign_wave_sk=dimension_campaign_wave.campaign_wave_sk and "+
+"dimension_advertisement.ad_sk=fact_advertisement_impression.ad_sk and  "+
+"dimension_campaign_wave.CAMPAIGN_WAVE_NAME IS NOT NULL  AND "+
+"dimension_campaign_wave.SOURCE_SYSTEM_SK=dimension_source_system.SOURCE_SYSTEM_SK "+
+where_clause+" " +
+"GROUP BY "+
+"dimension_campaign_wave.CAMPAIGN_WAVE_NAME,fact_advertisement_impression.IMPRESSION_DATE ";
+return query;
+
+}
+getQuery(source_id,customer_sk,campaign_id,date_start,date_end);]]></script> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>
+      <action-inputs> 
+        <query_string type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <query_string type="result-set" mapping="query_result"/> 
+      </action-outputs>
+      <component-definition> 
+        <jndi><![CDATA[mdw_mysql]]></jndi>  
+        <query><![CDATA[{query_string}]]></query>  
+        <live><![CDATA[true]]></live> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <action-inputs> 
+        <output-type type="string" mapping="outputType"/>  
+        <data type="result-set" mapping="query_result"/>  
+        <campaign_name type="string"/>  
+        <advertiser_name type="string"/>  
+        <ad_network_name type="string"/>  
+        <date_start type="string"/>  
+        <date_end type="string"/> 
+      </action-inputs>
+      <action-resources> 
+        <report-definition type="resource"/> 
+      </action-resources>
+      <action-outputs> 
+        <report-output type="content" mapping="content"/> 
+      </action-outputs>
+      <component-definition/> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

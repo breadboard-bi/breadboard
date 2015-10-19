@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Schema name="breadboardbi">
+
+<!--
+#
+# Copyright � 2006 Breadboard BI.  All rights reserved.
+#
+# This component is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+#
+# It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this data mart; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#
+-->
+
+<!-- BEGIN DIMENSIONS -->
+
+
+  <Dimension name="Geographic Region">
+    <Hierarchy name = "Regions" hasAll="true" allMemberName="All Regions"
+               primaryKey="REGION_SK">
+      <Table name="DIMENSION_REGION"/>
+      <Level column="PARENT_REGION_NAME" name="Parent Region" uniqueMembers="true"/>
+      <Level column="REGION_NAME" name="Region" uniqueMembers="true"/>
+    </Hierarchy>
+   </Dimension>
+
+  <Dimension name="Time Period" type = "TimeDimension">
+    <Hierarchy hasAll="true" allMemberName="All Periods" primaryKey="DATE_SK">
+      <Table name="DIMENSION_DAY"/>
+      <Level column="YEAR_SORT_NUMBER" name="Year" type="String" uniqueMembers="true" levelType="TimeYears"/>
+      <Level column="QUARTER_NAME" name="Quarter" type="String" uniqueMembers="false" levelType="TimeQuarters"/>
+      <Level column="MONTH_NAME" ordinalColumn="MONTH_NUMBER" name="Month" type="String" uniqueMembers="false" levelType="TimeMonths"/>
+      <Level column="WEEK_OF_MONTH_NAME" name="Week" type="String" uniqueMembers="false" levelType="TimeWeeks"/>
+      <Level column="DAY_OF_WEEK_SORT_NAME" name="Day" type="String" uniqueMembers="false" levelType="TimeDays"/>   
+ </Hierarchy>
+    <Hierarchy name = "Quarter" hasAll="true" allMemberName="All Quarters" primaryKey="DATE_SK">
+      <Table name="DIMENSION_DAY"/>
+      <Level column="YEAR_SORT_NUMBER" name="Year" type="String" uniqueMembers="true" levelType="TimeYears"/>
+      <Level column="QUARTER_NAME" name="Quarter" type="String" uniqueMembers="false" levelType="TimeQuarters"/>
+    </Hierarchy>
+    <Hierarchy name = "Month" hasAll="true" allMemberName="All Months" primaryKey="DATE_SK">
+      <Table name="DIMENSION_DAY"/>
+      <Level column="YEAR_SORT_NUMBER" name="Year" type="String" uniqueMembers="true" levelType="TimeYears"/>
+      <Level column="MONTH_NAME" ordinalColumn = "MONTH_NUMBER" name="Month" type="String" uniqueMembers="false" levelType="TimeMonths"/>
+    </Hierarchy>
+  </Dimension>
+
+  <Dimension name="Web Browser">
+    <Hierarchy name = "Web Browsers" hasAll="true" allMemberName="All Browsers" primaryKey="WEB_BROWSER_OS_SK">
+      <Table name="DIMENSION_WEB_BROWSER_OS"/>
+      <Level column="PARENT_WEB_BROWSER_NAME" name="Parent Browser" uniqueMembers="true"/>
+      <Level column="WEB_BROWSER_NAME" name="Browser" uniqueMembers="true"/>
+     </Hierarchy>
+</Dimension>
+
+  <Dimension name="Web File">
+    <Hierarchy name = "Web Files" hasAll="true" allMemberName="All Files"
+               primaryKey="WEB_FILE_SK">
+      <Table name="DIMENSION_WEB_FILE"/>
+      <Level column="WEB_FILE_CAT_NAME" name="File Category" uniqueMembers="true"/>
+      <Level column="WEB_FILE_NAME" name="File" uniqueMembers="false"/>
+	</Hierarchy>
+</Dimension>
+
+  <Dimension name="Web Visitor Location">
+    <Hierarchy name = "Web Visitor Locations" hasAll="true" allMemberName="All Visitor Locations"
+               primaryKey="WEB_VISITOR_SK">
+      <Table name="DIMENSION_WEB_VISITOR"/>
+      <Level column="COUNTRY_NAME" name="Country" uniqueMembers="true"/>
+      <Level column="REGION_CODE" name="Region" uniqueMembers="false"/>
+      <Level column="CITY_NAME" name="City" uniqueMembers="false"/>
+	</Hierarchy>
+   <Hierarchy name = "Web Visitor Postal Codes" hasAll="true" allMemberName="All Postal Codes"
+               primaryKey="WEB_VISITOR_SK">
+      <Table name="DIMENSION_WEB_VISITOR"/>
+      <Level column="COUNTRY_NAME" name="Country" uniqueMembers="true"/>
+      <Level column="POSTAL_CODE" name="Postal Code" uniqueMembers="true"/>
+	</Hierarchy>
+   <Hierarchy name = "Web Visitor DMAs" hasAll="true" allMemberName="All DMAs"
+               primaryKey="WEB_VISITOR_SK">
+      <Table name="DIMENSION_WEB_VISITOR"/>
+      <Level column="COUNTRY_NAME" name="Country" uniqueMembers="true"/>
+      <Level column="DMA_NAME" name="DMA" uniqueMembers="true"/>
+      <Level column="CITY_NAME" name="City" uniqueMembers="false"/>
+	</Hierarchy>
+   <Hierarchy name = "Web Visitor Phone Codes" hasAll="true" allMemberName="All Phone Codes"
+               primaryKey="WEB_VISITOR_SK">
+      <Table name="DIMENSION_WEB_VISITOR"/>
+      <Level column="COUNTRY_NAME" name="Country" uniqueMembers="true"/>
+      <Level column="PHONE_REGION_CODE" name="Area Code" uniqueMembers="true"/>
+	</Hierarchy>
+</Dimension>
+
+  <Dimension name="Web Site Referer">
+    <Hierarchy name = "Web Referers" hasAll="true" allMemberName="All Referers" primaryKey="REFERER_URL_SK">
+      <Table name="DIMENSION_WEB_SITE_REFERER"/>
+      <Level column="PARENT_REFERER_DESC" name="Parent Referer" uniqueMembers="true"/>
+      <Level column="REFERER_DESC" name="Referer" uniqueMembers="true"/>
+ <!--     <Level column="REFERER_URL_DESC" name="Referer URL" uniqueMembers="true"/> -->
+     </Hierarchy>
+</Dimension>
+
+<!-- BEGIN CUBES -->
+
+<Cube name="Web Site Visits">
+    <Table alias="" name="FACT_WEB_SITE_VISIT"/>
+    <DimensionUsage foreignKey="VISIT_DATE_SK" name="Time Period" source="Time Period"/>
+    <DimensionUsage foreignKey="WEB_VISITOR_SK" name="Web Visitor Location" source="Web Visitor Location"/>
+<!--   <DimensionUsage foreignKey="WEB_FILE_SK" name="Web File" source="Web File"/> -->
+<!--   <DimensionUsage foreignKey="REFERER_URL_SK" name="Web Site Referer" source="Web Site Referer"/> -->
+    <Measure aggregator="sum" column="WEB_FILE_BYTE_QTY" name="Byte Quantity" formatString="#,###"/>
+    <Measure aggregator="sum" column="WEB_VISIT_QTY" formatString="#,###" name="Visits"/> 
+    <Measure aggregator="sum" column="WEB_PAGE_VIEW_QTY" formatString="#,###" name="Page Views"/>
+    <Measure aggregator="sum" column="NEW_VISITOR_QTY" formatString="#,###" name="New Visitor Visits"/>
+    <Measure aggregator="sum" column="RETURNING_VISITOR_QTY" formatString="#,###" name="Returning Visitor Visits"/>
+    <Measure aggregator="sum" column="ROBOT_PAGE_VIEW_QTY" formatString="#,###" name="Robot Visits"/>
+        
+    <CalculatedMember name="Average Views Per Visit" dimension="Measures">
+      <Formula>[Measures].[Page Views]/[Measures].[Visits]</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0"/>
+    </CalculatedMember>
+    <CalculatedMember name="Next Period Visit Variance" dimension="Measures">
+      <Formula>(([Time Period].CurrentMember, [Measures].[Visits]) - ([Time Period].CurrentMember.NextMember,[Measures].[Visits]))</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0"/>
+    </CalculatedMember>
+    <CalculatedMember name="Previous Period Visit Variance" dimension="Measures">
+      <Formula>(([Time Period].CurrentMember, [Measures].[Visits]) - ([Time Period].CurrentMember.PrevMember,[Measures].[Visits]))</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0"/>
+    </CalculatedMember>
+    <CalculatedMember name="Next Period % Visit Change" dimension="Measures">
+      <Formula>((([Time Period].CurrentMember, [Measures].[Visits]) - ([Time Period].CurrentMember.NextMember,[Measures].[Visits])) / ([Time Period].CurrentMember.NextMember, [Measures].[Visits]))</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="0.0%"/>
+    </CalculatedMember>
+    <CalculatedMember name="Previous Period % Visit Change" dimension="Measures">
+      <Formula>((([Time Period].CurrentMember, [Measures].[Visits]) - ([Time Period].CurrentMember.PrevMember,[Measures].[Visits])) / ([Time Period].CurrentMember.PrevMember, [Measures].[Visits]))</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="0.0%"/>
+    </CalculatedMember>
+    <CalculatedMember name="Ratio To Parent" dimension="Measures">
+      <Formula>CoalesceEmpty((([Time Period].CurrentMember, [Measures].[Visits]) / ([Time Period].CurrentMember.Parent, [Measures].[Visits])), 1.0)</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="0.0%"/>
+    </CalculatedMember>
+    <CalculatedMember name="YTD Visits" dimension="Measures">
+      <Formula>Sum(PeriodsToDate([Time Period].[Year], [Time Period].CurrentMember), [Measures].[Visits])</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="#,###"/>
+    </CalculatedMember>
+    <CalculatedMember name="QTD Visits" dimension="Measures">
+      <Formula>Sum(PeriodsToDate([Time Period].[Quarter], [Time Period].CurrentMember), [Measures].[Visits])</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="#,###"/>
+    </CalculatedMember>
+    <CalculatedMember name="MTD Visits" dimension="Measures">
+      <Formula>Sum(PeriodsToDate([Time Period].[Month], [Time Period].CurrentMember), [Measures].[Visits])</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="#,###"/>
+    </CalculatedMember>
+    
+   <NamedSet name="Top Ten Cities">
+    	<Formula>TopCount([Web Visitor Location].[City].MEMBERS,10,[Measures].[Visits])</Formula>
+    </NamedSet>
+   <NamedSet name="Top Five Countries">
+    	<Formula>TopCount([Web Visitor Location].[Country].MEMBERS,5,[Measures].[Visits])</Formula>
+    </NamedSet>
+   <NamedSet name="Top Ten Postal Codes">
+    	<Formula>TopCount([Web Visitor Location.Web Visitor Postal Codes].[Postal Code].MEMBERS,10,[Measures].[Visits])</Formula>
+    </NamedSet>
+   <NamedSet name="Top Ten Phone Codes">
+    	<Formula>TopCount([Web Visitor Location.Web Visitor Phone Codes].[Area Code].MEMBERS,10,[Measures].[Visits])</Formula>
+    </NamedSet>
+   <NamedSet name="Top Ten DMAs">
+    	<Formula>TopCount([Web Visitor Location.Web Visitor DMAs].[DMA].MEMBERS,10,[Measures].[Visits])</Formula>
+    </NamedSet>   
+</Cube>
+
+<Cube name="Web Page Views">
+    <Table alias="" name="FACT_WEB_PAGE_VIEW"/>
+    <DimensionUsage foreignKey="REQUEST_DATE_SK" name="Time Period" source="Time Period"/>
+    <DimensionUsage foreignKey="WEB_VISITOR_SK" name="Web Visitor Location" source="Web Visitor Location"/>
+    <DimensionUsage foreignKey="WEB_FILE_SK" name="Web File" source="Web File"/>
+    <DimensionUsage foreignKey="WEB_BROWSER_OS_SK" name="Web Browser" source="Web Browser"/>
+<!--    <DimensionUsage foreignKey="REFERER_URL_SK" name="Web Site Referer" source="Web Site Referer"/> -->
+    <Measure aggregator="sum" column="WEB_FILE_BYTE_QTY" name="Byte Quantity" formatString="#,###"/>
+    <Measure aggregator="sum" column="WEB_PAGE_VIEW_QTY" formatString="#,###" name="Page Views"/>
+    <Measure aggregator="sum" column="ROBOT_PAGE_VIEW_QTY" formatString="#,###" name="Robot Views"/>
+
+    <CalculatedMember name="Next Period Page View Variance" dimension="Measures">
+      <Formula>(([Time Period].CurrentMember, [Measures].[Page Views]) - ([Time Period].CurrentMember.NextMember,[Measures].[Page Views]))</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0"/>
+    </CalculatedMember>
+    <CalculatedMember name="Previous Period Page View Variance" dimension="Measures">
+      <Formula>(([Time Period].CurrentMember, [Measures].[Page Views]) - ([Time Period].CurrentMember.PrevMember,[Measures].[Page Views]))</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0"/>
+    </CalculatedMember>
+    <CalculatedMember name="Next Period % Page View Change" dimension="Measures">
+      <Formula>((([Time Period].CurrentMember, [Measures].[Page Views]) - ([Time Period].CurrentMember.NextMember,[Measures].[Page Views])) / ([Time Period].CurrentMember.NextMember, [Measures].[Page Views]))</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="0.0%"/>
+    </CalculatedMember>
+    <CalculatedMember name="Previous Period % Page View Change" dimension="Measures">
+      <Formula>((([Time Period].CurrentMember, [Measures].[Page Views]) - ([Time Period].CurrentMember.PrevMember,[Measures].[Page Views])) / ([Time Period].CurrentMember.PrevMember, [Measures].[Page Views]))</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="0.0%"/>
+    </CalculatedMember>
+    <CalculatedMember name="Ratio To Parent" dimension="Measures">
+      <Formula>CoalesceEmpty((([Time Period].CurrentMember, [Measures].[Page Views]) / ([Time Period].CurrentMember.Parent, [Measures].[Page Views])), 1.0)</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="0.0%"/>
+    </CalculatedMember>
+    <CalculatedMember name="YTD Page Views" dimension="Measures">
+      <Formula>Sum(PeriodsToDate([Time Period].[Year], [Time Period].CurrentMember), [Measures].[Page Views])</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="#,###"/>
+    </CalculatedMember>
+    <CalculatedMember name="QTD Page Views" dimension="Measures">
+      <Formula>Sum(PeriodsToDate([Time Period].[Quarter], [Time Period].CurrentMember), [Measures].[Page Views])</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="#,###"/>
+    </CalculatedMember>
+    <CalculatedMember name="MTD Page Views" dimension="Measures">
+      <Formula>Sum(PeriodsToDate([Time Period].[Month], [Time Period].CurrentMember), [Measures].[Page Views])</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="#,###"/>
+    </CalculatedMember>
+ 
+   <NamedSet name="Top Ten Cities">
+    	<Formula>TopCount([Web Visitor Location].[City].MEMBERS,10,[Measures].[Page Views])</Formula>
+    </NamedSet>
+   <NamedSet name="Top Five Countries">
+    	<Formula>TopCount([Web Visitor Location].[Country].MEMBERS,5,[Measures].[Page Views])</Formula>
+    </NamedSet>
+   <NamedSet name="Top Ten Postal Codes">
+    	<Formula>TopCount([Web Visitor Location.Web Visitor Postal Codes].[Postal Code].MEMBERS,10,[Measures].[Page Views])</Formula>
+    </NamedSet>
+   <NamedSet name="Top Ten Phone Codes">
+    	<Formula>TopCount([Web Visitor Location.Web Visitor Phone Codes].[Area Code].MEMBERS,10,[Measures].[Page Views])</Formula>
+    </NamedSet>
+   <NamedSet name="Top Ten DMAs">
+    	<Formula>TopCount([Web Visitor Location.Web Visitor DMAs].[DMA].MEMBERS,10,[Measures].[Page Views])</Formula>
+    </NamedSet>   
+       <NamedSet name="Top Five Web Pages">
+    	<Formula>TopCount([Web File.Web Files].[File].MEMBERS,5,[Measures].[Page Views])</Formula>
+    </NamedSet>
+       <NamedSet name="Bottom Five Web Pages">
+    	<Formula>BottomCount([Web File.Web Files].[File].MEMBERS,5,[Measures].[Page Views])</Formula>
+    </NamedSet>
+ </Cube>
+
+
+<Cube name="Web Site Referrals">
+    <Table alias="" name="FACT_WEB_SITE_REFERER"/>
+    <DimensionUsage foreignKey="REFERRAL_DATE_SK" name="Time Period" source="Time Period"/>
+    <DimensionUsage foreignKey="WEB_VISITOR_SK" name="Web Visitor Location" source="Web Visitor Location"/>
+    <DimensionUsage foreignKey="WEB_FILE_SK" name="Web File" source="Web File"/>
+    <DimensionUsage foreignKey="REFERER_URL_SK" name="Web Site Referer" source="Web Site Referer"/>
+
+    <Measure aggregator="sum" column="WEB_FILE_BYTE_QTY" name="Byte Quantity" formatString="#,###"/>
+    <Measure aggregator="sum" column="REFERRAL_QTY" formatString="#,###" name="Referrals"/> 
+    <Measure aggregator="sum" column="WEB_PAGE_VIEW_QTY" formatString="#,###" name="Page Views"/>
+    
+    <CalculatedMember name="Average Views Per Referral" dimension="Measures">
+      <Formula>[Measures].[Page Views]/[Measures].[Referrals]</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0"/>
+    </CalculatedMember>
+    <CalculatedMember name="Next Period Referral Variance" dimension="Measures">
+      <Formula>(([Time Period].CurrentMember, [Measures].[Referrals]) - ([Time Period].CurrentMember.NextMember,[Measures].[Referrals]))</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0"/>
+    </CalculatedMember>
+    <CalculatedMember name="Previous Period Referral Variance" dimension="Measures">
+      <Formula>(([Time Period].CurrentMember, [Measures].[Referrals]) - ([Time Period].CurrentMember.PrevMember,[Measures].[Referrals]))</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0"/>
+    </CalculatedMember>
+    <CalculatedMember name="Next Period % Referral Change" dimension="Measures">
+      <Formula>((([Time Period].CurrentMember, [Measures].[Referrals]) - ([Time Period].CurrentMember.NextMember,[Measures].[Referrals])) / ([Time Period].CurrentMember.NextMember, [Measures].[Referrals]))</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="0.0%"/>
+    </CalculatedMember>
+    <CalculatedMember name="Previous Period % Referral Change" dimension="Measures">
+      <Formula>((([Time Period].CurrentMember, [Measures].[Referrals]) - ([Time Period].CurrentMember.PrevMember,[Measures].[Referrals])) / ([Time Period].CurrentMember.PrevMember, [Measures].[Referrals]))</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="0.0%"/>
+    </CalculatedMember>
+    <CalculatedMember name="Ratio To Parent" dimension="Measures">
+      <Formula>CoalesceEmpty((([Time Period].CurrentMember, [Measures].[Referrals]) / ([Time Period].CurrentMember.Parent, [Measures].[Referrals])), 1.0)</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="0.0%"/>
+    </CalculatedMember>
+    <CalculatedMember name="YTD Referrals" dimension="Measures">
+      <Formula>Sum(PeriodsToDate([Time Period].[Year], [Time Period].CurrentMember), [Measures].[Referrals])</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="#,###"/>
+    </CalculatedMember>
+    <CalculatedMember name="QTD Referrals" dimension="Measures">
+      <Formula>Sum(PeriodsToDate([Time Period].[Quarter], [Time Period].CurrentMember), [Measures].[Referrals])</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="#,###"/>
+    </CalculatedMember>
+    <CalculatedMember name="MTD Referrals" dimension="Measures">
+      <Formula>Sum(PeriodsToDate([Time Period].[Month], [Time Period].CurrentMember), [Measures].[Referrals])</Formula>
+      <CalculatedMemberProperty name="FORMAT_STRING" value="#,###"/>
+    </CalculatedMember>  
+       <NamedSet name="Top Five Referral Landing Pages">
+    	<Formula>TopCount([Web File.Web Files].[File].MEMBERS,5,[Measures].[Referrals])</Formula>
+    </NamedSet>
+       <NamedSet name="Top Ten Referers">
+    	<Formula>TopCount([Web Site Referer].[Parent Referer].MEMBERS,10,[Measures].[Referrals])</Formula>
+    </NamedSet>
+       <NamedSet name="Bottom Ten Referers">
+    	<Formula>BottomCount([Web Site Referer].[Parent Referer].MEMBERS,10,[Measures].[Referrals])</Formula>
+    </NamedSet>
+<!-- Not sure how meaningful these are -->
+   <NamedSet name="Top Ten Cities">
+    	<Formula>TopCount([Web Visitor Location].[City].MEMBERS,10,[Measures].[Referrals])</Formula>
+    </NamedSet>
+   <NamedSet name="Top Five Countries">
+    	<Formula>TopCount([Web Visitor Location].[Country].MEMBERS,5,[Measures].[Referrals])</Formula>
+    </NamedSet>
+   <NamedSet name="Top Ten Postal Codes">
+    	<Formula>TopCount([Web Visitor Location.Web Visitor Postal Codes].[Postal Code].MEMBERS,10,[Measures].[Referrals])</Formula>
+    </NamedSet>
+   <NamedSet name="Top Ten Phone Codes">
+    	<Formula>TopCount([Web Visitor Location.Web Visitor Phone Codes].[Area Code].MEMBERS,10,[Measures].[Referrals])</Formula>
+    </NamedSet>
+   <NamedSet name="Top Ten DMAs">
+    	<Formula>TopCount([Web Visitor Location.Web Visitor DMAs].[DMA].MEMBERS,10,[Measures].[Referrals])</Formula>
+    </NamedSet> 
+</Cube>
+
+</Schema>

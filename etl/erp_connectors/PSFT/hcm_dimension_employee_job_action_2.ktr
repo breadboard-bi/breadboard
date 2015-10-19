@@ -1,0 +1,1403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>CRM_FACT_ORDER_CAPTURE</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This transformation extracts employee job action information from PeopleSoft HCM 8.8 and loads an employee job action fact table.  
+It is part two of a two part map - split crudely to avoid overloading Kettle in the test environment.</note>
+      <xloc>20</xloc>
+      <yloc>17</yloc>
+      <width>648</width>
+      <heigth>36</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_oracle_orcl</name>
+    <server>192.168.0.103</server>
+    <type>ORACLE</type>
+    <access>Native</access>
+    <database>orcl</database>
+    <port>1521</port>
+    <username>mdw</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>LKP_DIMENSION_PRODUCT</from><to>LKP_DIMENSION_OPERATING_UNIT</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CLASS</from><to>CON_CHARTFIELD</to><enabled>Y</enabled> </hop>  <hop> <from>CON_CHARTFIELD</from><to>LKP_DIMENSION_CHARTFIELD1</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_LOCATION</from><to>LKP_DIMENSION_SALARY_ADMIN_PLAN</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_SALARY_ADMIN_PLAN</from><to>LKP_DIMENSION_ACCOUNT</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_ACCOUNT</from><to>LKP_DIMENSION_FUND</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_FUND</from><to>LKP_DIMENSION_CLASS</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CHARTFIELD1</from><to>LKP_DIMENSION_CHARTFIELD2</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CHARTFIELD2</from><to>LKP_DIMENSION_CHARTFIELD3</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CHARTFIELD3</from><to>LKP_DIMENSION_PRODUCT</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_OPERATING_UNIT</from><to>LKP_DIMENSION_CURRENCY</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CURRENCY</from><to>DIMENSION_EMPLOYEE_JOB_ACTION</to><enabled>Y</enabled> </hop>  <hop> <from>PSFT_HCM_EMPLOYEE_JOB_ACTION</from><to>LKP_DIMENSION_LOCATION</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>CON_CHARTFIELD</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <fields>
+      <field>
+        <name>CHARTFIELD_TYPE_NAME1</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>CHARTFIELD1</nullif>
+        <length>2</length>
+        <precision>0</precision>
+        </field>
+      <field>
+        <name>CHARTFIELD_TYPE_NAME2</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>CHARTFIELD2</nullif>
+        <length>2</length>
+        <precision>0</precision>
+        </field>
+      <field>
+        <name>CHARTFIELD_TYPE_NAME3</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>CHARTFIELD3</nullif>
+        <length>2</length>
+        <precision>0</precision>
+        </field>
+      </fields>
+    <GUI>
+      <xloc>506</xloc>
+      <yloc>420</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>DIMENSION_EMPLOYEE_JOB_ACTION</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_oracle_orcl</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>DIMENSION_EMPLOYEE_JOB_ACTION</table>
+      <key>
+        <name>EMPLOYEE_ID</name>
+        <field>EMPLOYEE_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>EMPLOYEE_RECORD_ID</name>
+        <field>EMPLOYEE_RECORD_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>EFFECTIVE_DATE</name>
+        <field>EFFECTIVE_DATE</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>EFFECTIVE_SEQUENCE_NUMBER</name>
+        <field>EFFECTIVE_SEQUENCE_NUMBER</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>EMPLOYEE_ID</name>
+        <rename>EMPLOYEE_ID</rename>
+        </value>
+      <value>
+        <name>EMPLOYEE_RECORD_ID</name>
+        <rename>EMPLOYEE_RECORD_ID</rename>
+        </value>
+      <value>
+        <name>EFFECTIVE_DATE</name>
+        <rename>EFFECTIVE_DATE</rename>
+        </value>
+      <value>
+        <name>EFFECTIVE_DATE_SK</name>
+        <rename>EFFECTIVE_DATE_SK</rename>
+        </value>
+      <value>
+        <name>EFFECTIVE_SEQUENCE_NUMBER</name>
+        <rename>EFFECTIVE_SEQUENCE_NUMBER</rename>
+        </value>
+      <value>
+        <name>JOB_ACTION_DATE</name>
+        <rename>JOB_ACTION_DATE</rename>
+        </value>
+      <value>
+        <name>JOB_ACTION_DATE_SK</name>
+        <rename>JOB_ACTION_DATE_SK</rename>
+        </value>
+      <value>
+        <name>CONTRACT_ID</name>
+        <rename>CONTRACT_ID</rename>
+        </value>
+      <value>
+        <name>ACCOUNT_CODE</name>
+        <rename>ACCOUNT_CODE</rename>
+        </value>
+      <value>
+        <name>DEPARTMENT_START_DATE</name>
+        <rename>DEPARTMENT_START_DATE</rename>
+        </value>
+      <value>
+        <name>DEPARTMENT_START_DATE_SK</name>
+        <rename>DEPARTMENT_START_DATE_SK</rename>
+        </value>
+      <value>
+        <name>GRADE_START_DATE</name>
+        <rename>GRADE_START_DATE</rename>
+        </value>
+      <value>
+        <name>GRADE_START_DATE_SK</name>
+        <rename>GRADE_START_DATE_SK</rename>
+        </value>
+      <value>
+        <name>JOB_START_DATE</name>
+        <rename>JOB_START_DATE</rename>
+        </value>
+      <value>
+        <name>JOB_START_DATE_SK</name>
+        <rename>JOB_START_DATE_SK</rename>
+        </value>
+      <value>
+        <name>POSITION_START_DATE</name>
+        <rename>POSITION_START_DATE</rename>
+        </value>
+      <value>
+        <name>POSITION_START_DATE_SK</name>
+        <rename>POSITION_START_DATE_SK</rename>
+        </value>
+      <value>
+        <name>STEP_START_DATE</name>
+        <rename>STEP_START_DATE</rename>
+        </value>
+      <value>
+        <name>STEP_START_DATE_SK</name>
+        <rename>STEP_START_DATE_SK</rename>
+        </value>
+      <value>
+        <name>HIRE_DATE</name>
+        <rename>HIRE_DATE</rename>
+        </value>
+      <value>
+        <name>HIRE_DATE_SK</name>
+        <rename>HIRE_DATE_SK</rename>
+        </value>
+      <value>
+        <name>ASSIGNMENT_START_DATE</name>
+        <rename>ASSIGNMENT_START_DATE</rename>
+        </value>
+      <value>
+        <name>ASSIGNMENT_START_DATE_SK</name>
+        <rename>ASSIGNMENT_START_DATE_SK</rename>
+        </value>
+      <value>
+        <name>ASSIGNMENT_END_DATE</name>
+        <rename>ASSIGNMENT_END_DATE</rename>
+        </value>
+      <value>
+        <name>ASSIGNMENT_END_DATE_SK</name>
+        <rename>ASSIGNMENT_END_DATE_SK</rename>
+        </value>
+      <value>
+        <name>STANDARD_HOURS_FREQUENCY_CODE</name>
+        <rename>STANDARD_HOURS_FREQUENCY_CODE</rename>
+        </value>
+      <value>
+        <name>STANDARD_HOURS_FREQUENCY_NAME</name>
+        <rename>STANDARD_HOURS_FREQUENCY_NAME</rename>
+        </value>
+      <value>
+        <name>STANDARD_HOURS_FREQUENCY_DESC</name>
+        <rename>STANDARD_HOURS_FREQUENCY_DESC</rename>
+        </value>
+      <value>
+        <name>COMPENSATION_FREQUENCY_CODE</name>
+        <rename>COMPENSATION_FREQUENCY_CODE</rename>
+        </value>
+      <value>
+        <name>COMPENSATION_FREQUENCY_NAME</name>
+        <rename>COMPENSATION_FREQUENCY_NAME</rename>
+        </value>
+      <value>
+        <name>COMPENSATION_FREQUENCY_DESC</name>
+        <rename>COMPENSATION_FREQUENCY_DESC</rename>
+        </value>
+      <value>
+        <name>LABOR_AGREEMENT_CODE</name>
+        <rename>LABOR_AGREEMENT_CODE</rename>
+        </value>
+      <value>
+        <name>LABOR_AGREEMENT_NAME</name>
+        <rename>LABOR_AGREEMENT_NAME</rename>
+        </value>
+      <value>
+        <name>LABOR_AGREEMENT_DESC</name>
+        <rename>LABOR_AGREEMENT_DESC</rename>
+        </value>
+      <value>
+        <name>EMPLOYEE_CLASS_CODE</name>
+        <rename>EMPLOYEE_CLASS_CODE</rename>
+        </value>
+      <value>
+        <name>EMPLOYEE_CLASS_NAME</name>
+        <rename>EMPLOYEE_CLASS_NAME</rename>
+        </value>
+      <value>
+        <name>EMPLOYEE_CLASS_DESC</name>
+        <rename>EMPLOYEE_CLASS_DESC</rename>
+        </value>
+      <value>
+        <name>BENEFIT_STATUS_CODE</name>
+        <rename>BENEFIT_STATUS_CODE</rename>
+        </value>
+      <value>
+        <name>BENEFIT_STATUS_NAME</name>
+        <rename>BENEFIT_STATUS_NAME</rename>
+        </value>
+      <value>
+        <name>BENEFIT_STATUS_DESC</name>
+        <rename>BENEFIT_STATUS_DESC</rename>
+        </value>
+      <value>
+        <name>BENEFIT_SYSTEM_CODE</name>
+        <rename>BENEFIT_SYSTEM_CODE</rename>
+        </value>
+      <value>
+        <name>BENEFIT_SYSTEM_NAME</name>
+        <rename>BENEFIT_SYSTEM_NAME</rename>
+        </value>
+      <value>
+        <name>BENEFIT_SYSTEM_DESC</name>
+        <rename>BENEFIT_SYSTEM_DESC</rename>
+        </value>
+      <value>
+        <name>CLASSIFICATION_CODE</name>
+        <rename>CLASSIFICATION_CODE</rename>
+        </value>
+      <value>
+        <name>CLASSIFICATION_NAME</name>
+        <rename>CLASSIFICATION_NAME</rename>
+        </value>
+      <value>
+        <name>CLASSIFICATION_DESC</name>
+        <rename>CLASSIFICATION_DESC</rename>
+        </value>
+      <value>
+        <name>EARNINGS_DISTRIBUTION_CODE</name>
+        <rename>EARNINGS_DISTRIBUTION_CODE</rename>
+        </value>
+      <value>
+        <name>EARNINGS_DISTRIBUTION_NAME</name>
+        <rename>EARNINGS_DISTRIBUTION_NAME</rename>
+        </value>
+      <value>
+        <name>EARNINGS_DISTRIBUTION_DESC</name>
+        <rename>EARNINGS_DISTRIBUTION_DESC</rename>
+        </value>
+      <value>
+        <name>EMPLOYEE_STATUS_CODE</name>
+        <rename>EMPLOYEE_STATUS_CODE</rename>
+        </value>
+      <value>
+        <name>EMPLOYEE_STATUS_NAME</name>
+        <rename>EMPLOYEE_STATUS_NAME</rename>
+        </value>
+      <value>
+        <name>EMPLOYEE_STATUS_DESC</name>
+        <rename>EMPLOYEE_STATUS_DESC</rename>
+        </value>
+      <value>
+        <name>EMPLOYEE_TYPE_CODE</name>
+        <rename>EMPLOYEE_TYPE_CODE</rename>
+        </value>
+      <value>
+        <name>EMPLOYEE_TYPE_NAME</name>
+        <rename>EMPLOYEE_TYPE_NAME</rename>
+        </value>
+      <value>
+        <name>EMPLOYEE_TYPE_DESC</name>
+        <rename>EMPLOYEE_TYPE_DESC</rename>
+        </value>
+      <value>
+        <name>FULL_PART_TIME_CODE</name>
+        <rename>FULL_PART_TIME_CODE</rename>
+        </value>
+      <value>
+        <name>FULL_PART_TIME_NAME</name>
+        <rename>FULL_PART_TIME_NAME</rename>
+        </value>
+      <value>
+        <name>FULL_PART_TIME_DESC</name>
+        <rename>FULL_PART_TIME_DESC</rename>
+        </value>
+      <value>
+        <name>HR_STATUS_CODE</name>
+        <rename>HR_STATUS_CODE</rename>
+        </value>
+      <value>
+        <name>HR_STATUS_NAME</name>
+        <rename>HR_STATUS_NAME</rename>
+        </value>
+      <value>
+        <name>HR_STATUS_DESC</name>
+        <rename>HR_STATUS_DESC</rename>
+        </value>
+      <value>
+        <name>JOB_INDICATOR_CODE</name>
+        <rename>JOB_INDICATOR_CODE</rename>
+        </value>
+      <value>
+        <name>JOB_INDICATOR_NAME</name>
+        <rename>JOB_INDICATOR_NAME</rename>
+        </value>
+      <value>
+        <name>JOB_INDICATOR_DESC</name>
+        <rename>JOB_INDICATOR_DESC</rename>
+        </value>
+      <value>
+        <name>PAY_SYSTEM_CODE</name>
+        <rename>PAY_SYSTEM_CODE</rename>
+        </value>
+      <value>
+        <name>PAY_SYSTEM_NAME</name>
+        <rename>PAY_SYSTEM_NAME</rename>
+        </value>
+      <value>
+        <name>PAY_SYSTEM_DESC</name>
+        <rename>PAY_SYSTEM_DESC</rename>
+        </value>
+      <value>
+        <name>PERSON_ORG_TYPE_CODE</name>
+        <rename>PERSON_ORG_TYPE_CODE</rename>
+        </value>
+      <value>
+        <name>PERSON_ORG_TYPE_NAME</name>
+        <rename>PERSON_ORG_TYPE_NAME</rename>
+        </value>
+      <value>
+        <name>PERSON_ORG_TYPE_DESC</name>
+        <rename>PERSON_ORG_TYPE_DESC</rename>
+        </value>
+      <value>
+        <name>PERSON_OF_INTEREST_CODE</name>
+        <rename>PERSON_OF_INTEREST_CODE</rename>
+        </value>
+      <value>
+        <name>PERSON_OF_INTEREST_NAME</name>
+        <rename>PERSON_OF_INTEREST_NAME</rename>
+        </value>
+      <value>
+        <name>PERSON_OF_INTEREST_DESC</name>
+        <rename>PERSON_OF_INTEREST_DESC</rename>
+        </value>
+      <value>
+        <name>REGULAR_TEMPORARY_CODE</name>
+        <rename>REGULAR_TEMPORARY_CODE</rename>
+        </value>
+      <value>
+        <name>REGULAR_TEMPORARY_NAME</name>
+        <rename>REGULAR_TEMPORARY_NAME</rename>
+        </value>
+      <value>
+        <name>REGULAR_TEMPORARY_DESC</name>
+        <rename>REGULAR_TEMPORARY_DESC</rename>
+        </value>
+      <value>
+        <name>JOB_SHIFT_CODE</name>
+        <rename>JOB_SHIFT_CODE</rename>
+        </value>
+      <value>
+        <name>JOB_SHIFT_NAME</name>
+        <rename>JOB_SHIFT_NAME</rename>
+        </value>
+      <value>
+        <name>JOB_SHIFT_DESC</name>
+        <rename>JOB_SHIFT_DESC</rename>
+        </value>
+      <value>
+        <name>ADDS_TO_FTE_ACTUAL_IND</name>
+        <rename>ADDS_TO_FTE_ACTUAL_IND</rename>
+        </value>
+      <value>
+        <name>GL_PAY_TYPE_CODE</name>
+        <rename>GL_PAY_TYPE_CODE</rename>
+        </value>
+      <value>
+        <name>GL_PAY_TYPE_NAME</name>
+        <rename>GL_PAY_TYPE_NAME</rename>
+        </value>
+      <value>
+        <name>GL_PAY_TYPE_DESC</name>
+        <rename>GL_PAY_TYPE_DESC</rename>
+        </value>
+      <value>
+        <name>ENCUMBRANCE_OVERRIDE_IND</name>
+        <rename>ENCUMBRANCE_OVERRIDE_IND</rename>
+        </value>
+      <value>
+        <name>FULL_TIME_EQUIVALENT_QTY</name>
+        <rename>FULL_TIME_EQUIVALENT_QTY</rename>
+        </value>
+      <value>
+        <name>ANNUAL_RT</name>
+        <rename>ANNUAL_RT</rename>
+        </value>
+      <value>
+        <name>ANNUAL_BENEFIT_BASE_RT</name>
+        <rename>ANNUAL_BENEFIT_BASE_RT</rename>
+        </value>
+      <value>
+        <name>CHANGE_AMT</name>
+        <rename>CHANGE_AMT</rename>
+        </value>
+      <value>
+        <name>CHANGE_PCT</name>
+        <rename>CHANGE_PCT</rename>
+        </value>
+      <value>
+        <name>COMPENSATION_RT</name>
+        <rename>COMPENSATION_RT</rename>
+        </value>
+      <value>
+        <name>HOURLY_RT</name>
+        <rename>HOURLY_RT</rename>
+        </value>
+      <value>
+        <name>DAILY_RT</name>
+        <rename>DAILY_RT</rename>
+        </value>
+      <value>
+        <name>MONTHLY_RT</name>
+        <rename>MONTHLY_RT</rename>
+        </value>
+      <value>
+        <name>SHIFT_RT</name>
+        <rename>SHIFT_RT</rename>
+        </value>
+      <value>
+        <name>SHIFT_FACTOR_QTY</name>
+        <rename>SHIFT_FACTOR_QTY</rename>
+        </value>
+      <value>
+        <name>WORK_DAY_HOURS_QTY</name>
+        <rename>WORK_DAY_HOURS_QTY</rename>
+        </value>
+      <value>
+        <name>STANDARD_WEEK_HOURS_QTY</name>
+        <rename>STANDARD_WEEK_HOURS_QTY</rename>
+        </value>
+      <value>
+        <name>LOCATION_SK</name>
+        <rename>LOCATION_SK</rename>
+        </value>
+      <value>
+        <name>SALARY_ADMIN_PLAN_SK</name>
+        <rename>SALARY_ADMIN_PLAN_SK</rename>
+        </value>
+      <value>
+        <name>ACCOUNT_SK</name>
+        <rename>ACCOUNT_SK</rename>
+        </value>
+      <value>
+        <name>FUND_SK</name>
+        <rename>FUND_SK</rename>
+        </value>
+      <value>
+        <name>CLASS_SK</name>
+        <rename>CLASS_SK</rename>
+        </value>
+      <value>
+        <name>CHARTFIELD1_SK</name>
+        <rename>CHARTFIELD1_SK</rename>
+        </value>
+      <value>
+        <name>CHARTFIELD2_SK</name>
+        <rename>CHARTFIELD2_SK</rename>
+        </value>
+      <value>
+        <name>CHARTFIELD3_SK</name>
+        <rename>CHARTFIELD3_SK</rename>
+        </value>
+      <value>
+        <name>PRODUCT_SK</name>
+        <rename>PRODUCT_SK</rename>
+        </value>
+      <value>
+        <name>OPERATING_UNIT_SK</name>
+        <rename>OPERATING_UNIT_SK</rename>
+        </value>
+      <value>
+        <name>CURRENCY_SK</name>
+        <rename>CURRENCY_SK</rename>
+        </value>
+      </lookup>
+    <GUI>
+      <xloc>563</xloc>
+      <yloc>91</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_ACCOUNT</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_ACCOUNT</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>ACCOUNT_ID</name>
+          <lookup>ACCOUNT_ID</lookup>
+          </key>
+        <key>
+          <name>SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>EFFECTIVE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>ACCOUNT_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>740</xloc>
+      <yloc>483</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CHARTFIELD1</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CHARTFIELD</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>CHARTFIELD1_ID</name>
+          <lookup>CHARTFIELD_ID</lookup>
+          </key>
+        <key>
+          <name>SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <key>
+          <name>CHARTFIELD_TYPE_NAME1</name>
+          <lookup>CHARTFIELD_TYPE_NAME</lookup>
+          </key>
+        <date>
+          <name>EFFECTIVE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CHARTFIELD_SK</name>
+          <rename>CHARTFIELD1_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>405</xloc>
+      <yloc>484</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CHARTFIELD2</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CHARTFIELD</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>CHARTFIELD2_ID</name>
+          <lookup>CHARTFIELD_ID</lookup>
+          </key>
+        <key>
+          <name>SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <key>
+          <name>CHARTFIELD_TYPE_NAME2</name>
+          <lookup>CHARTFIELD_TYPE_NAME</lookup>
+          </key>
+        <date>
+          <name>EFFECTIVE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CHARTFIELD_SK</name>
+          <rename>CHARTFIELD2_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>308</xloc>
+      <yloc>428</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CHARTFIELD3</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CHARTFIELD</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>CHARTFIELD3_ID</name>
+          <lookup>CHARTFIELD_ID</lookup>
+          </key>
+        <key>
+          <name>SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <key>
+          <name>CHARTFIELD_TYPE_NAME3</name>
+          <lookup>CHARTFIELD_TYPE_NAME</lookup>
+          </key>
+        <date>
+          <name>EFFECTIVE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CHARTFIELD_SK</name>
+          <rename>CHARTFIELD3_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>296</xloc>
+      <yloc>347</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CLASS</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CLASS</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>CLASS_ID</name>
+          <lookup>CLASS_ID</lookup>
+          </key>
+        <key>
+          <name>SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>EFFECTIVE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CLASS_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>616</xloc>
+      <yloc>363</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CURRENCY</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CURRENCY</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>CURRENCY_ID</name>
+          <lookup>CURRENCY_ID</lookup>
+          </key>
+        <date>
+          <name>EFFECTIVE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CURRENCY_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>395</xloc>
+      <yloc>86</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_FUND</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_FUND</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>FUND_ID</name>
+          <lookup>FUND_ID</lookup>
+          </key>
+        <key>
+          <name>SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>EFFECTIVE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>FUND_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>742</xloc>
+      <yloc>395</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_LOCATION</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_LOCATION</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>LOCATION_ID</name>
+          <lookup>LOCATION_ID</lookup>
+          </key>
+        <key>
+          <name>SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>EFFECTIVE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>LOCATION_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>577</xloc>
+      <yloc>551</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_OPERATING_UNIT</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_OPERATING_UNIT</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>OPERATING_UNIT_ID</name>
+          <lookup>OPERATING_UNIT_ID</lookup>
+          </key>
+        <key>
+          <name>SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>EFFECTIVE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>OPERATING_UNIT_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>266</xloc>
+      <yloc>140</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_PRODUCT</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_PRODUCT</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>PRODUCT_ID</name>
+          <lookup>PRODUCT_ID</lookup>
+          </key>
+        <key>
+          <name>SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>EFFECTIVE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>PRODUCT_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>280</xloc>
+      <yloc>246</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_SALARY_ADMIN_PLAN</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_SALARY_ADMIN_PLAN</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>SALARY_ADMIN_PLAN_ID</name>
+          <lookup>SALARY_ADMIN_PLAN_ID</lookup>
+          </key>
+        <key>
+          <name>SALARY_STEP_ID</name>
+          <lookup>SALARY_STEP_ID</lookup>
+          </key>
+        <key>
+          <name>SALARY_GRADE_ID</name>
+          <lookup>SALARY_GRADE_ID</lookup>
+          </key>
+        <key>
+          <name>SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>EFFECTIVE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>SALARY_ADMIN_PLAN_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>740</xloc>
+      <yloc>569</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_HCM_EMPLOYEE_JOB_ACTION</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the columns from the PS_RO_HEADER (order header) table. It maintains the order header information.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT RTRIM(JOB.EMPLID) AS EMPLOYEE_ID, --AK
+RTRIM(JOB.EMPL_RCD) AS EMPLOYEE_RECORD_ID, --AK
+JOB.EFFDT AS EFFECTIVE_DATE, --AK
+CAST (CONVERT(CHAR(10),JOB.EFFDT,112) as NUMERIC) AS EFFECTIVE_DATE_SK, --DBMS SPECIFIC
+JOB.EFFSEQ AS EFFECTIVE_SEQUENCE_NUMBER, --AK
+JOB.ACTION_DT AS JOB_ACTION_DATE,
+CAST (CONVERT(CHAR(10),JOB.ACTION_DT,112) as NUMERIC) AS JOB_ACTION_DATE_SK, --DBMS SPECIFIC
+RTRIM(JOB.ACTION) AS JOB_ACTION_ID,
+RTRIM(JOB.ACTION_REASON) AS JOB_ACTION_REASON_ID,
+RTRIM(JOB.BUSINESS_UNIT) AS BUSINESS_UNIT_ID,
+RTRIM(JOB_REC.SETID) AS SETID,
+RTRIM(JOB.COMPANY) AS COMPANY_ID,
+RTRIM(JOB.DEPTID) AS DEPARTMENT_ID,
+RTRIM(JOB.JOBCODE) AS JOBCODE_ID,
+RTRIM(JOB.LOCATION) AS LOCATION_ID,
+RTRIM(JOB.POSITION_NBR) AS POSITION_ID,
+RTRIM(JOB.SUPERVISOR_ID) AS SUPERVISOR_EMPLOYEE_ID,
+RTRIM(JOB.PAYGROUP) AS PAYGROUP_ID,
+RTRIM(JOB.SAL_ADMIN_PLAN) AS SALARY_ADMIN_PLAN_ID,
+RTRIM(JOB.STEP) AS SALARY_STEP_ID,
+RTRIM(JOB.GRADE) AS SALARY_GRADE_ID,
+RTRIM(ACCOUNT_GL.BUSINESS_UNIT_GL) AS GL_BUSINESS_UNIT_ID,
+RTRIM(ACCOUNT.ACCOUNT) AS ACCOUNT_ID,
+RTRIM(ACCOUNT.FUND_CODE) AS FUND_ID,
+RTRIM(ACCOUNT.CLASS_FLD) AS CLASS_ID,
+RTRIM(ACCOUNT.OPERATING_UNIT) AS OPERATING_UNIT_ID,
+RTRIM(ACCOUNT.CHARTFIELD1) AS CHARTFIELD1_ID,
+RTRIM(ACCOUNT.CHARTFIELD2) AS CHARTFIELD2_ID,
+RTRIM(ACCOUNT.CHARTFIELD3) AS CHARTFIELD3_ID,
+RTRIM(ACCOUNT.PRODUCT) AS PRODUCT_ID,
+RTRIM(JOB.CURRENCY_CD) AS CURRENCY_ID,
+RTRIM(JOB.CONTRACT_NUM) AS CONTRACT_ID, --DIMENSION NEEDS TO BE BUILT AND CONNECTED.
+RTRIM(JOB.ACCT_CD) AS ACCOUNT_CODE,
+JOB.DEPT_ENTRY_DT AS DEPARTMENT_START_DATE,
+CAST (CONVERT(CHAR(10),JOB.DEPT_ENTRY_DT,112) as NUMERIC) AS DEPARTMENT_START_DATE_SK, --DBMS SPECIFIC
+JOB.GRADE_ENTRY_DT AS GRADE_START_DATE,
+CAST (CONVERT(CHAR(10),GRADE_ENTRY_DT,112) as NUMERIC) AS GRADE_START_DATE_SK, --DBMS SPECIFIC
+JOB.JOB_ENTRY_DT AS JOB_START_DATE,
+CAST (CONVERT(CHAR(10),JOB.JOB_ENTRY_DT,112) as NUMERIC) AS JOB_START_DATE_SK, --DBMS SPECIFIC
+JOB.POSITION_ENTRY_DT AS POSITION_START_DATE,
+CAST (CONVERT(CHAR(10),POSITION_ENTRY_DT,112) as NUMERIC) AS POSITION_START_DATE_SK, --DBMS SPECIFIC
+JOB.STEP_ENTRY_DT AS STEP_START_DATE,
+CAST (CONVERT(CHAR(10),JOB.STEP_ENTRY_DT,112) as NUMERIC) AS STEP_START_DATE_SK, --DBMS SPECIFIC
+JOB.HIRE_DT AS HIRE_DATE,
+CAST (CONVERT(CHAR(10),JOB.HIRE_DT,112) as NUMERIC) AS HIRE_DATE_SK, --DBMS SPECIFIC
+JOB.ASGN_START_DT AS ASSIGNMENT_START_DATE,
+CAST (CONVERT(CHAR(10),JOB.ASGN_START_DT,112) as NUMERIC) AS ASSIGNMENT_START_DATE_SK, --DBMS SPECIFIC
+JOB.ASGN_END_DT AS ASSIGNMENT_END_DATE,
+CAST (CONVERT(CHAR(10),JOB.ASGN_END_DT,112) as NUMERIC) AS ASSIGNMENT_END_DATE_SK, --DBMS SPECIFIC
+/* For report performance, some of these descriptions may be snowflaked. */
+RTRIM(JOB.STD_HRS_FREQUENCY) AS STANDARD_HOURS_FREQUENCY_CODE,
+RTRIM(STD_HRS_FREQUENCY.XLATSHORTNAME) AS STANDARD_HOURS_FREQUENCY_NAME,
+RTRIM(STD_HRS_FREQUENCY.XLATLONGNAME) STANDARD_HOURS_FREQUENCY_DESC,
+RTRIM(JOB.COMP_FREQUENCY) AS COMPENSATION_FREQUENCY_CODE,
+RTRIM(COMP_FREQUENCY.XLATSHORTNAME) AS COMPENSATION_FREQUENCY_NAME,
+RTRIM(COMP_FREQUENCY.XLATLONGNAME) AS COMPENSATION_FREQUENCY_DESC,
+RTRIM(JOB.LABOR_AGREEMENT) AS LABOR_AGREEMENT_CODE,
+RTRIM(LABOR_AGREEMENT.DESCRSHORT) AS LABOR_AGREEMENT_NAME,
+RTRIM(LABOR_AGREEMENT.DESCR) AS LABOR_AGREEMENT_DESC,
+RTRIM(JOB.EMPL_CLASS) AS EMPLOYEE_CLASS_CODE,
+RTRIM(EMPL_CLASS.XLATSHORTNAME) AS EMPLOYEE_CLASS_NAME,
+RTRIM(EMPL_CLASS.XLATLONGNAME) AS EMPLOYEE_CLASS_DESC,
+RTRIM(JOB.BEN_STATUS) AS BENEFIT_STATUS_CODE,
+RTRIM(BEN_STATUS.XLATSHORTNAME) AS BENEFIT_STATUS_NAME,
+RTRIM(BEN_STATUS.XLATLONGNAME) AS BENEFIT_STATUS_DESC,
+RTRIM(JOB.BENEFIT_SYSTEM) AS BENEFIT_SYSTEM_CODE,
+RTRIM(BENEFIT_SYSTEM.XLATSHORTNAME) AS BENEFIT_SYSTEM_NAME,
+RTRIM(BENEFIT_SYSTEM.XLATLONGNAME) AS BENEFIT_SYSTEM_DESC,
+RTRIM(JOB.CLASS_INDC) AS CLASSIFICATION_CODE,
+RTRIM(CLASS_INDC.XLATSHORTNAME) AS CLASSIFICATION_NAME,
+RTRIM(CLASS_INDC.XLATLONGNAME) AS CLASSIFICATION_DESC,
+RTRIM(JOB.EARNS_DIST_TYPE) AS EARNINGS_DISTRIBUTION_CODE,
+RTRIM(EARNS_DIST_TYPE.XLATSHORTNAME) AS EARNINGS_DISTRIBUTION_NAME,
+RTRIM(EARNS_DIST_TYPE.XLATLONGNAME) AS EARNINGS_DISTRIBUTION_DESC,
+RTRIM(JOB.EMPL_STATUS) AS EMPLOYEE_STATUS_CODE,
+RTRIM(EMPL_STATUS.XLATSHORTNAME) AS EMPLOYEE_STATUS_NAME,
+RTRIM(EMPL_STATUS.XLATLONGNAME) AS EMPLOYEE_STATUS_DESC,
+RTRIM(JOB.EMPL_TYPE) AS EMPLOYEE_TYPE_CODE,
+RTRIM(EMPL_TYPE.XLATSHORTNAME) AS EMPLOYEE_TYPE_NAME,
+RTRIM(EMPL_TYPE.XLATLONGNAME) AS EMPLOYEE_TYPE_DESC,
+RTRIM(JOB.FULL_PART_TIME) AS FULL_PART_TIME_CODE,
+RTRIM(FULL_PART_TIME.XLATSHORTNAME) AS FULL_PART_TIME_NAME,
+RTRIM(FULL_PART_TIME.XLATLONGNAME) AS FULL_PART_TIME_DESC,
+RTRIM(JOB.HR_STATUS) AS HR_STATUS_CODE,
+RTRIM(HR_STATUS.XLATSHORTNAME) AS HR_STATUS_NAME,
+RTRIM(HR_STATUS.XLATLONGNAME) AS HR_STATUS_DESC,
+RTRIM(JOB.JOB_INDICATOR) AS JOB_INDICATOR_CODE,
+RTRIM(JOB_INDICATOR.XLATSHORTNAME) AS JOB_INDICATOR_NAME,
+RTRIM(JOB_INDICATOR.XLATLONGNAME) AS JOB_INDICATOR_DESC,
+RTRIM(JOB.PAY_SYSTEM_FLG) AS PAY_SYSTEM_CODE,
+RTRIM(PAY_SYSTEM_FLG.XLATSHORTNAME) AS PAY_SYSTEM_NAME,
+RTRIM(PAY_SYSTEM_FLG.XLATLONGNAME) AS PAY_SYSTEM_DESC,
+RTRIM(JOB.PER_ORG) AS PERSON_ORG_TYPE_CODE,
+RTRIM(PER_ORG.XLATSHORTNAME) AS PERSON_ORG_TYPE_NAME,
+RTRIM(PER_ORG.XLATLONGNAME) AS PERSON_ORG_TYPE_DESC,
+RTRIM(JOB.POI_TYPE) AS PERSON_OF_INTEREST_CODE,
+RTRIM(POI.DESCRSHORT) AS PERSON_OF_INTEREST_NAME,
+RTRIM(POI.DESCR) AS PERSON_OF_INTEREST_DESC,
+RTRIM(JOB.REG_TEMP) AS REGULAR_TEMPORARY_CODE,
+RTRIM(REG_TEMP.XLATSHORTNAME) AS REGULAR_TEMPORARY_NAME,
+RTRIM(REG_TEMP.XLATLONGNAME) AS REGULAR_TEMPORARY_DESC,
+RTRIM(JOB.SHIFT) AS JOB_SHIFT_CODE,
+RTRIM(SHIFT.XLATSHORTNAME) AS JOB_SHIFT_NAME,
+RTRIM(SHIFT.XLATLONGNAME) AS JOB_SHIFT_DESC,
+RTRIM(JOB.ADDS_TO_FTE_ACTUAL) AS ADDS_TO_FTE_ACTUAL_IND,
+RTRIM(JOB.GL_PAY_TYPE) AS GL_PAY_TYPE_CODE,
+RTRIM(GL_PAY_TYPE.XLATSHORTNAME) AS GL_PAY_TYPE_NAME, 
+RTRIM(GL_PAY_TYPE.XLATLONGNAME) AS GL_PAY_TYPE_DESC,
+RTRIM(JOB.ENCUMB_OVERRIDE) AS ENCUMBRANCE_OVERRIDE_IND,
+JOB.FTE AS FULL_TIME_EQUIVALENT_QTY,
+JOB.ANNUAL_RT AS ANNUAL_RT,
+JOB.ANNL_BENEF_BASE_RT AS ANNUAL_BENEFIT_BASE_RT,
+JOB.CHANGE_AMT AS CHANGE_AMT,
+JOB.CHANGE_PCT AS CHANGE_PCT,
+JOB.COMPRATE AS COMPENSATION_RT,
+JOB.HOURLY_RT,
+JOB.DAILY_RT,
+JOB.MONTHLY_RT,
+JOB.SHIFT_RT,
+JOB.SHIFT_FACTOR AS SHIFT_FACTOR_QTY,
+JOB.WORK_DAY_HOURS AS WORK_DAY_HOURS_QTY,
+JOB.STD_HOURS AS STANDARD_WEEK_HOURS_QTY
+FROM PS_JOB JOB
+LEFT OUTER JOIN PS_ACCT_CD_TBL ACCOUNT
+ON JOB.ACCT_CD=ACCOUNT.ACCT_CD
+LEFT OUTER JOIN PS_ACCT_CD_TBL_GL ACCOUNT_GL
+ON ACCOUNT.FDM_HASH=ACCOUNT_GL.FDM_HASH
+LEFT OUTER JOIN PS_SET_CNTRL_REC JOB_REC
+ON JOB.BUSINESS_UNIT = JOB_REC.SETCNTRLVALUE AND
+JOB_REC.RECNAME = &apos;JOB&apos;
+LEFT OUTER JOIN PS_HR_LABOR_AGRMNT LABOR_AGREEMENT
+ON JOB.LABOR_AGREEMENT=LABOR_AGREEMENT.LABOR_AGREEMENT AND
+JOB_REC.SETID = LABOR_AGREEMENT.SETID AND
+LABOR_AGREEMENT.EFFDT = (SELECT MAX(X.EFFDT) FROM PS_HR_LABOR_AGRMNT X WHERE LABOR_AGREEMENT.LABOR_AGREEMENT=X.LABOR_AGREEMENT)
+LEFT OUTER JOIN PS_POI_TYPE_TBL POI
+ON JOB.POI_TYPE=POI.POI_TYPE
+LEFT OUTER JOIN PSXLATITEM EMPL_CLASS
+ON EMPL_CLASS.FIELDNAME = &apos;EMPL_CLASS&apos;
+AND JOB.EMPL_CLASS = EMPL_CLASS.FIELDVALUE
+AND EMPL_CLASS.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE EMPL_CLASS.FIELDNAME = A1.FIELDNAME 
+	AND EMPL_CLASS.FIELDVALUE = A1.FIELDVALUE
+	AND EMPL_CLASS.FIELDNAME = &apos;EMPL_CLASS&apos;)
+LEFT OUTER JOIN PSXLATITEM BEN_STATUS
+ON BEN_STATUS.FIELDNAME = &apos;BEN_STATUS&apos;
+AND JOB.BEN_STATUS = BEN_STATUS.FIELDVALUE
+AND BEN_STATUS.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE BEN_STATUS.FIELDNAME = A1.FIELDNAME 
+	AND BEN_STATUS.FIELDVALUE = A1.FIELDVALUE
+	AND BEN_STATUS.FIELDNAME = &apos;BEN_STATUS&apos;)
+LEFT OUTER JOIN PSXLATITEM BENEFIT_SYSTEM
+ON BENEFIT_SYSTEM.FIELDNAME = &apos;BENEFIT_SYSTEM&apos;
+AND JOB.BENEFIT_SYSTEM = BENEFIT_SYSTEM.FIELDVALUE
+AND BENEFIT_SYSTEM.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE BENEFIT_SYSTEM.FIELDNAME = A1.FIELDNAME 
+	AND BENEFIT_SYSTEM.FIELDVALUE = A1.FIELDVALUE
+	AND BENEFIT_SYSTEM.FIELDNAME = &apos;BENEFIT_SYSTEM&apos;)
+LEFT OUTER JOIN PSXLATITEM EARNS_DIST_TYPE
+ON EARNS_DIST_TYPE.FIELDNAME = &apos;EARNS_DIST_TYPE&apos;
+AND JOB.EARNS_DIST_TYPE = EARNS_DIST_TYPE.FIELDVALUE
+AND EARNS_DIST_TYPE.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE EARNS_DIST_TYPE.FIELDNAME = A1.FIELDNAME 
+	AND EARNS_DIST_TYPE.FIELDVALUE = A1.FIELDVALUE
+	AND EARNS_DIST_TYPE.FIELDNAME = &apos;EARNS_DIST_TYPE&apos;)
+LEFT OUTER JOIN PSXLATITEM EMPL_STATUS
+ON EMPL_STATUS.FIELDNAME = &apos;EMPL_STATUS&apos;
+AND JOB.EMPL_STATUS = EMPL_STATUS.FIELDVALUE
+AND EMPL_STATUS.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE EMPL_STATUS.FIELDNAME = A1.FIELDNAME 
+	AND EMPL_STATUS.FIELDVALUE = A1.FIELDVALUE
+	AND EMPL_STATUS.FIELDNAME = &apos;EMPL_STATUS&apos;)
+LEFT OUTER JOIN PSXLATITEM EMPL_TYPE
+ON EMPL_TYPE.FIELDNAME = &apos;EMPL_TYPE&apos;
+AND JOB.EMPL_TYPE = EMPL_TYPE.FIELDVALUE
+AND EMPL_TYPE.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE EMPL_TYPE.FIELDNAME = A1.FIELDNAME 
+	AND EMPL_TYPE.FIELDVALUE = A1.FIELDVALUE
+	AND EMPL_TYPE.FIELDNAME = &apos;EMPL_TYPE&apos;)
+LEFT OUTER JOIN PSXLATITEM FULL_PART_TIME
+ON FULL_PART_TIME.FIELDNAME = &apos;FULL_PART_TIME&apos;
+AND JOB.FULL_PART_TIME = FULL_PART_TIME.FIELDVALUE
+AND FULL_PART_TIME.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE FULL_PART_TIME.FIELDNAME = A1.FIELDNAME 
+	AND FULL_PART_TIME.FIELDVALUE = A1.FIELDVALUE
+	AND FULL_PART_TIME.FIELDNAME = &apos;FULL_PART_TIME&apos;)
+LEFT OUTER JOIN PSXLATITEM HR_STATUS
+ON HR_STATUS.FIELDNAME = &apos;HR_STATUS&apos;
+AND JOB.HR_STATUS = HR_STATUS.FIELDVALUE
+AND HR_STATUS.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE HR_STATUS.FIELDNAME = A1.FIELDNAME 
+	AND HR_STATUS.FIELDVALUE = A1.FIELDVALUE
+	AND HR_STATUS.FIELDNAME = &apos;HR_STATUS&apos;)
+LEFT OUTER JOIN PSXLATITEM JOB_INDICATOR
+ON JOB_INDICATOR.FIELDNAME = &apos;JOB_INDICATOR&apos;
+AND JOB.JOB_INDICATOR = JOB_INDICATOR.FIELDVALUE
+AND JOB_INDICATOR.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE JOB_INDICATOR.FIELDNAME = A1.FIELDNAME 
+	AND JOB_INDICATOR.FIELDVALUE = A1.FIELDVALUE
+	AND JOB_INDICATOR.FIELDNAME = &apos;JOB_INDICATOR&apos;)
+LEFT OUTER JOIN PSXLATITEM PAY_SYSTEM_FLG
+ON PAY_SYSTEM_FLG.FIELDNAME = &apos;PAY_SYSTEM_FLG&apos;
+AND JOB.PAY_SYSTEM_FLG = PAY_SYSTEM_FLG.FIELDVALUE
+AND PAY_SYSTEM_FLG.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE PAY_SYSTEM_FLG.FIELDNAME = A1.FIELDNAME 
+	AND PAY_SYSTEM_FLG.FIELDVALUE = A1.FIELDVALUE
+	AND PAY_SYSTEM_FLG.FIELDNAME = &apos;PAY_SYSTEM_FLG&apos;)
+LEFT OUTER JOIN PSXLATITEM PER_ORG
+ON PER_ORG.FIELDNAME = &apos;PER_ORG&apos;
+AND JOB.PER_ORG = PER_ORG.FIELDVALUE
+AND PER_ORG.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE PER_ORG.FIELDNAME = A1.FIELDNAME 
+	AND PER_ORG.FIELDVALUE = A1.FIELDVALUE
+	AND PER_ORG.FIELDNAME = &apos;PER_ORG&apos;)
+LEFT OUTER JOIN PSXLATITEM REG_TEMP
+ON REG_TEMP.FIELDNAME = &apos;REG_TEMP&apos;
+AND JOB.REG_TEMP = REG_TEMP.FIELDVALUE
+AND REG_TEMP.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE REG_TEMP.FIELDNAME = A1.FIELDNAME 
+	AND REG_TEMP.FIELDVALUE = A1.FIELDVALUE
+	AND REG_TEMP.FIELDNAME = &apos;REG_TEMP&apos;)
+LEFT OUTER JOIN PSXLATITEM SHIFT
+ON SHIFT.FIELDNAME = &apos;SHIFT&apos;
+AND JOB.SHIFT = SHIFT.FIELDVALUE
+AND SHIFT.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE SHIFT.FIELDNAME = A1.FIELDNAME 
+	AND SHIFT.FIELDVALUE = A1.FIELDVALUE
+	AND SHIFT.FIELDNAME = &apos;SHIFT&apos;)
+LEFT OUTER JOIN PSXLATITEM STD_HRS_FREQUENCY
+ON STD_HRS_FREQUENCY.FIELDNAME = &apos;FREQUENCY_TYPE&apos;
+AND JOB.STD_HRS_FREQUENCY = STD_HRS_FREQUENCY.FIELDVALUE
+AND STD_HRS_FREQUENCY.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE STD_HRS_FREQUENCY.FIELDNAME = A1.FIELDNAME 
+	AND STD_HRS_FREQUENCY.FIELDVALUE = A1.FIELDVALUE
+	AND STD_HRS_FREQUENCY.FIELDNAME = &apos;FREQUENCY_TYPE&apos;)
+LEFT OUTER JOIN PSXLATITEM COMP_FREQUENCY
+ON COMP_FREQUENCY.FIELDNAME = &apos;FREQUENCY_TYPE&apos;
+AND JOB.COMP_FREQUENCY = COMP_FREQUENCY.FIELDVALUE
+AND COMP_FREQUENCY.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE COMP_FREQUENCY.FIELDNAME = A1.FIELDNAME 
+	AND COMP_FREQUENCY.FIELDVALUE = A1.FIELDVALUE
+	AND COMP_FREQUENCY.FIELDNAME = &apos;FREQUENCY_TYPE&apos;)
+LEFT OUTER JOIN PSXLATITEM CLASS_INDC
+ON CLASS_INDC.FIELDNAME = &apos;CLASS_INDC&apos;
+AND JOB.CLASS_INDC = CLASS_INDC.FIELDVALUE
+AND CLASS_INDC.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE CLASS_INDC.FIELDNAME = A1.FIELDNAME 
+	AND CLASS_INDC.FIELDVALUE = A1.FIELDVALUE
+	AND CLASS_INDC.FIELDNAME = &apos;CLASS_INDC&apos;)
+LEFT OUTER JOIN PSXLATITEM GL_PAY_TYPE
+ON GL_PAY_TYPE.FIELDNAME = &apos;GL_PAY_TYPE&apos;
+AND JOB.GL_PAY_TYPE = GL_PAY_TYPE.FIELDVALUE
+AND GL_PAY_TYPE.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE GL_PAY_TYPE.FIELDNAME = A1.FIELDNAME 
+	AND GL_PAY_TYPE.FIELDVALUE = A1.FIELDVALUE
+	AND GL_PAY_TYPE.FIELDNAME = &apos;GL_PAY_TYPE&apos;)
+--WHERE INCREMENTAL LOGIC IMPORTANT HERE.  USE CREATED_EW_DTTM, LASTUPD_EW_DTTM</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>357</xloc>
+      <yloc>560</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

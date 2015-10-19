@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>CRM_FACT_MARKET_BASKET</name>
+    <directory>/</directory>
+    <log>
+      <read></read>
+      <write></write>
+      <input></input>
+      <output></output>
+      <update></update>
+      <connection></connection>
+      <table></table>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection></connection>
+      <table></table>
+      <field></field>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts market basket/product affinity information from PeopleSoft CRM 8.8.</note>
+      <xloc>53</xloc>
+      <yloc>47</yloc>
+      <width>454</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_CRM_MARKET_BASKET_METRICS</from><to>LKP_DIMENSION_PRODUCT_1</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_PRODUCT_1</from><to>LKP_DIMENION_PRODUCT_2</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENION_PRODUCT_2</from><to>LKP_DIMENSION_CUSTOMER</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_BUSINESS_UNIT</from><to>FACT_MARKET_BASKET</to><enabled>Y</enabled> </hop>  <hop> <from>CON_BUSINESS_UNIT_TYPE</from><to>LKP_DIMENSION_BUSINESS_UNIT</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CUSTOMER</from><to>CON_BUSINESS_UNIT_TYPE</to><enabled>Y</enabled> </hop>  <hop> <from>CON_BUSINESS_UNIT_TYPE</from><to>LKP_DIMENSION_BUSINESS_UNIT</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>CON_BUSINESS_UNIT_TYPE</name>
+    <type>Constant</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <fields>
+      <field>
+        <name>BUSINESS_UNIT_TYPE</name>
+        <type>String</type>
+        <format></format>
+        <currency></currency>
+        <decimal></decimal>
+        <group></group>
+        <nullif>RO</nullif>
+        <length>2</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+    <GUI>
+      <xloc>460</xloc>
+      <yloc>244</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>FACT_MARKET_BASKET</name>
+    <type>InsertUpdate</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <lookup>
+      <table>FACT_MARKET_BASKET</table>
+      <key>
+        <name>SALE_DATE_SK</name>
+        <field>SALE_DATE_SK</field>
+        <condition>=</condition>
+        <name2></name2>
+        </key>
+      <key>
+        <name>CUSTOMER_SK</name>
+        <field>CUSTOMER_SK</field>
+        <condition>=</condition>
+        <name2></name2>
+        </key>
+      <key>
+        <name>BUSINESS_UNIT_SK</name>
+        <field>BUSINESS_UNIT_SK</field>
+        <condition>=</condition>
+        <name2></name2>
+        </key>
+      <key>
+        <name>PRODUCT1_SK</name>
+        <field>PRODUCT1_SK</field>
+        <condition>=</condition>
+        <name2></name2>
+        </key>
+      <key>
+        <name>PRODUCT2_SK</name>
+        <field>PRODUCT2_SK</field>
+        <condition>=</condition>
+        <name2></name2>
+        </key>
+      <value>
+        <name>SALE_DATE_SK</name>
+        <rename>SALE_DATE_SK</rename>
+        </value>
+      <value>
+        <name>BO_CUSTOMER_ID</name>
+        <rename>BO_CUSTOMER_ID</rename>
+        </value>
+      <value>
+        <name>BUSINESS_UNIT_ID</name>
+        <rename>BUSINESS_UNIT_ID</rename>
+        </value>
+      <value>
+        <name>PRODUCT1_ID</name>
+        <rename>PRODUCT1_ID</rename>
+        </value>
+      <value>
+        <name>PRODUCT2_ID</name>
+        <rename>PRODUCT2_ID</rename>
+        </value>
+      <value>
+        <name>BASKET_QTY</name>
+        <rename>BASKET_QTY</rename>
+        </value>
+      <value>
+        <name>PRODUCT1_SALES_QTY</name>
+        <rename>PRODUCT1_SALES_QTY</rename>
+        </value>
+      <value>
+        <name>PRODUCT_1_PRICE_AMT</name>
+        <rename>PRODUCT_1_PRICE_AMT</rename>
+        </value>
+      <value>
+        <name>PRODUCT_1_RECURRING_PRICE_AMT</name>
+        <rename>PRODUCT_1_RECURRING_PRICE_AMT</rename>
+        </value>
+      <value>
+        <name>PRODUCT2_SALES_QTY</name>
+        <rename>PRODUCT2_SALES_QTY</rename>
+        </value>
+      <value>
+        <name>PRODUCT_2_PRICE_AMT</name>
+        <rename>PRODUCT_2_PRICE_AMT</rename>
+        </value>
+      <value>
+        <name>PRODUCT_2_RECURRING_PRICE_AMT</name>
+        <rename>PRODUCT_2_RECURRING_PRICE_AMT</rename>
+        </value>
+      <value>
+        <name>PRODUCT1_SK</name>
+        <rename>PRODUCT1_SK</rename>
+        </value>
+      <value>
+        <name>PRODUCT2_SK</name>
+        <rename>PRODUCT2_SK</rename>
+        </value>
+      <value>
+        <name>CUSTOMER_SK</name>
+        <rename>CUSTOMER_SK</rename>
+        </value>
+      <value>
+        <name>BUSINESS_UNIT_SK</name>
+        <rename>BUSINESS_UNIT_SK</rename>
+        </value>
+      </lookup>
+    <GUI>
+      <xloc>663</xloc>
+      <yloc>225</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENION_PRODUCT_2</name>
+    <type>DimensionLookup</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_PRODUCT</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>PRODUCT2_ID</name>
+          <lookup>PRODUCT_ID</lookup>
+          </key>
+        <date>
+          <name>SALE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>PRODUCT_SK</name>
+          <rename>PRODUCT2_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence></sequence>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>283</xloc>
+      <yloc>248</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_BUSINESS_UNIT</name>
+    <type>DimensionLookup</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_BUSINESS_UNIT</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>BUSINESS_UNIT_ID</name>
+          <lookup>BUSINESS_UNIT_ID</lookup>
+          </key>
+        <key>
+          <name>BUSINESS_UNIT_TYPE</name>
+          <lookup>BUSINESS_UNIT_TYPE</lookup>
+          </key>
+        <date>
+          <name>SALE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>BUSINESS_UNIT_SK</name>
+          <rename></rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence></sequence>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>542</xloc>
+      <yloc>129</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CUSTOMER</name>
+    <type>DimensionLookup</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CUSTOMER</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>BO_CUSTOMER_ID</name>
+          <lookup>BO_CUSTOMER_ID</lookup>
+          </key>
+        <date>
+          <name>SALE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CUSTOMER_SK</name>
+          <rename></rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence></sequence>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>362</xloc>
+      <yloc>131</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_PRODUCT_1</name>
+    <type>DimensionLookup</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_PRODUCT</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>PRODUCT1_ID</name>
+          <lookup>PRODUCT_ID</lookup>
+          </key>
+        <date>
+          <name>SALE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>PRODUCT_SK</name>
+          <rename>PRODUCT1_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence></sequence>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>192</xloc>
+      <yloc>131</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_CRM_MARKET_BASKET_METRICS</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the PS_RA_CAMPAIGN table.  It maintains all marketing campaign program information, such as name, start and end dates, relationship to a parent (roll up), overall campaign status, objective and description.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT 
+CAST (CONVERT(CHAR(10),MAIN.SALE_DATE,112) as NUMERIC) AS SALE_DATE_SK, --DBMS SPECIFIC
+RTRIM(MAIN.BO_CUSTOMER_ID) AS BO_CUSTOMER_ID,
+RTRIM(MAIN.BUSINESS_UNIT_ID) AS BUSINESS_UNIT_ID,
+RTRIM(MAIN.PRODUCT1_ID) AS PRODUCT1_ID, 
+(CASE WHEN RTRIM(LINE2.PRODUCT_ID) IS NULL THEN &apos;-1&apos; ELSE RTRIM(LINE2.PRODUCT_ID) END) AS PRODUCT2_ID,--SOLD ALONE
+COUNT(MAIN.CAPTURE_ID) AS BASKET_QTY,
+SUM(PRODUCT1_SALES_QTY) AS PRODUCT1_SALES_QTY,
+SUM(PRODUCT_1_PRICE_AMT) AS PRODUCT_1_PRICE_AMT,
+SUM(PRODUCT_1_RECURRING_PRICE_AMT) AS PRODUCT_1_RECURRING_PRICE_AMT,
+SUM(ISNULL(LINE2.QTY_ORDERED,0)) AS PRODUCT2_SALES_QTY,
+SUM(ISNULL(LINE2.PRICE,0)) AS PRODUCT_2_PRICE_AMT,
+SUM(ISNULL(LINE2.RECUR_PRICE,0)) AS PRODUCT_2_RECURRING_PRICE_AMT
+FROM
+(SELECT TOP 100 PERCENT --ADDED TO OVERCOME SQL SERVER ISSUE
+HEAD.CAPTURE_ID,
+BO.BO_ID AS BO_CUSTOMER_ID,
+HEAD.CAPTURE_DATE AS SALE_DATE,
+HEAD.BUSINESS_UNIT AS BUSINESS_UNIT_ID,
+RTRIM(LINE.PRODUCT_ID) AS PRODUCT1_ID, 
+LINE.QTY_ORDERED AS PRODUCT1_SALES_QTY,
+LINE.PRICE AS PRODUCT_1_PRICE_AMT,
+LINE.RECUR_PRICE AS PRODUCT_1_RECURRING_PRICE_AMT
+FROM PS_RO_HEADER HEAD
+INNER JOIN PS_RO_BOID BO
+ON BO.CAPTURE_ID = HEAD.CAPTURE_ID 
+AND BO.UID20 = HEAD.UID20F_SOLD
+INNER JOIN PS_RO_LINE LINE
+ON LINE.CAPTURE_ID = HEAD.CAPTURE_ID 
+AND LINE.BUSINESS_UNIT= HEAD.BUSINESS_UNIT
+WHERE HEAD.CAPTURE_TYPE_CD  =  &apos;SO&apos; 
+AND HEAD.ORD_STATUS_CODE = &apos;6000&apos;
+AND BO.ROLE_TYPE_ID = 2
+ORDER BY RTRIM(LINE.PRODUCT_ID)) MAIN --SORT
+LEFT OUTER JOIN PS_RO_LINE LINE2
+ON LINE2.BUSINESS_UNIT = MAIN.BUSINESS_UNIT_ID 
+AND MAIN.CAPTURE_ID = LINE2.CAPTURE_ID 
+AND MAIN.PRODUCT1_ID &lt; RTRIM(LINE2.PRODUCT_ID)
+GROUP BY MAIN.SALE_DATE,
+MAIN.BUSINESS_UNIT_ID,
+MAIN.BO_CUSTOMER_ID,
+MAIN.PRODUCT1_ID, 
+(CASE WHEN RTRIM(LINE2.PRODUCT_ID) IS NULL THEN &apos;-1&apos; ELSE RTRIM(LINE2.PRODUCT_ID) END) -- -1 ITEMS SOLD ALONE</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>81</xloc>
+      <yloc>217</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

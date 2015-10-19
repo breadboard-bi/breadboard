@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<report name="requisition_top_products_report" orientation="portrait" pageformat="LETTER" leftmargin="5pt" rightmargin="0pt" topmargin="0" bottommargin="0">
+<reportheader>  
+<!--
+<label fontname="SansSerif" fontsize="14" fontstyle="bold" height="20" vertical-alignment="middle" alignment="left" width="370" x="0" y="0">Top Requisition Lines by Amount</label>
+-->
+</reportheader>
+  <groups>
+    <group name="dummy">
+      <groupheader repeat="true" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold" height="14">
+        <band name="DummyGroupNoDataBandElement">
+          <label height="10" vertical-alignment="middle" alignment="left" width="370" x="0" y="0">No Data Available</label>
+        </band>
+        <band name="DummyGroupDataBandElement">
+          <rectangle color="#808080" draw="false" fill="true" height="12" width="370" x="0" y="0"/>
+<!--
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="50" x="0" y="0">Rank</label>
+-->
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="200" x="0" y="0">Product</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="80" x="200" y="0">Quantity</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="80" x="280" y="0">Order</label>
+        </band>
+      </groupheader>
+      <groupfooter name="dummyGroupFooter" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold">
+      </groupfooter>
+    </group>
+  </groups>
+  <items color="#000000" fontname="SansSerif" fontsize="9" fontstyle="bold">
+<!--
+    <string-field name="RANKElement" fieldname="RANK" vertical-alignment="middle" alignment="left" width="50" x="0" y="0" height="11"/>
+-->
+    <string-field name="URL-Field" fieldname="PRODUCT_DESC" vertical-alignment="middle" alignment="left" width="200" x="0" y="0" height="11"/>
+    <number-field name="REQUISITION_QTYElement" fieldname="REQUISITION_QTY" vertical-alignment="middle" alignment="left" width="80" x="200" y="0" height="11"/>
+    <number-field name="REQUISITION_AMTElement" fieldname="REQUISITION_AMT" format="¤ #,##0" vertical-alignment="middle" alignment="left" width="80" x="280" y="0" height="11"/>
+  </items>
+  <functions>
+    <expression class="org.jfree.report.function.HideElementIfDataAvailableExpression" name="DummyGroupNoDataBandElementHideIfNullTrigger">
+      <properties>
+        <property name="element">DummyGroupNoDataBandElement</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="DummyGroupDataBandElementHideIfNullTrigger">
+      <properties>
+        <property name="element">DummyGroupDataBandElement</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="dummyGroupFooterHideIfNullTrigger">
+      <properties>
+        <property name="element">dummyGroupFooter</property>
+      </properties>
+    </expression>
+ 
+ <!--
+    <function name="AddHRefs" class="org.jfree.report.function.CreateHyperLinksFunction">
+       <properties>
+         <property name="field">URLCreateExpression</property>
+         <property name="element">URL-Field</property>
+       </properties>
+     </function>
+ 
+     <expression name="URLCreateExpression" class="org.jfree.report.function.TextFormatExpression">
+       <properties>
+       <property name="pattern">ViewAction?web_file_name={0}&amp;week_sk={1,number,####0}&amp;solution=breadboard&amp;action=web_week_file.xaction&amp;path=dashboard/marketing/report</property>
+         <property name="field[0]">WEB_FILE_NAME</property>    
+         <property name="field[1]">WEEK_SK</property>           
+       </properties>
+     </expression>  
+--> 
+ 
+  </functions>
+</report>

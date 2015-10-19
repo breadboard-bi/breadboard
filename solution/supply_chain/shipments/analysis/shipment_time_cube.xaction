@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>shipment_time_cube.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <help/>  
+    <result-type>report</result-type>  
+    <description>%description</description>  
+    <icon>file.png|analysis.png</icon> 
+  </documentation>  
+  <inputs> 
+    <mdx type="string"> 
+      <default-value/>  
+      <sources> 
+        <request>MDX</request> 
+      </sources> 
+    </mdx>  
+    <mode type="string"> 
+      <sources> 
+        <request>mode</request> 
+      </sources>  
+      <default-value/> 
+    </mode>  
+    <period type="string"> 
+      <sources> 
+        <request>period</request> 
+      </sources>  
+      <default-value/> 
+    </period> 
+  </inputs>  
+  <outputs> 
+    <model type="string"/>  
+    <connection type="string"/>  
+    <mdx type="string"/>  
+    <options type="list"/>  
+    <title type="string"/>  
+    <url type="string"> 
+      <destinations> 
+        <response>redirect</response> 
+      </destinations> 
+    </url> 
+  </outputs>  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <component-name>PivotViewComponent</component-name>  
+      <action-type/>  
+      <action-inputs> 
+        <mode type="string"/>  
+        <period type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <model type="string"/>  
+        <connection type="string"/>  
+        <mdx type="string"/>  
+        <options type="list"/>  
+        <title type="string"/>  
+        <url type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <title>%title</title>  
+        <viewer>Pivot</viewer>  
+        <model>breadboard/analysis/breadboardbi.mondrian.xml</model>  
+        <jndi>mdw_mysql</jndi>  
+        <location>mondrian</location>  
+        <query><![CDATA[select NON EMPTY {
+[Measures].[Shipment Line Count], 
+[Measures].[Backorder Cancelled Count], 
+[Measures].[Scheduled Quantity], [Measures].[Shipped Quantity], 
+[Measures].[Backorder Quantity], [Measures].[Shipment Amount], 
+[Measures].[Order to Ship Avg Days], 
+[Measures].[Ship to Request Avg Days]} ON COLUMNS,
+  NON EMPTY {[Time Period].[All Periods]{period}.Children} ON ROWS
+from [Shipments]]]></query>  
+        <options> 
+          <personal/>  
+          <cube-nav/>  
+          <mdx-edit/>  
+          <sort-conf/>  
+          <spacer/>  
+          <level-style/>  
+          <hide-spans/>  
+          <properties/>  
+          <non-empty/>  
+          <swap-axes/>  
+          <spacer/>  
+          <drill-member/>  
+          <drill-position/>  
+          <drill-replace/>  
+          <drill-thru/>  
+          <spacer/>  
+          <chart/>  
+          <chart-conf/>  
+          <spacer/>  
+          <print-conf/>  
+          <print-pdf/>  
+          <spacer/>  
+          <excel/> 
+        </options>
+      </component-definition>  
+      <action-name>Pivot View</action-name>  
+      <logging-level>DEBUG</logging-level> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>DIMENSION_RECRUITMENT_CHANNEL</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input>STAGE_RECRUITMENT_CHANNEL</input>
+      <output>DIMENSION_RECRUITMENT_CHANNEL</output>
+      <update/>
+      <rejected/>
+      <connection/>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>Y</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>1000</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2007&#47;10&#47;07 12:12:37.000</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI, LLC. All rights reserved.</note>
+      <xloc>11</xloc>
+      <yloc>411</yloc>
+      <width>291</width>
+      <heigth>23</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>9</xloc>
+      <yloc>459</yloc>
+      <width>546</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Breadboard BI - Workforce - Recruitment Channel Data Flow - Version 2.0
+============================================
+1.  This data flow extracts recruitment channel information from the staging area.
+
+2.  The error logic is basic and designed to be extended to meet the needs of individual customers.  
+      Error rows are flagged as errors in the stage table.  Rows without errors proceed to the target table as inserts or updates.
+
+3.  As delivered, this loads as a slowly changing dimension Type 1 (SCD1).  Add SCD2 Functionality by editing the settings in the 
+     dimension lookup&#47;update step.
+
+4.  Incremental load logic is utilized in conjunction with the ADMIN_TRANSFORMATION_CONTROL table.  This table must be built
+     before running the transformation.</note>
+      <xloc>6</xloc>
+      <yloc>9</yloc>
+      <width>626</width>
+      <heigth>166</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>jde</name>
+    <server>test</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>rds</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>rds</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>Get Transformation Last Start Date</from><to>STAGE_RECRUITMENT_CHANNEL</to><enabled>Y</enabled> </hop>  <hop> <from>ROUTE_ROWS_WITH_ERRORS</from><to>DIMENSION_RECRUITMENT_CHANNEL</to><enabled>Y</enabled> </hop>  <hop> <from>DW_ERROR_IND</from><to>STAGE_RECRUITMENT_CHANNEL_errors</to><enabled>Y</enabled> </hop>  <hop> <from>ROUTE_ROWS_WITH_ERRORS</from><to>DW_ERROR_IND</to><enabled>Y</enabled> </hop>  <hop> <from>STAGE_RECRUITMENT_CHANNEL</from><to>ROUTE_ROWS_WITH_ERRORS</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>DIMENSION_RECRUITMENT_CHANNEL</name>
+    <type>DimensionLookup</type>
+    <description>This dimension lookup&#47;update step inserts or updates rows according to a slowly changing dimension Type 1 (SCD1) or slowly changing dimension Type 2 (SCD2) strategy.  The default configuration is SCD1. </description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+      <schema/>
+      <table>DIMENSION_RECRUITMENT_CHANNEL</table>
+      <connection/>
+      <commit>0</commit>
+      <update>Y</update>
+      <fields>
+        <key>
+          <name>RECRUITMENT_CHANNEL_ID</name>
+          <lookup>RECRUITMENT_CHANNEL_ID</lookup>
+        </key>
+        <key>
+          <name>RECRUITMENT_CHANNEL_SETID</name>
+          <lookup>RECRUITMENT_CHANNEL_SETID</lookup>
+        </key>
+        <key>
+          <name>SOURCE_SYSTEM_ID</name>
+          <lookup>SOURCE_SYSTEM_SK</lookup>
+        </key>
+        <date>
+          <name/>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+        </date>
+        <field>
+          <name>RECRUITMENT_CHANNEL_NAME</name>
+          <lookup>RECRUITMENT_CHANNEL_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>RECRUITMENT_CHANNEL_DESC</name>
+          <lookup>RECRUITMENT_CHANNEL_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>RECRUITMENT_CHANNEL_TYPE_CODE</name>
+          <lookup>RECRUITMENT_CHANNEL_TYPE_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>RECRUITMENT_CHANNEL_TYPE_NAME</name>
+          <lookup>RECRUITMENT_CHANNEL_TYPE_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>RECRUITMENT_CHANNEL_TYPE_DESC</name>
+          <lookup>RECRUITMENT_CHANNEL_TYPE_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <return>
+          <name>RECRUITMENT_CHANNEL_SK</name>
+          <rename/>
+          <creation_method>sequence</creation_method>
+          <use_autoinc>N</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence>SEQ_DIMENSION_RECRUITMENT_CHANNEL</sequence>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+      <cache_size>-1</cache_size>
+     <cluster_schema/>
+    <GUI>
+      <xloc>651</xloc>
+      <yloc>222</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>DW_ERROR_IND</name>
+    <type>Constant</type>
+    <description>This step adds the Y string constant to the data flow.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>DW_ERROR_IND</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>Y</nullif>
+        <length>1</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+     <cluster_schema/>
+    <GUI>
+      <xloc>533</xloc>
+      <yloc>310</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Get Transformation Last Start Date</name>
+    <type>SystemInfo</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>MAX</name>
+        <type>start date range</type>
+        </field>
+      </fields>
+     <cluster_schema/>
+    <GUI>
+      <xloc>78</xloc>
+      <yloc>222</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>ROUTE_ROWS_WITH_ERRORS</name>
+    <type>FilterRows</type>
+    <description>This step routes rows with error conditions (as defined by the client) back to the stage table flagged as an error.  The current error logic is basic and is designed to be extended to meet the needs of individual customers.  Rows without errors proceed to the target table as inserts or updates, they are subsequently removed from the stage table.</description>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+<send_true_to>DIMENSION_RECRUITMENT_CHANNEL</send_true_to>
+<send_false_to>DW_ERROR_IND</send_false_to>
+    <compare>
+<condition>
+ <negated>N</negated>
+ <leftvalue>RECRUITMENT_CHANNEL_NAME</leftvalue>
+ <function>IS NOT NULL</function>
+ <rightvalue/>
+ </condition>
+    </compare>
+     <cluster_schema/>
+    <GUI>
+      <xloc>455</xloc>
+      <yloc>222</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_RECRUITMENT_CHANNEL</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection/>
+    <sql>SELECT
+  RECRUITMENT_CHANNEL_ID
+, RECRUITMENT_CHANNEL_SETID
+, SOURCE_SYSTEM_ID
+, RECRUITMENT_CHANNEL_NAME
+, RECRUITMENT_CHANNEL_DESC
+, RECRUITMENT_CHANNEL_TYPE_CODE
+, RECRUITMENT_CHANNEL_TYPE_NAME
+, RECRUITMENT_CHANNEL_TYPE_DESC
+FROM STAGE_RECRUITMENT_CHANNEL
+WHERE DW_LOAD_DATE &gt;= ?</sql>
+    <limit>0</limit>
+    <lookup>Get Transformation Last Start Date</lookup>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>Y</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>273</xloc>
+      <yloc>222</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_RECRUITMENT_CHANNEL_errors</name>
+    <type>Update</type>
+    <description>This step updates rows in the stage table with an error flag.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection/>
+    <commit>0</commit>
+    <error_ignored>N</error_ignored>
+    <ignore_flag_field/>
+    <lookup>
+      <schema/>
+      <table>STAGE_RECRUITMENT_CHANNEL</table>
+      <key>
+        <name>RECRUITMENT_CHANNEL_ID</name>
+        <field>RECRUITMENT_CHANNEL_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>RECRUITMENT_CHANNEL_SETID</name>
+        <field>RECRUITMENT_CHANNEL_SETID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>SOURCE_SYSTEM_ID</name>
+        <field>SOURCE_SYSTEM_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>RECRUITMENT_CHANNEL_ID</name>
+        <rename>RECRUITMENT_CHANNEL_ID</rename>
+        </value>
+      <value>
+        <name>RECRUITMENT_CHANNEL_SETID</name>
+        <rename>RECRUITMENT_CHANNEL_SETID</rename>
+        </value>
+      <value>
+        <name>SOURCE_SYSTEM_ID</name>
+        <rename>SOURCE_SYSTEM_ID</rename>
+        </value>
+      <value>
+        <name>DW_ERROR_IND</name>
+        <rename>DW_ERROR_IND</rename>
+        </value>
+      </lookup>
+     <cluster_schema/>
+    <GUI>
+      <xloc>616</xloc>
+      <yloc>397</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+</transformation>

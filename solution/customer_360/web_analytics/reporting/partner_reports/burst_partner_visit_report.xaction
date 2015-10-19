@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>%description</description>  
+    <help/>  
+    <result-type>email</result-type>  
+    <icon>BurstActionSequence.png</icon> 
+  </documentation>  
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>xls</default-value> 
+    </output-type>  
+    <print-prefix type="string"> 
+      <default-value>Generating</default-value> 
+    </print-prefix> 
+  </inputs>  
+  <outputs/>  
+  <resources> 
+    <report-definition> 
+      <solution-file> 
+        <location>web_server_organization_sample.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>Query For Partner Information</action-type>  
+      <action-outputs> 
+        <query-result type="result-set" mapping="burst-data"/>  
+        <ISO_3166_COUNTRY_NAME type="string"/>  
+        <EMAIL type="string"/>  
+        <USER_DESC type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT C.ISO_3166_COUNTRY_NAME, U.USER_DESC, U.EMAIL_ADDRESS_DESC AS EMAIL
+FROM ADMIN_COUNTRY C, ADMIN_PARTNER_COUNTRY PC, ADMIN_USER U
+WHERE C.COUNTRY_SK = PC.COUNTRY_SK AND PC.PARTNER_SK = U.PARTNER_SK
+AND PC.ACTIVE_IND = 'Y' AND U.ACTIVE_IND= 'Y']]></query> 
+      </component-definition> 
+    </action-definition>  
+    <actions loop-on="burst-data"> 
+      <action-definition> 
+        <component-name>UtilityComponent</component-name>  
+        <action-type>Format The Email Attach Name</action-type>  
+        <action-inputs> 
+          <ISO_3166_COUNTRY_NAME type="string"/>  
+          <output-type type="string"/> 
+        </action-inputs>  
+        <action-outputs> 
+          <formatted_msg type="string" mapping="attach-name"/> 
+        </action-outputs>  
+        <component-definition> 
+          <format> 
+            <format-string>%filename-msg</format-string>  
+            <return>formatted_msg</return>  
+            <arg>ISO_3166_COUNTRY_NAME</arg>  
+            <arg>output-type</arg> 
+          </format> 
+        </component-definition> 
+      </action-definition>  
+      <action-definition> 
+        <component-name>UtilityComponent</component-name>  
+        <action-type>Format The Email Subject</action-type>  
+        <action-inputs> 
+          <ISO_3166_COUNTRY_NAME type="string"/> 
+        </action-inputs>  
+        <action-outputs> 
+          <formatted_msg type="string" mapping="subject"/> 
+        </action-outputs>  
+        <component-definition> 
+          <format> 
+            <format-string>%subject-msg</format-string>  
+            <arg>ISO_3166_COUNTRY_NAME</arg>  
+            <return>formatted_msg</return> 
+          </format> 
+        </component-definition> 
+      </action-definition>  
+      <action-definition> 
+        <component-name>UtilityComponent</component-name>  
+        <action-type>Format The Email Msg</action-type>  
+        <action-inputs> 
+          <USER_DESC type="string"/>  
+          <subject type="string"/> 
+        </action-inputs>  
+        <action-outputs> 
+          <formatted_msg type="string" mapping="message-html"/> 
+        </action-outputs>  
+        <component-definition> 
+          <format> 
+            <format-string>%message-msg</format-string>  
+            <arg>USER_DESC</arg>  
+            <arg>subject</arg>  
+            <return>formatted_msg</return> 
+          </format> 
+        </component-definition> 
+      </action-definition>  
+      <action-definition> 
+        <component-name>UtilityComponent</component-name>  
+        <action-type>Print Parameters</action-type>  
+        <action-inputs> 
+          <print-prefix type="string"/>  
+          <subject type="string"/>  
+          <USER_DESC type="string"/> 
+        </action-inputs>  
+        <component-definition> 
+          <print> 
+            <delimiter>" - "</delimiter>  
+            <arg>print-prefix</arg>  
+            <arg>subject</arg>  
+            <arg>USER_DESC</arg> 
+          </print> 
+        </component-definition> 
+      </action-definition>  
+      <action-definition> 
+        <component-name>SQLLookupRule</component-name>  
+        <action-type>Query For Report Data</action-type>  
+        <action-inputs> 
+          <ISO_3166_COUNTRY_NAME type="string"/> 
+        </action-inputs>  
+        <action-outputs> 
+          <query-result type="result-set" mapping="reportData"/> 
+        </action-outputs>  
+        <component-definition> 
+          <live>false</live>  
+          <jndi>mdw_mysql</jndi>  
+          <query><![CDATA[SELECT 
+REQUEST_DATE,
+ORGANIZATION_DESC,
+COUNTRY_NAME,
+REGION_NAME,
+CITY_NAME,
+POSTAL_CODE,
+DMA_NAME,
+PHONE_REGION_CODE,
+SUM(LOG_WEB_PAGE_VIEW_QTY) AS LOG_WEB_PAGE_VIEW_QTY,
+SUM(TAG_WEB_PAGE_VIEW_QTY) AS TAG_WEB_PAGE_VIEW_QTY
+FROM (
+SELECT D.DAY_DESC AS REQUEST_DATE,
+MAX(CONCAT(V.WEB_ORGANIZATION_DESC,' - ',V.IP_ADDRESS_DESC)) AS ORGANIZATION_DESC,
+V.COUNTRY_NAME,
+(CASE WHEN V.REGION_NAME IS NULL THEN 'Missing' ELSE V.REGION_NAME END) AS REGION_NAME,
+V.CITY_NAME,
+V.POSTAL_CODE,
+V.DMA_NAME,
+V.PHONE_REGION_CODE,
+SUM(F.WEB_PAGE_VIEW_QTY) AS LOG_WEB_PAGE_VIEW_QTY,
+0 AS TAG_WEB_PAGE_VIEW_QTY
+FROM FACT_WEB_PAGE_VIEW F, 
+DIMENSION_WEB_VISITOR V, 
+DIMENSION_WEB_SITE_REFERER R, 
+DIMENSION_DAY D
+WHERE F.WEB_VISITOR_SK = V.WEB_VISITOR_SK
+AND V.ROBOT_IND = 'N'
+AND F.REFERER_URL_SK = R.REFERER_URL_SK
+AND F.REQUEST_DATE_SK = D.DATE_SK
+AND F.REQUEST_DATE >= ADDDATE(SYSDATE(),-7)
+AND F.ROBOT_PAGE_VIEW_QTY = 0
+AND F.SOURCE_SYSTEM_SK IN (2,3)
+AND V.COUNTRY_NAME = {PREPARE:ISO_3166_COUNTRY_NAME} 
+GROUP BY D.DAY_DATE, D.DAY_DESC,
+V.WEB_VISITOR_SK, 
+V.COUNTRY_NAME,
+(CASE WHEN V.REGION_NAME IS NULL THEN 'Missing' ELSE V.REGION_NAME END),
+V.CITY_NAME,
+V.POSTAL_CODE,
+V.DMA_NAME,
+V.PHONE_REGION_CODE
+UNION
+SELECT D.DAY_DESC AS REQUEST_DATE,
+MAX(CONCAT(V.WEB_ORGANIZATION_DESC,' - ',V.IP_ADDRESS_DESC)) AS ORGANIZATION_DESC,
+V.COUNTRY_NAME,
+(CASE WHEN V.REGION_NAME IS NULL THEN 'Missing' ELSE V.REGION_NAME END) AS REGION_NAME,
+V.CITY_NAME,
+V.POSTAL_CODE,
+V.DMA_NAME,
+V.PHONE_REGION_CODE,
+0 AS LOG_WEB_PAGE_VIEW_QTY,
+SUM(F.WEB_PAGE_VIEW_QTY) AS TAG_WEB_PAGE_VIEW_QTY
+FROM FACT_WEB_PAGE_VIEW F, 
+DIMENSION_WEB_VISITOR V, 
+DIMENSION_WEB_SITE_REFERER R, 
+DIMENSION_DAY D
+WHERE F.WEB_VISITOR_SK = V.WEB_VISITOR_SK
+AND F.REFERER_URL_SK = R.REFERER_URL_SK
+AND F.REQUEST_DATE_SK = D.DATE_SK
+AND F.REQUEST_DATE >= ADDDATE(SYSDATE(),-7)
+AND F.ROBOT_PAGE_VIEW_QTY = 0
+AND F.SOURCE_SYSTEM_SK = 5
+AND V.ROBOT_IND = 'N'
+AND V.COUNTRY_NAME = {PREPARE:ISO_3166_COUNTRY_NAME} 
+GROUP BY D.DAY_DATE, D.DAY_DESC,
+V.WEB_VISITOR_SK, 
+V.COUNTRY_NAME,
+(CASE WHEN V.REGION_NAME IS NULL THEN 'Missing' ELSE V.REGION_NAME END),
+V.CITY_NAME,
+V.POSTAL_CODE,
+V.DMA_NAME,
+V.PHONE_REGION_CODE
+) X
+GROUP BY REQUEST_DATE,
+ORGANIZATION_DESC, 
+COUNTRY_NAME,
+REGION_NAME, 
+CITY_NAME,
+POSTAL_CODE,
+DMA_NAME,
+PHONE_REGION_CODE
+ORDER BY REQUEST_DATE DESC, 
+REGION_NAME, 
+CITY_NAME]]></query>
+        </component-definition> 
+      </action-definition>  
+      <action-definition> 
+        <component-name>JFreeReportComponent</component-name>  
+        <action-type>Create The Report</action-type>  
+        <action-inputs> 
+          <data type="result-set" mapping="reportData"/>  
+          <output-type type="string"/> 
+        </action-inputs>  
+        <action-resources> 
+          <report-definition type="resource"/> 
+        </action-resources>  
+        <action-outputs> 
+          <report-output type="content" mapping="reportOutput"/> 
+        </action-outputs>  
+        <component-definition/> 
+      </action-definition>  
+      <action-definition> 
+        <component-name>EmailComponent</component-name>  
+        <action-type>Email</action-type>  
+        <action-inputs> 
+          <subject type="string"/>  
+          <message-html type="string"/>  
+          <to type="string" mapping="EMAIL"/>  
+          <attach-name type="string"/>  
+          <reportOutput type="content"/> 
+        </action-inputs>  
+        <component-definition> 
+          <attachment-ref name-param="attach-name" input-param="reportOutput"/>  
+          <bcc>chris_lavigne@breadboardbi.com</bcc>
+        </component-definition> 
+      </action-definition> 
+    </actions> 
+  </actions> 
+</action-sequence>

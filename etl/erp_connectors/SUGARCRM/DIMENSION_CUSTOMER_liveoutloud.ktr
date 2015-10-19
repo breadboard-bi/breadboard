@@ -1,0 +1,1361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>DIMENSION_CUSTOMER_liveoutloud</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input>STAGE_CUSTOMER</input>
+      <output>DIMENSION_CUSTOMER</output>
+      <update/>
+      <rejected/>
+      <connection>breadboardbi_mysql5</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>Y</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server8080</name>
+            <name>server8090</name>
+            <name>server9000</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2007&#47;09&#47;05 09:38:58.000</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI, LLC. All rights reserved.</note>
+      <xloc>11</xloc>
+      <yloc>443</yloc>
+      <width>291</width>
+      <heigth>23</heigth>
+    </notepad>
+    <notepad>
+      <note>Breadboard BI - Customer 360 - Dimension Customer Data Flow - Version 1.3
+===============================================
+1.  This data flow extracts customer information from the staging area.
+
+2.  The error logic is basic and designed to be extended to meet the needs of individual customers.  
+      Error rows are flagged as errors in the stage table.  Rows without errors proceed to the target table as inserts or updates.  They are removed from the stage table.
+
+3.  As delivered, this loads as a slowly changing dimension Type 1 (SCD1).  Add SCD2 Functionality by editing the settings in the dimension lookup&#47;update step.
+
+4.  Customers that wish to persist their staging tables and utilize incremental load logic can join to the 
+     ADMIN_TRANSFORMATION_CONTROL table in the table input step.  The *_delete step should also be
+     removed from the transformation.</note>
+      <xloc>7</xloc>
+      <yloc>9</yloc>
+      <width>817</width>
+      <heigth>166</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>9</xloc>
+      <yloc>499</yloc>
+      <width>546</width>
+      <heigth>62</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>box_app</name>
+    <server>10.10.30.51</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>box</database>
+    <port>3306</port>
+    <username>alex</username>
+    <password>Encrypted 2be98afc86aa79a8cb91bfc258fc6fd8d</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>box_dwh</name>
+    <server>10.10.30.51</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>box_dwh</database>
+    <port>3306</port>
+    <username>alex</username>
+    <password>Encrypted 2be98afc86aa79a8cb91bfc258fc6fd8d</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>box_rds</name>
+    <server>localhost</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>box_rds</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce7adf81a6cf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>breadboardbi</name>
+    <server>localhost</server>
+    <type>ORACLE</type>
+    <access>Native</access>
+    <database>orcl</database>
+    <port>1521</port>
+    <username>mdw</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce7adf81a6cf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>breadboardbi_mysql5</name>
+    <server>192.168.0.103</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>3306</port>
+    <username>mdw</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ba75df95badf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>breadboardbi_mysql_mindset</name>
+    <server>192.168.0.103</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mindset</database>
+    <port>3306</port>
+    <username>mindset</username>
+    <password>Encrypted 2be98afc86aa79f8da51dbd75cad1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>breadboardbi_orcl</name>
+    <server>192.168.0.103</server>
+    <type>ORACLE</type>
+    <access>Native</access>
+    <database>orcl</database>
+    <port>1521</port>
+    <username>mdw</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce7adf81a6cf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>breadboard_liveoutloud</name>
+    <server>192.168.0.103</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>liveoutloud</database>
+    <port>3306</port>
+    <username>mdw</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ba75df95badf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>jde</name>
+    <server>test</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>liveoutloud_source</name>
+    <server>192.168.14.9</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>infoathand</database>
+    <port>3306</port>
+    <username>chris.lavigne</username>
+    <password>Encrypted 2be98afc86aa7f2e49b4aa064df9aff9b</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>liveoutloud_source_test</name>
+    <server>192.168.14.9</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>infoathand_test</database>
+    <port>3306</port>
+    <username>chris.lavigne</username>
+    <password>Encrypted 2be98afc86aa7f2e49b4aa064df9aff9b</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_eugenio_branco_mysql</name>
+    <server>localhost</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>3307</port>
+    <username>root</username>
+    <password>Encrypted 2be98afc808d59785af1ba171cc96aad8</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3307</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mindset</name>
+    <server>localhost</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mindset</database>
+    <port>3306</port>
+    <username>mindset</username>
+    <password>Encrypted 2be98afc86aa79f8da51dbd75cad1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mindset_bbbi</name>
+    <server>192.168.0.103</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mindset</database>
+    <port>3306</port>
+    <username>mindset</username>
+    <password>Encrypted 2be98afc86aa79f8da51dbd75cad1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mindset_localhost</name>
+    <server>localhost</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mindset</database>
+    <port>3306</port>
+    <username>mindset</username>
+    <password>Encrypted 2be98afc86aa79f8da51dbd75cad1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>Mindset_Media_NDC_Codes</name>
+    <server>localhost</server>
+    <type>MSACCESS</type>
+    <access>ODBC</access>
+    <database>Mindset_Media_NDC_Codes</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mindset_pc_dell</name>
+    <server>192.168.0.102</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mindset</database>
+    <port>3306</port>
+    <username>mindset</username>
+    <password>Encrypted 2be98afc86aa79f8da51dbd75cad1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>rds</name>
+    <server>test</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>3306</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>ROUTE_ROWS_WITH_ERRORS</from><to>DW_ERROR_IND</to><enabled>Y</enabled> </hop>  <hop> <from>DIMENSION_CUSTOMER</from><to>STAGE_CUSTOMER_delete</to><enabled>N</enabled> </hop>  <hop> <from>STAGE_CUSTOMER</from><to>MAP_LIVEOUTLOUD_2_BREADBOARD</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LIVEOUTLOUD_2_BREADBOARD</from><to>ROUTE_ROWS_WITH_ERRORS</to><enabled>Y</enabled> </hop>  <hop> <from>ROUTE_ROWS_WITH_ERRORS</from><to>ADD_CONSTANTS</to><enabled>Y</enabled> </hop>  <hop> <from>ADD_CONSTANTS</from><to>DIMENSION_CUSTOMER</to><enabled>Y</enabled> </hop>  <hop> <from>DW_ERROR_IND</from><to>STAGE_CUSTOMER_errors</to><enabled>N</enabled> </hop>  </order>
+  <step>
+    <name>ADD_CONSTANTS</name>
+    <type>Constant</type>
+    <description>This step adds the Y string constant to the data flow.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>SOURCE_SYSTEM_ID</name>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>1</nullif>
+        <length>1</length>
+        <precision>-1</precision>
+        </field>
+      <field>
+        <name>CUSTOMER_SETID</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>SHARE</nullif>
+        <length>5</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+     <cluster_schema/>
+    <GUI>
+      <xloc>535</xloc>
+      <yloc>231</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>DIMENSION_CUSTOMER</name>
+    <type>DimensionLookup</type>
+    <description>This dimension lookup&#47;update step inserts or updates rows according to a slowly changing dimension Type 1 (SCD1) or slowly changing dimension Type 2 (SCD2) strategy.  The default configuration is SCD1. </description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+      <schema/>
+      <table>DIMENSION_CUSTOMER</table>
+      <connection>breadboard_liveoutloud</connection>
+      <commit>0</commit>
+      <update>Y</update>
+      <fields>
+        <key>
+          <name>CUSTOMER_ID</name>
+          <lookup>CUSTOMER_ID</lookup>
+        </key>
+        <key>
+          <name>CUSTOMER_SETID</name>
+          <lookup>CUSTOMER_SETID</lookup>
+        </key>
+        <key>
+          <name>SOURCE_SYSTEM_ID</name>
+          <lookup>SOURCE_SYSTEM_SK</lookup>
+        </key>
+        <date>
+          <name/>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+        </date>
+        <field>
+          <name>ADD_DATE</name>
+          <lookup>ADD_DATE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>CUSTOMER_NAME</name>
+          <lookup>CUSTOMER_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>CUSTOMER_TYPE_NAME</name>
+          <lookup>CUSTOMER_TYPE_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>INCOME_QTY</name>
+          <lookup>INCOME_QTY</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>ADDRESS_LINE1_DESC</name>
+          <lookup>ADDRESS_LINE1_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>CITY_NAME</name>
+          <lookup>CITY_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>STATE_PROVINCE_NAME</name>
+          <lookup>STATE_PROVINCE_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>POSTAL_CODE</name>
+          <lookup>POSTAL_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>COUNTRY_NAME</name>
+          <lookup>COUNTRY_NAME</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>PHONE_NUMBER</name>
+          <lookup>PHONE_NUMBER</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>EMAIL_ADDRESS_DESC</name>
+          <lookup>EMAIL_ADDRESS_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>CURRENCY_ID</name>
+          <lookup>CURRENCY_ID</lookup>
+          <update>Update</update>
+        </field>
+        <return>
+          <name>CUSTOMER_SK</name>
+          <rename/>
+          <creation_method>tablemax</creation_method>
+          <use_autoinc>N</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1970</min_year>
+      <max_year>2036</max_year>
+      <cache_size>0</cache_size>
+     <cluster_schema/>
+    <GUI>
+      <xloc>683</xloc>
+      <yloc>232</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>DW_ERROR_IND</name>
+    <type>Constant</type>
+    <description>This step adds the Y string constant to the data flow.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>DW_ERROR_IND</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>Y</nullif>
+        <length>1</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+     <cluster_schema/>
+    <GUI>
+      <xloc>473</xloc>
+      <yloc>324</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LIVEOUTLOUD_2_BREADBOARD</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>date_entered</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>date_modified</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>modified_user_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>assigned_user_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>created_by</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>name</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>parent_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>account_type</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>industry</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>annual_revenue</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>phone_fax</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>billing_address_street</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>billing_address_city</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>billing_address_state</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>billing_address_postalcode</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>billing_address_country</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>description</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>rating</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>phone_office</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>phone_alternate</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>email1</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>email2</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>website</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ownership</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>employees</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>sic_code</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ticker_symbol</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>shipping_address_street</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>shipping_address_city</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>shipping_address_state</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>shipping_address_postalcode</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>shipping_address_country</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>deleted</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>main_service_contract_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>is_supplier</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>balance</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>balance_payable</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>currency_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>exchange_rate</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>credit_limit</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>purchase_credit_limit</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>credit_limit_usd</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>purchase_credit_limit_usd</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>default_terms</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>default_purchase_terms</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>default_discount_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>default_purchase_discount_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>default_shipper_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>default_purchase_shipper_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>tax_information</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>partner</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>partner_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>invalid_email</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>email_opt_out</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>temperature</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>associate</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>coach_type_1</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>coach_id_1</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>coach_type_2</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>coach_id_2</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>coach_type_3</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>coach_id_3</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>coach_type_4</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>coach_id_4</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>coach_type_5</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>coach_id_5</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>primary_contact_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>first_invoice_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>last_invoice_id</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>hh_worth</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>hh_income</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>sof_x_cdbjoi</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>sof_clientid</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>sof_acx_custid</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <remove>        <name>date_modified</name>
+      </remove>      <remove>        <name>modified_user_id</name>
+      </remove>      <remove>        <name>assigned_user_id</name>
+      </remove>      <remove>        <name>created_by</name>
+      </remove>      <remove>        <name>parent_id</name>
+      </remove>      <remove>        <name>industry</name>
+      </remove>      <remove>        <name>phone_fax</name>
+      </remove>      <remove>        <name>description</name>
+      </remove>      <remove>        <name>rating</name>
+      </remove>      <remove>        <name>phone_alternate</name>
+      </remove>      <remove>        <name>email2</name>
+      </remove>      <remove>        <name>website</name>
+      </remove>      <remove>        <name>ownership</name>
+      </remove>      <remove>        <name>employees</name>
+      </remove>      <remove>        <name>sic_code</name>
+      </remove>      <remove>        <name>ticker_symbol</name>
+      </remove>      <remove>        <name>shipping_address_street</name>
+      </remove>      <remove>        <name>shipping_address_city</name>
+      </remove>      <remove>        <name>shipping_address_state</name>
+      </remove>      <remove>        <name>shipping_address_postalcode</name>
+      </remove>      <remove>        <name>shipping_address_country</name>
+      </remove>      <remove>        <name>deleted</name>
+      </remove>      <remove>        <name>main_service_contract_id</name>
+      </remove>      <remove>        <name>is_supplier</name>
+      </remove>      <remove>        <name>balance</name>
+      </remove>      <remove>        <name>balance_payable</name>
+      </remove>      <remove>        <name>exchange_rate</name>
+      </remove>      <remove>        <name>credit_limit</name>
+      </remove>      <remove>        <name>purchase_credit_limit</name>
+      </remove>      <remove>        <name>credit_limit_usd</name>
+      </remove>      <remove>        <name>purchase_credit_limit_usd</name>
+      </remove>      <remove>        <name>default_terms</name>
+      </remove>      <remove>        <name>default_purchase_terms</name>
+      </remove>      <remove>        <name>default_discount_id</name>
+      </remove>      <remove>        <name>default_purchase_discount_id</name>
+      </remove>      <remove>        <name>default_shipper_id</name>
+      </remove>      <remove>        <name>default_purchase_shipper_id</name>
+      </remove>      <remove>        <name>tax_information</name>
+      </remove>      <remove>        <name>partner</name>
+      </remove>      <remove>        <name>partner_id</name>
+      </remove>      <remove>        <name>invalid_email</name>
+      </remove>      <remove>        <name>email_opt_out</name>
+      </remove>      <remove>        <name>temperature</name>
+      </remove>      <remove>        <name>associate</name>
+      </remove>      <remove>        <name>coach_type_1</name>
+      </remove>      <remove>        <name>coach_id_1</name>
+      </remove>      <remove>        <name>coach_type_2</name>
+      </remove>      <remove>        <name>coach_id_2</name>
+      </remove>      <remove>        <name>coach_type_3</name>
+      </remove>      <remove>        <name>coach_id_3</name>
+      </remove>      <remove>        <name>coach_type_4</name>
+      </remove>      <remove>        <name>coach_id_4</name>
+      </remove>      <remove>        <name>coach_type_5</name>
+      </remove>      <remove>        <name>coach_id_5</name>
+      </remove>      <remove>        <name>primary_contact_id</name>
+      </remove>      <remove>        <name>first_invoice_id</name>
+      </remove>      <remove>        <name>last_invoice_id</name>
+      </remove>      <remove>        <name>hh_worth</name>
+      </remove>      <remove>        <name>hh_income</name>
+      </remove>      <remove>        <name>sof_x_cdbjoi</name>
+      </remove>      <remove>        <name>sof_clientid</name>
+      </remove>      <remove>        <name>sof_acx_custid</name>
+      </remove>      <meta>        <name>id</name>
+        <rename>CUSTOMER_ID</rename>
+        <type>-</type>
+        <length>36</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>date_entered</name>
+        <rename>ADD_DATE</rename>
+        <type>-</type>
+        <length>-2</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>name</name>
+        <rename>CUSTOMER_NAME</rename>
+        <type>-</type>
+        <length>150</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>account_type</name>
+        <rename>CUSTOMER_TYPE_NAME</rename>
+        <type>-</type>
+        <length>25</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>annual_revenue</name>
+        <rename>INCOME_QTY</rename>
+        <type>-</type>
+        <length>25</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>phone_office</name>
+        <rename>PHONE_NUMBER</rename>
+        <type>-</type>
+        <length>25</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>billing_address_street</name>
+        <rename>ADDRESS_LINE1_DESC</rename>
+        <type>-</type>
+        <length>150</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>billing_address_city</name>
+        <rename>CITY_NAME</rename>
+        <type>-</type>
+        <length>100</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>billing_address_state</name>
+        <rename>STATE_PROVINCE_NAME</rename>
+        <type>-</type>
+        <length>100</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>billing_address_postalcode</name>
+        <rename>POSTAL_CODE</rename>
+        <type>-</type>
+        <length>20</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>billing_address_country</name>
+        <rename>COUNTRY_NAME</rename>
+        <type>-</type>
+        <length>100</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>email1</name>
+        <rename>EMAIL_ADDRESS_DESC</rename>
+        <type>-</type>
+        <length>100</length>
+        <precision>-2</precision>
+      </meta>      <meta>        <name>currency_id</name>
+        <rename>CURRENCY_ID</rename>
+        <type>-</type>
+        <length>36</length>
+        <precision>-2</precision>
+      </meta>    </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>219</xloc>
+      <yloc>231</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>ROUTE_ROWS_WITH_ERRORS</name>
+    <type>FilterRows</type>
+    <description>This step routes rows with error conditions (as defined by the client) back to the stage table flagged as an error.  The current error logic is basic and is designed to be extended to meet the needs of individual customers.  Rows without errors proceed to the target table as inserts or updates, they are subsequently removed from the stage table.</description>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+<send_true_to>ADD_CONSTANTS</send_true_to>
+<send_false_to>DW_ERROR_IND</send_false_to>
+    <compare>
+<condition>
+ <negated>N</negated>
+ <leftvalue>CUSTOMER_NAME</leftvalue>
+ <function>IS NOT NULL</function>
+ <rightvalue/>
+ </condition>
+    </compare>
+     <cluster_schema/>
+    <GUI>
+      <xloc>395</xloc>
+      <yloc>231</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_CUSTOMER</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>liveoutloud_source_test</connection>
+    <sql>SELECT
+  id
+, date_entered
+, date_modified
+, modified_user_id
+, assigned_user_id
+, created_by
+, name
+, parent_id
+, account_type
+, industry
+, annual_revenue
+, phone_fax
+, billing_address_street
+, billing_address_city
+, billing_address_state
+, billing_address_postalcode
+, billing_address_country
+, description
+, rating
+, phone_office
+, phone_alternate
+, email1
+, email2
+, website
+, ownership
+, employees
+, sic_code
+, ticker_symbol
+, shipping_address_street
+, shipping_address_city
+, shipping_address_state
+, shipping_address_postalcode
+, shipping_address_country
+, deleted
+, main_service_contract_id
+, is_supplier
+, balance
+, balance_payable
+, currency_id
+, exchange_rate
+, credit_limit
+, purchase_credit_limit
+, credit_limit_usd
+, purchase_credit_limit_usd
+, default_terms
+, default_purchase_terms
+, default_discount_id
+, default_purchase_discount_id
+, default_shipper_id
+, default_purchase_shipper_id
+, tax_information
+, partner
+, partner_id
+, invalid_email
+, email_opt_out
+, temperature
+, associate
+, coach_type_1
+, coach_id_1
+, coach_type_2
+, coach_id_2
+, coach_type_3
+, coach_id_3
+, coach_type_4
+, coach_id_4
+, coach_type_5
+, coach_id_5
+, primary_contact_id
+, first_invoice_id
+, last_invoice_id
+, hh_worth
+, hh_income
+, sof_x_cdbjoi
+, sof_clientid
+, sof_acx_custid
+FROM accounts
+LIMIT 10</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>57</xloc>
+      <yloc>231</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_CUSTOMER_delete</name>
+    <type>Delete</type>
+    <description>This step removes rows from the stage table that have been loaded into the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>breadboardbi_mysql5</connection>
+    <commit>0</commit>
+    <lookup>
+      <schema/>
+      <table>STAGE_CUSTOMER</table>
+      <key>
+    <use_batch>N</use_batch>
+        <name>CUSTOMER_ID</name>
+        <field>CUSTOMER_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+    <use_batch>N</use_batch>
+        <name>CUSTOMER_SETID</name>
+        <field>CUSTOMER_SETID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+    <use_batch>N</use_batch>
+        <name>SOURCE_SYSTEM_ID</name>
+        <field>SOURCE_SYSTEM_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      </lookup>
+     <cluster_schema/>
+    <GUI>
+      <xloc>829</xloc>
+      <yloc>232</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_CUSTOMER_errors</name>
+    <type>Update</type>
+    <description>This step updates rows in the stage table with an error flag.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>breadboardbi_mysql5</connection>
+    <commit>0</commit>
+    <error_ignored>N</error_ignored>
+    <ignore_flag_field/>
+    <lookup>
+      <schema/>
+      <table>STAGE_CUSTOMER</table>
+      <key>
+        <name>CUSTOMER_ID</name>
+        <field>CUSTOMER_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>CUSTOMER_SETID</name>
+        <field>CUSTOMER_SETID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>SOURCE_SYSTEM_ID</name>
+        <field>SOURCE_SYSTEM_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>CUSTOMER_ID</name>
+        <rename>CUSTOMER_ID</rename>
+        </value>
+      <value>
+        <name>CUSTOMER_SETID</name>
+        <rename>CUSTOMER_SETID</rename>
+        </value>
+      <value>
+        <name>SOURCE_SYSTEM_ID</name>
+        <rename>SOURCE_SYSTEM_ID</rename>
+        </value>
+      <value>
+        <name>DW_ERROR_IND</name>
+        <rename>DW_ERROR_IND</rename>
+        </value>
+      </lookup>
+     <cluster_schema/>
+    <GUI>
+      <xloc>545</xloc>
+      <yloc>411</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+</transformation>

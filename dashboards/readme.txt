@@ -1,0 +1,4 @@
+Place the .jsp file(s) on the Pentaho server in the path <pentaho_server_root>/jboss/server/default/deploy/pentaho.war/
+Add the contents of the classes folder to the classes folder on the Pentaho server in the path <pentaho_server_root>/jboss/server/default/deploy/pentaho.war/WEB-INF/classes/
+Add the contents of the js folder to the js folder on the Pentaho server in the path <pentaho_server_root>/jboss/server/default/deploy/pentaho.war/js/
+Add the contents of the images folder to the images folder on the Pentaho server in the path <pentaho_server_root>/jboss/server/default/deploy/pentaho.war/images/

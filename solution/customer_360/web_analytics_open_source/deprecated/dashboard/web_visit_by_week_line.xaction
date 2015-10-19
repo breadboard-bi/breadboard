@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>Web Visits by Week</title>
+  <version>2</version>
+  <logging-level/>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Returns metrics for web visits grouped by week.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>
+
+  <inputs> 
+    <WEEK_OF_YEAR type="string"> 
+      <sources> 
+        <request>WEEK_OF_YEAR</request> 
+      </sources> 
+    </WEEK_OF_YEAR> 
+  </inputs>
+
+  <outputs> 
+    <swresult type="result-set"/> 
+  </outputs>
+
+  <resources/>
+  
+  <actions> 
+    <actions> 
+      <action-definition> 
+        <component-name>SQLLookupRule</component-name>
+        <action-type>Web Visit SQL Query with Date Filter</action-type>
+        <action-inputs> 
+          <WEEK_OF_YEAR type="string"/> 
+        </action-inputs>
+        <action-outputs> 
+          <query-result type="result-set" mapping="swresult"/> 
+        </action-outputs>
+        <component-definition> 
+          <query><![CDATA[SELECT MAX(D.DAY_NAME) AS Day, 
+          SUM(F.WEB_VISIT_QTY) AS "Unique Visits", 
+SUM(F.WEB_PAGE_VIEW_QTY) AS "Page Views"
+FROM FACT_WEB_SITE_VISIT F, DIMENSION_DAY D
+WHERE F.VISIT_DATE_SK = D.DATE_SK
+AND D.WEEK_SK = '{WEEK_OF_YEAR}'
+GROUP BY D.DATE_SK
+ORDER BY D.DATE_SK ASC]]></query>  
+          <jndi>mdw_mysql</jndi>  
+          <live>false</live> 
+        </component-definition> 
+      </action-definition>
+ 
+    </actions>
+ 
+  </actions> 
+</action-sequence>

@@ -1,0 +1,768 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>STAGE_WEB_SERVER_REQUEST_IIS</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input>WEB_SERVER_LOG_FILE</input>
+      <output>STAGE_WEB_REQUEST</output>
+      <update/>
+      <rejected/>
+      <connection/>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>Y</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2007&#47;03&#47;30 16:15:31.000</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>12</xloc>
+      <yloc>298</yloc>
+      <width>546</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI, LLC.  All rights reserved.</note>
+      <xloc>11</xloc>
+      <yloc>382</yloc>
+      <width>294</width>
+      <heigth>23</heigth>
+    </notepad>
+    <notepad>
+      <note>Breadboard BI - Marketing - Stage Web Server Log - Version 2.0
+=======================================
+1.  This data flow stages web server log file data into a stage table.
+2.  The text file input step is designed for IIS log files.  Changes to this step will be required
+      depending on the format of your web log file.  Please share your changed step with the project.</note>
+      <xloc>12</xloc>
+      <yloc>16</yloc>
+      <width>489</width>
+      <heigth>75</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>jde</name>
+    <server>test</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>rds</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>rds</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>WEB_SERVER_LOG_FILE</from><to>FILTER_EMPTY_ROWS</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_CREATE_LONG_IP</from><to>MAP_DETECT_ROBOTS</to><enabled>Y</enabled> </hop>  <hop> <from>PARSE_DATE_TIME</from><to>MAP_CREATE_LONG_IP</to><enabled>Y</enabled> </hop>  <hop> <from>FILTER_EMPTY_ROWS</from><to>CLEANSE_AND_PARSE_COLUMNS</to><enabled>Y</enabled> </hop>  <hop> <from>CLEANSE_AND_PARSE_COLUMNS</from><to>DETERMINE_SOURCE_AND_CLIENT</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_DETECT_ROBOTS</from><to>REMOVE_COLUMNS</to><enabled>Y</enabled> </hop>  <hop> <from>REMOVE_COLUMNS</from><to>STAGE_WEB_REQUEST</to><enabled>Y</enabled> </hop>  <hop> <from>DETERMINE_SOURCE_AND_CLIENT</from><to>PARSE_DATE_TIME</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>CLEANSE_AND_PARSE_COLUMNS</name>
+    <type>ScriptValue</type>
+    <description>This Java Script Value step cleanses and parses several columns.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <script>var v_content_string = &quot;&quot;+WEB_BROWSER_OS.getString();
+var WEB_BROWSER_OS_DESC= &quot;&quot;;
+var v_request_date = DATE + &quot;:&quot; + TIME;
+var URL_PARAMS_DESC = URL_PARAMS.getString();
+var WEB_FILE_NAME = WEB_FILE.getString();
+
+WEB_BROWSER_OS_DESC = v_content_string.replace( &#47;\+&#47;g,&quot; &quot;);
+
+if (URL_PARAMS_DESC.indexOf(&quot;NULL&quot;) &gt;= 0)
+{URL_PARAMS_DESC = &quot;&quot;;}
+
+else
+{URL_PARAMS_DESC = &quot;?&quot; + URL_PARAMS_DESC;
+WEB_FILE_NAME = WEB_FILE_NAME + URL_PARAMS_DESC;
+}</script>
+    <fields>      <field>        <name>v_request_date</name>
+        <rename>v_request_date</rename>
+        <type>String</type>
+        <length>19</length>
+        <precision>0</precision>
+        </field>      <field>        <name>URL_PARAMS_DESC</name>
+        <rename>URL_PARAMS_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>WEB_FILE_NAME</name>
+        <rename>WEB_FILE_NAME</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>WEB_BROWSER_OS_DESC</name>
+        <rename>WEB_BROWSER_OS_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        </field>      </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>208</xloc>
+      <yloc>148</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>DETERMINE_SOURCE_AND_CLIENT</name>
+    <type>ScriptValue</type>
+    <description>This Java Script Value step determines the source system identifier based on the log file name.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <script>var v_source_file_name = SOURCE_FILE_NAME.getString();
+var SOURCE_SYSTEM_ID;
+
+if (v_source_file_name.indexOf(&quot;ex&quot;) &gt;= 0)
+&#47;&#47; If above conditions met then
+{
+SOURCE_SYSTEM_ID = &apos;10&apos;;
+HOSTED_CLIENT_SK = 1;
+}
+else
+{
+SOURCE_SYSTEM_ID = &apos;1&apos;;
+HOSTED_CLIENT_SK = 0;
+}</script>
+    <fields>      <field>        <name>SOURCE_SYSTEM_ID</name>
+        <rename>SOURCE_SYSTEM_ID</rename>
+        <type>String</type>
+        <length>32</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>HOSTED_CLIENT_SK</name>
+        <rename>HOSTED_CLIENT_SK</rename>
+        <type>Number</type>
+        <length>10</length>
+        <precision>-1</precision>
+        </field>      </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>291</xloc>
+      <yloc>223</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>FILTER_EMPTY_ROWS</name>
+    <type>FilterRows</type>
+    <description>This filter transformation removes rows from the data flow that do not have a valid request date.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+<send_true_to/>
+<send_false_to/>
+    <compare>
+<condition>
+ <negated>N</negated>
+ <leftvalue>DATE</leftvalue>
+ <function>IS NOT NULL</function>
+ <rightvalue/>
+ </condition>
+    </compare>
+     <cluster_schema/>
+    <GUI>
+      <xloc>136</xloc>
+      <yloc>223</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_CREATE_LONG_IP</name>
+    <type>Mapping</type>
+    <description>This mapping step includes a Java Script Value step that creates a long IP address.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CREATE_LONG_IP</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>IP_ADDRESS_DESC</field>  <mapping>IP_ADDRESS_DESC</mapping></connector>
+    </input>
+  <output>
+    <connector><field>IP_ADDRESS_DESC</field>  <mapping>IP_ADDRESS_DESC</mapping></connector>
+    <connector><field>LONG_IP_NUMBER</field>  <mapping>LONG_IP_NUMBER</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>471</xloc>
+      <yloc>223</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_DETECT_ROBOTS</name>
+    <type>Mapping</type>
+    <description>This mapping step includes a Java Script Value step that detects if a visitor is a robot&#47;crawler&#47;spider.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_DETECT_ROBOTS</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>WEB_BROWSER_OS_DESC</field>  <mapping>WEB_BROWSER_OS_DESC</mapping></connector>
+    </input>
+  <output>
+    <connector><field>ROBOT_PAGE_VIEW_QTY</field>  <mapping>ROBOT_PAGE_VIEW_QTY</mapping></connector>
+    <connector><field>WEB_BROWSER_OS_DESC</field>  <mapping>WEB_BROWSER_OS_DESC</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>569</xloc>
+      <yloc>131</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PARSE_DATE_TIME</name>
+    <type>ScriptValue</type>
+    <description>This Java Script Value parses date values from a date.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <script>var REQUEST_DATE = v_request_date.Clone().str2dat(&quot;yyyy-MM-dd:HH:mm:ss&quot;);
+var REQUEST_DATE_SK =  REQUEST_DATE.Clone().dat2str(&quot;yyyyMMdd&quot;).getInteger();
+var REQUEST_TIME_ID =  REQUEST_DATE.Clone().dat2str(&quot;HHmm&quot;);
+var HOUR_24_QTY =  REQUEST_DATE.Clone().dat2str(&quot;HH&quot;);
+var MINUTE_QTY =  REQUEST_DATE.Clone().dat2str(&quot;mm&quot;);
+
+
+&#47;&#47; REQUEST_DATE.getString();2006-12-11
+&#47;&#47; REQUEST_TIME.getString();00:10:12</script>
+    <fields>      <field>        <name>REQUEST_DATE</name>
+        <rename>REQUEST_DATE</rename>
+        <type>Date</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>REQUEST_DATE_SK</name>
+        <rename>REQUEST_DATE_SK</rename>
+        <type>Integer</type>
+        <length>8</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>HOUR_24_QTY</name>
+        <rename>HOUR_24_QTY</rename>
+        <type>Number</type>
+        <length>2</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>MINUTE_QTY</name>
+        <rename>MINUTE_QTY</rename>
+        <type>Number</type>
+        <length>2</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>REQUEST_TIME_ID</name>
+        <rename>REQUEST_TIME_ID</rename>
+        <type>String</type>
+        <length>10</length>
+        <precision>-1</precision>
+        </field>      </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>382</xloc>
+      <yloc>149</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>REMOVE_COLUMNS</name>
+    <type>SelectValues</type>
+    <description>This Select Values step removes fields not used in the target table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>IP_ADDRESS_DESC</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SERVER_PORT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>REFERER_URL_DESC</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WEB_BROWSER_OS_DESC</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>v_request_date</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>REQUEST_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>REQUEST_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>REQUEST_TIME_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>REQUEST_CAT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WEB_FILE_NAME</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>LONG_IP_NUMBER</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>HOUR_24_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ROBOT_PAGE_VIEW_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SOURCE_SYSTEM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>URL_PARAMS_DESC</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>HOSTED_CLIENT_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>URL_PARAMS</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WEB_FILE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WEB_BROWSER_OS</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <remove>        <name>v_request_date</name>
+      </remove>      <remove>        <name>SERVER_PORT</name>
+      </remove>      <remove>        <name>URL_PARAMS</name>
+      </remove>      <remove>        <name>WEB_FILE</name>
+      </remove>      <remove>        <name>WEB_BROWSER_OS</name>
+      </remove>    </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>649</xloc>
+      <yloc>226</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_WEB_REQUEST</name>
+    <type>TableOutput</type>
+    <description>This table output step truncates and inserts rows to the target table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <schema/>
+    <table>STAGE_WEB_REQUEST</table>
+    <commit>100</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+     <cluster_schema/>
+    <GUI>
+      <xloc>751</xloc>
+      <yloc>134</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>WEB_SERVER_LOG_FILE</name>
+    <type>TextFileInput</type>
+    <description>This text file input step is designed for the IIS web server log file.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <accept_filenames>N</accept_filenames>
+    <accept_field/>
+    <accept_stepname/>
+    <separator> </separator>
+    <enclosure>&quot;</enclosure>
+    <enclosure_breaks>Y</enclosure_breaks>
+    <escapechar/>
+    <header>Y</header>
+    <nr_headerlines>8</nr_headerlines>
+    <footer>N</footer>
+    <nr_footerlines>1</nr_footerlines>
+    <line_wrapped>N</line_wrapped>
+    <nr_wraps>1</nr_wraps>
+    <layout_paged>N</layout_paged>
+    <nr_lines_per_page>80</nr_lines_per_page>
+    <nr_lines_doc_header>0</nr_lines_doc_header>
+    <noempty>Y</noempty>
+    <include>Y</include>
+    <include_field>SOURCE_FILE_NAME</include_field>
+    <rownum>N</rownum>
+    <rownumByFile>N</rownumByFile>
+    <rownum_field/>
+    <format>Unix</format>
+    <encoding/>
+    <file>
+      <name>D:\kettle\source_files\ex061211.log</name>
+      <filemask/>
+      <file_required>N</file_required>
+      <name>D:\kettle\source_files\ex061212.log</name>
+      <filemask/>
+      <file_required>N</file_required>
+      <type>CSV</type>
+      <compression>None</compression>
+    </file>
+    <filters>
+      <filter>
+        <filter_string>Base64: Iw==</filter_string>        <filter_position>0</filter_position>        <filter_is_last_line>N</filter_is_last_line>      </filter>
+    </filters>
+    <fields>
+      <field>
+        <name>DATE</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>10</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>TIME</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>8</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>SITE_NAME</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>60</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>REQUEST_CAT</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>32</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>WEB_FILE</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>2000</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>URL_PARAMS</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>-</nullif>
+        <ifnull>NULL</ifnull>
+        <position>-1</position>
+        <length>2000</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>SERVER_PORT</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>32</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>IP_ADDRESS_DESC</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal>.</decimal>
+        <group>,</group>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>255</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>WEB_BROWSER_OS</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>2000</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+      <field>
+        <name>REFERER_URL_DESC</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>-</nullif>
+        <ifnull/>
+        <position>-1</position>
+        <length>2000</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+      </field>
+    </fields>
+    <limit>0</limit>
+    <error_ignored>N</error_ignored>
+    <error_line_skipped>N</error_line_skipped>
+    <error_count_field/>
+    <error_fields_field/>
+    <error_text_field/>
+    <bad_line_files_destination_directory/>
+    <bad_line_files_extension>warning</bad_line_files_extension>
+    <error_line_files_destination_directory/>
+    <error_line_files_extension>error</error_line_files_extension>
+    <line_number_files_destination_directory/>
+    <line_number_files_extension>line</line_number_files_extension>
+    <date_format_lenient>Y</date_format_lenient>
+    <date_format_locale>en_us</date_format_locale>
+     <cluster_schema/>
+    <GUI>
+      <xloc>51</xloc>
+      <yloc>149</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+</transformation>

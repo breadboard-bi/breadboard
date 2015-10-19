@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>Sales Leads by Status</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Return the warehouse receipts by period. It includes dynamic SQL that relies on the following columns &amp; formats from the date dimension: WEEK_NAME, YEAR_QUARTER_NAME, MONTH_SK, YEAR_SK, and DATE_SK. The formats for these columns should be as follows: YYYYQ[1-52], e.g, 1998W37 for WEEK_NAME; YYYYQ[1-4], e.g., 1998Q3 for YEAR_QUARTER_NAME; YYYYMM, e.g., 200509for MONTH_SK; YYYY, e.g., 2001 for YEAR_SK; and YYYYMMDD, e.g., 20061101 for DATE_SK.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <inputs> 
+    <SALES_REPRESENTATIVE_SK type="string"> 
+      <sources> 
+        <request>SALES_REPRESENTATIVE_SK</request> 
+      </sources>  
+      <default-value>1</default-value> 
+    </SALES_REPRESENTATIVE_SK> 
+  </inputs>  
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>  
+  <resources/>  
+  <!-- Define an output called 'rule-result' -->  
+  <!-- This action sequence does not require any external resources -->  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>rule</action-type>  
+      <action-inputs> 
+        <SALES_REPRESENTATIVE_SK type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>  
+      <component-definition> 
+        <!-- Define the datasource for the query -->  
+        <!-- Define the query to execute. Note the parameter {REGION} in the query -->  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT C.COUNTRY_NAME AS "Country",
+SUM(F.SALES_LEAD_AMT) AS "Lead Amount"
+FROM FACT_SALES_LEAD F, DIMENSION_CUSTOMER C
+WHERE F.CUSTOMER_SK = C.CUSTOMER_SK
+AND F.SALES_REPRESENTATIVE_SK = '{SALES_REPRESENTATIVE_SK}'
+GROUP BY C.COUNTRY_NAME
+ORDER BY C.COUNTRY_NAME]]></query> 
+      </component-definition>  
+      <!-- Define a local output called 'rule-result' -->  
+      <!-- Specify the component to execute -->  
+      <!-- Define the settings for the component --> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

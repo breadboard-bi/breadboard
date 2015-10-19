@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>Work Force Snapshot by Period</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Return the employee counts by period.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <inputs> 
+      
+      
+    <TEMPORAL_VALUE type="string"> 
+      <sources> 
+        <request>TEMPORAL_VALUE</request> 
+      </sources> 
+    </TEMPORAL_VALUE> 
+  </inputs>  
+  <outputs> 
+    <swresult type="result-set"/> 
+  </outputs>  
+  <resources/>  
+  <actions> 
+    <actions> 
+        
+      <action-definition> 
+        <component-name>SQLLookupRule</component-name>  
+        <action-type>rule</action-type>  
+        <action-inputs> 
+           
+        </action-inputs>  
+        <action-outputs> 
+          <query-result type="result-set" mapping="swresult"/> 
+        </action-outputs>  
+        <component-definition> 
+          <jndi>mdw_mysql</jndi> 
+        <query><![CDATA[SELECT CAST(D.YEAR_SK AS CHAR(4)) AS Year, 
+COUNT(DISTINCT F.EMPLOYEE_SK) AS Quantity
+FROM DIMENSION_EMPLOYEE_JOB_ACTION F, 
+DIMENSION_JOB_ACTION J, DIMENSION_DAY D
+WHERE F.JOB_ACTION_SK = J.JOB_ACTION_SK
+AND F.JOB_ACTION_DATE_SK = D.DATE_SK
+GROUP BY D.YEAR_SK
+ORDER BY D.YEAR_SK]]></query></component-definition> 
+      </action-definition> 
+    </actions> 
+  </actions> 
+</action-sequence>

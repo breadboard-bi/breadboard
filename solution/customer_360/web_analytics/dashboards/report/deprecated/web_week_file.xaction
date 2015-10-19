@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>Sales_Orders.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level>DEBUG</logging-level>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>%description</description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help>Help</help>  
+    <result-type>rule</result-type> 
+  </documentation>  
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+      
+     
+  <week_sk type="string"><sources><request>week_sk</request></sources></week_sk><web_file_name type="string"><sources><request>web_file_name</request></sources></web_file_name></inputs>  
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>  
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>web_visitor_sample.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>  
+  <actions> 
+      
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>  
+      <action-type>report</action-type>  
+      <action-inputs> 
+        <output-type type="string"/>  
+          
+         
+      <week_sk type="string"/><web_file_name type="string"/></action-inputs>  
+      <action-outputs> 
+        <report type="content"/> 
+      </action-outputs>  
+      <component-definition> 
+        <source>sql</source>  
+          
+          
+          
+          
+          
+        <live>false</live> 
+      <jndi>mdw</jndi><query><![CDATA[SELECT D.DAY_DESC AS REQUEST_DATE,
+V.WEB_VISITOR_SK,
+V.WEB_ORGANIZATION_DESC AS ORGANIZATION_DESC,
+R.REFERER_DESC,
+P.WEB_FILE_NAME,
+(CASE WHEN F.VIEW_SECONDS_QTY = 0 THEN NULL ELSE F.VIEW_SECONDS_QTY END) AS VIEW_SECONDS_QTY
+FROM FACT_WEB_PAGE_VIEW F, 
+DIMENSION_WEB_VISITOR V, 
+DIMENSION_WEB_FILE P, 
+DIMENSION_WEB_SITE_REFERER R, DIMENSION_DAY D
+WHERE F.WEB_VISITOR_SK = V.WEB_VISITOR_SK
+AND  F.REFERER_URL_SK = R.REFERER_URL_SK
+AND F.REQUEST_DATE_SK = D.DATE_SK
+AND P.WEB_FILE_NAME = '{web_file_name}'
+AND F.WEB_FILE_SK = P.WEB_FILE_SK
+AND D.WEEK_SK = '{week_sk}' 
+ORDER BY F.REQUEST_DATE ASC]]></query></component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

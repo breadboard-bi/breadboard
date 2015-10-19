@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job>
+  <name>JOB_BILLING_STAR</name>
+    <description/>
+    <extended_description/>
+    <job_version/>
+    <job_status>0</job_status>
+  <directory>&#47;</directory>
+  <created_user/>
+  <created_date>2007&#47;09&#47;05 09:51:48.000</created_date>
+  <modified_user>admin</modified_user>
+  <modified_date>2007&#47;09&#47;05 09:51:48.000</modified_date>
+  <connection>
+    <name>jde</name>
+    <server>test</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>rds</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>rds</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+    <slaveservers>
+    </slaveservers>
+  <logconnection>mdw_mysql</logconnection>
+  <logtable>ADMIN_JOB_CONTROL</logtable>
+   <use_batchid>Y</use_batchid>
+   <pass_batchid>Y</pass_batchid>
+   <use_logfield>Y</use_logfield>
+   <shared_objects_file/>
+  <entries>
+    <entry>
+      <name>START</name>
+      <description>A job starts to process here.</description>
+      <type>SPECIAL</type>
+      <launch_in_parallel>A job starts to process here.</launch_in_parallel>
+      <start>Y</start>
+      <dummy>N</dummy>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
+      <intervalSeconds>0</intervalSeconds>
+      <intervalMinutes>0</intervalMinutes>
+      <hour>12</hour>
+      <minutes>0</minutes>
+      <weekDay>1</weekDay>
+      <DayOfMonth>1</DayOfMonth>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>42</xloc>
+      <yloc>186</yloc>
+      </entry>
+    <entry>
+      <name>DUMMY</name>
+      <description>A dummy entry.</description>
+      <type>SPECIAL</type>
+      <launch_in_parallel>A dummy entry.</launch_in_parallel>
+      <start>N</start>
+      <dummy>Y</dummy>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
+      <intervalSeconds>0</intervalSeconds>
+      <intervalMinutes>0</intervalMinutes>
+      <hour>12</hour>
+      <minutes>0</minutes>
+      <weekDay>1</weekDay>
+      <DayOfMonth>1</DayOfMonth>
+      <parallel>N</parallel>
+      <draw>N</draw>
+      <nr>0</nr>
+      <xloc>61</xloc>
+      <yloc>79</yloc>
+      </entry>
+    <entry>
+      <name>OK</name>
+      <description>This comparisson is true when no errors have occured.</description>
+      <type>EVAL</type>
+      <launch_in_parallel>This comparisson is true when no errors have occured.</launch_in_parallel>
+      <script>errors == 0</script>
+      <parallel>N</parallel>
+      <draw>N</draw>
+      <nr>0</nr>
+      <xloc>101</xloc>
+      <yloc>0</yloc>
+      </entry>
+    <entry>
+      <name>ERROR</name>
+      <description>This comparisson is true when one or more errors have occured.</description>
+      <type>EVAL</type>
+      <launch_in_parallel>This comparisson is true when one or more errors have occured.</launch_in_parallel>
+      <script>errors != 0</script>
+      <parallel>N</parallel>
+      <draw>N</draw>
+      <nr>0</nr>
+      <xloc>619</xloc>
+      <yloc>319</yloc>
+      </entry>
+    <entry>
+      <name>FACT_BILLING</name>
+      <description/>
+      <type>TRANS</type>
+      <launch_in_parallel/>
+      <filename>${Internal.Job.Filename.Directory}\FACT_BILLING.ktr</filename>
+      <transname/>
+      <directory>&#47;</directory>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>Y</clear_rows>
+      <clear_files>Y</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Error</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>359</xloc>
+      <yloc>187</yloc>
+      </entry>
+    <entry>
+      <name>Success Mail</name>
+      <description/>
+      <type>MAIL</type>
+      <launch_in_parallel/>
+      <server/>
+      <port/>
+      <destination/>
+      <destinationCc/>
+      <destinationBCc/>
+      <replyto/>
+      <subject/>
+      <include_date>Y</include_date>
+      <contact_person/>
+      <contact_phone/>
+      <comment>All dimension jobs have run successfully.</comment>
+      <include_files>Y</include_files>
+      <zip_files>Y</zip_files>
+      <zip_name>success_log.zip</zip_name>
+      <use_auth>N</use_auth>
+      <use_secure_auth>N</use_secure_auth>
+      <auth_user/>
+      <auth_password>Encrypted </auth_password>
+      <only_comment>N</only_comment>
+      <use_HTML>N</use_HTML>
+      <use_Priority>N</use_Priority>
+      <encoding/>
+      <priority/>
+      <importance/>
+      <secureconnectiontype/>
+      <filetypes>        <filetype>GENERAL</filetype>
+        <filetype>LOG</filetype>
+        <filetype>ERRORLINE</filetype>
+        <filetype>ERROR</filetype>
+        <filetype>WARNING</filetype>
+      </filetypes>      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>703</xloc>
+      <yloc>166</yloc>
+      </entry>
+    <entry>
+      <name>Failure Mail</name>
+      <description/>
+      <type>MAIL</type>
+      <launch_in_parallel/>
+      <server/>
+      <port/>
+      <destination/>
+      <destinationCc/>
+      <destinationBCc/>
+      <replyto/>
+      <subject/>
+      <include_date>Y</include_date>
+      <contact_person/>
+      <contact_phone/>
+      <comment>One or more dimension jobs have failed.</comment>
+      <include_files>Y</include_files>
+      <zip_files>Y</zip_files>
+      <zip_name>success_log.zip</zip_name>
+      <use_auth>N</use_auth>
+      <use_secure_auth>N</use_secure_auth>
+      <auth_user/>
+      <auth_password>Encrypted </auth_password>
+      <only_comment>N</only_comment>
+      <use_HTML>N</use_HTML>
+      <use_Priority>N</use_Priority>
+      <encoding/>
+      <priority/>
+      <importance/>
+      <secureconnectiontype/>
+      <filetypes>        <filetype>GENERAL</filetype>
+        <filetype>LOG</filetype>
+        <filetype>ERRORLINE</filetype>
+        <filetype>ERROR</filetype>
+        <filetype>WARNING</filetype>
+      </filetypes>      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>705</xloc>
+      <yloc>234</yloc>
+      </entry>
+    <entry>
+      <name>JOB_DIMENSIONS_BILLING</name>
+      <description>Job</description>
+      <type>JOB</type>
+      <launch_in_parallel>Job</launch_in_parallel>
+      <filename>${Internal.Job.Filename.Directory}\JOB_DIMENSIONS_BILLING.kjb</filename>
+      <jobname>JOB_DIMENSIONS_BILLING</jobname>
+      <directory>&#47;</directory>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Nothing</loglevel>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>196</xloc>
+      <yloc>187</yloc>
+      </entry>
+  </entries>
+  <hops>
+    <hop>
+      <from>FACT_BILLING</from>
+      <to>Failure Mail</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>FACT_BILLING</from>
+      <to>Success Mail</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>START</from>
+      <to>JOB_DIMENSIONS_BILLING</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>JOB_DIMENSIONS_BILLING</from>
+      <to>FACT_BILLING</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+  </hops>
+  <notepads>
+    <notepad>
+      <note>Breadboard BI - Billing Star Job
+=========================
+1.  This is a sample job that loads the Billing dimension and fact tables.  It is a sample 
+      that will be greatly modified for each implementation.
+
+2.  Dimensions not used by a particular client must be removed from this job.
+
+3.  Email messages based on the success or failure of one or more job entries should be built according 
+     to individual customer needs.</note>
+      <xloc>196</xloc>
+      <yloc>11</yloc>
+      <width>521</width>
+      <heigth>122</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>21</xloc>
+      <yloc>269</yloc>
+      <width>652</width>
+      <heigth>74</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2008 Breadboard BI, Inc. All rights reserved.</note>
+      <xloc>293</xloc>
+      <yloc>375</yloc>
+      <width>287</width>
+      <heigth>22</heigth>
+    </notepad>
+  </notepads>
+</job>

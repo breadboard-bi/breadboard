@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>FACT_WEB_SITE_REFERER</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <rejected/>
+      <connection>mdw_mysql</connection>
+      <table>admin_transformation_control</table>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>Y</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+  <modified_user/>
+  <modified_date>2007&#47;06&#47;09 09:32:02.433</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Breadboard BI - Customer 360 - Dimension Web Site Referer Data Flow - Version 1.2
+===================================================
+1.  This data flow aggregates web site visitor page view information to the external referral level.
+
+2.   If performance suffers, the insert&#47;update step could be replaced with an insert step (use incremental load logic to ensure inserts).</note>
+      <xloc>6</xloc>
+      <yloc>9</yloc>
+      <width>653</width>
+      <heigth>75</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>15</xloc>
+      <yloc>308</yloc>
+      <width>546</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI, LLC.  All rights reserved. 
+
+This component is free software; you can redistribute it and&#47;or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this data mart; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA</note>
+      <xloc>18</xloc>
+      <yloc>422</yloc>
+      <width>621</width>
+      <heigth>140</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>FACT_WEB_PAGE_VIEW</from><to>FACT_WEB_SITE_REFERER</to><enabled>Y</enabled> </hop>  <hop> <from>Get Transformation Last Start Date</from><to>FACT_WEB_PAGE_VIEW</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>FACT_WEB_PAGE_VIEW</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI web page view grain fact table</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <sql>SELECT
+  V.REQUEST_DATE_SK AS REFERRAL_DATE_SK
+, V.REFERER_URL_SK
+, V.WEB_FILE_SK
+, V.GEO_LOCATION_SK
+, V.WEB_VISITOR_SK
+, 1 AS REFERRAL_QTY
+, SUM(V.WEB_FILE_BYTE_QTY) WEB_FILE_BYTE_QTY
+, SUM(V.WEB_PAGE_VIEW_QTY) WEB_PAGE_VIEW_QTY
+FROM FACT_WEB_PAGE_VIEW V
+JOIN  DIMENSION_WEB_SITE_REFERER R
+ON V.REFERER_URL_SK = R.REFERER_URL_SK
+AND R.EXTERNAL_IND = &apos;Y&apos;
+WHERE DW_LOAD_DATE &gt;= ?
+GROUP BY 
+  V.REQUEST_DATE_SK
+, V.REFERER_URL_SK
+, V.WEB_FILE_SK
+, V.GEO_LOCATION_SK
+, V.WEB_VISITOR_SK</sql>
+    <limit>0</limit>
+    <lookup>Get Transformation Last Start Date</lookup>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>Y</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>71</xloc>
+      <yloc>224</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>FACT_WEB_SITE_REFERER</name>
+    <type>InsertUpdate</type>
+    <description>This update step inserts or updates data into the fact table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <commit>100</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema/>
+      <table>FACT_WEB_SITE_REFERER</table>
+      <key>
+        <name>REFERRAL_DATE_SK</name>
+        <field>REFERRAL_DATE_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>REFERER_URL_SK</name>
+        <field>REFERER_URL_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>WEB_FILE_SK</name>
+        <field>WEB_FILE_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>GEO_LOCATION_SK</name>
+        <field>GEO_LOCATION_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>WEB_VISITOR_SK</name>
+        <field>WEB_VISITOR_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>REFERRAL_DATE_SK</name>
+        <rename>REFERRAL_DATE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>REFERER_URL_SK</name>
+        <rename>REFERER_URL_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WEB_FILE_SK</name>
+        <rename>WEB_FILE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>GEO_LOCATION_SK</name>
+        <rename>GEO_LOCATION_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WEB_VISITOR_SK</name>
+        <rename>WEB_VISITOR_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>REFERRAL_QTY</name>
+        <rename>REFERRAL_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WEB_FILE_BYTE_QTY</name>
+        <rename>WEB_FILE_BYTE_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WEB_PAGE_VIEW_QTY</name>
+        <rename>WEB_PAGE_VIEW_QTY</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+     <cluster_schema/>
+    <GUI>
+      <xloc>281</xloc>
+      <yloc>224</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Get Transformation Last Start Date</name>
+    <type>SystemInfo</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>MAX</name>
+        <type>start date range</type>
+        </field>
+      </fields>
+     <cluster_schema/>
+    <GUI>
+      <xloc>73</xloc>
+      <yloc>127</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+</transformation>

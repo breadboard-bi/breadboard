@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report-spec tool='waqr' tool-version='1.0' template-name='Basic'>
+<report-name><![CDATA[test111]]></report-name>
+<report-desc><![CDATA[あいうえお]]></report-desc>
+<query>
+<mql>
+<domain_type>relational</domain_type>
+<domain_id><![CDATA[breadboard]]></domain_id><model_id><![CDATA[Sales Orders Model]]></model_id>
+<options>
+<disable_distinct>false</disable_distinct>
+</options>
+<selections>
+<selection><view>Calendar Order</view><column>BC_DIMENSION_DAY_MONTH_NAME</column></selection>
+</selections>
+<constraints>
+</constraints>
+<orders>
+</orders>
+</mql>
+</query>
+<field-mapping key="reportheader" value="テストです"/><field-mapping key="reportfooter" value=""/><field-mapping key="pageheader" value=""/><field-mapping key="pagefooter" value=""/><page-format><![CDATA[LETTER]]></page-format>
+<orientation><![CDATA[landscape]]></orientation>
+<use-row-banding><![CDATA[true]]></use-row-banding>
+<row-banding-color><![CDATA[#e7e7e7]]></row-banding-color>
+<use-column-header-background-color><![CDATA[true]]></use-column-header-background-color>
+<column-header-background-color><![CDATA[#000000]]></column-header-background-color>
+<grand-totals-label><![CDATA[Grand Total]]></grand-totals-label>
+<grand-totals-horizontal-alignment><![CDATA[left]]></grand-totals-horizontal-alignment>
+<use-dummy-group-footer-background-color><![CDATA[true]]></use-dummy-group-footer-background-color>
+<dummy-group-footer-background-color><![CDATA[#000000]]></dummy-group-footer-background-color>
+<use-horizontal-gridlines><![CDATA[false]]></use-horizontal-gridlines>
+<use-vertical-gridlines><![CDATA[false]]></use-vertical-gridlines>
+<horizontal-gridlines-color><![CDATA[#c0c0c0]]></horizontal-gridlines-color>
+<vertical-gridlines-color><![CDATA[#c0c0c0]]></vertical-gridlines-color>
+<group-header-font-name><![CDATA[Arial]]></group-header-font-name>
+<group-header-font-style><![CDATA[1]]></group-header-font-style>
+<group-header-font-size><![CDATA[12]]></group-header-font-size>
+<group-header-font-color><![CDATA[black]]></group-header-font-color>
+<group-footer-font-name><![CDATA[Arial]]></group-footer-font-name>
+<group-footer-font-style><![CDATA[1]]></group-footer-font-style>
+<group-footer-font-size><![CDATA[12]]></group-footer-font-size>
+<group-footer-font-color><![CDATA[black]]></group-footer-font-color>
+<column-header-font-name><![CDATA[Arial]]></column-header-font-name>
+<column-header-font-style><![CDATA[0]]></column-header-font-style>
+<column-header-font-size><![CDATA[10]]></column-header-font-size>
+<column-header-font-color><![CDATA[#ffffff]]></column-header-font-color>
+<column-header-gap><![CDATA[1]]></column-header-gap>
+<items-font-name><![CDATA[Arial]]></items-font-name>
+<items-font-style><![CDATA[0]]></items-font-style>
+<items-font-size><![CDATA[8]]></items-font-size>
+<items-font-color><![CDATA[#000000]]></items-font-color>
+<field is-detail="true" name="BC_DIMENSION_DAY_MONTH_NAME" horizontal-alignment="left" expression="none" type="12"/>
+</report-spec>

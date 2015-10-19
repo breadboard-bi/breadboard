@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>Sales_Leads_wPie-html.xaction</name>
+  <title>%title</title>
+  <version>1</version>
+  <logging-level/>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>%description</description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help>Help</help>  
+    <result-type>rule</result-type> 
+  </documentation>
+
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type> 
+  </inputs>
+
+  <outputs>
+    <report type="content">
+      <destinations>
+        <response>content</response>
+      </destinations>
+    </report>
+  </outputs>
+
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>Sales_Leads_wPie.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <action-inputs> 
+        <output-type type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <report type="content"/> 
+      </action-outputs>
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT D.DAY_DATE,
+D.MONTH_NAME,
+D.QUARTER_NAME,
+D.YEAR_NUMBER,
+P.PRODUCT_DESC AS PRODUCT_NAME,
+P.PRODUCT_BRAND_NAME AS PRODUCT_BRAND, 
+C.CUSTOMER_NAME,
+C.CUSTOMER_TYPE_DESC AS CUSTOMER_TYPE,
+C.CITY_NAME,
+C.STATE_PROVINCE_NAME,
+C.POSTAL_CODE,
+C.COUNTRY_NAME,
+C.PHONE_REGION_CODE AS AREA_CODE,
+M.CAMPAIGN_NAME AS PROMOTION_NAME,
+M.CAMPAIGN_CONTENT_TYPE_NAME AS PROMOTION_TYPE,
+B.BUSINESS_UNIT_TYPE_CODE AS STORE_TYPE,
+B.BUSINESS_UNIT_DESC AS STORE_NAME,
+F.SALES_LEAD_ID,
+F.SALES_LEAD_AMT*F.PRODUCT_QTY AS SALES_LEAD_AMT, 
+F.SALES_LEAD_AMT AS PRICE_AMT,
+F.PRODUCT_QTY
+FROM FACT_SALES_LEAD F, DIMENSION_PRODUCT P, DIMENSION_DAY D, DIMENSION_CUSTOMER C, DIMENSION_CAMPAIGN_WAVE M,DIMENSION_BUSINESS_UNIT B
+WHERE F.ASSIGNED_DATE_SK = D.DATE_SK AND F.PRODUCT_SK = P.PRODUCT_SK 
+AND C.CUSTOMER_SK = F.CUSTOMER_SK AND
+F.CAMPAIGN_WAVE_SK = M.CAMPAIGN_WAVE_SK 
+AND F.BUSINESS_UNIT_SK = B.BUSINESS_UNIT_SK
+AND F.ASSIGNED_DATE_SK = 20060311
+ORDER BY D.QUARTER_NAME, D.DAY_DATE, C.CUSTOMER_NAME, M.CAMPAIGN_NAME]]></query> 
+      </component-definition> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

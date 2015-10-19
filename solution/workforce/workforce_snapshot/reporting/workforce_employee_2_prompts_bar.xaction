@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>web_server_organization_sample_mysql.xaction</name>
+  <title>%title</title>
+  <version>1</version>
+  <logging-level/>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>%description</description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help/>  
+    <result-type>rule</result-type> 
+  </documentation>
+
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <!--          
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+-->  
+    <snapshot_date type="string"> 
+      <sources> 
+        <request>snapshot_date</request> 
+      </sources>  
+      <default-value>20000301</default-value> 
+    </snapshot_date>  
+    <department type="string"> 
+      <sources> 
+        <request>department</request> 
+      </sources>  
+      <default-value>Human Resources</default-value> 
+    </department> 
+  </inputs>
+
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>
+
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>workforce_snapshot_bar.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>
+      <action-type>SQL Query</action-type>
+      <action-outputs> 
+        <department_list type="property-map-list"/> 
+      </action-outputs>
+      <component-definition> 
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT DISTINCT D.DEPARTMENT_NAME 
+FROM DIMENSION_DEPARTMENT D, DIMENSION_EMPLOYEE_JOB_ACTION E 
+WHERE D.DEPARTMENT_SK = E.DEPARTMENT_SK
+AND D.DEPARTMENT_NAME IS NOT NULL 
+ORDER BY D.DEPARTMENT_NAME ASC]]></query> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>SecureFilterComponent</component-name>
+      <action-type>Secure Filter</action-type>
+      <action-inputs> 
+        <snapshot_date type="string"/>  
+        <department type="string"/>  
+        <department_list type="property-map-list"/> 
+      </action-inputs>
+      <component-definition> 
+        <selections> 
+          <snapshot_date filter="none"> 
+            <title>Enter the snapshot date (format YYYYMMDD).</title> 
+          </snapshot_date>  
+          <department style="select"> 
+            <title>Please enter the department for analysis.</title>  
+            <filter value-col-name="department_name" display-col-name="department_name">department_list</filter> 
+          </department> 
+        </selections> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <action-inputs> 
+        <output-type type="string"/>  
+        <snapshot_date type="string"/>  
+        <department type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <report type="content"/> 
+      </action-outputs>
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT MAX(D.DAY_DATE) AS DAY_DATE,
+E.FULL_NAME AS EMPLOYEE_NAME,
+MAX(P.POSITION_NAME) AS POSITION_NAME,
+MAX(F.EMPLOYEE_TYPE_DESC) AS EMPLOYEE_TYPE_NAME,
+MAX(F.FULL_PART_TIME_DESC) AS FULL_PART_TIME_NAME,
+MAX(F.ANNUAL_RATE) AS ANNUAL_RATE,
+MAX(F.WORK_WEEK_HOURS_QTY) AS WORK_WEEK_HOURS_QTY,
+SUM(F.FTE_EQUIVALENT_QTY) AS Quantity,
+SUM(CASE WHEN F.LATEST_ACTION_IND = 'Y' THEN F.FTE_EQUIVALENT_QTY ELSE 0 END) AS FTE_EQUIVALENT_QTY
+FROM DIMENSION_EMPLOYEE_JOB_ACTION F, 
+DIMENSION_PERSON E, 
+DIMENSION_DAY D, 
+DIMENSION_POSITION P,
+DIMENSION_DEPARTMENT C
+WHERE F.EFFECTIVE_DATE_SK = D.DATE_SK
+AND F.EFFECTIVE_DATE_SK >= '{snapshot_date}' AND '{snapshot_date}' < F.EXPIRATION_DATE_SK
+AND F.DEPARTMENT_SK = C.DEPARTMENT_SK
+AND C.DEPARTMENT_NAME IN ('{department}')
+AND F.EMPLOYEE_SK = E.PERSON_SK 
+AND P.POSITION_SK = F.POSITION_SK
+AND F.LATEST_ACTION_IND = 'Y'
+GROUP BY E.FULL_NAME /* change to F.EMPLOYEE_SK for your client */
+ORDER BY MAX(D.DAY_DATE), MAX(E.FULL_NAME)]]></query> 
+      </component-definition> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

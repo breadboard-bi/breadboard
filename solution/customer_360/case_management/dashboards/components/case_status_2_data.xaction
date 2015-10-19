@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <version>1</version>  
+  <title>Regions and departments</title>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Return the variance between headcount actual and budget for every department in the specified region</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <!-- Define an input called 'REGION'. This will be passed in when the user clicks on a slice of the pie chart -->  
+  <inputs/>  
+  <!-- Define an output called 'rule-result' -->  
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>  
+  <!-- This action sequence does not require any external resources -->  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <!-- Define a local input called 'REGION' -->  
+      <action-inputs/>  
+      <!-- Define a local output called 'rule-result' -->  
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>  
+      <!-- Specify the component to execute -->  
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>rule</action-type>  
+      <!-- Define the settings for the component -->  
+      <component-definition> 
+        <!-- Define the datasource for the query -->  
+        <source>sql</source>  
+        <!-- Define the query to execute. Note the parameter {REGION} in the query -->  
+        <query><![CDATA[SELECT C.CASE_STATUS_NAME AS STATUS, COUNT(F.CASE_SK) AS COUNT
+FROM FACT_CASE F, DIMENSION_CASE C
+WHERE F.CASE_SK = C.CASE_SK
+GROUP BY C.CASE_STATUS_NAME
+ORDER BY  COUNT(F.CASE_SK)]]></query>  
+        <jndi>mdw_mysql</jndi> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

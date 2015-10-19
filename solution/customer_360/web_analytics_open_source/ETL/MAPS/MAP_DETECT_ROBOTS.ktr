@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>MAP_DETECT_ROBOTS</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <rejected/>
+      <connection/>
+      <table/>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>N</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+  <modified_user/>
+  <modified_date>2007&#47;09&#47;14 05:28:00.991</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Copyright © 2006 Breadboard BI.  All rights reserved. 
+
+This component is free software; you can redistribute it and&#47;or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this data mart; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA</note>
+      <xloc>48</xloc>
+      <yloc>293</yloc>
+      <width>621</width>
+      <heigth>140</heigth>
+    </notepad>
+    <notepad>
+      <note>This map detect robot&#47;crawler&#47;spider visitors.</note>
+      <xloc>14</xloc>
+      <yloc>20</yloc>
+      <width>228</width>
+      <heigth>23</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port/>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>IN_WEB_BROWSER_OS_DESC</from><to>DETECT_ROBOTS</to><enabled>Y</enabled> </hop>  <hop> <from>DETECT_ROBOTS</from><to>OUT_ROBOT_IND</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>DETECT_ROBOTS</name>
+    <type>ScriptValue</type>
+    <description>This Java Script step detects robot&#47;crawler&#47;spider visitors.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <script>var v_WEB_BROWSER_OS_DESC = WEB_BROWSER_OS_DESC.getString();
+var ROBOT_IND;
+var ROBOT_PAGE_VIEW_QTY;
+
+if (
+v_WEB_BROWSER_OS_DESC.indexOf(&quot;bot.html)&quot;) &gt;= 0 || 
+v_WEB_BROWSER_OS_DESC.indexOf(&quot;&#47;crawlerinfo.html&quot;) &gt;= 0 ||
+v_WEB_BROWSER_OS_DESC.indexOf(&quot;msnbot&quot;) &gt;= 0 ||
+v_WEB_BROWSER_OS_DESC.indexOf(&quot;IRLbot&quot;) &gt;= 0 ||
+v_WEB_BROWSER_OS_DESC.indexOf(&quot;AdsBot-&quot;) &gt;= 0 ||
+v_WEB_BROWSER_OS_DESC.indexOf(&quot;Girafabot&quot;) &gt;= 0 ||
+v_WEB_BROWSER_OS_DESC.indexOf(&quot;slurp&quot;) &gt;= 0
+)
+{
+ROBOT_IND =&apos;Y&apos;;
+ROBOT_PAGE_VIEW_QTY = 1;
+}
+else { 
+ROBOT_IND =&apos;N&apos;;
+ROBOT_PAGE_VIEW_QTY = 0;
+}</script>
+    <fields>      <field>        <name>ROBOT_IND</name>
+        <rename>ROBOT_IND</rename>
+        <type>String</type>
+        <length>1</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>ROBOT_PAGE_VIEW_QTY</name>
+        <rename>ROBOT_PAGE_VIEW_QTY</rename>
+        <type>Number</type>
+        <length>16</length>
+        <precision>2</precision>
+        </field>      </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>309</xloc>
+      <yloc>143</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>IN_WEB_BROWSER_OS_DESC</name>
+    <type>MappingInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>WEB_BROWSER_OS_DESC</name>
+        <type>String</type>
+        <length>255</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+     <cluster_schema/>
+    <GUI>
+      <xloc>159</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>OUT_ROBOT_IND</name>
+    <type>MappingOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>ROBOT_IND</name>
+        <type>String</type>
+        <length>1</length>
+        <precision>-1</precision>
+        <added>Y</added>
+        </field>
+      <field>
+        <name>ROBOT_PAGE_VIEW_QTY</name>
+        <type>Number</type>
+        <length>16</length>
+        <precision>2</precision>
+        <added>Y</added>
+        </field>
+      <field>
+        <name>WEB_BROWSER_OS_DESC</name>
+        <type>String</type>
+        <length>255</length>
+        <precision>-1</precision>
+        <added>Y</added>
+        </field>
+      </fields>
+     <cluster_schema/>
+    <GUI>
+      <xloc>482</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+</transformation>

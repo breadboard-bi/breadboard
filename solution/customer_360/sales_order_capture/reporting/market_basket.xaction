@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">  
+  <name>market_basket.xaction</name>  
+  <version>1</version>  
+  <title>%title</title>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description><![CDATA[%description]]></description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help>MySQL ==== SELECT /* D.YEAR_NUMBER AS YEAR, D.MONTH_NAME AS MONTH, */ P1.PRODUCT_DESC AS PRODUCT1, /* MAX(P1.PRODUCT_CATEGORY) AS PRODUCT1_CATEGORY, */ MAX(P1.PRODUCT_BRAND_NAME) AS PRODUCT1_BRAND, P2.PRODUCT_DESC AS PRODUCT2, /* MAX(P2.PRODUCT_CATEGORY) AS PRODUCT2_CATEGORY, */ MAX(P2.PRODUCT_BRAND_NAME) AS PRODUCT2_BRAND, SUM(F.BASKET_QTY) AS BASKET_QTY, SUM(PRODUCT1_SALES_QTY) AS PRODUCT1_SALES_QTY, SUM(PRODUCT1_SALES_QTY * PRODUCT1_PRICE_AMT) AS PRODUCT1_SALES_AMT, SUM(PRODUCT2_SALES_QTY) AS PRODUCT2_SALES_QTY, SUM(PRODUCT2_SALES_QTY * PRODUCT2_PRICE_AMT) AS PRODUCT2_SALES_AMT FROM FACT_MARKET_BASKET F, DIMENSION_PRODUCT P1, DIMENSION_PRODUCT P2, DIMENSION_DAY D WHERE F.PRODUCT1_SK = P1.PRODUCT_SK AND F.PRODUCT2_SK = P2.PRODUCT_SK AND F.SALE_DATE_SK = D.DATE_SK AND F.PRODUCT2_SK &gt; 0 GROUP BY P1.PRODUCT_DESC, P2.PRODUCT_DESC, /* D.MONTH_NAME, */ D.YEAR_NUMBER ORDER BY SUM(F.BASKET_QTY) DESC LIMIT 5 Oracle ==== SELECT * FROM ( SELECT RANK() OVER(ORDER BY SUM(F.BASKET_QTY) desc) AS BASKET_RANK, --D.YEAR_NUMBER AS YEAR, --D.MONTH_NAME AS MONTH, P1.PRODUCT_DESC AS PRODUCT1, --MAX(P1.PRODUCT_CATEGORY) AS PRODUCT1_CATEGORY, MAX(P1.PRODUCT_BRAND_NAME) AS PRODUCT1_BRAND, P2.PRODUCT_DESC AS PRODUCT2, --MAX(P2.PRODUCT_CATEGORY) AS PRODUCT2_CATEGORY, MAX(P2.PRODUCT_BRAND_NAME) AS PRODUCT2_BRAND, SUM(F.BASKET_QTY) AS BASKET_QTY, SUM(PRODUCT1_SALES_QTY) AS PRODUCT1_SALES_QTY, SUM(PRODUCT1_SALES_QTY * PRODUCT1_PRICE_AMT) AS PRODUCT1_SALES_AMT, SUM(PRODUCT2_SALES_QTY) AS PRODUCT2_SALES_QTY, SUM(PRODUCT2_SALES_QTY * PRODUCT2_PRICE_AMT) AS PRODUCT2_SALES_AMT FROM FACT_MARKET_BASKET F, DIMENSION_PRODUCT P1, DIMENSION_PRODUCT P2, DIMENSION_DAY D WHERE F.PRODUCT1_SK = P1.PRODUCT_SK AND F.PRODUCT2_SK = P2.PRODUCT_SK AND F.SALE_DATE_SK = D.DATE_SK AND F.PRODUCT2_SK &gt; 0 GROUP BY P1.PRODUCT_DESC, P2.PRODUCT_DESC, --D.MONTH_NAME, D.YEAR_NUMBER ) WHERE BASKET_RANK &lt;= 20</help>  
+    <result-type>report</result-type> 
+  </documentation>  
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type> 
+  </inputs>  
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>  
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>market_basket.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>  
+  <actions> 
+    <action-definition> 
+      <action-inputs> 
+        <output-type type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <report type="content"/> 
+      </action-outputs>  
+      <component-name>JFreeReportComponent</component-name>  
+      <action-type>report</action-type>  
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <query><![CDATA[SELECT 
+/* D.YEAR_NUMBER AS YEAR,
+D.MONTH_NAME AS MONTH, */
+P1.PRODUCT_DESC AS PRODUCT1,
+/* MAX(P1.PRODUCT_CATEGORY) AS PRODUCT1_CATEGORY, */
+MAX(P1.PRODUCT_BRAND_NAME) AS PRODUCT1_BRAND,
+P2.PRODUCT_DESC AS PRODUCT2,
+/* MAX(P2.PRODUCT_CATEGORY) AS PRODUCT2_CATEGORY, */
+MAX(P2.PRODUCT_BRAND_NAME) AS PRODUCT2_BRAND,
+SUM(F.BASKET_QTY) AS BASKET_QTY,
+SUM(PRODUCT1_SALES_QTY) AS PRODUCT1_SALES_QTY, 
+SUM(PRODUCT1_SALES_QTY * PRODUCT1_PRICE_AMT) AS PRODUCT1_SALES_AMT,
+SUM(PRODUCT2_SALES_QTY) AS PRODUCT2_SALES_QTY, 
+SUM(PRODUCT2_SALES_QTY * PRODUCT2_PRICE_AMT) AS PRODUCT2_SALES_AMT
+FROM FACT_MARKET_BASKET F,
+DIMENSION_PRODUCT P1,
+DIMENSION_PRODUCT P2,
+DIMENSION_DAY D
+WHERE F.PRODUCT1_SK = P1.PRODUCT_SK AND
+F.PRODUCT2_SK = P2.PRODUCT_SK AND
+F.SALE_DATE_SK = D.DATE_SK AND F.PRODUCT2_SK > 0
+GROUP BY 
+P1.PRODUCT_DESC, P2.PRODUCT_DESC,
+/* D.MONTH_NAME, */
+D.YEAR_NUMBER
+ORDER BY SUM(F.BASKET_QTY) DESC
+LIMIT 20]]></query>  
+        <jndi>mdw_mysql</jndi> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

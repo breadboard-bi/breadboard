@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <version>1</version>  
+  <title>General Ledger Posted Transaction Quarters</title>  
+  <logging-level>debug</logging-level>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Return the general ledger posted transaction amounts by quarter.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <inputs/>  
+  <!-- Define an output called 'rule-result' -->  
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>  
+  <!-- This action sequence does not require any external resources -->  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <action-inputs/>  
+      <!-- Define a local output called 'rule-result' -->  
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>  
+      <!-- Specify the component to execute -->  
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>rule</action-type>  
+      <!-- Define the settings for the component -->  
+      <component-definition> 
+        <!-- Define the datasource for the query -->  
+        <!-- Define the query to execute. Note the parameter {REGION} in the query -->  
+        <query><![CDATA[SELECT D.YEAR_QUARTER_NAME AS YEAR_QUARTER,SUM(ABS(F.BASE_AMT)) AS "Base Amount"
+FROM FACT_GL_POSTED_TRANSACTION F, DIMENSION_DAY D
+WHERE F.TRXN_DATE_SK = D.DATE_SK
+GROUP BY D.YEAR_QUARTER_NAME
+ORDER BY D.YEAR_QUARTER_NAME]]></query>
+        <jndi>mdw</jndi>
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

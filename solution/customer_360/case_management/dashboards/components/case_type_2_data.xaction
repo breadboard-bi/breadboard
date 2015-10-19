@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>Case Types</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description/>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <inputs> 
+    <CATEGORY type="string"> 
+      <sources> 
+        <request>CATEGORY</request> 
+      </sources> 
+    </CATEGORY> 
+  </inputs>  
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>  
+  <resources/>  
+  <!-- Define an input called 'REGION'. This will be passed in when the user clicks on a slice of the pie chart -->  
+  <!-- Define an output called 'rule-result' -->  
+  <!-- This action sequence does not require any external resources -->  
+  <actions> 
+    <action-definition> 
+      <!-- Define a local input called 'REGION' -->  
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>rule</action-type>  
+      <action-inputs/>  
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>  
+      <component-definition> 
+        <!-- Define the datasource for the query -->  
+        <source>sql</source>  
+        <!-- Define the query to execute. Note the parameter {REGION} in the query -->  
+        <query><![CDATA[SELECT C.CASE_TYPE_NAME AS TYPE, COUNT(F.CASE_SK) AS COUNT
+FROM FACT_CASE F, DIMENSION_CASE C
+WHERE F.CASE_SK = C.CASE_SK
+GROUP BY C.CASE_TYPE_NAME
+ORDER BY COUNT(F.CASE_SK)]]></query>  
+        <jndi>mdw_mysql</jndi> 
+      </component-definition>  
+      <!-- Define a local output called 'rule-result' -->  
+      <!-- Specify the component to execute -->  
+      <!-- Define the settings for the component --> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">  
+  <name>keyword_referer_report.xaction</name>
+  <title>%title</title>
+  <version>1</version>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description><![CDATA[%description]]></description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help>Oracle ==== query = "SELECT * FROM (SELECT "; query += "RANK() OVER(ORDER BY SUM(F.REFERRAL_QTY) DESC) AS RANK, "; query += "MAX(D."+select_column_name+ ") AS TEMPORAL_SK, "; query += "MAX(D."+column_name+ ") AS TEMPORAL_VALUE, "; query += "MAX(K.KEYWORD_SK) AS KEYWORD_SK, "; query += "MAX(F.SOURCE_SYSTEM_SK) AS SOURCE_SYSTEM_SK, "; query += "MAX(R.REFERER_URL_SK) AS REFERER_URL_SK, "; query += "R.PARENT_REFERER_DESC, "; query += "K.KEYWORD_DESC, "; query += "SUM(F.REFERRAL_QTY) AS REFERRAL_QTY, "; query += "SUM(F.PAID_VIEW_QTY) as PAID_REFERRAL_QTY, "; query += "SUM(F.ORGANIC_VIEW_QTY) AS ORGANIC_REFERRAL_QTY, "; query += "SUM(F.WEB_PAGE_VIEW_QTY) AS WEB_PAGE_VIEW_QTY, "; query += "SUM(F.VIEW_SECONDS_QTY) AS VIEW_SECONDS_QTY "; query += "FROM FACT_WEB_SITE_REFERER F, DIMENSION_DAY D, DIMENSION_KEYWORD_PHRASE K, "; query += "DIMENSION_WEB_SITE_REFERER R "; query += "WHERE F.REFERRAL_DATE_SK = D.DATE_SK "; query += "AND F.REFERER_URL_SK = R.REFERER_URL_SK "; query += "AND F.KEYWORD_SK = K.KEYWORD_SK "; query += "AND F.KEYWORD_SK &gt; 0 "; query += "AND D."+column_name+ " = '{TEMPORAL_VALUE}' "; query += "AND F.SOURCE_SYSTEM_SK = '{SOURCE_SYSTEM_SK}' "; query += "AND F.HOSTED_CLIENT_SK = '{HOSTED_CLIENT_SK}' "; query += "GROUP BY K.KEYWORD_DESC, R.PARENT_REFERER_DESC) "; query += "WHERE RANK &lt;=16 AND ROWNUM &lt; 16 "; MySQL ==== query = "SELECT MAX(D."+select_column_name+ ") AS TEMPORAL_SK, "; query += "MAX(D."+column_name+ ") AS TEMPORAL_VALUE, "; query += "MAX(K.KEYWORD_SK) AS KEYWORD_SK, "; query += "MAX(F.SOURCE_SYSTEM_SK) AS SOURCE_SYSTEM_SK, "; query += "MAX(R.REFERER_URL_SK) AS REFERER_URL_SK, "; query += "R.PARENT_REFERER_DESC, "; query += "K.KEYWORD_DESC, "; query += "SUM(F.REFERRAL_QTY) AS REFERRAL_QTY, "; query += "SUM(F.PAID_VIEW_QTY) as PAID_REFERRAL_QTY, "; query += "SUM(F.ORGANIC_VIEW_QTY) AS ORGANIC_REFERRAL_QTY, "; query += "SUM(F.WEB_PAGE_VIEW_QTY) AS WEB_PAGE_VIEW_QTY, "; query += "SUM(F.VIEW_SECONDS_QTY) AS VIEW_SECONDS_QTY "; query += "FROM FACT_WEB_SITE_REFERER F, DIMENSION_DAY D, DIMENSION_KEYWORD_PHRASE K, "; query += "DIMENSION_WEB_SITE_REFERER R "; query += "WHERE F.REFERRAL_DATE_SK = D.DATE_SK "; query += "AND F.REFERER_URL_SK = R.REFERER_URL_SK "; query += "AND F.KEYWORD_SK = K.KEYWORD_SK "; query += "AND F.KEYWORD_SK &gt; 0 "; query += "AND D."+column_name+ " = '{TEMPORAL_VALUE}' "; query += "AND F.SOURCE_SYSTEM_SK = '{SOURCE_SYSTEM_SK}' "; query += "AND F.HOSTED_CLIENT_SK = '{HOSTED_CLIENT_SK}' "; query += "GROUP BY K.KEYWORD_DESC, R.PARENT_REFERER_DESC "; query += "ORDER BY SUM(F.REFERRAL_QTY) DESC "; query += "LIMIT 15 ";</help>  
+    <result-type>report</result-type> 
+  </documentation>
+
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <TEMPORAL_VALUE type="string"> 
+      <sources> 
+        <request>TEMPORAL_VALUE</request> 
+      </sources> 
+    </TEMPORAL_VALUE>  
+    <SOURCE_SYSTEM_SK type="string">
+      <sources>
+        <request>SOURCE_SYSTEM_SK</request>
+      </sources>
+      <default-value>6</default-value>
+    </SOURCE_SYSTEM_SK>
+    <HOSTED_CLIENT_SK type="string">
+      <sources>
+        <request>HOSTED_CLIENT_SK</request>
+      </sources>
+      <default-value>0</default-value>
+    </HOSTED_CLIENT_SK>
+  </inputs>
+
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>
+
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>keyword_referer_top_keyword_report.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>JavascriptRule</component-name>
+      <action-type>JavaScript DSQL</action-type>
+      <action-inputs> 
+        <TEMPORAL_VALUE type="string"/>  
+        <HOSTED_CLIENT_SK type="string"/>
+        <SOURCE_SYSTEM_SK type="string"/>
+      </action-inputs>
+      <action-outputs> 
+        <query type="string"/> 
+      </action-outputs>
+      <component-definition> 
+        <script><![CDATA[var temporal_cat = "";
+var column_name = "";
+var select_column_name = "";
+// Only use this logic as a model for drill through reports
+if ('{TEMPORAL_VALUE}'.indexOf("W") >= 0)
+{
+ temporal_cat = "WEEK";
+ column_name = "WEEK_NAME";
+ select_column_name = "WEEK_SK";
+}
+
+else if ('{TEMPORAL_VALUE}'.indexOf("Q") >= 0)
+{
+ temporal_cat = "QUARTER";
+ column_name = "YEAR_QUARTER_NAME";
+ select_column_name = "QUARTER_SK";
+}
+
+else if ('{TEMPORAL_VALUE}'.length == 6)
+{
+ temporal_cat = "MONTH";
+ column_name ="MONTH_SK";
+ select_column_name ="MONTH_SK";
+}
+else if ('{TEMPORAL_VALUE}'.length == 4)
+{
+ temporal_cat = "YEAR";
+ column_name ="YEAR_SK";
+ select_column_name ="YEAR_SK";
+}
+else if ('{TEMPORAL_VALUE}'.length == 8)
+{
+ temporal_cat = "DATE";
+ column_name ="DATE_SK";
+ select_column_name ="DATE_SK";
+}
+
+query = "SELECT  MAX(D."+select_column_name+ ") AS TEMPORAL_SK, ";
+query += "MAX(D."+column_name+ ") AS TEMPORAL_VALUE, ";
+query += "MAX(K.KEYWORD_SK) AS KEYWORD_SK,  ";
+query += "MAX(F.SOURCE_SYSTEM_SK) AS SOURCE_SYSTEM_SK,  ";
+query += "MAX(R.REFERER_URL_SK) AS REFERER_URL_SK,  ";
+query += "R.PARENT_REFERER_DESC,  ";
+query += "K.KEYWORD_DESC,  ";
+query += "SUM(F.REFERRAL_QTY) AS REFERRAL_QTY,  ";
+query += "SUM(F.PAID_VIEW_QTY) as PAID_REFERRAL_QTY,  ";
+query += "SUM(F.ORGANIC_VIEW_QTY) AS ORGANIC_REFERRAL_QTY,  ";
+query += "SUM(F.WEB_PAGE_VIEW_QTY) AS WEB_PAGE_VIEW_QTY,  ";
+query += "SUM(F.VIEW_SECONDS_QTY) AS VIEW_SECONDS_QTY  ";
+query += "FROM FACT_WEB_SITE_REFERER F, DIMENSION_DAY D, DIMENSION_KEYWORD_PHRASE K,   ";
+query += "DIMENSION_WEB_SITE_REFERER R  ";
+query += "WHERE F.REFERRAL_DATE_SK = D.DATE_SK  ";
+query += "AND F.REFERER_URL_SK = R.REFERER_URL_SK  ";
+query += "AND F.KEYWORD_SK = K.KEYWORD_SK  ";
+query += "AND F.KEYWORD_SK > 0  ";
+query += "AND D."+column_name+ " = '{TEMPORAL_VALUE}'  ";
+query += "AND F.SOURCE_SYSTEM_SK =  '{SOURCE_SYSTEM_SK}'  ";
+query += "AND F.HOSTED_CLIENT_SK = '{HOSTED_CLIENT_SK}'  ";
+query += "GROUP BY K.KEYWORD_DESC, R.PARENT_REFERER_DESC  ";
+query += "ORDER BY SUM(F.REFERRAL_QTY) DESC  ";
+query += "LIMIT 15 ";]]></script> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <action-inputs> 
+        <output-type type="string"/>  
+        <query type="string"/>
+      </action-inputs>
+      <action-outputs> 
+        <report-output type="content" mapping="report"/>
+      </action-outputs>
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi> 
+      </component-definition> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

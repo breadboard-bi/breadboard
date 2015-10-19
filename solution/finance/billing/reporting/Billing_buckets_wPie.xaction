@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>Billing_bucket_wPie.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>%description</description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help/>  
+    <result-type>rule</result-type> 
+  </documentation>  
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <min_date type="string"> 
+      <sources> 
+        <request>min_date</request> 
+      </sources>  
+      <default-value>20060301</default-value> 
+    </min_date>  
+    <max_date type="string"> 
+      <sources> 
+        <request>max_date</request> 
+      </sources>  
+      <default-value>20060301</default-value> 
+    </max_date>  
+    <country type="string"> 
+      <sources> 
+        <request>country</request> 
+      </sources>  
+      <default-value>USA</default-value> 
+    </country> 
+  </inputs>  
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>  
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>Billing_buckets_wPie.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>SQL Query</action-type>  
+      <action-outputs> 
+        <country_list type="property-map-list"/> 
+      </action-outputs>  
+      <component-definition> 
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT DISTINCT COUNTRY_NAME 
+FROM DIMENSION_CUSTOMER 
+WHERE COUNTRY_NAME IS NOT NULL 
+ORDER BY COUNTRY_NAME ASC]]></query> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>SecureFilterComponent</component-name>  
+      <action-type>Secure Filter</action-type>  
+      <action-inputs> 
+        <min_date type="string"/>  
+        <max_date type="string"/>  
+        <country type="string"/>  
+        <country_list type="property-map-list"/> 
+      </action-inputs>  
+      <component-definition> 
+        <selections> 
+          <min_date filter="none"> 
+            <title>Enter the minimum date for the order date range (format YYYYMMDD).</title> 
+          </min_date>  
+          <max_date filter="none"> 
+            <title>Enter the maximum date for the order date range (format YYYYMMDD).</title> 
+          </max_date>  
+          <country style="select"> 
+            <title>Please enter the country for analysis.</title>  
+            <filter value-col-name="country_name" display-col-name="country_name">country_list</filter> 
+          </country> 
+        </selections> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>  
+      <action-type>report</action-type>  
+      <action-inputs> 
+        <output-type type="string"/>  
+        <min_date type="string"/>  
+        <country type="string"/>  
+        <max_date type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <report type="content"/> 
+      </action-outputs>  
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT D.DAY_DATE,
+D.MONTH_NAME,
+D.QUARTER_NAME,
+D.YEAR_NUMBER,
+P.PRODUCT_NAME,
+P.PRODUCT_BRAND_NAME AS PRODUCT_BRAND, 
+C.CUSTOMER_NAME,
+C.CUSTOMER_TYPE_DESC AS CUSTOMER_TYPE,
+C.CITY_NAME,
+C.STATE_PROVINCE_NAME,
+C.POSTAL_CODE,
+C.COUNTRY_NAME,
+C.PHONE_REGION_CODE AS AREA_CODE,
+M.FULL_NAME,
+S.BILL_STATUS_NAME,
+B.BUSINESS_UNIT_TYPE_CODE,
+B.BUSINESS_UNIT_NAME,
+F.INVOICE_ID,
+F.TRXN_COST_AMT,
+F.TRXN_CREDIT_AMT,
+F.TRXN_DISCOUNT_AMT,
+F.TRXN_FREIGHT_AMT,
+F.TRXN_GROSS_EXTENDED_AMT,
+F.TRXN_INVOICE_AMT,
+F.TRXN_LIST_AMT,
+F.TRXN_NET_EXTENDED_AMT,
+F.TRXN_REBATE_AMT,
+F.TRXN_SERVICE_FEE_AMT,
+F.TRXN_SURCHARGE_AMT,
+F.TRXN_TAX_AMT,
+F.BILLED_QTY AS UNIT_QTY
+FROM FACT_BILLING F, DIMENSION_PRODUCT P, DIMENSION_DAY D, DIMENSION_CUSTOMER C, 
+DIMENSION_PERSON M,DIMENSION_BUSINESS_UNIT B, DIMENSION_BILL_STATUS S
+WHERE F.INVOICE_DATE_SK = D.DATE_SK 
+AND F.PRODUCT_SK = P.PRODUCT_SK 
+AND C.CUSTOMER_SK = F.CUSTOMER_BILL_TO_SK 
+AND F.SALES_REPRESENTATIVE_SK = M.PERSON_SK 
+AND F.BUSINESS_UNIT_SK = B.BUSINESS_UNIT_SK
+AND F.BILL_STATUS_SK = S.BILL_STATUS_SK
+AND F.INVOICE_DATE_SK BETWEEN '{min_date}' AND '{max_date}' 
+AND C.COUNTRY_NAME IN ('{country}')
+ORDER BY D.DAY_DATE, P.PRODUCT_NAME]]></query> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

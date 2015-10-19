@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">  
+  <name>new_market.xaction</name>
+  <title>%title</title>
+  <version>2</version>
+  <documentation> 
+    <author>Breadboard BI, LLC</author>  
+    <description><![CDATA[%description]]></description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help>This xaction includes a SQL statement with the DBMS specific syntax function. MySQL and Oracle examples are provided. MySQL ==== SELECT R.WEB_FILE_NAME, SUM(F.WEB_PAGE_VIEW_QTY) AS WEB_PAGE_VIEW_QTY FROM FACT_WEB_PAGE_VIEW F, DIMENSION_DAY D, DIMENSION_WEB_FILE R WHERE F.REQUEST_DATE_SK = D.DATE_SK AND F.WEB_FILE_SK = R.WEB_FILE_SK AND D.MONTH_SK = '{MONTH_OF_YEAR}' GROUP BY R.WEB_FILE_NAME ORDER BY SUM(F.WEB_PAGE_VIEW_QTY) DESC LIMIT 15 Oracle ==== SELECT VIEW_RANK, WEB_FILE_NAME, WEB_PAGE_VIEW_QTY AS WEB_PAGE_VIEW_QTY FROM ( SELECT RANK() over(order by SUM(F.WEB_PAGE_VIEW_QTY) desc) as view_rank, R.WEB_FILE_NAME, SUM(F.WEB_PAGE_VIEW_QTY) AS WEB_PAGE_VIEW_QTY FROM FACT_WEB_PAGE_VIEW F, DIMENSION_DAY D, DIMENSION_WEB_FILE R WHERE F.REQUEST_DATE_SK = D.DATE_SK AND F.WEB_FILE_SK = R.WEB_FILE_SK AND D.MONTH_SK = '{MONTH_OF_YEAR}' GROUP BY R.WEB_FILE_NAME) where view_rank &lt; 16 order by view_rank</help>  
+    <result-type>report</result-type> 
+  </documentation>
+
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <MONTH_OF_YEAR type="string"> 
+      <sources> 
+        <request>MONTH_OF_YEAR</request> 
+      </sources> 
+    </MONTH_OF_YEAR> 
+  </inputs>
+
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>
+
+  <resources> 
+    <report-definition> 
+      <solution-file> 
+        <location>web_page_top_dashboard_report.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <action-inputs> 
+        <output-type type="string"/>  
+        <MONTH_OF_YEAR type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <report-output type="content" mapping="report"/>
+      </action-outputs>
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT R.WEB_FILE_NAME, SUM(F.WEB_PAGE_VIEW_QTY) AS WEB_PAGE_VIEW_QTY
+FROM FACT_WEB_PAGE_VIEW F, DIMENSION_DAY D, DIMENSION_WEB_FILE R 
+WHERE F.REQUEST_DATE_SK = D.DATE_SK 
+AND F.WEB_FILE_SK = R.WEB_FILE_SK 
+AND D.MONTH_SK = '{MONTH_OF_YEAR}' 
+GROUP BY R.WEB_FILE_NAME 
+ORDER BY SUM(F.WEB_PAGE_VIEW_QTY) DESC 
+LIMIT 15]]></query> 
+      </component-definition> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

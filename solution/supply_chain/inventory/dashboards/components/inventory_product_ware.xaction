@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <version>1</version>  
+  <title>Warehouse Receipts by Period, Business Unit, Product Category, Warehouse.</title>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Warehouse receipts for a particular period, business unit, and product category, and warehouse. It includes dynamic SQL that relies on the following columns &amp; formats from the date dimension: WEEK_NAME, YEAR_QUARTER_NAME, MONTH_SK, YEAR_SK, and DATE_SK. The formats for these columns should be as follows: YYYYQ[1-52], e.g, 1998W37 for WEEK_NAME; YYYYQ[1-4], e.g., 1998Q3 for YEAR_QUARTER_NAME; YYYYMM, e.g., 200509for MONTH_SK; YYYY, e.g., 2001 for YEAR_SK; and YYYYMMDD, e.g., 20061101 for DATE_SK.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <!-- Define an input called 'REGION'. This will be passed in when the user clicks on a slice of the pie chart -->  
+  <inputs> 
+    <PRODUCT_SK type="string"> 
+      <sources> 
+        <request>PRODUCT_SK</request> 
+      </sources> 
+    </PRODUCT_SK>  
+    <WAREHOUSE_SK type="string"> 
+      <sources> 
+        <request>WAREHOUSE_SK</request> 
+      </sources> 
+    </WAREHOUSE_SK> 
+  </inputs>  
+  <!-- Define an output called 'rule-result' -->  
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>  
+  <!-- This action sequence does not require any external resources -->  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <!-- Define a local input called 'REGION' -->  
+      <action-inputs> 
+        <WAREHOUSE_SK type="string"/>  
+        <PRODUCT_SK type="string"/> 
+      </action-inputs>  
+      <!-- Define a local output called 'rule-result' -->  
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>  
+      <!-- Specify the component to execute -->  
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>rule</action-type>  
+      <!-- Define the settings for the component -->  
+      <component-definition> 
+        <!-- Define the datasource for the query -->  
+        <source>sql</source>  
+        <!-- Define the query to execute. Note the parameter {REGION} in the query -->  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT W.WAREHOUSE_NAME,
+SUM(F.INV_OPEN_QTY) AS "Open Qty",
+SUM(F.INV_RESTRICTED_QTY) AS "Restricted Qty",
+SUM(F.INV_HOLD_QTY) AS "Hold Qty",
+SUM(F.INV_REJECTED_QTY) AS "PO Qty"
+FROM FACT_PHYSICAL_INVENTORY F, DIMENSION_WAREHOUSE W
+WHERE F.WAREHOUSE_SK = W.WAREHOUSE_SK
+AND W.WAREHOUSE_SK =  '{WAREHOUSE_SK}' 
+AND F.PRODUCT_SK =  '{PRODUCT_SK}' 
+GROUP BY W.WAREHOUSE_NAME
+ORDER BY W.WAREHOUSE_NAME]]></query> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

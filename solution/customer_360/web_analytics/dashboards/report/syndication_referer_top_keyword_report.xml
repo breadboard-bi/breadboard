@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+# Copyright 2006 Breadboard BI.  All rights reserved. 
+#
+# Version 1.1
+#
+# This software was developed by Breadboard BI and is provided under license. You may 
+# not use this file except in compliance with the license. This software is distributed 
+# on an AS IS basis, WITHOUT WARRANTY OF ANY KIND, neither express nor implied.
+#
+# Please send bug fixes and enhancement requests to submit@breadboardbi.com
+-->
+<report name="keyword_referer_top_keyword_report" orientation="portrait" pageformat="LETTER" leftmargin="5pt" rightmargin="0pt" topmargin="0" bottommargin="0">
+   <configuration> 
+     <property name="org.jfree.report.modules.output.table.html.BodyFragment">true</property> 
+     <property name="org.jfree.report.modules.output.table.html.ProportionalColumnWidths">true</property> 
+   </configuration>
+  <groups>
+    <group name="dummy">
+      <groupheader repeat="true" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold" height="14">
+        <band name="DummyGroupNoDataBandElement">
+          <label height="10" vertical-alignment="middle" alignment="left" width="500" x="0" y="0">No Data Available</label>
+        </band>
+        <band name="DummyGroupDataBandElement">
+          <rectangle color="#808080" draw="false" fill="true" height="12" width="450" x="0" y="0"/>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="9" height="12" vertical-alignment="middle" alignment="left" width="90" x="0" y="0">Referer</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="9" height="12" vertical-alignment="middle" alignment="left" width="250" x="90" y="0">Content Page</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="9" height="12" vertical-alignment="middle" alignment="left" width="35" x="340" y="0">Total</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="9" height="12" vertical-alignment="middle" alignment="left" width="40" x="375" y="0">Page Views</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="9" height="12" vertical-alignment="middle" alignment="left" width="35" x="415" y="0">Visit Seconds</label>
+        </band>
+      </groupheader>
+      <groupfooter name="dummyGroupFooter" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold">
+      </groupfooter>
+    </group>
+  </groups>
+  <items color="#000000" fontname="SansSerif" fontsize="8" fontstyle="bold">
+    <number-field name="TEMPORAL_KEYElement" fieldname="TEMPORAL_SK" vertical-alignment="middle" alignment="left" width="0" x="0" y="0" height="0"/>
+    <string-field name="TEMPORAL_VALUEElement" fieldname="TEMPORAL_VALUE" vertical-alignment="middle" alignment="left" width="0" x="0" y="0" height="0"/>
+<!--
+    <string-field name="RANKElement" fieldname="RANK" vertical-alignment="left" alignment="left" width="30" x="0" y="0" height="11"/>
+-->
+    <string-field name="PARENT_REFERER_DESCElement" fieldname="PARENT_REFERER_DESC" vertical-alignment="middle" alignment="left" width="90" x="0" y="0" height="11"/>
+    <string-field name="URL-Field" fieldname="REFERER_DOMAIN_DESC" vertical-alignment="middle" alignment="left" width="250" x="90" y="0" height="11"/>
+    <number-field name="REFERRAL_QTYElement" fieldname="REFERER_VIEW_QTY" vertical-alignment="middle" alignment="left" width="35" x="340" y="0" height="11"/>
+    <number-field name="WEB_PAGE_VIEW_QTYElement" fieldname="WEB_PAGE_VIEW_QTY" vertical-alignment="middle" alignment="left" width="40" x="375" y="0" height="11"/>
+    <number-field name="VIEW_SECONDS_QTYElement" fieldname="VIEW_SECONDS_QTY" vertical-alignment="middle" alignment="left" width="35" x="415" y="0" height="11"/>
+  </items>
+  <functions>
+    <expression class="org.jfree.report.function.HideElementIfDataAvailableExpression" name="DummyGroupNoDataBandElementHideIfNullTrigger">
+      <properties>
+        <property name="element">DummyGroupNoDataBandElement</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="DummyGroupDataBandElementHideIfNullTrigger">
+      <properties>
+        <property name="element">DummyGroupDataBandElement</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="dummyGroupFooterHideIfNullTrigger">
+      <properties>
+        <property name="element">dummyGroupFooter</property>
+      </properties>
+    </expression>
+        <function name="AddHRefs" class="org.jfree.report.function.CreateHyperLinksFunction">
+       <properties>
+         <property name="field">URLCreateExpression</property>
+         <property name="element">URL-Field</property>
+               </properties>
+     </function>
+ 
+      <expression name="URLCreateExpression" class="org.jfree.report.function.TextFormatExpression">
+       <properties>
+       <property name="pattern">ViewAction?TEMPORAL_SK={0,number,####0}&amp;TEMPORAL_VALUE={1}&amp;PARENT_REFERER_DESC={2}&amp;SOURCE_SYSTEM_SK={3,number,####0}&amp;solution=breadboard&amp;action=referer_period_keyword.xaction&amp;path=customer_360/web_analytics/dashboards/report</property>  
+         <property name="field[0]">TEMPORAL_SK</property>
+         <property name="field[1]">TEMPORAL_VALUE</property>           
+         <property name="field[2]">PARENT_REFERER_DESC</property>    
+         <property name="field[3]">SOURCE_SYSTEM_SK</property>
+       </properties>
+     </expression>  
+      
+  </functions>
+</report>

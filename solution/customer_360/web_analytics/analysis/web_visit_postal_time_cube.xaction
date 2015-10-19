@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>query_Oracle.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <help/>  
+    <result-type>report</result-type>  
+    <description>%description</description>  
+    <icon>file.png|analysis.png</icon> 
+  </documentation>  
+  <inputs> 
+    <mdx type="string"> 
+      <default-value/>  
+      <sources> 
+        <request>MDX</request> 
+      </sources> 
+    </mdx>  
+    <mode type="string"> 
+      <sources> 
+        <request>mode</request> 
+      </sources>  
+      <default-value/> 
+    </mode>  
+    <period type="string"> 
+      <sources> 
+        <request>period</request> 
+      </sources>  
+      <default-value/> 
+    </period>  
+    <cube_suffix type="string"> 
+      <sources> 
+        <request>cube_suffix</request> 
+      </sources>  
+      <default-value/> 
+    </cube_suffix> 
+  </inputs>  
+  <outputs> 
+    <model type="string"/>  
+    <connection type="string"/>  
+    <mdx type="string"/>  
+    <options type="list"/>  
+    <title type="string"/>  
+    <url type="string"> 
+      <destinations> 
+        <response>redirect</response> 
+      </destinations> 
+    </url> 
+  </outputs>  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <component-name>PivotViewComponent</component-name>  
+      <action-type/>  
+      <action-inputs> 
+        <mode type="string"/>  
+        <period type="string"/>  
+        <cube_suffix type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <model type="string"/>  
+        <connection type="string"/>  
+        <mdx type="string"/>  
+        <options type="list"/>  
+        <title type="string"/>  
+        <url type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <title>%title</title>  
+        <viewer>Pivot</viewer>  
+        <model>breadboard/analysis/breadboardbi.mondrian.xml</model> 
+        <location>mondrian</location>  
+        <options> 
+          <personal/>  
+          <cube-nav/>  
+          <mdx-edit/>  
+          <sort-conf/>  
+          <spacer/>  
+          <level-style/>  
+          <hide-spans/>  
+          <properties/>  
+          <non-empty/>  
+          <swap-axes/>  
+          <spacer/>  
+          <drill-member/>  
+          <drill-position/>  
+          <drill-replace/>  
+          <drill-thru/>  
+          <spacer/>  
+          <chart/>  
+          <chart-conf/>  
+          <spacer/>  
+          <print-conf/>  
+          <print-pdf/>  
+          <spacer/>  
+          <excel/> 
+        </options>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[select NON EMPTY {[Measures].[Visits], [Measures].[Previous Period Visit Variance], 
+[Measures].[Previous Period % Visit Change], [Measures].[Ratio To Parent], [Measures].[QTD Visits], 
+[Measures].[MTD Visits]} ON COLUMNS,
+  NON EMPTY {
+([Time Period].[All Periods].[2007], [Source System].[All Source Systems].[WEB], [Web Visitor Location.Web Visitor Postal Codes].[All Postal Codes].[Canada]), 
+([Time Period].[All Periods].[2007], [Source System].[All Source Systems].[WEB], [Web Visitor Location.Web Visitor Postal Codes].[All Postal Codes].[United States])
+} ON ROWS
+from [Web Site Visits{cube_suffix}]]]></query> 
+      </component-definition>  
+      <action-name>Pivot View</action-name>  
+      <logging-level>DEBUG</logging-level> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

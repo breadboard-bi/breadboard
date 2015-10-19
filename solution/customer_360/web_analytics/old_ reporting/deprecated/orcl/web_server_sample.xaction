@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>web_server_organization_sample_mysql.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>%description</description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help/>  
+    <result-type>rule</result-type> 
+  </documentation>  
+  <inputs> 
+    <chart-type type="string"> 
+      <default-value>.png</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </chart-type>  
+    <report-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </report-type>  
+    <!--          
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+-->  
+    <min_date type="string"> 
+      <sources> 
+        <request>min_date</request> 
+      </sources>  
+      <default-value>20070315</default-value> 
+    </min_date>  
+    <max_date type="string"> 
+      <sources> 
+        <request>max_date</request> 
+      </sources>  
+      <default-value>20071231</default-value> 
+    </max_date>  
+    <SOURCE_SYSTEM_SK type="string"> 
+      <sources> 
+        <request>SOURCE_SYSTEM_SK</request> 
+      </sources>  
+      <default-value>6</default-value> 
+    </SOURCE_SYSTEM_SK>  
+    <name type="string"> 
+      <sources> 
+        <session>name</session> 
+      </sources>  
+      <default-value>demo</default-value> 
+    </name> 
+  </inputs>  
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>  
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>web_server_sample.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>SQL Query</action-type>  
+      <action-inputs> 
+        <hosted_client_sk type="string"/>  
+        <name type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <source_system_list type="property-map-list"/> 
+      </action-outputs>  
+      <component-definition> 
+        <live>false</live>  
+        <jndi>mdw</jndi>  
+        <query><![CDATA[SELECT DISTINCT S.SOURCE_SYSTEM_SK, S.SOURCE_SYSTEM_NAME
+FROM DIMENSION_SOURCE_SYSTEM S, FACT_WEB_SITE_VISIT F, ADMIN_USER A
+WHERE S.SOURCE_SYSTEM_SK = F.SOURCE_SYSTEM_SK
+AND F.HOSTED_CLIENT_SK = A.HOSTED_CLIENT_SK
+AND A.USER_NAME = '{name}'
+ORDER BY S.SOURCE_SYSTEM_NAME ASC]]></query> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>SecureFilterComponent</component-name>  
+      <action-type>Secure Filter</action-type>  
+      <action-inputs> 
+        <min_date type="string"/>  
+        <max_date type="string"/>  
+        <SOURCE_SYSTEM_SK type="string"/>  
+        <source_system_list type="property-map-list"/> 
+      </action-inputs>  
+      <component-definition> 
+        <selections> 
+          <min_date filter="none"> 
+            <title>Enter the minimum date for the date range (format YYYYMMDD).</title> 
+          </min_date>  
+          <max_date filter="none"> 
+            <title>Enter the maximum date for the date range (format YYYYMMDD).</title> 
+          </max_date>  
+          <SOURCE_SYSTEM_SK style="select"> 
+            <title>Please enter the source system.</title>  
+            <filter value-col-name="SOURCE_SYSTEM_SK" display-col-name="SOURCE_SYSTEM_NAME">source_system_list</filter> 
+          </SOURCE_SYSTEM_SK> 
+        </selections> 
+      </component-definition> 
+    </action-definition>  
+    <!-- insert -->  
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>country_rule</action-type>
+           <action-inputs> 
+        <!-- -->  
+          
+          
+          
+      <min_date type="string"/><max_date type="string"/><SOURCE_SYSTEM_SK type="string"/></action-inputs>  
+        
+      <action-outputs> 
+        <result-set type="list"/> 
+      </action-outputs>  
+      <component-definition> 
+        <source>sql</source>  
+        <live>true</live>  
+        <jndi>mdw</jndi>  
+         
+      <query><![CDATA[SELECT COUNTRY_NAME, WEB_PAGE_VIEW_QTY FROM (
+SELECT RANK() OVER(ORDER BY SUM(F.WEB_PAGE_VIEW_QTY) DESC) AS RANK,
+G.ISO_3166_COUNTRY_NAME AS COUNTRY_NAME,
+SUM(F.WEB_PAGE_VIEW_QTY) AS WEB_PAGE_VIEW_QTY
+FROM FACT_WEB_PAGE_VIEW F, DIMENSION_WEB_VISITOR V,
+DIMENSION_GEOGRAPHIC_LOCATION G, DIMENSION_DAY D,
+DIMENSION_SOURCE_SYSTEM S
+WHERE F.WEB_VISITOR_SK = V.WEB_VISITOR_SK
+AND F.GEO_LOCATION_SK = G.GEO_LOCATION_SK
+AND F.REQUEST_DATE_SK = D.DATE_SK
+AND F.REQUEST_DATE_SK BETWEEN '{min_date}' AND '{max_date}'
+AND F.SOURCE_SYSTEM_SK = S.SOURCE_SYSTEM_SK
+AND S.PARENT_SOURCE_SYSTEM_SK = '{SOURCE_SYSTEM_SK}'
+AND V.ROBOT_IND = 'N'
+GROUP BY G.ISO_3166_COUNTRY_NAME)
+WHERE RANK < 21
+ORDER BY RANK]]></query></component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>ChartComponent</component-name>  
+      <action-type>report</action-type>  
+      <action-inputs> 
+        <output-type type="string" mapping="chart-type"/>  
+        <result-output type="file"/>  
+        <chart-data type="list" mapping="result-set"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <chart-filename type="string"/>  
+        <base-url type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <by-row>true</by-row>  
+        <chart-attributes>  
+          <chart-type>BarChart</chart-type>  
+          <title>Top Countries for the Period</title>  
+          <title-position>TOP</title-position>  
+          <title-font> 
+            <font-family>SansSerif</font-family>  
+            <size>18</size>  
+            <is-bold>false</is-bold>  
+            <is-italic>false</is-italic> 
+          </title-font>  
+          <chart-background type="color">#FFFFFF</chart-background>  
+          <plot-background-color>#FF0000</plot-background-color>  
+          <orientation>Vertical</orientation>  
+          <height>250</height>  
+          <width>500</width>  
+          <is-3D>true</is-3D>  
+          <is-stacked>false</is-stacked>  
+          <category-label-rotation>90</category-label-rotation>  
+          <border-visible>false</border-visible>  
+          <border-paint>#3399FF</border-paint>  
+          <include-legend>true</include-legend> 
+        </chart-attributes> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>JavascriptRule</component-name>  
+      <action-type>chart_rule</action-type>  
+      <action-inputs> 
+        <CHARTOUTPUT type="string" mapping="chart-filename"/>  
+        <BASEURL type="string" mapping="base-url"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <chart_url type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <script> <![CDATA[ 
+			      function getImageURL( fileName ) {
+			        return BASEURL + "getImage?image=" + fileName;
+			      }
+			    getImageURL( CHARTOUTPUT ); 
+		      ]]> </script> 
+      </component-definition> 
+    </action-definition>  
+    <!-- end major paste -->  
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>  
+      <!--      <action-type>report</action-type> -->  
+      <action-inputs> 
+        <!-- -->  
+        <output-type type="string" mapping="report-type"/>  
+        <result-output type="outputstream"/>  
+        <chart_url type="string"/>  
+        <!-- previous 2.5 line -->  
+          
+          
+          
+         
+      <min_date type="string"/><max_date type="string"/><SOURCE_SYSTEM_SK type="string"/></action-inputs>  
+      <action-outputs> 
+        <report type="content"/> 
+      </action-outputs>  
+      <component-definition> 
+        <source>sql</source>  
+        <!-- <live>false</live>  -->  
+        <live>true</live>  
+        <jndi>mdw</jndi>  
+         
+      <query><![CDATA[SELECT D.DAY_DESC AS REQUEST_DATE,
+G.ISO_3166_COUNTRY_NAME AS COUNTRY_NAME,
+G. REGION_NAME,
+G.CITY_NAME AS CITY_NAME,
+G.POSTAL_CODE AS POSTAL_CODE,
+G.DMA_NAME AS DMA_NAME,
+G.PHONE_REGION_CODE AS PHONE_REGION_CODE,
+SUM(F.WEB_PAGE_VIEW_QTY) AS WEB_PAGE_VIEW_QTY
+FROM FACT_WEB_SITE_VISIT F,
+DIMENSION_GEOGRAPHIC_LOCATION G, DIMENSION_DAY D
+WHERE F.GEO_LOCATION_SK = G.GEO_LOCATION_SK
+AND F.VISIT_DATE_SK = D.DATE_SK 
+AND F.VISIT_DATE_SK BETWEEN CAST('{min_date}' AS INTEGER) AND CAST('{max_date}' AS INTEGER) 
+AND F.SOURCE_SYSTEM_SK = '{SOURCE_SYSTEM_SK}'
+GROUP BY D.DAY_DATE, D.DAY_DESC,
+G.ISO_3166_COUNTRY_NAME,
+G.REGION_NAME, G.CITY_NAME,G.POSTAL_CODE,G.DMA_NAME,G.PHONE_REGION_CODE
+ORDER BY  D.DAY_DATE DESC]]></query></component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

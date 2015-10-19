@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>query_Oracle.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <help/>  
+    <result-type>report</result-type>  
+    <description>%description</description>  
+    <icon>file.png|analysis.png</icon> 
+  </documentation>  
+  <inputs> 
+    <mdx type="string"> 
+      <default-value/>  
+      <sources> 
+        <request>MDX</request> 
+      </sources> 
+    </mdx>  
+    <mode type="string"> 
+      <sources> 
+        <request>mode</request> 
+      </sources>  
+      <default-value/> 
+    </mode>  
+    <year_mdx type="string"> 
+      <sources> 
+        <request>year_mdx</request> 
+      </sources>  
+      <default-value/> 
+    </year_mdx>  
+    <cube_suffix type="string"> 
+      <sources> 
+        <request>cube_suffix</request> 
+      </sources>  
+      <default-value/> 
+    </cube_suffix>  
+    <quarter_mdx type="string"> 
+      <sources> 
+        <request>quarter_mdx</request> 
+      </sources>  
+      <default-value/> 
+    </quarter_mdx>  
+    <month_mdx type="string"> 
+      <sources> 
+        <request>month_mdx</request> 
+      </sources>  
+      <default-value/> 
+    </month_mdx>  
+    <week_mdx type="string"> 
+      <sources> 
+        <request>week_mdx</request> 
+      </sources>  
+      <default-value/> 
+    </week_mdx> 
+  </inputs>  
+  <outputs> 
+    <model type="string"/>  
+    <connection type="string"/>  
+    <mdx type="string"/>  
+    <options type="list"/>  
+    <title type="string"/>  
+    <url type="string"> 
+      <destinations> 
+        <response>redirect</response> 
+      </destinations> 
+    </url> 
+  </outputs>  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <component-name>PivotViewComponent</component-name>  
+      <action-type/>  
+      <action-inputs> 
+        <mode type="string"/>  
+        <period type="string"/>  
+        <cube_suffix type="string"/>  
+        <year_mdx type="string"/>  
+        <quarter_mdx type="string"/>  
+        <month_mdx type="string"/>  
+        <week_mdx type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <model type="string"/>  
+        <connection type="string"/>  
+        <mdx type="string"/>  
+        <options type="list"/>  
+        <title type="string"/>  
+        <url type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <title>%title</title>  
+        <viewer>Pivot</viewer>  
+        <model>breadboard/analysis/breadboardbi.mondrian.xml</model>   
+        <location>mondrian</location>  
+        <options> 
+          <personal/>  
+          <cube-nav/>  
+          <mdx-edit/>  
+          <sort-conf/>  
+          <spacer/>  
+          <level-style/>  
+          <hide-spans/>  
+          <properties/>  
+          <non-empty/>  
+          <swap-axes/>  
+          <spacer/>  
+          <drill-member/>  
+          <drill-position/>  
+          <drill-replace/>  
+          <drill-thru/>  
+          <spacer/>  
+          <chart/>  
+          <chart-conf/>  
+          <spacer/>  
+          <print-conf/>  
+          <print-pdf/>  
+          <spacer/>  
+          <excel/> 
+        </options>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[select NON EMPTY {[Measures].[Referrals], [Measures].[Page Views], 
+[Measures].[Average Page View Seconds], [Measures].[Average Views Per Referral], [Measures].[Previous Period % Referral Change]} ON COLUMNS,
+  NON EMPTY {[Top Ten Referers]} ON ROWS
+from [Web Site Referrals{cube_suffix}]
+where ([Source System.Source Systems].[All Source Systems].[WEB].[Web Logs],
+[Time Period].[All Periods]{year_mdx}{quarter_mdx}{month_mdx}{week_mdx})]]></query> 
+      </component-definition>  
+      <action-name>Pivot View</action-name>  
+      <logging-level>DEBUG</logging-level> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

@@ -1,0 +1,740 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>CRM_DIMENSION_CUSTOMER</name>
+    <directory>/</directory>
+    <log>
+      <read></read>
+      <write></write>
+      <input></input>
+      <output></output>
+      <update></update>
+      <connection></connection>
+      <table></table>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection></connection>
+      <table></table>
+      <field></field>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts customer data from PeopleSoft CRM 8.8.  The output could be used to create a customer dimension.</note>
+      <xloc>173</xloc>
+      <yloc>121</yloc>
+      <width>605</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+      <attribute><code>CUSTOM_DRIVER_CLASS</code><attribute></attribute></attribute>
+      <attribute><code>CUSTOM_URL</code><attribute></attribute></attribute>
+      <attribute><code>SAPClient</code><attribute></attribute></attribute>
+      <attribute><code>SAPLanguage</code><attribute></attribute></attribute>
+      <attribute><code>SAPSystemNumber</code><attribute></attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+      <attribute><code>CUSTOM_DRIVER_CLASS</code><attribute></attribute></attribute>
+      <attribute><code>CUSTOM_URL</code><attribute></attribute></attribute>
+      <attribute><code>SAPClient</code><attribute></attribute></attribute>
+      <attribute><code>SAPLanguage</code><attribute></attribute></attribute>
+      <attribute><code>SAPSystemNumber</code><attribute></attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+      <attribute><code>CUSTOM_DRIVER_CLASS</code><attribute></attribute></attribute>
+      <attribute><code>CUSTOM_URL</code><attribute></attribute></attribute>
+      <attribute><code>SAPClient</code><attribute></attribute></attribute>
+      <attribute><code>SAPLanguage</code><attribute></attribute></attribute>
+      <attribute><code>SAPSystemNumber</code><attribute></attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PS_BC</from><to>Main Database Join</to><enabled>Y</enabled> </hop>  <hop> <from>PS_BO_TYPE</from><to>Main Database Join</to><enabled>Y</enabled> </hop>  <hop> <from>PSXLATITEM</from><to>Main Database Join</to><enabled>Y</enabled> </hop>  <hop> <from>PS_BO_ROLE</from><to>Main Database Join</to><enabled>Y</enabled> </hop>  <hop> <from>PS_BO_SRCH_ADD</from><to>Main Database Join</to><enabled>Y</enabled> </hop>  <hop> <from>PS_STATE_TBL</from><to>Main Database Join</to><enabled>Y</enabled> </hop>  <hop> <from>PS_COUNTRY_TBL</from><to>Main Database Join</to><enabled>Y</enabled> </hop>  <hop> <from>PS_BO_SRCH_PHN</from><to>Main Database Join</to><enabled>Y</enabled> </hop>  <hop> <from>PS_BO_SRCH_EML</from><to>Main Database Join</to><enabled>Y</enabled> </hop>  <hop> <from>PS_BO</from><to>Main Database Join</to><enabled>Y</enabled> </hop>  <hop> <from>Main Database Join</from><to>Select values</to><enabled>Y</enabled> </hop>  <hop> <from>Select values</from><to>DIMENSION_CUSTOMER</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>DIMENSION_CUSTOMER</name>
+    <type>TableOutput</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <table>DIMENSION_CUSTOMER</table>
+    <commit>0</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field></partitioning_field>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field></tablename_field>
+    <tablename_in_table>Y</tablename_in_table>
+    <GUI>
+      <xloc>508</xloc>
+      <yloc>373</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_PS_BO_TYPE</name>
+    <type>DBLookup</type>
+    <description>The lookup step returns the customer type description.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <cache>N</cache>
+    <cache_size>0</cache_size>
+    <lookup>
+      <table>PS_BO_TYPE</table>
+      <orderby></orderby>
+      <key>
+        <name>BO_TYPE_ID</name>
+        <field>BO_TYPE_ID</field>
+        <condition>=</condition>
+        <name2></name2>
+        </key>
+      <value>
+        <name>BO_TYPE_ID</name>
+        <rename>BO_TYPE_ID</rename>
+        <default></default>
+        <type>Integer</type>
+        </value>
+      <value>
+        <name>DESCR</name>
+        <rename>DESCR</rename>
+        <default></default>
+        <type>String</type>
+        </value>
+      </lookup>
+    <GUI>
+      <xloc>90</xloc>
+      <yloc>476</yloc>
+      <draw>N</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Main Database Join</name>
+    <type>DBJoin</type>
+    <description>This step joins tables from the same database in the data flow.</description>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <rowlimit>0</rowlimit>
+    <sql>SELECT
+BO.BO_ID,
+BO.BO_NAME AS CUSTOMER_NAME,
+BO.BO_TYPE_ID AS CUSTOMER_TYPE_ID,
+BC.CUST_ID AS CUSTOMER_ID,
+BC.SETID,
+BC.CUSTOMER_IND, 
+BC.CUST_STATUS AS CUSTOMER_STATUS, 
+BC.CUST_STATUS_DT AS CUSTOMER_STATUS_DATE, 
+BC.CURRENCY_CD, 
+BC.CR_RATING AS CREDIT_RATING, 
+BC.SINCE_DT AS SINCE_DATE, 
+BC.ADD_DT AS ADD_DATE,
+BC.DO_NOT_CONTACT, 
+BC.DO_NOT_EMAIL, 
+BC.DO_NOT_MAIL, 
+BC.DO_NOT_CALL,
+T.DESCR CUSTOMER_TYPE_DESCR,
+X.XLATSHORTNAME AS CUSTOMER_STATUS_SHORT_DESCR,
+X.XLATLONGNAME AS CUSTOMER_STATUS_LONG_DESCR,
+ADDRESS.GEO_CODE,
+ADDRESS.IN_CITY_LIMIT,
+ADDRESS.TIMEZONE,
+ADDRESS.LATITUDE,
+ADDRESS.LONGITUDE,
+ADDRESS.ADDRESS1 AS ADDRESS_LINE_1,
+ADDRESS.ADDRESS2 AS ADDRESS_LINE_2,
+ADDRESS.ADDRESS3 AS ADDRESS_LINE_3,
+ADDRESS.ADDRESS4 AS ADDRESS_LINE_4,
+ADDRESS.CITY,
+ADDRESS.COUNTY,
+ADDRESS.POSTAL AS POSTAL_CODE,
+ADDRESS.STATE AS STATE_CODE,
+ADDRESS.COUNTRY AS COUNTRY_CODE,
+STATE.DESCR AS STATE_NAME,
+COUNTRY.DESCR AS COUNTRY_NAME,
+EMAIL.EMAIL_DOMAIN,
+EMAIL.EMAIL_ADDR AS EMAIL_ADDRESS,
+PHONE.COUNTRY_CODE AS PHONE_COUNTRY_CODE,
+PHONE.PHONE AS PHONE_NUMBER,
+PHONE.EXTENSION AS PHONE_EXTENSION,
+CUSTOMER_ROLE.SOLD_TO_INDICATOR,
+CUSTOMER_ROLE.SHIP_TO_INDICATOR,
+CUSTOMER_ROLE.BILL_TO_INDICATOR
+FROM PS_BO BO
+
+LEFT OUTER JOIN PS_BC BC
+ON BO.BO_ID = BC.BO_ID
+
+LEFT OUTER JOIN PS_BO_TYPE T
+ON BO.BO_TYPE_ID = T.BO_TYPE_ID
+
+LEFT OUTER JOIN PSXLATITEM X
+ON X.FIELDNAME = &apos;CUST_STATUS&apos;
+AND BC.CUST_STATUS = X.FIELDVALUE
+AND X.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1 
+	WHERE X.FIELDNAME = A1.FIELDNAME 
+	AND X.FIELDVALUE = A1.FIELDVALUE
+	AND X.FIELDNAME = &apos;CUST_STATUS&apos;)
+
+LEFT OUTER JOIN PS_BO_ROLE ROLE
+ON BO.BO_ID = ROLE.BO_ID
+AND ROLE.ROLE_TYPE_ID IN (1,2)
+
+LEFT OUTER JOIN PS_BO_SRCH_ADD ADDRESS
+ON ROLE.BO_ID = ADDRESS.BO_ID
+AND ROLE.ROLE_TYPE_ID = ADDRESS.ROLE_TYPE_ID
+AND ADDRESS.ROLE_TYPE_ID IN(1,2) 
+AND ADDRESS.BO_CM_USE_TYPE = &apos;R&apos; 
+AND ADDRESS.PRIMARY_IND = &apos;Y&apos;
+
+LEFT OUTER JOIN PS_STATE_TBL STATE
+ON ADDRESS.STATE = STATE.STATE
+AND ADDRESS.COUNTRY = STATE.COUNTRY
+LEFT OUTER JOIN PS_COUNTRY_TBL COUNTRY
+ON STATE.COUNTRY = COUNTRY.COUNTRY
+
+LEFT OUTER JOIN PS_BO_SRCH_PHN PHONE
+ON ROLE.BO_ID = PHONE.BO_ID
+AND ROLE.ROLE_TYPE_ID = PHONE.ROLE_TYPE_ID
+AND PHONE.ROLE_TYPE_ID IN(1,2) 
+AND PHONE.BO_CM_USE_TYPE = &apos;R&apos; 
+AND PHONE.PRIMARY_IND = &apos;Y&apos; 
+
+LEFT OUTER JOIN PS_BO_SRCH_EML EMAIL
+ON ROLE.BO_ID = EMAIL.BO_ID
+AND ROLE.ROLE_TYPE_ID = EMAIL.ROLE_TYPE_ID
+AND EMAIL.ROLE_TYPE_ID IN (1,2) 
+AND EMAIL.BO_CM_USE_TYPE = &apos;R&apos; 
+AND EMAIL.PRIMARY_IND = &apos;Y&apos;
+
+LEFT OUTER JOIN (SELECT BO1.BO_ID,
+MAX(CASE WHEN ROLE1.ROLE_TYPE_ID IN (42,46) THEN &apos;Y&apos; END) AS SOLD_TO_INDICATOR,
+MAX(CASE WHEN ROLE1.ROLE_TYPE_ID IN (43,47) THEN &apos;Y&apos; END) AS BILL_TO_INDICATOR,
+MAX(CASE WHEN ROLE1.ROLE_TYPE_ID IN (41,45) THEN &apos;Y&apos; END) AS SHIP_TO_INDICATOR
+FROM PS_BO BO1, PS_BO_ROLE ROLE1 WHERE BO1.BO_ID = ROLE1.BO_ID AND ROLE1.ROLE_TYPE_ID IN(41,42,43,45,46,47)
+GROUP BY BO1.BO_ID) CUSTOMER_ROLE
+ON BO.BO_ID = CUSTOMER_ROLE.BO_ID</sql>
+    <outer_join>N</outer_join>
+    <parameter>
+      </parameter>
+    <GUI>
+      <xloc>229</xloc>
+      <yloc>368</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSXLATITEM</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the column from the PSXLATITEM table.  This table maintains short and long descriptions for columns across the data model.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT
+XLATLONGNAME, 
+XLATSHORTNAME
+FROM PSXLATITEM</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>36</xloc>
+      <yloc>365</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PS_BC</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the column from the PS_BC (business contact) table from PeopleSoft CRM 8.8.  This table defines the various business contacts.</description>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT
+CUST_ID, 
+SETID,
+BO_ID,
+CUSTOMER_IND, 
+CUST_STATUS, 
+CUST_STATUS_DT, 
+CURRENCY_CD, 
+CR_RATING, 
+SINCE_DT, 
+ADD_DT,
+DO_NOT_CONTACT, 
+DO_NOT_EMAIL, 
+DO_NOT_MAIL, 
+DO_NOT_CALL
+FROM PS_BC</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>30</xloc>
+      <yloc>228</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PS_BO</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the column from the PS_BO (business object) table from PeopleSoft CRM 8.8.  It  is the main table that establishes the Customer Data Model.</description>
+    <distribute>N</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT
+BO_ID,
+BO_NAME, 
+BO_TYPE_ID
+FROM PS_BO
+</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>25</xloc>
+      <yloc>94</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PS_BO_ROLE</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the column from the PS_BO_ROLE table.  The business object role defines the business contact.
+</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT
+BO_ID,
+ROLE_TYPE_ID
+FROM PS_BO_ROLE</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>27</xloc>
+      <yloc>161</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PS_BO_SRCH_ADD</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the column from the PS_BO_SRCH_ADD (address search) table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT
+BO_ID,
+ROLE_TYPE_ID,
+PRIMARY_IND,
+GEO_CODE,
+IN_CITY_LIMIT,
+TIMEZONE,
+LATITUDE,
+LONGITUDE,
+ADDRESS1,
+ADDRESS2,
+ADDRESS3,
+ADDRESS4,
+CITY,
+COUNTY,
+POSTAL,
+STATE AS STATE_CODE,
+COUNTRY AS COUNTRY_CODE
+FROM PS_BO_SRCH_ADD</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>38</xloc>
+      <yloc>436</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PS_BO_SRCH_EML</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the column from the PS_BO_SRCH_EML (email search) table.  A filter is added to include the main email address in the data flow.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT
+  BO_ID
+, ROLE_TYPE_ID
+, BO_CM_USE_TYPE
+, PRIMARY_IND
+, EMAIL_DOMAIN
+, EMAIL_ADDR
+FROM PS_BO_SRCH_EML
+</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>38</xloc>
+      <yloc>738</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PS_BO_SRCH_PHN</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the column from the PS_BO_SRCH_PHN (telephone search) table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT
+  BO_ID
+, ROLE_TYPE_ID
+, PHONE_TYPE
+, PRIMARY_IND
+, COUNTRY_CODE
+, PHONE
+, EXTENSION
+FROM PS_BO_SRCH_PHN
+</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>42</xloc>
+      <yloc>667</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PS_BO_TYPE</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the column from the PS_BO_TYPE (busiiness object type) table.  For example, individual or organization.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT
+  BO_TYPE_ID AS CUST_TYPE_ID
+, DESCR AS CUST_TYPE_DESCR
+FROM PS_BO_TYPE
+</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>36</xloc>
+      <yloc>292</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PS_COUNTRY_TBL</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the column from the PS_COUNTRY_TBL (country) table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT
+  COUNTRY
+, DESCR
+, DESCRSHORT
+, EU_MEMBER_STATE
+FROM PS_COUNTRY_TBL
+</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>40</xloc>
+      <yloc>587</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PS_STATE_TBL</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the column from the PS_STATE_TBL (state) table.  It maintains information like US states, Canadian provinces, etc.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT
+  COUNTRY
+, STATE
+, DESCR
+FROM PS_STATE_TBL
+</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>39</xloc>
+      <yloc>512</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Select values</name>
+    <type>SelectValues</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <fields>      <field>        <name>BO_ID</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>CUSTOMER_NAME</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>CUSTOMER_TYPE_ID</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>CUSTOMER_ID</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>SETID</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>CUSTOMER_IND</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>CUSTOMER_STATUS</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>CUSTOMER_STATUS_DATE</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>CURRENCY_CD</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>CREDIT_RATING</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>SINCE_DATE</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>ADD_DATE</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>DO_NOT_CONTACT</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>DO_NOT_EMAIL</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>DO_NOT_MAIL</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>DO_NOT_CALL</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>CUSTOMER_TYPE_DESCR</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>CUSTOMER_STATUS_SHORT_DESCR</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>CUSTOMER_STATUS_LONG_DESCR</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>GEO_CODE</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>IN_CITY_LIMIT</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>TIMEZONE</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>LATITUDE</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>LONGITUDE</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>ADDRESS_LINE_1</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>ADDRESS_LINE_2</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>ADDRESS_LINE_3</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>ADDRESS_LINE_4</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>CITY</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>COUNTY</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>POSTAL_CODE</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>STATE_CODE</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>COUNTRY_CODE</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>STATE_NAME</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>COUNTRY_NAME</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>EMAIL_DOMAIN</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>EMAIL_ADDRESS</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>PHONE_COUNTRY_CODE</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>PHONE_NUMBER</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>PHONE_EXTENSION</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>SOLD_TO_INDICATOR</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>SHIP_TO_INDICATOR</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      <field>        <name>BILL_TO_INDICATOR</name>
+        <rename></rename>
+        <length>-2</length>
+        <precision>-2</precision>
+        </field>      </fields>    <GUI>
+      <xloc>366</xloc>
+      <yloc>371</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

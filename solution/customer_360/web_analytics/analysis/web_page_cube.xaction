@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>web_page_cube.xaction</name>
+  <title>%title</title>
+  <version>1</version>
+  <logging-level/>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <help/>  
+    <result-type>report</result-type>  
+    <description>%description</description>  
+    <icon>file.png|analysis.png</icon> 
+  </documentation>
+
+  <inputs> 
+    <mdx type="string"> 
+      <default-value/>  
+      <sources> 
+        <request>MDX</request> 
+      </sources> 
+    </mdx>  
+    <mode type="string"> 
+      <sources> 
+        <request>mode</request> 
+      </sources>  
+      <default-value/> 
+    </mode>  
+    <page type="string"> 
+      <sources> 
+        <request>page</request> 
+      </sources>  
+      <default-value/> 
+    </page>  
+    <cube_suffix type="string"> 
+      <sources> 
+        <request>cube_suffix</request> 
+      </sources>  
+      <default-value/> 
+    </cube_suffix> 
+  </inputs>
+
+  <outputs> 
+    <model type="string"/>  
+    <connection type="string"/>  
+    <mdx type="string"/>  
+    <options type="list"/>  
+    <title type="string"/>  
+    <url type="string"> 
+      <destinations> 
+        <response>redirect</response> 
+      </destinations> 
+    </url>  
+    <!--
+    <charttype type="string"/>  
+    <chartlocation type="string"/> 
+--> 
+  </outputs>
+
+  <resources/>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>PivotViewComponent</component-name>
+      <action-type/>
+      <action-inputs> 
+        <mode type="string"/>  
+        <period type="string"/>  
+        <cube_suffix type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <model type="string"/>  
+        <connection type="string"/>  
+        <mdx type="string"/>  
+        <options type="list"/>  
+        <title type="string"/>  
+        <url type="string"/>  
+        <!--
+        <charttype type="string"/>  
+        <chartlocation type="string"/> 
+--> 
+      </action-outputs>
+      <component-definition> 
+        <title>%title</title>  
+        <viewer>Pivot</viewer>  
+        <!--
+        <charttype>11</charttype>  
+-->  
+        <!-- 	1: Vertical Bar
+				2: Vertical 3D Bar
+				3: Horizontal Bar
+				4: Horizontal 3D Bar
+				5: Stacked Vertical Bar
+				6: Stacked Vertical 3D Bar
+				7: Stacked Horizontal Bar
+				8: Stacked Horizontal 3D Bar
+				9: Vertical Line
+				10: Horizontal Line
+				11: Vertical Area
+				12: Horizontal Area
+				13: Stacked Vertical Area
+				14: Stacked Horizontal Area
+				15: Pie By Column
+				16: Pie By Row
+			-->  
+        <chartlocation>top</chartlocation>  
+        <model>breadboard/analysis/breadboardbi.mondrian.xml</model>  
+        <location>mondrian</location>  
+        <options> 
+          <personal/>  
+          <cube-nav/>  
+          <mdx-edit/>  
+          <sort-conf/>  
+          <spacer/>  
+          <level-style/>  
+          <hide-spans/>  
+          <properties/>  
+          <non-empty/>  
+          <swap-axes/>  
+          <spacer/>  
+          <drill-member/>  
+          <drill-position/>  
+          <drill-replace/>  
+          <drill-thru/>  
+          <spacer/>  
+          <chart/>  
+          <chart-conf/>  
+          <spacer/>  
+          <print-conf/>  
+          <print-pdf/>  
+          <spacer/>  
+          <excel/> 
+        </options>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[select NON EMPTY {[Measures].[Page Views], [Measures].[Previous Period Page View Variance], 
+[Measures].[Previous Period % Page View Change], [Measures].[Ratio To Parent], 
+[Measures].[QTD Page Views], [Measures].[MTD Page Views]} ON COLUMNS,
+ NON EMPTY {([Time Period].[All Periods].[2006], [Source System].[All Source Systems].[WEB], [Web File.Web Files].[All Files]),
+([Time Period].[All Periods].[2007], [Source System].[All Source Systems].[WEB], [Web File.Web Files].[All Files])
+} ON ROWS
+from [Web Page Views{cube_suffix}]]]></query> 
+      </component-definition>  
+      <action-name>Pivot View</action-name>  
+      <logging-level>DEBUG</logging-level> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

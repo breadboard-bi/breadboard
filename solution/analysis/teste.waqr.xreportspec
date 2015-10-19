@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report-spec tool='waqr' tool-version='1.0' template-name='Winter'>
+<report-name><![CDATA[teste.waqr.xreportspec]]></report-name>
+<report-desc><![CDATA[Created by the Web-based Adhoc Query and Reporting Client]]></report-desc>
+<query>
+<mql>
+<domain_type>relational</domain_type>
+<domain_id><![CDATA[breadboard]]></domain_id><model_id><![CDATA[Billing Module]]></model_id>
+<options>
+<disable_distinct>false</disable_distinct>
+</options>
+<selections>
+<selection><view>BC_DIMENSION_BUSINESS_UNIT</view><column>BC_DIMENSION_BUSINESS_UNIT_COUNTRY_NAME</column></selection>
+<selection><view>BC_DIMENSION_BUSINESS_UNIT</view><column>BC_DIMENSION_BUSINESS_UNIT_CITY_NAME</column></selection>
+<selection><view>BC_DIMENSION_BUSINESS_UNIT</view><column>BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_TYPE_NAME</column></selection>
+<selection><view>BC_DIMENSION_BUSINESS_UNIT</view><column>BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_TYPE_DESC</column></selection>
+<selection><view>BC_DIMENSION_BUSINESS_UNIT</view><column>BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_STATUS_DESC</column></selection>
+<selection><view>BC_DIMENSION_BUSINESS_UNIT</view><column>BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_NAME</column></selection>
+<selection><view>BC_FACT_BILLING</view><column>BC_FACT_BILLING_UNIT_QTY</column></selection>
+</selections>
+<constraints>
+</constraints>
+<orders>
+</orders>
+</mql>
+</query>
+<field-mapping key="reportheader" value="teste teste"/><field-mapping key="reportfooter" value="relatorio"/><field-mapping key="pageheader" value=""/><field-mapping key="pagefooter" value=""/><page-format><![CDATA[LETTER]]></page-format>
+<orientation><![CDATA[landscape]]></orientation>
+<use-row-banding><![CDATA[true]]></use-row-banding>
+<row-banding-color><![CDATA[#9CD8F1]]></row-banding-color>
+<use-column-header-background-color><![CDATA[true]]></use-column-header-background-color>
+<column-header-background-color><![CDATA[#133346]]></column-header-background-color>
+<grand-totals-label><![CDATA[Grand Total]]></grand-totals-label>
+<grand-totals-horizontal-alignment><![CDATA[left]]></grand-totals-horizontal-alignment>
+<use-dummy-group-footer-background-color><![CDATA[true]]></use-dummy-group-footer-background-color>
+<dummy-group-footer-background-color><![CDATA[#E2869C]]></dummy-group-footer-background-color>
+<use-horizontal-gridlines><![CDATA[true]]></use-horizontal-gridlines>
+<use-vertical-gridlines><![CDATA[true]]></use-vertical-gridlines>
+<horizontal-gridlines-color><![CDATA[#7F887B]]></horizontal-gridlines-color>
+<vertical-gridlines-color><![CDATA[#7F887B]]></vertical-gridlines-color>
+<group-header-font-name><![CDATA[Arial]]></group-header-font-name>
+<group-header-font-style><![CDATA[1]]></group-header-font-style>
+<group-header-font-size><![CDATA[12]]></group-header-font-size>
+<group-header-font-color><![CDATA[#1A7439]]></group-header-font-color>
+<group-footer-font-name><![CDATA[Arial]]></group-footer-font-name>
+<group-footer-font-style><![CDATA[1]]></group-footer-font-style>
+<group-footer-font-size><![CDATA[12]]></group-footer-font-size>
+<group-footer-font-color><![CDATA[#1A7439]]></group-footer-font-color>
+<column-header-font-name><![CDATA[Arial]]></column-header-font-name>
+<column-header-font-style><![CDATA[0]]></column-header-font-style>
+<column-header-font-size><![CDATA[10]]></column-header-font-size>
+<column-header-font-color><![CDATA[#5B778D]]></column-header-font-color>
+<column-header-gap><![CDATA[6]]></column-header-gap>
+<items-font-name><![CDATA[Arial]]></items-font-name>
+<items-font-style><![CDATA[0]]></items-font-style>
+<items-font-size><![CDATA[10]]></items-font-size>
+<items-font-color><![CDATA[#4F383C]]></items-font-color>
+<field is-detail="true" name="BC_DIMENSION_BUSINESS_UNIT_COUNTRY_NAME" horizontal-alignment="left" expression="none" type="12"/>
+<field is-detail="true" name="BC_DIMENSION_BUSINESS_UNIT_CITY_NAME" horizontal-alignment="left" expression="none" type="12"/>
+<field is-detail="true" name="BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_TYPE_NAME" horizontal-alignment="left" expression="none" type="12"/>
+<field is-detail="true" name="BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_TYPE_DESC" horizontal-alignment="left" expression="none" type="12"/>
+<field is-detail="true" name="BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_STATUS_DESC" horizontal-alignment="left" expression="none" type="12"/>
+<field is-detail="true" name="BC_DIMENSION_BUSINESS_UNIT_BUSINESS_UNIT_NAME" horizontal-alignment="left" expression="none" type="12"/>
+<field is-detail="true" name="BC_FACT_BILLING_UNIT_QTY" horizontal-alignment="right" expression="none" type="2"/>
+</report-spec>

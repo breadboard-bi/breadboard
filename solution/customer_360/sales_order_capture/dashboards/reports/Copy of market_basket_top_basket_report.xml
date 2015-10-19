@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report name="market_basket_top_basket" orientation="landscape" pageformat="LETTER" leftmargin="5" rightmargin="5" topmargin="10" bottommargin="10">
+<reportheader>
+<label fontname="SansSerif" fontsize="15" height="18" vertical-alignment="middle" alignment="left" width="100%" x="0%" y="40">Market Basket Detail Report</label>
+</reportheader>
+  <groups>
+    <group name="dummy">
+      <groupheader repeat="true" color="#000000" fontname="SansSerif" fontsize="11" height="14">
+        <band name="DummyGroupNoDataBandElement">
+          <label height="11" vertical-alignment="middle" alignment="left" width="100%" x="0%" y="0">No Data Available for Detail Report.  Be Sure to Select a Product Brand.</label>
+        </band>
+        <band name="DummyGroupDataBandElement">
+          <rectangle color="#808080" draw="false" fill="true" height="12" width="100%" x="0%" y="0"/>
+ <!--     <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="5%" x="0%" y="0">Rank</label> -->
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="19%" x="0%" y="0">Product 1</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="19%" x="19%" y="0">Product 2</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="7%" x="38%" y="0">Baskets</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="12%" x="45%" y="0">Product 1 Units</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="12%" x="57%" y="0">Product 1 Sales</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="12%" x="69%" y="0">Product 2 Units</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="12%" x="81%" y="0">Product 2 Sales</label>
+        </band>
+      </groupheader>
+      <groupfooter name="dummyGroupFooter" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold">
+        <rectangle color="white" fill="false" height="18" width="0" x="0%" y="0"/>
+        <number-field fieldname="Summary_BASKET_QTYExpression" height="15" vertical-alignment="middle" alignment="left" width="7%" x="38%" y="2"/>
+        <number-field fieldname="Summary_PRODUCT1_SALES_QTYExpression" height="15" vertical-alignment="middle" alignment="left" width="12%" x="45%" y="2"/>
+        <number-field fieldname="Summary_PRODUCT1_SALES_AMTExpression" format="¤ #,###" height="15" vertical-alignment="middle" alignment="left" width="12%" x="57%" y="2"/>
+        <number-field fieldname="Summary_PRODUCT2_SALES_QTYExpression" height="15" vertical-alignment="middle" alignment="left" width="12%" x="69%" y="2"/>
+        <number-field fieldname="Summary_PRODUCT2_SALES_AMTExpression" format="¤ #,###" height="15" vertical-alignment="middle" alignment="left" width="12%" x="81%" y="2"/>
+        <message-field height="15" width="20%" x="0%" y="2" alignment="left" vertical-alignment="middle">Grand Total</message-field>
+      </groupfooter>
+    </group>
+  </groups>
+  <items color="#000000" fontname="SansSerif" fontsize="9" fontstyle="bold">
+      <rectangle name="rowBandingElement" color="#c0c0c0" draw="false" fill="true" height="11" x="0%" width="100%" y="0"/>
+ <!--   <number-field name="BASKET_RANKElement" fieldname="BASKET_RANK" vertical-alignment="middle" alignment="left" width="5%" x="0%" y="0" height="11"/> -->
+    <string-field name="PRODUCT1Element" fieldname="PRODUCT1" vertical-alignment="middle" alignment="left" width="19%" x="0%" y="0" height="11"/>
+    <string-field name="PRODUCT2Element" fieldname="PRODUCT2" vertical-alignment="middle" alignment="left" width="19%" x="19%" y="0" height="11"/>
+    <number-field name="BASKET_QTYElement" fieldname="BASKET_QTY" format="#,###" vertical-alignment="middle" alignment="left" width="7%" x="38%" y="0" height="11"/>
+    <number-field name="PRODUCT1_SALES_QTYElement" fieldname="PRODUCT1_SALES_QTY" format="#,###" vertical-alignment="middle" alignment="left" width="12%" x="45%" y="0" height="11"/>
+    <number-field name="PRODUCT1_SALES_AMTElement" fieldname="PRODUCT1_SALES_AMT" format="¤ #,###" vertical-alignment="middle" alignment="left" width="12%" x="57%" y="0" height="11"/>
+    <number-field name="PRODUCT2_SALES_QTYElement" fieldname="PRODUCT2_SALES_QTY" format="#,###" vertical-alignment="middle" alignment="left" width="12%" x="69%" y="0" height="11"/>
+    <number-field name="PRODUCT2_SALES_AMTElement" fieldname="PRODUCT2_SALES_AMT" format="¤ #,###" vertical-alignment="middle" alignment="left" width="12%" x="81%" y="0" height="11"/>
+  </items>
+  <functions>
+      <function name="backgroundTrigger" class="org.jfree.report.function.ElementVisibilitySwitchFunction">
+      <properties>
+        <property name="element">rowBandingElement</property>
+        <property name="numberOfElements">1</property>
+        <property name="initialState">true</property>
+      </properties>
+    </function>
+    <expression class="org.jfree.report.function.HideElementIfDataAvailableExpression" name="DummyGroupNoDataBandElementHideIfNullTrigger">
+      <properties>
+        <property name="element">DummyGroupNoDataBandElement</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="DummyGroupDataBandElementHideIfNullTrigger">
+      <properties>
+        <property name="element">DummyGroupDataBandElement</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="dummyGroupFooterHideIfNullTrigger">
+      <properties>
+        <property name="element">dummyGroupFooter</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ItemSumFunction" name="Summary_BASKET_QTYExpression">
+      <properties>
+        <property name="field">BASKET_QTY</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ItemSumFunction" name="Summary_PRODUCT1_SALES_QTYExpression">
+      <properties>
+        <property name="field">PRODUCT1_SALES_QTY</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ItemSumFunction" name="Summary_PRODUCT1_SALES_AMTExpression">
+      <properties>
+        <property name="field">PRODUCT1_SALES_AMT</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ItemSumFunction" name="Summary_PRODUCT2_SALES_QTYExpression">
+      <properties>
+        <property name="field">PRODUCT2_SALES_QTY</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ItemSumFunction" name="Summary_PRODUCT2_SALES_AMTExpression">
+      <properties>
+        <property name="field">PRODUCT2_SALES_AMT</property>
+      </properties>
+    </expression>
+  </functions>
+</report>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>returns_wTwoPrompts.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>%description</description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help/>  
+    <result-type>rule</result-type> 
+  </documentation>  
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <min_date type="string"> 
+      <sources> 
+        <request>min_date</request> 
+      </sources>  
+      <default-value>20060101</default-value> 
+    </min_date>  
+    <max_date type="string"> 
+      <sources> 
+        <request>max_date</request> 
+      </sources>  
+      <default-value>20060301</default-value> 
+    </max_date>  
+    <product type="string"> 
+      <sources> 
+        <request>product</request> 
+      </sources>  
+      <default-value>American Cole Slaw</default-value> 
+    </product> 
+  </inputs>  
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>  
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>returns.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>SQL Query</action-type>  
+      <action-outputs> 
+        <product_list type="property-map-list"/> 
+      </action-outputs>  
+      <component-definition> 
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT DISTINCT PRODUCT_NAME 
+FROM DIMENSION_PRODUCT
+WHERE PRODUCT_NAME IS NOT NULL 
+ORDER BY PRODUCT_NAME ASC]]></query> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>SecureFilterComponent</component-name>  
+      <action-type>Secure Filter</action-type>  
+      <action-inputs> 
+        <min_date type="string"/>  
+        <max_date type="string"/>  
+        <product type="string"/>  
+        <product_list type="property-map-list"/> 
+      </action-inputs>  
+      <component-definition> 
+        <selections> 
+          <min_date filter="none"> 
+            <title>Enter the minimum date for the returns date range (format YYYYMMDD).</title> 
+          </min_date>  
+          <max_date filter="none"> 
+            <title>Enter the maximum date for the returns date range (format YYYYMMDD).</title> 
+          </max_date>  
+          <product style="select"> 
+            <title>Please enter the product for analysis.</title>  
+            <filter value-col-name="product_name" display-col-name="product_name">product_list</filter> 
+          </product> 
+        </selections> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>  
+      <action-type>report</action-type>  
+      <action-inputs> 
+        <output-type type="string"/>  
+        <min_date type="string"/>  
+        <product type="string"/>  
+        <max_date type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <report type="content"/> 
+      </action-outputs>  
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT D.DAY_DATE,
+D.MONTH_NAME,
+D.QUARTER_NAME,
+D.YEAR_NUMBER,
+P.PRODUCT_DESC AS PRODUCT_NAME,
+P.PRODUCT_BRAND_NAME AS PRODUCT_BRAND, 
+C.CUSTOMER_NAME,
+C.CUSTOMER_TYPE_DESC AS CUSTOMER_TYPE,
+C.CITY_NAME,
+C.STATE_PROVINCE_NAME,
+C.POSTAL_CODE,
+C.COUNTRY_NAME,
+C.PHONE_REGION_CODE AS AREA_CODE,
+B.BUSINESS_UNIT_TYPE_CODE AS STORE_TYPE,
+B.BUSINESS_UNIT_DESC AS STORE_NAME,
+F.RETURN_AUTHORIZATION_ID AS TRANSACTION_ID,
+F.RETURN_TRXN_AMT AS RETURN_TRXN_AMT, 
+F.RETURN_QTY 
+FROM FACT_RETURN F, DIMENSION_PRODUCT P, DIMENSION_DAY D, 
+DIMENSION_CUSTOMER C,DIMENSION_BUSINESS_UNIT B
+WHERE F.RETURN_DATE_SK = D.DATE_SK 
+AND F.PRODUCT_SK = P.PRODUCT_SK 
+AND C.CUSTOMER_SK = F.CUSTOMER_SK
+AND F.BUSINESS_UNIT_SK = B.BUSINESS_UNIT_SK
+AND F.RETURN_DATE_SK BETWEEN '{min_date}' AND '{max_date}' 
+AND P.PRODUCT_NAME IN ('{product}')
+ORDER BY D.QUARTER_NAME, D.DAY_DATE, C.CUSTOMER_NAME]]></query> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

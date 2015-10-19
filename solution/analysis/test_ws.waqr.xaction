@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<action-sequence>
+  <name>test_ws.waqr.xaction</name>
+  <version>1</version>
+  <title>test_ws</title>
+  <documentation>
+    <author>demo</author>
+    <description>description</description>
+    <icon>PentahoReporting.png</icon>
+    <help>Auto-generated action-sequence for WAQR.</help>
+    <result-type>report</result-type>
+  </documentation>
+  <inputs>
+    <output-type type="string">
+      <default-value>html</default-value>
+      <sources>
+        <request>type</request>
+      </sources>
+    </output-type>
+    <mimeTypes type="string-list">
+      <sources>
+        <request>mimeTypes</request>
+      </sources>
+      <default-value type="string-list">
+        <list-item>html</list-item>
+        <list-item>xls</list-item>
+      </default-value>
+    </mimeTypes>
+  </inputs>
+  <outputs>
+    <report type="content">
+      <destinations>
+        <response>content</response>
+      </destinations>
+    </report>
+  </outputs>
+  <resources>
+    <report-definition>
+      <xml>
+        <location>
+          <report name="test_ws.waqr.xreportspec" orientation="landscape" pageformat="LEGAL" leftmargin="10" rightmargin="10" topmargin="10" bottommargin="10">
+            <parser-config>
+              <property name="reportheader">header</property>
+              <property name="reportfooter">footer ...</property>
+              <property name="pageheader">page</property>
+              <property name="pagefooter">page footer wsws</property>
+            </parser-config>
+            <groups>
+              <group name="dummy">
+                <groupheader name="dummyGroupHeader" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold" repeat="false">
+                  <label name="noDataLabelElement" height="11" vertical-alignment="middle" alignment="left" width="100%" x="0%" y="0" visible="false">No Data Available</label>
+                </groupheader>
+                <groupfooter name="dummyGroupFooter" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold"/>
+              </group>
+              <group name="BC_DIMENSION_WEB_BROWSER_OS_OPERATING_SYSTEM_NAME">
+                <fields>
+                  <field>BC_DIMENSION_WEB_BROWSER_OS_OPERATING_SYSTEM_NAME</field>
+                </fields>
+                <groupheader name="BC_DIMENSION_WEB_BROWSER_OS_OPERATING_SYSTEM_NAMEGroupHeader" repeat="false" pagebreak-before-print="false" pagebreak-after-print="false" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold">
+                  <rectangle color="#FFFFFF" draw="false" fill="false" height="16" width="100%" x="0%" y="0"/>
+                  <message-field height="16" vertical-alignment="top" alignment="left" width="100%" x="0%" y="0" nullstring="-">OS: $(BC_DIMENSION_WEB_BROWSER_OS_OPERATING_SYSTEM_NAME)</message-field>
+                </groupheader>
+                <groupfooter name="BC_DIMENSION_WEB_BROWSER_OS_OPERATING_SYSTEM_NAMEGroupFooter" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold" pagebreak-before-print="false" pagebreak-after-print="false"/>
+              </group>
+              <group name="BC_DIMENSION_WEB_BROWSER_OS_WEB_BROWSER_NAME">
+                <fields>
+                  <field>BC_DIMENSION_WEB_BROWSER_OS_OPERATING_SYSTEM_NAME</field>
+                  <field>BC_DIMENSION_WEB_BROWSER_OS_WEB_BROWSER_NAME</field>
+                </fields>
+                <groupheader name="BC_DIMENSION_WEB_BROWSER_OS_WEB_BROWSER_NAMEGroupHeader" repeat="false" pagebreak-before-print="false" pagebreak-after-print="false" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold">
+                  <rectangle color="#FFFFFF" draw="false" fill="false" height="16" width="100%" x="0%" y="0"/>
+                  <message-field height="16" vertical-alignment="top" alignment="left" width="100%" x="0%" y="0" nullstring="-">Web Browser: $(BC_DIMENSION_WEB_BROWSER_OS_WEB_BROWSER_NAME)</message-field>
+                </groupheader>
+                <groupfooter name="BC_DIMENSION_WEB_BROWSER_OS_WEB_BROWSER_NAMEGroupFooter" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold" pagebreak-before-print="false" pagebreak-after-print="false"/>
+              </group>
+              <group name="BC_DIMENSION_WEB_FILE_WEB_FILE_CAT">
+                <fields>
+                  <field>BC_DIMENSION_WEB_BROWSER_OS_OPERATING_SYSTEM_NAME</field>
+                  <field>BC_DIMENSION_WEB_BROWSER_OS_WEB_BROWSER_NAME</field>
+                  <field>BC_DIMENSION_WEB_FILE_WEB_FILE_CAT</field>
+                </fields>
+                <groupheader name="BC_DIMENSION_WEB_FILE_WEB_FILE_CATGroupHeader" repeat="false" pagebreak-before-print="false" pagebreak-after-print="false" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold">
+                  <rectangle color="#FFFFFF" draw="false" fill="false" height="16" width="100%" x="0%" y="0"/>
+                  <message-field height="16" vertical-alignment="top" alignment="left" width="100%" x="0%" y="0" nullstring="-">Web File Category: $(BC_DIMENSION_WEB_FILE_WEB_FILE_CAT)</message-field>
+                </groupheader>
+                <groupfooter name="BC_DIMENSION_WEB_FILE_WEB_FILE_CATGroupFooter" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold" pagebreak-before-print="false" pagebreak-after-print="false"/>
+              </group>
+              <group name="BC_DIMENSION_WEB_VISITOR_COUNTRY_NAME">
+                <fields>
+                  <field>BC_DIMENSION_WEB_BROWSER_OS_OPERATING_SYSTEM_NAME</field>
+                  <field>BC_DIMENSION_WEB_BROWSER_OS_WEB_BROWSER_NAME</field>
+                  <field>BC_DIMENSION_WEB_FILE_WEB_FILE_CAT</field>
+                  <field>BC_DIMENSION_WEB_VISITOR_COUNTRY_NAME</field>
+                </fields>
+                <groupheader name="BC_DIMENSION_WEB_VISITOR_COUNTRY_NAMEGroupHeader" repeat="false" pagebreak-before-print="false" pagebreak-after-print="false" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold" height="38">
+                  <rectangle color="#FFFFFF" draw="false" fill="false" height="16" width="100%" x="0%" y="0"/>
+                  <message-field height="16" vertical-alignment="top" alignment="left" width="100%" x="0%" y="0" nullstring="-">Country: $(BC_DIMENSION_WEB_VISITOR_COUNTRY_NAME)</message-field>
+                  <rectangle color="#C0C0C0" draw="false" fill="true" height="18" width="100%" x="0%" y="18"/>
+                  <rectangle draw="false" fill="false" height="2" width="100%" x="0%" y="16"/>
+                  <label color="#000000" fontname="SansSerif" fontsize="12" fontstyle="bold" height="18" vertical-alignment="middle" alignment="left" width="50.0%" x="0.0%" y="18">City</label>
+                  <label color="#000000" fontname="SansSerif" fontsize="12" fontstyle="bold" height="18" vertical-alignment="middle" alignment="left" width="50.0%" x="50.0%" y="18">Visit Date</label>
+                </groupheader>
+                <groupfooter name="BC_DIMENSION_WEB_VISITOR_COUNTRY_NAMEGroupFooter" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold" pagebreak-before-print="false" pagebreak-after-print="false"/>
+              </group>
+            </groups>
+            <items color="#000000" fontname="SansSerif" fontsize="9" fontstyle="bold">
+              <rectangle name="rowBandingElement" color="#E0E0E0" draw="false" fill="true" height="11" x="0%" width="100%" y="0"/>
+              <string-field name="BC_DIMENSION_WEB_VISITOR_CITY_NAMEElement" nullstring="-" fieldname="BC_DIMENSION_WEB_VISITOR_CITY_NAME" vertical-alignment="middle" alignment="left" width="50.0%" x="0.0%" y="0" height="11" color="#000000" fontname="Arial" fontsize="10" fontstyle="plain"/>
+              <date-field name="BC_FACT_WEB_SITE_VISIT_VISIT_DATEElement" nullstring="-" fieldname="BC_FACT_WEB_SITE_VISIT_VISIT_DATE" vertical-alignment="middle" alignment="left" width="50.0%" x="50.0%" y="0" height="11" color="#000000" fontname="Arial" fontsize="10" fontstyle="plain"/>
+            </items>
+            <functions>
+              <function name="backgroundTrigger" class="org.jfree.report.function.ElementVisibilitySwitchFunction">
+                <properties>
+                  <property name="element">rowBandingElement</property>
+                  <property name="numberOfElements">1</property>
+                  <property name="initialState">true</property>
+                </properties>
+              </function>
+              <expression class="org.jfree.report.function.HideElementIfDataAvailableExpression" name="noDataLabelElementHideIfNullTrigger">
+                <properties>
+                  <property name="element">noDataLabelElement</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="dummyGroupFooterHideIfNullTrigger">
+                <properties>
+                  <property name="element">dummyGroupFooter</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_WEB_BROWSER_OS_OPERATING_SYSTEM_NAMEGroupHeaderHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_WEB_BROWSER_OS_OPERATING_SYSTEM_NAMEGroupHeader</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_WEB_BROWSER_OS_OPERATING_SYSTEM_NAMEGroupFooterHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_WEB_BROWSER_OS_OPERATING_SYSTEM_NAMEGroupFooter</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_WEB_BROWSER_OS_WEB_BROWSER_NAMEGroupHeaderHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_WEB_BROWSER_OS_WEB_BROWSER_NAMEGroupHeader</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_WEB_BROWSER_OS_WEB_BROWSER_NAMEGroupFooterHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_WEB_BROWSER_OS_WEB_BROWSER_NAMEGroupFooter</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_WEB_FILE_WEB_FILE_CATGroupHeaderHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_WEB_FILE_WEB_FILE_CATGroupHeader</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_WEB_FILE_WEB_FILE_CATGroupFooterHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_WEB_FILE_WEB_FILE_CATGroupFooter</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_WEB_VISITOR_COUNTRY_NAMEGroupHeaderHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_WEB_VISITOR_COUNTRY_NAMEGroupHeader</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_WEB_VISITOR_COUNTRY_NAMEGroupFooterHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_WEB_VISITOR_COUNTRY_NAMEGroupFooter</property>
+                </properties>
+              </expression>
+            </functions>
+          </report>
+        </location>
+        <mime-type>text/xml</mime-type>
+      </xml>
+    </report-definition>
+  </resources>
+  <actions>
+    <action-definition>
+      <component-name>SecureFilterComponent</component-name>
+      <action-type>Prompt/Secure Filter</action-type>
+      <action-inputs>
+        <output-type type="string"/>
+        <mimeTypes type="string-list"/>
+      </action-inputs>
+      <component-definition>
+        <selections>
+          <output-type prompt-if-one-value="true">
+            <title>Select output type:</title>
+            <filter>mimeTypes</filter>
+          </output-type>
+        </selections>
+      </component-definition>
+    </action-definition>
+    <action-definition>
+      <action-outputs>
+        <rule-result type="result-set"/>
+      </action-outputs>
+      <component-name>MQLRelationalDataComponent</component-name>
+      <action-type>rule</action-type>
+      <component-definition>
+        <mql> 
+          <domain_type>relational</domain_type>  
+          <domain_id><![CDATA[breadboard]]></domain_id>
+          <model_id><![CDATA[Clickstream Open Source Model]]></model_id>  
+          <options> 
+            <disable_distinct>false</disable_distinct> 
+          </options>  
+          <selections> 
+            <selection>
+              <view>BC_DIMENSION_WEB_BROWSER_OS_</view>
+              <column>BC_DIMENSION_WEB_BROWSER_OS_OPERATING_SYSTEM_NAME</column>
+            </selection>  
+            <selection>
+              <view>BC_DIMENSION_WEB_BROWSER_OS_</view>
+              <column>BC_DIMENSION_WEB_BROWSER_OS_WEB_BROWSER_NAME</column>
+            </selection>  
+            <selection>
+              <view>Pages</view>
+              <column>BC_DIMENSION_WEB_FILE_WEB_FILE_CAT</column>
+            </selection>  
+            <selection>
+              <view>Visitors</view>
+              <column>BC_DIMENSION_WEB_VISITOR_COUNTRY_NAME</column>
+            </selection>  
+            <selection>
+              <view>Visitors</view>
+              <column>BC_DIMENSION_WEB_VISITOR_CITY_NAME</column>
+            </selection>  
+            <selection>
+              <view>Web Visitor Metrics</view>
+              <column>BC_FACT_WEB_SITE_VISIT_VISIT_DATE</column>
+            </selection> 
+          </selections>  
+          <constraints></constraints>  
+          <orders> 
+            <order>
+              <direction>asc</direction>
+              <view_id>BC_DIMENSION_WEB_BROWSER_OS_</view_id>
+              <column_id>BC_DIMENSION_WEB_BROWSER_OS_OPERATING_SYSTEM_NAME</column_id>
+            </order>  
+            <order>
+              <direction>asc</direction>
+              <view_id>BC_DIMENSION_WEB_BROWSER_OS_</view_id>
+              <column_id>BC_DIMENSION_WEB_BROWSER_OS_WEB_BROWSER_NAME</column_id>
+            </order>  
+            <order>
+              <direction>asc</direction>
+              <view_id>Pages</view_id>
+              <column_id>BC_DIMENSION_WEB_FILE_WEB_FILE_CAT</column_id>
+            </order>  
+            <order>
+              <direction>asc</direction>
+              <view_id>Visitors</view_id>
+              <column_id>BC_DIMENSION_WEB_VISITOR_COUNTRY_NAME</column_id>
+            </order> 
+          </orders> 
+        </mql>
+        <live>true</live>
+        <display-names>false</display-names>
+      </component-definition>
+    </action-definition>
+    <action-definition>
+      <action-outputs>
+        <report type="content"/>
+      </action-outputs>
+      <action-inputs>
+        <output-type type="string"/>
+        <data type="result-set" mapping="rule-result"/>
+      </action-inputs>
+      <action-resources>
+        <report-definition type="resource"/>
+      </action-resources>
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <component-definition>
+        <output-type>html</output-type>
+      </component-definition>
+    </action-definition>
+  </actions>
+</action-sequence>

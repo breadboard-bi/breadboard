@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">  
+  <name>new_market.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description><![CDATA[%description]]></description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help>just testing...</help>  
+    <result-type>report</result-type> 
+  </documentation>  
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <WEEK_OF_YEAR type="string"> 
+      <sources> 
+        <request>WEEK_OF_YEAR</request> 
+      </sources> 
+    </WEEK_OF_YEAR>  
+      
+     
+  </inputs>  
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>  
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>syndication_referer_top_keyword_report.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>  
+  <actions> 
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>  
+      <action-type>report</action-type>  
+      <action-inputs> 
+        <output-type type="string"/>  
+          
+          
+         
+      <WEEK_OF_YEAR type="string"/></action-inputs>  
+      <action-outputs> 
+        <report type="content"/> 
+      </action-outputs>  
+      <component-definition> 
+        <source>sql</source>  
+        <live>true</live>  
+          
+          
+          
+          
+        <live>true</live>  
+         
+      <jndi>mdw</jndi><query><![CDATA[SELECT * FROM (
+SELECT 
+RANK() OVER(ORDER BY SUM(F.REFERRAL_QTY) DESC) AS RANK,
+MAX(D.WEEK_SK) AS WEEK_SK,
+MAX(R.REFERER_URL_SK) AS REFERER_URL_SK,
+R.PARENT_REFERER_DESC,
+R.REFERER_URL_DESC,
+SUM(F.SYNDICATION_VIEW_QTY) AS REFERER_VIEW_QTY,
+SUM(F.WEB_PAGE_VIEW_QTY) AS WEB_PAGE_VIEW_QTY,
+SUM(F.VIEW_SECONDS_QTY) AS VIEW_SECONDS_QTY
+FROM FACT_WEB_SITE_REFERER F, DIMENSION_DAY D, DIMENSION_WEB_SITE_REFERER R
+WHERE F.REFERRAL_DATE_SK = D.DATE_SK
+AND F.REFERER_URL_SK = R.REFERER_URL_SK
+AND F.SYNDICATION_VIEW_QTY > 0
+AND D.WEEK_SK = '{WEEK_OF_YEAR}' 
+GROUP BY R.REFERER_URL_DESC, R.PARENT_REFERER_DESC
+)
+WHERE RANK <=11 AND ROWNUM < 11]]></query></component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

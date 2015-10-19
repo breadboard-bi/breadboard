@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>MDX_report.xaction</name>
+  <title>%title</title>
+  <version>1</version>
+  <logging-level>debug</logging-level>
+  <documentation> 
+    <author>Pedro Borges</author>  
+    <description>%description</description>  
+    <help/>  
+    <result-type>rule</result-type>  
+    <icon>MDX_report.png</icon> 
+  </documentation>
+
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <vendedor type="string"> 
+      <sources> 
+        <request>vendedor</request> 
+      </sources>  
+      <default-value><![CDATA[5]]></default-value> 
+    </vendedor>  
+    <periodo_actual type="string"> 
+      <sources> 
+        <request>periodo_actual</request> 
+      </sources>  
+      <default-value><![CDATA[[2006].[March]]]></default-value> 
+    </periodo_actual>  
+    <periodo_ant type="string"> 
+      <sources> 
+        <request>periodo_ant</request> 
+      </sources>  
+      <default-value><![CDATA[[2005].[March]]]></default-value> 
+    </periodo_ant>  
+    <sale type="string"> 
+      <sources> 
+        <request>sale</request> 
+      </sources>  
+      <default-value><![CDATA[Sale Quantity]]></default-value> 
+    </sale>  
+    <mes type="string"> 
+      <sources> 
+        <request>mes</request> 
+      </sources>  
+      <default-value><![CDATA[March]]></default-value> 
+    </mes> 
+  </inputs>
+
+  <outputs> 
+    <imgtag type="string"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </imgtag> 
+  </outputs>
+
+  <resources> 
+    <catalog> 
+      <!-- solution-file>
+				<location>SampleData.xml</location>
+				<mime-type>text/xml</mime-type>
+			</solution-file -->  
+      <solution-file> 
+        <location>/analysis/breadboardbi.mondrian.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </catalog>  
+    <report-definition> 
+      <solution-file> 
+        <location>top10_produtos.widget.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition>  
+    <catalog1> 
+      <solution-file> 
+        <location>/analysis/breadboardbi.mondrian.xml</location>  
+        <mime-type>text/plain</mime-type> 
+      </solution-file> 
+    </catalog1>  
+    <catalog2> 
+      <solution-file> 
+        <location>/analysis/breadboardbi.mondrian.xml</location>  
+        <mime-type>text/plain</mime-type> 
+      </solution-file> 
+    </catalog2>  
+    <catalog3> 
+      <solution-file> 
+        <location>/analysis/breadboardbi.mondrian.xml</location>  
+        <mime-type>text/plain</mime-type> 
+      </solution-file> 
+    </catalog3> 
+  </resources>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>
+      <action-type>Relational</action-type>
+      <action-inputs> 
+        <vendedor type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <query-result type="result-set" mapping="sales_reg"/>  
+        <count type="string"/> 
+      </action-outputs>
+      <component-definition> 
+        <jndi><![CDATA[mdw_mysql]]></jndi>  
+        <query><![CDATA[SELECT sales_region_desc 
+FROM DIMENSION_PERSON
+where person_sk={PREPARE:vendedor}]]></query>  
+        <live><![CDATA[true]]></live> 
+      </component-definition> 
+    </action-definition>
+  
+    <actions> 
+      <condition><![CDATA[sales_reg.getValueAt(0,0)==null]]></condition>  
+      <action-definition> 
+        <component-name>JavascriptRule</component-name>
+        <action-type>JavaScript</action-type>
+        <action-outputs> 
+          <sales_reg type="string"/> 
+        </action-outputs>
+        <component-definition> 
+          <script><![CDATA[sales_reg="#null";]]></script> 
+        </component-definition> 
+      </action-definition>
+ 
+    </actions>
+  
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>
+      <action-type>Relational</action-type>
+      <action-inputs> 
+        <vendedor type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <query-result type="result-set" mapping="nome_vend"/> 
+      </action-outputs>
+      <component-definition> 
+        <jndi><![CDATA[mdw_mysql]]></jndi>  
+        <query><![CDATA[select FULL_NAME
+from DIMENSION_PERSON
+where PERSON_SK={PREPARE:vendedor}]]></query>  
+        <live><![CDATA[true]]></live> 
+      </component-definition> 
+    </action-definition>
+  
+    <actions> 
+      <condition><![CDATA[vendedor.equals("Children")==true 
+]]></condition>  
+      <actions> 
+        <condition><![CDATA[(mes.equals("Q1")||mes.equals("Q2")||mes.equals("Q3")||mes.equals("Q4"))==true]]></condition>  
+        <action-definition> 
+          <component-name>MDXLookupRule</component-name>
+          <action-type>OLAP Query For Report Data</action-type>
+          <action-inputs> 
+            <periodo_ant type="string"/>  
+            <sale type="string"/>  
+            <periodo_actual type="string"/> 
+          </action-inputs>
+          <action-resources> 
+            <catalog type="resource" mapping="catalog2"/> 
+          </action-resources>
+          <action-outputs> 
+            <query-results type="result-set" mapping="reportData"/> 
+          </action-outputs>
+          <component-definition> 
+            <jndi><![CDATA[mdw_mysql]]></jndi>  
+            <location><![CDATA[mondrian]]></location>  
+            <query><![CDATA[with
+member [Measures].[year selected] as Sum({[Time Period].[All Periods].{periodo_actual}}, [Measures].[{sale}])
+ 
+member [Measures].[year before] as Sum({[Time Period].[All Periods].{periodo_ant}}, [Measures].[{sale}])
+
+select 
+NON EMPTY {[Measures].[year selected],[Measures].[year before] }
+ON COLUMNS,
+  NON EMPTY  {TopCount(Order({[Product.Brands].[Product Name].Members}, [Measures].[year selected],BDESC),10.0)} ON ROWS
+from [Orders]]]></query> 
+          </component-definition> 
+        </action-definition>
+ 
+      </actions>
+  
+      <actions> 
+        <condition><![CDATA[(mes.equals("Q1")||mes.equals("Q2")||mes.equals("Q3")||mes.equals("Q4"))==false]]></condition>  
+        <action-definition> 
+          <component-name>MDXLookupRule</component-name>
+          <action-type>OLAP Query For Report Data</action-type>
+          <action-inputs> 
+            <periodo_ant type="string"/>  
+            <periodo_actual type="string"/>  
+            <sale type="string"/> 
+          </action-inputs>
+          <action-resources> 
+            <catalog type="resource"/> 
+          </action-resources>
+          <action-outputs> 
+            <query-results type="result-set" mapping="reportData"/> 
+          </action-outputs>
+          <component-definition> 
+            <location>mondrian</location>  
+            <jndi><![CDATA[mdw_mysql]]></jndi>  
+            <query><![CDATA[with
+member [Measures].[year selected] as Sum({[Time Period.Month].[All Months].{periodo_actual}}, [Measures].[{sale}])
+ 
+member [Measures].[year before] as Sum({[Time Period.Month].[All Months].{periodo_ant}}, [Measures].[{sale}])
+
+select 
+NON EMPTY {[Measures].[year selected],[Measures].[year before] }
+ON COLUMNS,
+  NON EMPTY  {TopCount(Order({[Product.Brands].[Product Name].Members}, [Measures].[year selected],BDESC),10.0)} ON ROWS
+from [Orders]]]></query> 
+          </component-definition> 
+        </action-definition>
+ 
+      </actions>
+ 
+    </actions>
+  
+    <actions> 
+      <condition><![CDATA[vendedor.equals("Children")==false
+]]></condition>  
+      <actions> 
+        <condition><![CDATA[(mes.equals("Q1")||mes.equals("Q2")||mes.equals("Q3")||mes.equals("Q4"))==false]]></condition>  
+        <action-definition> 
+          <component-name>MDXLookupRule</component-name>
+          <action-type>OLAP Query For Report Data</action-type>
+          <action-inputs> 
+            <periodo_ant type="string"/>  
+            <nome_vend type="string"/>  
+            <periodo_actual type="string"/>  
+            <sales_reg type="string"/>  
+            <sale type="string"/> 
+          </action-inputs>
+          <action-resources> 
+            <catalog type="resource" mapping="catalog1"/> 
+          </action-resources>
+          <action-outputs> 
+            <query-results type="result-set" mapping="reportData"/> 
+          </action-outputs>
+          <component-definition> 
+            <jndi><![CDATA[mdw_mysql]]></jndi>  
+            <location><![CDATA[mondrian]]></location>  
+            <query><![CDATA[with
+member [Measures].[year selected] as Sum({[Time Period.Month].[All Months].{periodo_actual}}, [Measures].[{sale}])
+ 
+member [Measures].[year before] as Sum({[Time Period.Month].[All Months].{periodo_ant}}, [Measures].[{sale}])
+
+select 
+NON EMPTY {[Measures].[year selected],[Measures].[year before] }
+ON COLUMNS,
+  NON EMPTY  {TopCount(Order({[Product.Brands].[Product Name].Members}, [Measures].[year selected],BDESC),10.0)} ON ROWS
+from [Orders]
+where [Sales Rep].[All Sales Reps].[{sales_reg}].[{nome_vend}]]]></query> 
+          </component-definition> 
+        </action-definition>
+ 
+      </actions>
+  
+      <actions> 
+        <condition><![CDATA[(mes.equals("Q1")||mes.equals("Q2")||mes.equals("Q3")||mes.equals("Q4"))==true]]></condition>  
+        <action-definition> 
+          <component-name>MDXLookupRule</component-name>
+          <action-type>OLAP Query For Report Data</action-type>
+          <action-inputs> 
+            <periodo_ant type="string"/>  
+            <sales_reg type="string"/>  
+            <nome_vend type="string"/>  
+            <periodo_actual type="string"/>  
+            <sale type="string"/> 
+          </action-inputs>
+          <action-resources> 
+            <catalog type="resource" mapping="catalog3"/> 
+          </action-resources>
+          <action-outputs> 
+            <query-results type="result-set" mapping="reportData"/> 
+          </action-outputs>
+          <component-definition> 
+            <jndi><![CDATA[mdw_mysql]]></jndi>  
+            <location><![CDATA[mondrian]]></location>  
+            <query><![CDATA[with
+member [Measures].[year selected] as Sum({[Time Period].[All Periods].{periodo_actual}}, [Measures].[{sale}])
+ 
+member [Measures].[year before] as Sum({[Time Period].[All Periods].{periodo_ant}}, [Measures].[{sale}])
+
+select 
+NON EMPTY {[Measures].[year selected],[Measures].[year before] }
+ON COLUMNS,
+  NON EMPTY  {TopCount(Order({[Product.Brands].[Product Name].Members}, [Measures].[year selected],BDESC),10.0)} ON ROWS
+from [Orders]
+where [Sales Rep].[All Sales Reps].[{sales_reg}].[{nome_vend}]]]></query> 
+          </component-definition> 
+        </action-definition>
+ 
+      </actions>
+ 
+    </actions>
+  
+    <action-definition> 
+      <component-name>ChartComponent</component-name>
+      <action-type>Bar Chart</action-type>
+      <action-inputs> 
+        <chart-data type="result-set" mapping="reportData"/> 
+      </action-inputs>
+      <action-outputs> 
+        <chart-filename type="string"/>  
+        <base-url type="string"/> 
+      </action-outputs>
+      <component-definition> 
+        <chart-attributes> 
+          <chart-type>BarChart</chart-type>  
+          <range-title/>  
+          <domain-label-rotation>0</domain-label-rotation>  
+          <domain-label-rotation-dir/>  
+          <domain-title/>  
+          <orientation>horizontal</orientation>  
+          <is-3D>true</is-3D>  
+          <include-legend>true</include-legend>  
+          <color-palette> 
+            <color>#666666</color>  
+            <color>#006666</color>  
+            <color>#336699</color>  
+            <color>#99CCFF</color>  
+            <color>#999933</color>  
+            <color>#666699</color>  
+            <color>#CC9933</color>  
+            <color>#3399FF</color>  
+            <color>#993300</color>  
+            <color>#CCCC99</color>  
+            <color>#FFCC66</color>  
+            <color>#6699CC</color>  
+            <color>#663366</color> 
+          </color-palette>  
+          <title-font> 
+            <font-family>Ariel</font-family>  
+            <size>15</size>  
+            <is-bold>true</is-bold> 
+          </title-font> 
+        </chart-attributes>  
+        <width><![CDATA[500]]></width>  
+        <height><![CDATA[350]]></height>  
+        <by-row>false</by-row>  
+        <title><![CDATA[%top10_products]]></title> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>TemplateComponent</component-name>
+      <action-type>Message Template</action-type>
+      <action-inputs> 
+        <base-url type="string"/>  
+        <chart-filename type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <output-message type="string" mapping="imgtag"/> 
+      </action-outputs>
+      <component-definition> 
+        <template><![CDATA[<img src="{base-url}/getImage?image={chart-filename}" />]]></template> 
+      </component-definition> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

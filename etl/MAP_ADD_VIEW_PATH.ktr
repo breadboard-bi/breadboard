@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>MAP_ADD_VIEW_PATH</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <rejected/>
+      <connection/>
+      <table/>
+      <step_performance_table/>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>N</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>0</step_performance_capturing_delay>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>174.129.240.99</name><hostname>174.129.240.99</hostname><port>8081</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2009&#47;01&#47;23 19:44:49.171</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Copyright © 2006 Breadboard BI.  All rights reserved. 
+
+This component is free software; you can redistribute it and&#47;or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this data mart; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA</note>
+      <xloc>16</xloc>
+      <yloc>293</yloc>
+      <width>634</width>
+      <heigth>140</heigth>
+    </notepad>
+    <notepad>
+      <note>This map creates a visitor view path.</note>
+      <xloc>24</xloc>
+      <yloc>31</yloc>
+      <width>187</width>
+      <heigth>23</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>mdw_mysql</name>
+    <server>10.10.10.3</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>3306</port>
+    <username>mdw</username>
+    <password>Encrypted 2be98afc86aa7f2e4a118bd79cbc3fd89</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_amazon</name>
+    <server>174.129.240.99</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>3306</port>
+    <username>mdw_user</username>
+    <password>Encrypted 2be98afc86aca9693940cbd75ccd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>windows</name>
+    <server>174.129.240.99</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>3306</port>
+    <username>mdw_user</username>
+    <password>Encrypted 2be98afc86aca9693940cbd75ccd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>SUBSTRING_WEB_NAVIGATION_PATH</from><to>OUT_WEB_FILE_NAME_SK</to><enabled>Y</enabled> </hop>  <hop> <from>IN_WEB_FILE_ID</from><to>ADD_VIEW_PATH</to><enabled>Y</enabled> </hop>  <hop> <from>ADD_VIEW_PATH</from><to>SUBSTRING_WEB_NAVIGATION_PATH</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>ADD_VIEW_PATH</name>
+    <type>ScriptValue</type>
+    <description>This javascript step creates the web navigation path.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>Y</compatible>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>ScriptValue</jsScript_name>
+        <jsScript_script>&#47;&#47; Declare Variables
+var v_curDate = REQUEST_DATE_SK.getNumber();
+var v_cur_WEB_VISITOR_SK = WEB_VISITOR_SK.getNumber();
+var v_cur_SOURCE_SYSTEM_SK = SOURCE_SYSTEM_SK.getNumber();
+var v_cur_HOSTED_CLIENT_SK = HOSTED_CLIENT_SK.getNumber();
+var v_cur_WEB_FILE_SK = WEB_FILE_SK.getNumber();
+var v_web_file_name = WEB_FILE_NAME.getString();
+var v_view_minutes_qty = (VIEW_SECONDS_QTY.getNumber())&#47;60;
+var v_WEB_NAVIGATION_PATH_DESC = &quot;Unknown&quot;;
+
+&#47;&#47; Check Subsequent Views - same file is NOT repeated in path
+if (v_prev_WEB_FILE_SK == v_cur_WEB_FILE_SK 
+&amp;&amp; v_cur_HOSTED_CLIENT_SK == v_prev_HOSTED_CLIENT_SK 
+&amp;&amp; v_cur_SOURCE_SYSTEM_SK == v_prev_SOURCE_SYSTEM_SK 
+&amp;&amp; v_prevDate == v_curDate 
+&amp;&amp; v_cur_WEB_VISITOR_SK == v_prev_WEB_VISITOR_SK 
+&amp;&amp; v_view_minutes_qty &lt; 31)
+{
+v_WEB_NAVIGATION_PATH_DESC = v_prev_web_navigation_path_desc;
+}
+
+&#47;&#47; Check Subsequent Views different file
+else if (v_cur_HOSTED_CLIENT_SK == v_prev_HOSTED_CLIENT_SK 
+&amp;&amp; v_cur_SOURCE_SYSTEM_SK == v_prev_SOURCE_SYSTEM_SK 
+&amp;&amp; v_prevDate == v_curDate 
+&amp;&amp; v_cur_WEB_VISITOR_SK == v_prev_WEB_VISITOR_SK 
+&amp;&amp; v_view_minutes_qty &lt; 31)
+{
+v_WEB_NAVIGATION_PATH_DESC = v_prev_web_navigation_path_desc + &quot; &gt; &quot; + v_web_file_name;
+}
+
+else {
+v_WEB_NAVIGATION_PATH_DESC = v_web_file_name;
+
+}
+
+&#47;&#47; Set current values as previous for the next row
+var v_prev_SOURCE_SYSTEM_SK =&quot;&quot;;
+var v_prev_HOSTED_CLIENT_SK =&quot;&quot;;
+var v_prev_WEB_VISITOR_SK =&quot;&quot;;
+var v_prevDate = &quot;&quot;;
+var v_prev_web_navigation_path_desc = &quot;&quot;;
+var v_prev_web_file_name = &quot;&quot;;
+var v_prev_WEB_FILE_SK = &quot;&quot;;
+v_prev_WEB_VISITOR_SK = v_cur_WEB_VISITOR_SK;
+v_prev_SOURCE_SYSTEM_SK = v_cur_SOURCE_SYSTEM_SK;
+v_prev_HOSTED_CLIENT_SK = v_cur_HOSTED_CLIENT_SK;
+v_prev_WEB_FILE_SK = v_cur_WEB_FILE_SK;
+v_prevDate = v_curDate;
+v_prev_web_navigation_path_desc = v_WEB_NAVIGATION_PATH_DESC;
+v_prev_web_file_name = v_web_file_name;</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>v_WEB_NAVIGATION_PATH_DESC</name>
+        <rename>v_WEB_NAVIGATION_PATH_DESC</rename>
+        <type>String</type>
+        <length>4000</length>
+        <precision>-1</precision>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>226</xloc>
+      <yloc>119</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>IN_WEB_FILE_ID</name>
+    <type>MappingInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>HOSTED_CLIENT_SK</name>
+        <type>Number</type>
+        <length>0</length>
+        <precision>0</precision>
+      </field>
+      <field>
+        <name>REQUEST_DATE_SK</name>
+        <type>Integer</type>
+        <length>0</length>
+        <precision>0</precision>
+      </field>
+      <field>
+        <name>WEB_VISITOR_SK</name>
+        <type>Integer</type>
+        <length>0</length>
+        <precision>0</precision>
+      </field>
+      <field>
+        <name>WEB_FILE_SK</name>
+        <type>Integer</type>
+        <length>0</length>
+        <precision>0</precision>
+      </field>
+      <field>
+        <name>WEB_FILE_NAME</name>
+        <type>String</type>
+        <length>0</length>
+        <precision>0</precision>
+      </field>
+      <field>
+        <name>SOURCE_SYSTEM_SK</name>
+        <type>Integer</type>
+        <length>0</length>
+        <precision>0</precision>
+      </field>
+      <field>
+        <name>VIEW_SECONDS_QTY</name>
+        <type>BigNumber</type>
+        <length>0</length>
+        <precision>0</precision>
+      </field>
+        <select_unspecified>N</select_unspecified>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>87</xloc>
+      <yloc>119</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>OUT_WEB_FILE_NAME_SK</name>
+    <type>MappingOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>581</xloc>
+      <yloc>121</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>SUBSTRING_WEB_NAVIGATION_PATH</name>
+    <type>ScriptValue</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>Y</compatible>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>ScriptValue</jsScript_name>
+        <jsScript_script>if (v_WEB_NAVIGATION_PATH_DESC.getString() != null)
+{
+
+	var length_test;
+    var WEB_NAVIGATION_PATH_DESC = v_WEB_NAVIGATION_PATH_DESC.getString();
+    length_test = WEB_NAVIGATION_PATH_DESC.length();
+
+    if (length_test &gt; 4000)
+        {
+            &#47;&#47; WEB_NAVIGATION_PATH_DESC = &quot;Unknown&quot;;
+        WEB_NAVIGATION_PATH_DESC = v_WEB_NAVIGATION_PATH_DESC.getString().substr(1,3999);
+        }
+    else {
+    WEB_NAVIGATION_PATH_DESC=v_WEB_NAVIGATION_PATH_DESC.getString();
+    }
+
+	var WEB_NAVIGATION_PATH_ID = v_WEB_NAVIGATION_PATH_DESC.getString().substr(1,1000);
+
+}
+
+</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>WEB_NAVIGATION_PATH_DESC</name>
+        <rename>WEB_NAVIGATION_PATH_DESC</rename>
+        <type>String</type>
+        <length>4000</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>length_test</name>
+        <rename>length_test</rename>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>WEB_NAVIGATION_PATH_ID</name>
+        <rename>WEB_NAVIGATION_PATH_ID</rename>
+        <type>String</type>
+        <length>1000</length>
+        <precision>-1</precision>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>392</xloc>
+      <yloc>121</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+   <slave-step-copy-partition-distribution>
+</slave-step-copy-partition-distribution>
+   <slave_transformation>N</slave_transformation>
+</transformation>

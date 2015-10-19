@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>CRM_DIMENSION_CUSTOMER</name>
+    <directory>/</directory>
+    <log>
+      <read></read>
+      <write></write>
+      <input></input>
+      <output></output>
+      <update></update>
+      <connection></connection>
+      <table></table>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection></connection>
+      <table></table>
+      <field></field>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts customer data from PeopleSoft CRM 8.8.  The output could be used to create a customer dimension.</note>
+      <xloc>173</xloc>
+      <yloc>121</yloc>
+      <width>605</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_CRM_CUSTOMER</from><to>DIMENSION_CUSTOMER</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>DIMENSION_CUSTOMER</name>
+    <type>InsertUpdate</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <lookup>
+      <table>DIMENSION_CUSTOMER</table>
+      <key>
+        <name>BO_CUSTOMER_ID</name>
+        <field>BO_CUSTOMER_ID</field>
+        <condition>=</condition>
+        <name2></name2>
+        </key>
+      <key>
+        <name>CUSTOMER_ID</name>
+        <field>CUSTOMER_ID</field>
+        <condition>=</condition>
+        <name2></name2>
+        </key>
+      <key>
+        <name>SETID</name>
+        <field>SETID</field>
+        <condition>=</condition>
+        <name2></name2>
+        </key>
+      <value>
+        <name>BO_CUSTOMER_ID</name>
+        <rename>BO_CUSTOMER_ID</rename>
+        </value>
+      <value>
+        <name>CUSTOMER_NAME</name>
+        <rename>CUSTOMER_NAME</rename>
+        </value>
+      <value>
+        <name>CUSTOMER_TYPE_ID</name>
+        <rename>CUSTOMER_TYPE_ID</rename>
+        </value>
+      <value>
+        <name>CUSTOMER_ID</name>
+        <rename>CUSTOMER_ID</rename>
+        </value>
+      <value>
+        <name>SETID</name>
+        <rename>SETID</rename>
+        </value>
+      <value>
+        <name>CUSTOMER_INDICATOR</name>
+        <rename>CUSTOMER_INDICATOR</rename>
+        </value>
+      <value>
+        <name>CUSTOMER_STATUS</name>
+        <rename>CUSTOMER_STATUS</rename>
+        </value>
+      <value>
+        <name>CUSTOMER_STATUS_DATE</name>
+        <rename>CUSTOMER_STATUS_DATE</rename>
+        </value>
+      <value>
+        <name>CURRENCY_ID</name>
+        <rename>CURRENCY_ID</rename>
+        </value>
+      <value>
+        <name>CREDIT_RATING</name>
+        <rename>CREDIT_RATING</rename>
+        </value>
+      <value>
+        <name>SINCE_DATE</name>
+        <rename>SINCE_DATE</rename>
+        </value>
+      <value>
+        <name>ADD_DATE</name>
+        <rename>ADD_DATE</rename>
+        </value>
+      <value>
+        <name>DO_NOT_CONTACT_INDICATOR</name>
+        <rename>DO_NOT_CONTACT_INDICATOR</rename>
+        </value>
+      <value>
+        <name>DO_NOT_EMAIL_INDICATOR</name>
+        <rename>DO_NOT_EMAIL_INDICATOR</rename>
+        </value>
+      <value>
+        <name>DO_NOT_MAIL_INDICATOR</name>
+        <rename>DO_NOT_MAIL_INDICATOR</rename>
+        </value>
+      <value>
+        <name>DO_NOT_CALL_INDICATOR</name>
+        <rename>DO_NOT_CALL_INDICATOR</rename>
+        </value>
+      <value>
+        <name>CUSTOMER_TYPE_DESC</name>
+        <rename>CUSTOMER_TYPE_DESC</rename>
+        </value>
+      <value>
+        <name>CUSTOMER_STATUS_SHORT_DESC</name>
+        <rename>CUSTOMER_STATUS_SHORT_DESC</rename>
+        </value>
+      <value>
+        <name>CUSTOMER_STATUS_LONG_DESC</name>
+        <rename>CUSTOMER_STATUS_LONG_DESC</rename>
+        </value>
+      <value>
+        <name>GEO_CODE</name>
+        <rename>GEO_CODE</rename>
+        </value>
+      <value>
+        <name>IN_CITY_LIMIT_INDICATOR</name>
+        <rename>IN_CITY_LIMIT_INDICATOR</rename>
+        </value>
+      <value>
+        <name>TIMEZONE</name>
+        <rename>TIMEZONE</rename>
+        </value>
+      <value>
+        <name>LATITUDE</name>
+        <rename>LATITUDE</rename>
+        </value>
+      <value>
+        <name>LONGITUDE</name>
+        <rename>LONGITUDE</rename>
+        </value>
+      <value>
+        <name>ADDRESS_LINE_1</name>
+        <rename>ADDRESS_LINE_1</rename>
+        </value>
+      <value>
+        <name>ADDRESS_LINE_2</name>
+        <rename>ADDRESS_LINE_2</rename>
+        </value>
+      <value>
+        <name>ADDRESS_LINE_3</name>
+        <rename>ADDRESS_LINE_3</rename>
+        </value>
+      <value>
+        <name>ADDRESS_LINE_4</name>
+        <rename>ADDRESS_LINE_4</rename>
+        </value>
+      <value>
+        <name>CITY</name>
+        <rename>CITY</rename>
+        </value>
+      <value>
+        <name>COUNTY</name>
+        <rename>COUNTY</rename>
+        </value>
+      <value>
+        <name>POSTAL_CODE</name>
+        <rename>POSTAL_CODE</rename>
+        </value>
+      <value>
+        <name>STATE_CODE</name>
+        <rename>STATE_CODE</rename>
+        </value>
+      <value>
+        <name>COUNTRY_CODE</name>
+        <rename>COUNTRY_CODE</rename>
+        </value>
+      <value>
+        <name>STATE_NAME</name>
+        <rename>STATE_NAME</rename>
+        </value>
+      <value>
+        <name>COUNTRY_NAME</name>
+        <rename>COUNTRY_NAME</rename>
+        </value>
+      <value>
+        <name>EMAIL_DOMAIN</name>
+        <rename>EMAIL_DOMAIN</rename>
+        </value>
+      <value>
+        <name>EMAIL_ADDRESS</name>
+        <rename>EMAIL_ADDRESS</rename>
+        </value>
+      <value>
+        <name>PHONE_COUNTRY_CODE</name>
+        <rename>PHONE_COUNTRY_CODE</rename>
+        </value>
+      <value>
+        <name>PHONE_NUMBER</name>
+        <rename>PHONE_NUMBER</rename>
+        </value>
+      <value>
+        <name>PHONE_EXTENSION</name>
+        <rename>PHONE_EXTENSION</rename>
+        </value>
+      <value>
+        <name>SOLD_TO_INDICATOR</name>
+        <rename>SOLD_TO_INDICATOR</rename>
+        </value>
+      <value>
+        <name>SHIP_TO_INDICATOR</name>
+        <rename>SHIP_TO_INDICATOR</rename>
+        </value>
+      <value>
+        <name>BILL_TO_INDICATOR</name>
+        <rename>BILL_TO_INDICATOR</rename>
+        </value>
+      </lookup>
+    <GUI>
+      <xloc>418</xloc>
+      <yloc>347</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_CRM_CUSTOMER</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the column from the PS_BO_ROLE table.  The business object role defines the business contact.
+</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT
+RTRIM(BO.BO_ID) AS BO_CUSTOMER_ID,
+BO.BO_NAME AS CUSTOMER_NAME,
+BO.BO_TYPE_ID AS CUSTOMER_TYPE_ID,
+RTRIM(BC.CUST_ID) AS CUSTOMER_ID,
+RTRIM(BC.SETID) AS SETID,
+BC.CUSTOMER_IND AS CUSTOMER_INDICATOR, 
+BC.CUST_STATUS AS CUSTOMER_STATUS, 
+BC.CUST_STATUS_DT AS CUSTOMER_STATUS_DATE, 
+BC.CURRENCY_CD AS CURRENCY_ID, 
+BC.CR_RATING AS CREDIT_RATING, 
+BC.SINCE_DT AS SINCE_DATE, 
+BC.ADD_DT AS ADD_DATE,
+BC.DO_NOT_CONTACT AS DO_NOT_CONTACT_INDICATOR, 
+BC.DO_NOT_EMAIL AS DO_NOT_EMAIL_INDICATOR, 
+BC.DO_NOT_MAIL AS DO_NOT_MAIL_INDICATOR, 
+BC.DO_NOT_CALL AS DO_NOT_CALL_INDICATOR,
+T.DESCR AS CUSTOMER_TYPE_DESC,
+X.XLATSHORTNAME AS CUSTOMER_STATUS_NAME,
+X.XLATLONGNAME AS CUSTOMER_STATUS_DESC,
+ADDRESS.GEO_CODE,
+ADDRESS.IN_CITY_LIMIT AS IN_CITY_LIMIT_INDICATOR,
+ADDRESS.TIMEZONE,
+ADDRESS.LATITUDE,
+ADDRESS.LONGITUDE,
+ADDRESS.ADDRESS1 AS ADDRESS_LINE_1,
+ADDRESS.ADDRESS2 AS ADDRESS_LINE_2,
+ADDRESS.ADDRESS3 AS ADDRESS_LINE_3,
+ADDRESS.ADDRESS4 AS ADDRESS_LINE_4,
+ADDRESS.CITY,
+ADDRESS.COUNTY,
+ADDRESS.POSTAL AS POSTAL_CODE,
+ADDRESS.STATE AS STATE_CODE,
+ADDRESS.COUNTRY AS COUNTRY_CODE,
+STATE.DESCR AS STATE_NAME,
+COUNTRY.DESCR AS COUNTRY_NAME,
+EMAIL.EMAIL_DOMAIN,
+EMAIL.EMAIL_ADDR AS EMAIL_ADDRESS,
+PHONE.COUNTRY_CODE AS PHONE_COUNTRY_CODE,
+PHONE.PHONE AS PHONE_NUMBER,
+PHONE.EXTENSION AS PHONE_EXTENSION,
+CUSTOMER_ROLE.SOLD_TO_INDICATOR,
+CUSTOMER_ROLE.SHIP_TO_INDICATOR,
+CUSTOMER_ROLE.BILL_TO_INDICATOR
+FROM PS_BO BO
+
+LEFT OUTER JOIN PS_BC BC
+ON BO.BO_ID = BC.BO_ID
+
+LEFT OUTER JOIN PS_BO_TYPE T
+ON BO.BO_TYPE_ID = T.BO_TYPE_ID
+
+LEFT OUTER JOIN PSXLATITEM X
+ON X.FIELDNAME = &apos;CUST_STATUS&apos;
+AND BC.CUST_STATUS = X.FIELDVALUE
+AND X.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1 
+	WHERE X.FIELDNAME = A1.FIELDNAME 
+	AND X.FIELDVALUE = A1.FIELDVALUE
+	AND X.FIELDNAME = &apos;CUST_STATUS&apos;)
+
+LEFT OUTER JOIN PS_BO_ROLE ROLE
+ON BO.BO_ID = ROLE.BO_ID
+AND ROLE.ROLE_TYPE_ID IN (1,2)
+
+
+LEFT OUTER JOIN PS_BO_SRCH_ADD ADDRESS
+ON ROLE.BO_ID = ADDRESS.BO_ID
+AND ROLE.ROLE_TYPE_ID = ADDRESS.ROLE_TYPE_ID
+AND ADDRESS.ROLE_TYPE_ID IN(1,2) 
+AND ADDRESS.BO_CM_USE_TYPE = &apos;R&apos; 
+AND ADDRESS.PRIMARY_IND = &apos;Y&apos;
+
+LEFT OUTER JOIN PS_STATE_TBL STATE
+ON ADDRESS.STATE = STATE.STATE
+AND ADDRESS.COUNTRY = STATE.COUNTRY
+LEFT OUTER JOIN PS_COUNTRY_TBL COUNTRY
+ON STATE.COUNTRY = COUNTRY.COUNTRY
+
+LEFT OUTER JOIN PS_BO_SRCH_PHN PHONE
+ON ROLE.BO_ID = PHONE.BO_ID
+AND ROLE.ROLE_TYPE_ID = PHONE.ROLE_TYPE_ID
+AND PHONE.ROLE_TYPE_ID IN(1,2) 
+AND PHONE.BO_CM_USE_TYPE = &apos;R&apos; 
+AND PHONE.PRIMARY_IND = &apos;Y&apos; 
+
+LEFT OUTER JOIN PS_BO_SRCH_EML EMAIL
+ON ROLE.BO_ID = EMAIL.BO_ID
+AND ROLE.ROLE_TYPE_ID = EMAIL.ROLE_TYPE_ID
+AND EMAIL.ROLE_TYPE_ID IN (1,2) 
+AND EMAIL.BO_CM_USE_TYPE = &apos;R&apos; 
+AND EMAIL.PRIMARY_IND = &apos;Y&apos;
+
+LEFT OUTER JOIN (SELECT BO1.BO_ID,
+MAX(CASE WHEN ROLE1.ROLE_TYPE_ID IN (42,46) THEN &apos;Y&apos; END) AS SOLD_TO_INDICATOR,
+MAX(CASE WHEN ROLE1.ROLE_TYPE_ID IN (43,47) THEN &apos;Y&apos; END) AS BILL_TO_INDICATOR,
+MAX(CASE WHEN ROLE1.ROLE_TYPE_ID IN (41,45) THEN &apos;Y&apos; END) AS SHIP_TO_INDICATOR
+FROM PS_BO BO1, PS_BO_ROLE ROLE1 WHERE BO1.BO_ID = ROLE1.BO_ID AND ROLE1.ROLE_TYPE_ID IN(41,42,43,45,46,47)
+GROUP BY BO1.BO_ID) CUSTOMER_ROLE
+ON BO.BO_ID = CUSTOMER_ROLE.BO_ID</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>85</xloc>
+      <yloc>345</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

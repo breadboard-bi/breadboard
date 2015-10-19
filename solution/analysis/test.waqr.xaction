@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<action-sequence>
+  <name>test.waqr.xaction</name>
+  <version>1</version>
+  <title>test</title>
+  <documentation>
+    <author>demo</author>
+    <description>Created by the Web-based Adhoc Query and Reporting Client</description>
+    <icon>PentahoReporting.png</icon>
+    <help>Auto-generated action-sequence for WAQR.</help>
+    <result-type>report</result-type>
+  </documentation>
+  <inputs>
+    <output-type type="string">
+      <default-value>html</default-value>
+      <sources>
+        <request>type</request>
+      </sources>
+    </output-type>
+    <mimeTypes type="string-list">
+      <sources>
+        <request>mimeTypes</request>
+      </sources>
+      <default-value type="string-list">
+        <list-item>html</list-item>
+        <list-item>pdf</list-item>
+      </default-value>
+    </mimeTypes>
+  </inputs>
+  <outputs>
+    <report type="content">
+      <destinations>
+        <response>content</response>
+      </destinations>
+    </report>
+  </outputs>
+  <resources>
+    <report-definition>
+      <xml>
+        <location>
+          <report bottommargin="10" topmargin="10" rightmargin="10" leftmargin="10" pageformat="LETTER" orientation="landscape" name="test.waqr.xreportspec">
+            <parser-config>
+              <property name="reportheader">test</property>
+              <property name="reportfooter">test</property>
+              <property name="pageheader">test</property>
+              <property name="pagefooter">test</property>
+            </parser-config>
+            <reportheader color="#ff7d17" fontname="Arial" fontsize="16">
+              <message-field alignment="left" height="18" vertical-alignment="middle" width="100%" x="0%" y="0">${reportheader}</message-field>
+            </reportheader>
+            <reportfooter color="#ff7d17" fontname="Arial" fontsize="16">
+              <message-field alignment="center" height="18" vertical-alignment="top" width="100%" x="0%" y="0">${reportfooter}</message-field>
+            </reportfooter>
+            <pageheader color="#c0c0c0" fontname="Arial" fontsize="8">
+              <message-field alignment="left" height="18" vertical-alignment="middle" width="50%" x="0%" y="0">${pageheader}</message-field>
+              <message-field alignment="right" height="18" width="50%" x="50%" y="0">$(report.date, date, MMMM dd, yyyy @ hh:mm )</message-field>
+              <line color="#9eaa36" height="3" weight="1" width="100%" x1="0%" x2="100%" y1="18" y2="18"/>
+            </pageheader>
+            <pagefooter color="#c0c0c0" fontname="Arial" fontsize="8">
+              <line color="#9eaa36" height="3" weight="1" width="100%" x1="0%" x2="100%" y1="0" y2="0"/>
+              <message-field alignment="left" height="18" width="50%" x="0" y="0">${pagefooter}</message-field>
+              <message-field alignment="right" height="18" width="50%" x="50%" y="0">Page $(PageofPages)</message-field>
+            </pagefooter>
+            <functions>
+              <property-ref name="report.date"/>
+              <function class="org.jfree.report.function.PageOfPagesFunction" name="PageofPages"/>
+              <function name="backgroundTrigger" class="org.jfree.report.function.ElementVisibilitySwitchFunction">
+                <properties>
+                  <property name="element">rowBandingElement</property>
+                  <property name="numberOfElements">1</property>
+                  <property name="initialState">true</property>
+                </properties>
+              </function>
+              <expression class="org.jfree.report.function.HideElementIfDataAvailableExpression" name="noDataLabelElementHideIfNullTrigger">
+                <properties>
+                  <property name="element">noDataLabelElement</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="dummyGroupFooterHideIfNullTrigger">
+                <properties>
+                  <property name="element">dummyGroupFooter</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_REGION_REGION_NAMEGroupHeaderHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_REGION_REGION_NAMEGroupHeader</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_REGION_REGION_NAMEGroupFooterHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_REGION_REGION_NAMEGroupFooter</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_DAY_DAYS_IN_MONTH_QTYGroupHeaderHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_DAY_DAYS_IN_MONTH_QTYGroupHeader</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_DAY_DAYS_IN_MONTH_QTYGroupFooterHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_DAY_DAYS_IN_MONTH_QTYGroupFooter</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_CUSTOMER_CITY_NAMEGroupHeaderHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_CUSTOMER_CITY_NAMEGroupHeader</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_CUSTOMER_CITY_NAMEGroupFooterHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_CUSTOMER_CITY_NAMEGroupFooter</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_PRODUCT_PRODUCT_CATEGORY_NAMEGroupHeaderHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_PRODUCT_PRODUCT_CATEGORY_NAMEGroupHeader</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_PRODUCT_PRODUCT_CATEGORY_NAMEGroupFooterHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_PRODUCT_PRODUCT_CATEGORY_NAMEGroupFooter</property>
+                </properties>
+              </expression>
+            </functions>
+            <items color="#000000" fontname="Arial" fontsize="9" fontstyle="plain">
+              <rectangle name="rowBandingElement" color="#e7e7e7" draw="false" fill="true" height="11" x="0%" width="100%" y="0"/>
+              <string-field name="BC_FACT_ORDER_CAPTURE_PO_LINE_NUMBERElement" nullstring="-" fieldname="BC_FACT_ORDER_CAPTURE_PO_LINE_NUMBER" vertical-alignment="middle" alignment="left" width="100.0%" x="0.0%" y="0" height="11" color="#000000" fontname="Arial" fontsize="10" fontstyle="plain"/>
+              <line color="#c0c0c0" weight=".5" x1="0.0%" y1="0" x2="0.0%" y2="11"/>
+              <line color="#c0c0c0" weight=".5" x1="100%" y1="0" x2="100%" y2="11"/>
+              <line color="#c0c0c0" weight=".5" x1="0%" y1="0" x2="100%" y2="0"/>
+              <line color="#c0c0c0" weight=".5" x1="0%" y1="11" x2="100%" y2="11"/>
+            </items>
+            <groups>
+              <group name="dummy">
+                <groupheader name="dummyGroupHeader" color="#767676" fontname="Arial" fontsize="12" fontstyle="bold" repeat="false">
+                  <label name="noDataLabelElement" height="11" vertical-alignment="middle" alignment="left" width="100%" x="0%" y="0" visible="false">No Data Available</label>
+                </groupheader>
+                <groupfooter name="dummyGroupFooter" color="#ff7d17" fontname="Arial" fontsize="12" fontstyle="bold"/>
+              </group>
+              <group name="BC_DIMENSION_REGION_REGION_NAME">
+                <fields>
+                  <field>BC_DIMENSION_REGION_REGION_NAME</field>
+                </fields>
+                <groupheader name="BC_DIMENSION_REGION_REGION_NAMEGroupHeader" repeat="false" pagebreak-before-print="false" pagebreak-after-print="false" color="#767676" fontname="Arial" fontsize="12" fontstyle="bold">
+                  <rectangle color="#FFFFFF" draw="false" fill="false" height="17" width="100%" x="0%" y="0"/>
+                  <message-field height="17" vertical-alignment="top" alignment="left" width="100%" x="0%" y="0" nullstring="-">BC_DIMENSION_REGION_REGION_NAME: $(BC_DIMENSION_REGION_REGION_NAME)</message-field>
+                </groupheader>
+                <groupfooter name="BC_DIMENSION_REGION_REGION_NAMEGroupFooter" color="#ff7d17" fontname="Arial" fontsize="12" fontstyle="bold" pagebreak-before-print="false" pagebreak-after-print="false"/>
+              </group>
+              <group name="BC_DIMENSION_DAY_DAYS_IN_MONTH_QTY">
+                <fields>
+                  <field>BC_DIMENSION_REGION_REGION_NAME</field>
+                  <field>BC_DIMENSION_DAY_DAYS_IN_MONTH_QTY</field>
+                </fields>
+                <groupheader name="BC_DIMENSION_DAY_DAYS_IN_MONTH_QTYGroupHeader" repeat="false" pagebreak-before-print="false" pagebreak-after-print="false" color="#767676" fontname="Arial" fontsize="12" fontstyle="bold">
+                  <rectangle color="#FFFFFF" draw="false" fill="false" height="17" width="100%" x="0%" y="0"/>
+                  <message-field height="17" vertical-alignment="top" alignment="right" width="100%" x="0%" y="0" nullstring="-">BC_DIMENSION_DAY_DAYS_IN_MONTH_QTY: $(BC_DIMENSION_DAY_DAYS_IN_MONTH_QTY)</message-field>
+                </groupheader>
+                <groupfooter name="BC_DIMENSION_DAY_DAYS_IN_MONTH_QTYGroupFooter" color="#ff7d17" fontname="Arial" fontsize="12" fontstyle="bold" pagebreak-before-print="false" pagebreak-after-print="false"/>
+              </group>
+              <group name="BC_DIMENSION_CUSTOMER_CITY_NAME">
+                <fields>
+                  <field>BC_DIMENSION_REGION_REGION_NAME</field>
+                  <field>BC_DIMENSION_DAY_DAYS_IN_MONTH_QTY</field>
+                  <field>BC_DIMENSION_CUSTOMER_CITY_NAME</field>
+                </fields>
+                <groupheader name="BC_DIMENSION_CUSTOMER_CITY_NAMEGroupHeader" repeat="false" pagebreak-before-print="false" pagebreak-after-print="false" color="#767676" fontname="Arial" fontsize="12" fontstyle="bold">
+                  <rectangle color="#FFFFFF" draw="false" fill="false" height="17" width="100%" x="0%" y="0"/>
+                  <message-field height="17" vertical-alignment="top" alignment="left" width="100%" x="0%" y="0" nullstring="-">BC_DIMENSION_CUSTOMER_CITY_NAME: $(BC_DIMENSION_CUSTOMER_CITY_NAME)</message-field>
+                </groupheader>
+                <groupfooter name="BC_DIMENSION_CUSTOMER_CITY_NAMEGroupFooter" color="#ff7d17" fontname="Arial" fontsize="12" fontstyle="bold" pagebreak-before-print="false" pagebreak-after-print="false"/>
+              </group>
+              <group name="BC_DIMENSION_PRODUCT_PRODUCT_CATEGORY_NAME">
+                <fields>
+                  <field>BC_DIMENSION_REGION_REGION_NAME</field>
+                  <field>BC_DIMENSION_DAY_DAYS_IN_MONTH_QTY</field>
+                  <field>BC_DIMENSION_CUSTOMER_CITY_NAME</field>
+                  <field>BC_DIMENSION_PRODUCT_PRODUCT_CATEGORY_NAME</field>
+                </fields>
+                <groupheader name="BC_DIMENSION_PRODUCT_PRODUCT_CATEGORY_NAMEGroupHeader" repeat="false" pagebreak-before-print="false" pagebreak-after-print="false" color="#767676" fontname="Arial" fontsize="12" fontstyle="bold" height="38">
+                  <rectangle color="#FFFFFF" draw="false" fill="false" height="17" width="100%" x="0%" y="0"/>
+                  <message-field height="17" vertical-alignment="top" alignment="left" width="100%" x="0%" y="0" nullstring="-">BC_DIMENSION_PRODUCT_PRODUCT_CATEGORY_NAME: $(BC_DIMENSION_PRODUCT_PRODUCT_CATEGORY_NAME)</message-field>
+                  <rectangle color="#9eaa36" draw="false" fill="true" height="18" width="100%" x="0%" y="19"/>
+                  <rectangle draw="false" fill="false" height="2" width="100%" x="0%" y="17"/>
+                  <label color="#ffffff" fontname="Arial" fontsize="10" fontstyle="plain" height="18" vertical-alignment="middle" alignment="left" width="100.0%" x="0.0%" y="19">BC_FACT_ORDER_CAPTURE_PO_LINE_NUMBER</label>
+                </groupheader>
+                <groupfooter name="BC_DIMENSION_PRODUCT_PRODUCT_CATEGORY_NAMEGroupFooter" color="#ff7d17" fontname="Arial" fontsize="12" fontstyle="bold" pagebreak-before-print="false" pagebreak-after-print="false"/>
+              </group>
+            </groups>
+          </report>
+        </location>
+        <mime-type>text/xml</mime-type>
+      </xml>
+    </report-definition>
+  </resources>
+  <actions>
+    <action-definition>
+      <component-name>SecureFilterComponent</component-name>
+      <action-type>Prompt/Secure Filter</action-type>
+      <action-inputs>
+        <output-type type="string"/>
+        <mimeTypes type="string-list"/>
+      </action-inputs>
+      <component-definition>
+        <selections>
+          <output-type prompt-if-one-value="true">
+            <title>Select output type:</title>
+            <filter>mimeTypes</filter>
+          </output-type>
+        </selections>
+      </component-definition>
+    </action-definition>
+    <action-definition>
+      <action-outputs>
+        <rule-result type="result-set"/>
+      </action-outputs>
+      <component-name>MQLRelationalDataComponent</component-name>
+      <action-type>rule</action-type>
+      <component-definition>
+        <mql> 
+          <domain_type>relational</domain_type>  
+          <domain_id><![CDATA[breadboard]]></domain_id>
+          <model_id><![CDATA[Sales Orders Model]]></model_id>  
+          <options> 
+            <disable_distinct>false</disable_distinct> 
+          </options>  
+          <selections> 
+            <selection>
+              <view>Region</view>
+              <column>BC_DIMENSION_REGION_REGION_NAME</column>
+            </selection>  
+            <selection>
+              <view>Calendar Order</view>
+              <column>BC_DIMENSION_DAY_DAYS_IN_MONTH_QTY</column>
+            </selection>  
+            <selection>
+              <view>Customer</view>
+              <column>BC_DIMENSION_CUSTOMER_CITY_NAME</column>
+            </selection>  
+            <selection>
+              <view>Product</view>
+              <column>BC_DIMENSION_PRODUCT_PRODUCT_CATEGORY_NAME</column>
+            </selection>  
+            <selection>
+              <view>Sales Order Details</view>
+              <column>BC_FACT_ORDER_CAPTURE_PO_LINE_NUMBER</column>
+            </selection> 
+          </selections>  
+          <constraints></constraints>  
+          <orders> 
+            <order>
+              <direction>asc</direction>
+              <view_id>Region</view_id>
+              <column_id>BC_DIMENSION_REGION_REGION_NAME</column_id>
+            </order>  
+            <order>
+              <direction>asc</direction>
+              <view_id>Calendar Order</view_id>
+              <column_id>BC_DIMENSION_DAY_DAYS_IN_MONTH_QTY</column_id>
+            </order>  
+            <order>
+              <direction>asc</direction>
+              <view_id>Customer</view_id>
+              <column_id>BC_DIMENSION_CUSTOMER_CITY_NAME</column_id>
+            </order>  
+            <order>
+              <direction>asc</direction>
+              <view_id>Product</view_id>
+              <column_id>BC_DIMENSION_PRODUCT_PRODUCT_CATEGORY_NAME</column_id>
+            </order> 
+          </orders> 
+        </mql>
+        <live>true</live>
+        <display-names>false</display-names>
+      </component-definition>
+    </action-definition>
+    <action-definition>
+      <action-outputs>
+        <report type="content"/>
+      </action-outputs>
+      <action-inputs>
+        <output-type type="string"/>
+        <data type="result-set" mapping="rule-result"/>
+      </action-inputs>
+      <action-resources>
+        <report-definition type="resource"/>
+      </action-resources>
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <component-definition>
+        <output-type>html</output-type>
+      </component-definition>
+    </action-definition>
+  </actions>
+</action-sequence>

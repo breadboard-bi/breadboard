@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">  
+  <name>market_basket_top_basket_report</name>
+  <title>Market Basket Top Products by Period, Category, Brand</title>
+  <version>1</version>
+  <logging-level>DEBUG</logging-level>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>It includes dynamic SQL that relies on the following columns &amp; formats from the date dimension: WEEK_NAME, YEAR_QUARTER_NAME, MONTH_SK, YEAR_SK, and DATE_SK. The formats for these columns should be as follows: YYYYQ[1-52], e.g, 1998W37 for WEEK_NAME; YYYYQ[1-4], e.g., 1998Q3 for YEAR_QUARTER_NAME; YYYYMM, e.g., 200509 for MONTH_SK; YYYY, e.g., 2001 for YEAR_SK; and YYYYMMDD, e.g., 20061101 for DATE_SK.</description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help/>  
+    <result-type>report</result-type> 
+  </documentation>
+
+  <inputs> 
+    <TEMPORAL_VALUE type="string"> 
+      <sources> 
+        <request>TEMPORAL_VALUE</request> 
+      </sources> 
+    </TEMPORAL_VALUE>  
+    <CATEGORY type="string"> 
+      <sources> 
+        <request>CATEGORY</request> 
+      </sources> 
+    </CATEGORY>  
+    <BRAND type="string"> 
+      <sources> 
+        <request>BRAND</request> 
+      </sources> 
+    </BRAND> 
+  </inputs>
+
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>
+
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>market_basket_top_basket_report.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>JavascriptRule</component-name>
+      <action-type>JavaScript DSQL</action-type>
+      <action-inputs> 
+        <TEMPORAL_VALUE type="string"/>  
+        <CATEGORY type="string"/>  
+        <BRAND type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <query type="string"/> 
+      </action-outputs>
+      <component-definition> 
+        <script><![CDATA[var column_name = "";
+if ('{TEMPORAL_VALUE}'.indexOf("W") >= 0)
+{
+column_name = "WEEK_NAME";
+}
+else if ('{TEMPORAL_VALUE}'.indexOf("Q") >= 0)
+{
+column_name = "YEAR_QUARTER_NAME";
+}
+else if ('{TEMPORAL_VALUE}'.length == 6)
+{
+column_name ="MONTH_SK";
+}
+else if ('{TEMPORAL_VALUE}'.length == 4)
+{
+column_name ="YEAR_SK";
+}
+else if ('{TEMPORAL_VALUE}'.length == 8)
+{
+column_name ="DATE_SK";
+}
+query = "SELECT P1.PRODUCT_DESC AS PRODUCT1, "; 
+query += "MAX(P1.PRODUCT_BRAND_NAME) AS PRODUCT1_BRAND, "; 
+query += "P2.PRODUCT_DESC AS PRODUCT2, "; 
+query += "MAX(P2.PRODUCT_BRAND_NAME) AS PRODUCT2_BRAND, "; 
+query += "SUM(F.BASKET_QTY) AS BASKET_QTY, "; 
+query += "SUM(PRODUCT1_SALES_QTY) AS PRODUCT1_SALES_QTY,  "; 
+query += "SUM(PRODUCT1_SALES_QTY * PRODUCT1_PRICE_AMT) AS PRODUCT1_SALES_AMT, "; 
+query += "SUM(PRODUCT2_SALES_QTY) AS PRODUCT2_SALES_QTY,  "; 
+query += "SUM(PRODUCT2_SALES_QTY * PRODUCT2_PRICE_AMT) AS PRODUCT2_SALES_AMT "; 
+query += "FROM FACT_MARKET_BASKET F, "; 
+query += "DIMENSION_PRODUCT P1, "; 
+query += "DIMENSION_PRODUCT P2, "; 
+query += "DIMENSION_DAY D "; 
+query += "WHERE F.PRODUCT1_SK = P1.PRODUCT_SK "; 
+query += "AND P1.PARENT_PRODUCT_CATEGORY_NAME = '{CATEGORY}' ";
+query += "AND P1.PRODUCT_BRAND_NAME = '{BRAND}' ";
+query += "AND F.PRODUCT2_SK = P2.PRODUCT_SK "; 
+query += "AND F.PRODUCT2_SK > 0  "; 
+query += "AND F.SALE_DATE_SK = D.DATE_SK  "; 
+query += "AND D."+column_name+ " = '{TEMPORAL_VALUE}' ";
+query += "GROUP BY P1.PRODUCT_DESC, P2.PRODUCT_DESC, "; 
+query += "D.YEAR_NUMBER "; 
+query += "ORDER BY SUM(F.BASKET_QTY) DESC "; 
+query += "LIMIT 20 ";]]></script> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <action-inputs> 
+        <query type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <report-output type="content" mapping="report"/> 
+      </action-outputs>
+      <component-definition> 
+        <source>sql</source>  
+        <jndi><![CDATA[mdw_mysql]]></jndi>  
+        <output-type><![CDATA[html]]></output-type> 
+      </component-definition> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

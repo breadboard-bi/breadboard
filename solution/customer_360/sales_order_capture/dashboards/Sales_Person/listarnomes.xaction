@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>Sales Orders by Period, Country and Product Category</title>
+  <version>2</version>
+  <logging-level/>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Returns the order amount for period, country and product cateogry. It includes dynamic SQL that relies on the following columns &amp; formats from the date dimension: WEEK_NAME, YEAR_QUARTER_NAME, MONTH_SK, YEAR_SK, and DATE_SK. The formats for these columns should be as follows: YYYYQ[1-52], e.g, 1998W37 for WEEK_NAME; YYYYQ[1-4], e.g., 1998Q3 for YEAR_QUARTER_NAME; YYYYMM, e.g., 200509for MONTH_SK; YYYY, e.g., 2001 for YEAR_SK; and YYYYMMDD, e.g., 20061101 for DATE_SK.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>
+
+  <inputs> 
+    <num_vendedor type="string"> 
+      <sources> 
+        <request>num_vendedor</request> 
+      </sources>  
+      <default-value><![CDATA[41]]></default-value> 
+    </num_vendedor> 
+  </inputs>
+
+  <outputs> 
+    <vendedores type="result-set"/> 
+  </outputs>
+
+  <resources/>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>
+      <action-type>Relational</action-type>
+      <action-inputs> 
+        <num_vendedor type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <query-result type="result-set" mapping="vendedores"/> 
+      </action-outputs>
+      <component-definition> 
+        <query><![CDATA[Select FULL_NAME 
+from DIMENSION_PERSON
+where person_sk={PREPARE:num_vendedor}]]></query>  
+        <live><![CDATA[true]]></live>  
+        <jndi><![CDATA[mdw_mysql]]></jndi> 
+      </component-definition> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

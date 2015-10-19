@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">  
+  <name>new_market.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description><![CDATA[%description]]></description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help>just testing...</help>  
+    <result-type>report</result-type> 
+  </documentation>  
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <TEMPORAL_VALUE type="string"> 
+      <sources> 
+        <request>TEMPORAL_VALUE</request> 
+      </sources> 
+    </TEMPORAL_VALUE>  
+    <COUNTRY type="string"> 
+      <sources> 
+        <request>COUNTRY</request> 
+      </sources> 
+    </COUNTRY>  
+    <REGION type="string"> 
+      <sources> 
+        <request>REGION</request> 
+      </sources> 
+    </REGION>  
+    <SOURCE_SYSTEM_SK type="string">
+      <sources>
+        <request>SOURCE_SYSTEM_SK</request>
+      </sources>
+      <default-value>6</default-value>
+    </SOURCE_SYSTEM_SK>
+    <HOSTED_CLIENT_SK type="string">
+      <sources>
+        <request>HOSTED_CLIENT_SK</request>
+      </sources>
+      <default-value>0</default-value>
+    </HOSTED_CLIENT_SK>
+    
+  </inputs>  
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>  
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>web_visit_dashboard_report.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>  
+  <actions> 
+    <action-definition> 
+      <component-name>JavascriptRule</component-name>  
+      <action-type>JavaScript DSQL</action-type>  
+      <action-inputs> 
+        <TEMPORAL_VALUE type="string"/>  
+        <COUNTRY type="string"/>  
+        <REGION type="string"/>
+        <SOURCE_SYSTEM_SK type="string"/>
+        <HOSTED_CLIENT_SK type="string"/>
+        
+      </action-inputs>  
+      <action-outputs> 
+        <query type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <script><![CDATA[var temporal_cat = "";
+var column_name = "";
+var select_column_name = "";
+// Only use this logic as a model for drill through reports
+if ('{TEMPORAL_VALUE}'.indexOf("W") >= 0)
+{
+ temporal_cat = "WEEK";
+ column_name = "WEEK_NAME";
+ select_column_name = "WEEK_SK";
+}
+
+else if ('{TEMPORAL_VALUE}'.indexOf("Q") >= 0)
+{
+ temporal_cat = "QUARTER";
+ column_name = "YEAR_QUARTER_NAME";
+ select_column_name = "QUARTER_SK";
+}
+
+else if ('{TEMPORAL_VALUE}'.length == 6)
+{
+ temporal_cat = "MONTH";
+ column_name ="MONTH_SK";
+ select_column_name ="MONTH_SK";
+}
+else if ('{TEMPORAL_VALUE}'.length == 4)
+{
+ temporal_cat = "YEAR";
+ column_name ="YEAR_SK";
+ select_column_name ="YEAR_SK";
+}
+else if ('{TEMPORAL_VALUE}'.length == 8)
+{
+ temporal_cat = "DATE";
+ column_name ="DATE_SK";
+ select_column_name ="DATE_SK";
+}
+
+query = "SELECT * FROM (  ";
+query += "SELECT RANK() OVER(ORDER BY SUM(F.WEB_PAGE_VIEW_QTY) DESC) AS RANK,  ";
+query += "V.WEB_ORGANIZATION_DESC, ";
+query += "SUM(F.WEB_VISIT_QTY) AS DISTINCT_VISITOR_QTY,  ";
+query += "SUM(F.WEB_PAGE_VIEW_QTY) AS WEB_PAGE_VIEW_QTY,  ";
+query += "SUM(F.VIEW_SECONDS_QTY) AS VIEW_SECONDS_QTY,  ";
+query += "MAX(F.SOURCE_SYSTEM_SK) AS SOURCE_SYSTEM_SK, ";
+query += "MAX(F.REFERER_URL_SK) AS REFERER_URL_SK, ";
+query += "MAX(D."+select_column_name+ ") AS TEMPORAL_SK, ";
+query += "MAX(D."+column_name+ ") AS TEMPORAL_VALUE ";
+query += "FROM FACT_WEB_SITE_VISIT F, DIMENSION_DAY D, DIMENSION_GEOGRAPHIC_LOCATION G,   ";
+query += "DIMENSION_WEB_VISITOR V  ";
+query += "WHERE F.VISIT_DATE_SK = D.DATE_SK  ";
+query += "AND F.GEO_LOCATION_SK = G.GEO_LOCATION_SK  ";
+query += "AND F.WEB_VISITOR_SK = V.WEB_VISITOR_SK  ";
+query += "AND V.WEB_ORGANIZATION_DESC !='Missing'  ";
+query += "AND D."+column_name+ " = '{TEMPORAL_VALUE}'  ";
+query += "AND F.SOURCE_SYSTEM_SK =  '{SOURCE_SYSTEM_SK}'  ";
+query += "AND G.ISO_3166_COUNTRY_CODE = '{COUNTRY}'  ";
+query += "AND G.REGION_NAME = '{REGION}'  ";
+query += "AND F.HOSTED_CLIENT_SK = '{HOSTED_CLIENT_SK}'  ";
+query += "GROUP BY V.WEB_ORGANIZATION_DESC)  ";
+query += "WHERE RANK <=11  ";]]></script> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>  
+      <action-type>report</action-type>  
+      <action-inputs> 
+        <output-type type="string"/>  
+        <query type="string"/>
+      </action-inputs>  
+      <action-outputs> 
+        <report type="content"/> 
+      </action-outputs>  
+      <component-definition> 
+        <source>sql</source>  
+        <live>true</live>  
+        <live>true</live>  
+        <jndi>mdw</jndi> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

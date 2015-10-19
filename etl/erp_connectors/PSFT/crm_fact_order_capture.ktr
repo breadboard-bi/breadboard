@@ -1,0 +1,953 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>CRM_FACT_ORDER_CAPTURE</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This transformation extracts sales order capture data from PeopleSoft CRM 8.8 and loads an order capture fact table.</note>
+      <xloc>199</xloc>
+      <yloc>16</yloc>
+      <width>577</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_CRM_SALES_ORDER_METRICS</from><to>CON_BUSINESS_UNIT_TYPE</to><enabled>Y</enabled> </hop>  <hop> <from>CON_BUSINESS_UNIT_TYPE</from><to>LKP_DIMENSION_BUSINESS_UNIT</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_ORDER_CAPTURE</from><to>LKP_DIMENSION_CUSTOMER</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CUSTOMER</from><to>LKP_DIMENSION_CUSTOMER_CONTACT</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CUSTOMER_CONTACT</from><to>LKP_DIMENSION_ORDER_STATUS</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_ORDER_STATUS</from><to>LKP_DIMENSION_MARKETING_CAMPAIGN</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_MARKETING_CAMPAIGN</from><to>LKP_DIMENSION_MARKETING_CHANNEL</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_MARKETING_CHANNEL</from><to>LKP_DIMENSION_SALES_PERSON</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_SALES_PERSON</from><to>LKP_DIMENSION_REGION</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_BUSINESS_UNIT</from><to>LKP_DIMENSION_CURRENCY</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CURRENCY</from><to>LKP_DIMENSION_ORDER_CAPTURE</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_REGION</from><to>LKP_DIMENSION_SHIP_TO_TYPE</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_SHIP_TO_TYPE</from><to>LKP_DIMENSION_UNIT_OF_MEASURE</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_UNIT_OF_MEASURE</from><to>LKP_DIMENSION_PRODUCT</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_PRODUCT</from><to>FACT_ORDER_CAPTURE</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>CON_BUSINESS_UNIT_TYPE</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <fields>
+      <field>
+        <name>BUSINESS_UNIT_TYPE</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>RO</nullif>
+        <length>2</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+    <GUI>
+      <xloc>77</xloc>
+      <yloc>97</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>FACT_ORDER_CAPTURE</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>FACT_ORDER_CAPTURE</table>
+      <key>
+        <name>BUSINESS_UNIT_SK</name>
+        <field>BUSINESS_UNIT_SK</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>LINE_NUMBER</name>
+        <field>LINE_NUMBER</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>ORDER_CAPTURE_DATE_SK</name>
+        <field>ORDER_CAPTURE_DATE_SK</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>ORDER_CAPTURE_SK</name>
+        <field>ORDER_CAPTURE_SK</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>BUSINESS_UNIT_ID</name>
+        <rename>BUSINESS_UNIT_ID</rename>
+        </value>
+      <value>
+        <name>BUSINESS_UNIT_SK</name>
+        <rename>BUSINESS_UNIT_SK</rename>
+        </value>
+      <value>
+        <name>CAMPAIGN_ID</name>
+        <rename>CAMPAIGN_ID</rename>
+        </value>
+      <value>
+        <name>CAMPAIGN_WAVE_ID</name>
+        <rename>CAMPAIGN_WAVE_ID</rename>
+        </value>
+      <value>
+        <name>CURRENCY_ID</name>
+        <rename>CURRENCY_ID</rename>
+        </value>
+      <value>
+        <name>CURRENCY_SK</name>
+        <rename>CURRENCY_SK</rename>
+        </value>
+      <value>
+        <name>CUSTOMER_CONTACT_SK</name>
+        <rename>CUSTOMER_CONTACT_SK</rename>
+        </value>
+      <value>
+        <name>CUSTOMER_PO_LINE_NUMBER</name>
+        <rename>CUSTOMER_PO_LINE_NUMBER</rename>
+        </value>
+      <value>
+        <name>CUSTOMER_SK</name>
+        <rename>CUSTOMER_SK</rename>
+        </value>
+      <value>
+        <name>LINE_NUMBER</name>
+        <rename>LINE_NUMBER</rename>
+        </value>
+      <value>
+        <name>LIST_PRICE_AMT</name>
+        <rename>LIST_PRICE_AMT</rename>
+        </value>
+      <value>
+        <name>LOCATION_ID</name>
+        <rename>LOCATION_ID</rename>
+        </value>
+      <value>
+        <name>MARKETING_ACTIVITY_SK</name>
+        <rename>MARKETING_ACTIVITY_SK</rename>
+        </value>
+      <value>
+        <name>MARKETING_CHANNEL_SK</name>
+        <rename>MARKETING_CHANNEL_SK</rename>
+        </value>
+      <value>
+        <name>ORDER_CAPTURE_DATE</name>
+        <rename>ORDER_CAPTURE_DATE</rename>
+        </value>
+      <value>
+        <name>ORDER_CAPTURE_DATE_SK</name>
+        <rename>ORDER_CAPTURE_DATE_SK</rename>
+        </value>
+      <value>
+        <name>ORDER_CAPTURE_ID</name>
+        <rename>ORDER_CAPTURE_ID</rename>
+        </value>
+      <value>
+        <name>ORDER_CAPTURE_SK</name>
+        <rename>ORDER_CAPTURE_SK</rename>
+        </value>
+      <value>
+        <name>ORDER_QTY</name>
+        <rename>ORDER_QTY</rename>
+        </value>
+      <value>
+        <name>ORDER_STATUS_ID</name>
+        <rename>ORDER_STATUS_ID</rename>
+        </value>
+      <value>
+        <name>ORDER_STATUS_SK</name>
+        <rename>ORDER_STATUS_SK</rename>
+        </value>
+      <value>
+        <name>PERSON_ID</name>
+        <rename>PERSON_ID</rename>
+        </value>
+      <value>
+        <name>PRICE_AMT</name>
+        <rename>PRICE_AMT</rename>
+        </value>
+      <value>
+        <name>PRODUCT_ID</name>
+        <rename>PRODUCT_ID</rename>
+        </value>
+      <value>
+        <name>PRODUCT_SK</name>
+        <rename>PRODUCT_SK</rename>
+        </value>
+      <value>
+        <name>RECURRING_PRICE_AMT</name>
+        <rename>RECURRING_PRICE_AMT</rename>
+        </value>
+      <value>
+        <name>RECURRING_PRICE_FREQUENCY</name>
+        <rename>RECURRING_PRICE_FREQUENCY</rename>
+        </value>
+      <value>
+        <name>REGION_ID</name>
+        <rename>REGION_ID</rename>
+        </value>
+      <value>
+        <name>REGION_SK</name>
+        <rename>REGION_SK</rename>
+        </value>
+      <value>
+        <name>SALES_REPRESENTATIVE_SK</name>
+        <rename>SALES_REPRESENTATIVE_SK</rename>
+        </value>
+      <value>
+        <name>SHIP_TO_TYPE_ID</name>
+        <rename>SHIP_TO_TYPE_ID</rename>
+        </value>
+      <value>
+        <name>SHIP_TO_TYPE_SK</name>
+        <rename>SHIP_TO_TYPE_ID</rename>
+        </value>
+      <value>
+        <name>UNIT_OF_MEASURE_ID</name>
+        <rename>UNIT_OF_MEASURE_ID</rename>
+        </value>
+      <value>
+        <name>UNIT_OF_MEASURE_SK</name>
+        <rename>UNIT_OF_MEASURE_SK</rename>
+        </value>
+      </lookup>
+    <GUI>
+      <xloc>770</xloc>
+      <yloc>98</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_BUSINESS_UNIT</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_BUSINESS_UNIT</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>BUSINESS_UNIT_ID</name>
+          <lookup>BUSINESS_UNIT_ID</lookup>
+          </key>
+        <key>
+          <name>BUSINESS_UNIT_TYPE</name>
+          <lookup>BUSINESS_UNIT_TYPE</lookup>
+          </key>
+        <date>
+          <name>CAPTURE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>BUSINESS_UNIT_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>275</xloc>
+      <yloc>97</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CURRENCY</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CURRENCY</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>CURRENCY_ID</name>
+          <lookup>CURRENCY_ID</lookup>
+          </key>
+        <date>
+          <name>CAPTURE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CURRENCY_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>273</xloc>
+      <yloc>168</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CUSTOMER</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CUSTOMER</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>BO_CUSTOMER_ID</name>
+          <lookup>BO_CUSTOMER_ID</lookup>
+          </key>
+        <date>
+          <name>CAPTURE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CUSTOMER_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>267</xloc>
+      <yloc>345</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CUSTOMER_CONTACT</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CUSTOMER_CONTACT</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>BO_CUSTOMER_CONTACT_ID</name>
+          <lookup>BO_CUSTOMER_CONTACT_ID</lookup>
+          </key>
+        <date>
+          <name>CAPTURE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CUSTOMER_CONTACT_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>263</xloc>
+      <yloc>437</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_MARKETING_CAMPAIGN</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_MARKETING_CAMPAIGN</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>CAMPAIGN_ID</name>
+          <lookup>CAMPAIGN_ID</lookup>
+          </key>
+        <key>
+          <name>CAMPAIGN_WAVE_ID</name>
+          <lookup>CAMPAIGN_WAVE_ID</lookup>
+          </key>
+        <key>
+          <name>BUSINESS_UNIT_ID</name>
+          <lookup>BUSINESS_UNIT_ID</lookup>
+          </key>
+        <date>
+          <name>CAPTURE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>MARKETING_CAMPAIGN_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>467</xloc>
+      <yloc>529</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_MARKETING_CHANNEL</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_MARKETING_CHANNEL</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>CHANNEL_ID</name>
+          <lookup>CHANNEL_ID</lookup>
+          </key>
+        <key>
+          <name>CHANNEL_TYPE</name>
+          <lookup>CHANNEL_TYPE</lookup>
+          </key>
+        <key>
+          <name>ACTIVITY_CODE</name>
+          <lookup>ACTIVITY_CODE</lookup>
+          </key>
+        <key>
+          <name>MARKETING_CHANNEL_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>CAPTURE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>MARKETING_CHANNEL_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>461</xloc>
+      <yloc>434</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_ORDER_CAPTURE</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_ORDER_CAPTURE</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>ORDER_CAPTURE_ID</name>
+          <lookup>ORDER_CAPTURE_ID</lookup>
+          </key>
+        <key>
+          <name>BUSINESS_UNIT_ID</name>
+          <lookup>BUSINESS_UNIT_ID</lookup>
+          </key>
+        <date>
+          <name>CAPTURE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>ORDER_CAPTURE_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>271</xloc>
+      <yloc>254</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_ORDER_STATUS</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_ORDER_STATUS</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>ORDER_STATUS_ID</name>
+          <lookup>ORDER_STATUS_ID</lookup>
+          </key>
+        <key>
+          <name>ORDER_STATUS_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>CAPTURE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>ORDER_STATUS_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>261</xloc>
+      <yloc>529</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_PRODUCT</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_PRODUCT</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>PRODUCT_ID</name>
+          <lookup>PRODUCT_ID</lookup>
+          </key>
+        <key>
+          <name>PRODUCT_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>CAPTURE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>PRODUCT_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>624</xloc>
+      <yloc>97</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_REGION</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_REGION</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>REGION_ID</name>
+          <lookup>REGION_ID</lookup>
+          </key>
+        <date>
+          <name>CAPTURE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>REGION_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>462</xloc>
+      <yloc>257</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_SALES_PERSON</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_PERSON</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>PERSON_ID</name>
+          <lookup>PERSON_ID</lookup>
+          </key>
+        <date>
+          <name>CAPTURE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>PERSON_SK</name>
+          <rename>SALES_REPRESENTATIVE_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>460</xloc>
+      <yloc>342</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_SHIP_TO_TYPE</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_SHIP_TO_TYPE</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>SHIP_TO_TYPE_ID</name>
+          <lookup>SHIP_TO_TYPE_ID</lookup>
+          </key>
+        <date>
+          <name>CAPTURE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>SHIP_TO_TYPE_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>456</xloc>
+      <yloc>171</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_UNIT_OF_MEASURE</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_UNIT_OF_MEASURE</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>UNIT_OF_MEASURE_ID</name>
+          <lookup>UNIT_OF_MEASURE_ID</lookup>
+          </key>
+        <date>
+          <name>CAPTURE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>UNIT_OF_MEASURE_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>448</xloc>
+      <yloc>97</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_CRM_SALES_ORDER_METRICS</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the columns from the PS_RO_HEADER (order header) table. It maintains the order header information.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT
+CAST (CONVERT(CHAR(10),HEAD.CAPTURE_DATE,112) as NUMERIC) AS ORDER_CAPTURE_DATE_SK --DBMS SPECIFIC
+, HEAD.CAPTURE_ID AS ORDER_CAPTURE_ID
+, HEAD.BUSINESS_UNIT AS BUSINESS_UNIT_ID
+, HEAD.ORD_STATUS_CODE AS ORDER_STATUS_ID
+, RO_DEFN_HDSTAT_REC.SETID AS ORDER_STATUS_SETID
+, LINE.CURRENCY_CD AS CURRENCY_ID
+, LINE.LOCATION AS LOCATION_ID
+, LINE.PRODUCT_ID
+, PROD_ITEM_REC.SETID AS PRODUCT_SETID
+, BO.BO_ID AS BO_CUSTOMER_ID --ALSO USED FOR MARKET SEGMENT LOOKUP
+, BO2.BO_ID AS BO_CUSTOMER_CONTACT_ID
+, (CASE WHEN OA.OPPORTUNITY_ID &lt;&gt; &apos; &apos; THEN OP.RA_CMPGN_WAVE_ID --Opportunity or Lead
+	WHEN OA2.LEAD_ID &lt;&gt; &apos; &apos; THEN  LEAD.RA_CMPGN_WAVE_ID
+	ELSE NULL --SUBSTITUTE FOR MISSING VALUE
+	END) AS CAMPAIGN_WAVE_ID --PASS TO MARKETING ACTIVITY LOOKUP --Opportunity or Lead
+, (CASE WHEN OA.OPPORTUNITY_ID &lt;&gt; &apos; &apos; THEN OP.RA_CAMPAIGN_ID
+	WHEN OA2.LEAD_ID &lt;&gt; &apos; &apos; THEN  LEAD.RA_CAMPAIGN_ID
+	ELSE NULL --SUBSTITUTE FOR MISSING VALUE
+	END) AS CAMPAIGN_ID --PASS TO MARKETING CAMPAIGN LOOKUP
+, (CASE WHEN OA.OPPORTUNITY_ID &lt;&gt; &apos; &apos; THEN OP.PERSON_ID --Opportunity or Lead
+	WHEN OA2.LEAD_ID &lt;&gt; &apos; &apos; THEN  LEAD.PERSON_ID
+	ELSE NULL --SUBSTITUTE FOR MISSING VALUE
+	END) AS PERSON_ID --PASS TO SALES REP LOOKUP (PRIMARY)
+, (CASE WHEN OA.OPPORTUNITY_ID &lt;&gt; &apos; &apos; THEN OP.REGION_ID --Opportunity or Lead
+	WHEN OA2.LEAD_ID &lt;&gt; &apos; &apos; THEN  LEAD.REGION_ID
+	ELSE NULL --SUBSTITUTE FOR MISSING VALUE
+	END) AS REGION_ID --PASS TO REGION LOOKUP
+, (CASE WHEN OA.OPPORTUNITY_ID &lt;&gt; &apos; &apos; THEN WAVE.RA_CHANNEL --Opportunity or Lead
+	WHEN OA2.LEAD_ID &lt;&gt; &apos; &apos; THEN  WAVE2.RA_CHANNEL
+	ELSE NULL --SUBSTITUTE FOR MISSING VALUE
+	END) AS CHANNEL_ID --PASS TO MARKETING CHANNEL LOOKUP
+, (CASE WHEN OA.OPPORTUNITY_ID &lt;&gt; &apos; &apos; THEN WAVE.RA_CHANNEL_TYPE --Opportunity or Lead
+	WHEN OA2.LEAD_ID &lt;&gt; &apos; &apos; THEN  WAVE2.RA_CHANNEL_TYPE
+	ELSE NULL --SUBSTITUTE FOR MISSING VALUE
+	END) AS CHANNEL_TYPE --PASS TO MARKETING CHANNEL LOOKUP
+, (CASE WHEN OA.OPPORTUNITY_ID &lt;&gt; &apos; &apos; THEN WAVE.RA_ACTIVITY_CD --Opportunity or Lead
+	WHEN OA2.LEAD_ID &lt;&gt; &apos; &apos; THEN  WAVE2.RA_ACTIVITY_CD
+	ELSE NULL --SUBSTITUTE FOR MISSING VALUE
+	END) AS ACTIVITY_CODE --PASS TO MARKETING CHANNEL LOOKUP
+, RA_UD_ACTIVITY_REC.SETID AS MARKETING_CHANNEL_SETID 
+, LINE.UNIT_OF_MEASURE AS UNIT_OF_MEASURE_ID
+, DEST.RO_SHIP_TO_TYPE AS SHIP_TO_TYPE_ID
+, HEAD.CAPTURE_DATE AS ORDER_CAPTURE_DATE
+, LINE.CUSTOMER_PO_LINE AS CUSTOMER_PO_LINE_NUMBER
+, LINE.LINE_NBR AS LINE_NUMBER
+, LINE.LIST_PRICE AS LIST_PRICE_AMT
+, LINE.PRICE AS PRICE_AMT
+, LINE.PPRC_RECUR_FREQ AS RECURRING_PRICE_FREQUENCY
+, LINE.QTY_ORDERED AS ORDER_QTY
+, LINE.RECUR_PRICE as RECURRING_PRICE_AMT
+FROM
+PS_RO_HEADER HEAD
+
+LEFT OUTER JOIN PS_RO_LINE LINE
+ON HEAD.CAPTURE_ID = LINE.CAPTURE_ID
+
+LEFT OUTER JOIN PS_RO_BOID BO
+ON HEAD.CAPTURE_ID = BO.CAPTURE_ID 
+and HEAD.UID20F_SOLD = BO.UID20 
+and BO.ROLE_TYPE_ID = 2
+
+LEFT OUTER JOIN PS_RO_BOID BO2
+ON HEAD.CAPTURE_ID = BO2.CAPTURE_ID 
+and HEAD.UID20F_SOLDC = BO2.UID20 
+and BO2.ROLE_TYPE_ID = 8
+
+LEFT OUTER JOIN PS_RO_ASSOCIATION OA
+ON HEAD.CAPTURE_ID = OA.CAPTURE_ID 
+and OA.OPPORTUNITY_ID &lt;&gt; &apos; &apos; 
+
+LEFT OUTER JOIN PS_RSF_OPPORTUNITY OP
+ON OA.OPPORTUNITY_ID = OP.OPPORTUNITY_ID
+
+LEFT OUTER JOIN PS_RO_ASSOCIATION OA2
+ON HEAD.CAPTURE_ID = OA2.CAPTURE_ID 
+and OA2.LEAD_ID &lt;&gt; &apos; &apos; 
+
+LEFT OUTER JOIN PS_RSF_LEAD LEAD
+ON OA2.LEAD_ID = LEAD.LEAD_ID
+
+LEFT OUTER JOIN PS_RO_DEST DEST
+ON LINE.CAPTURE_ID = DEST.CAPTURE_ID 
+and LINE.UID20F = DEST.UID20
+
+LEFT OUTER JOIN PS_RA_CMPGN_WAVE WAVE --Opportunity or Lead, assumption = outer join to both faster than conditional join on case statement
+ON WAVE.BUSINESS_UNIT = HEAD.BUSINESS_UNIT
+and WAVE.RA_CAMPAIGN_ID = OP.RA_CAMPAIGN_ID
+and WAVE.RA_CMPGN_WAVE_ID = OP.RA_CMPGN_WAVE_ID
+
+LEFT OUTER JOIN PS_RA_CMPGN_WAVE WAVE2 --Opportunity or Lead, assumption = outer join to both faster than conditional join on case statement
+ON WAVE2.BUSINESS_UNIT = HEAD.BUSINESS_UNIT
+and WAVE2.RA_CAMPAIGN_ID = LEAD.RA_CAMPAIGN_ID
+and WAVE2.RA_CMPGN_WAVE_ID = LEAD.RA_CMPGN_WAVE_ID
+
+LEFT OUTER JOIN PS_SET_CNTRL_REC RO_DEFN_HDSTAT_REC
+ON HEAD.BUSINESS_UNIT = RO_DEFN_HDSTAT_REC.SETCNTRLVALUE
+AND RO_DEFN_HDSTAT_REC.RECNAME = &apos;RO_DEFN_HDSTAT&apos;
+
+LEFT OUTER JOIN PS_SET_CNTRL_REC RA_UD_ACTIVITY_REC
+ON HEAD.BUSINESS_UNIT = RA_UD_ACTIVITY_REC.SETCNTRLVALUE
+AND RA_UD_ACTIVITY_REC.RECNAME = &apos;RA_UD_ACTIVITY&apos;
+
+LEFT OUTER JOIN PS_SET_CNTRL_REC PROD_ITEM_REC
+ON HEAD.BUSINESS_UNIT = PROD_ITEM_REC.SETCNTRLVALUE
+AND PROD_ITEM_REC.RECNAME = &apos;PROD_ITEM&apos;
+
+WHERE HEAD.CAPTURE_TYPE_CD=&apos;SO&apos;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>81</xloc>
+      <yloc>19</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

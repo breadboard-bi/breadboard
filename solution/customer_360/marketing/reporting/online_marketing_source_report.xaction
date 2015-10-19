@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>%title</title>
+  <version>1</version>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>%description</description>  
+    <icon>PentahoReporting.png</icon>  
+    <help/>  
+    <result-type>report</result-type> 
+  </documentation>
+
+  <inputs> 
+    <outputType type="string"> 
+      <sources> 
+        <request>outputType</request>  
+        <request>type</request> 
+      </sources>  
+      <default-value><![CDATA[html]]></default-value> 
+    </outputType>  
+    <outputTypeList type="property-map-list"> 
+      <sources> 
+        <runtime>outputTypeList</runtime> 
+      </sources>  
+      <default-value type="property-map-list"> 
+        <property-map> 
+          <entry key="report-output-desc">PDF</entry>  
+          <entry key="report-output-type-id">pdf</entry> 
+        </property-map>  
+        <property-map> 
+          <entry key="report-output-desc">Excel</entry>  
+          <entry key="report-output-type-id">xls</entry> 
+        </property-map>  
+        <property-map> 
+          <entry key="report-output-desc">Word</entry>  
+          <entry key="report-output-type-id">rtf</entry> 
+        </property-map>  
+        <property-map> 
+          <entry key="report-output-desc">Web Page</entry>  
+          <entry key="report-output-type-id">html</entry> 
+        </property-map>  
+        <property-map> 
+          <entry key="report-output-desc">Comma Separated Value</entry>  
+          <entry key="report-output-type-id">csv</entry> 
+        </property-map> 
+      </default-value> 
+    </outputTypeList>  
+    <CUSTOMER_SK type="string"> 
+      <sources> 
+        <request>CUSTOMER_SK</request>  
+        <default-value>0</default-value> 
+      </sources>  
+      <default-value><![CDATA[10293]]></default-value> 
+    </CUSTOMER_SK>  
+    <date_start type="string"> 
+      <sources> 
+        <request>date_start</request> 
+      </sources>  
+      <default-value><![CDATA[09/01/2007]]></default-value> 
+    </date_start>  
+    <date_end type="string"> 
+      <sources> 
+        <request>date_end</request> 
+      </sources>  
+      <default-value><![CDATA[10/01/2008]]></default-value> 
+    </date_end>  
+    <name type="string"> 
+      <sources> 
+        <session>name</session> 
+      </sources>  
+      <default-value>demo</default-value> 
+    </name> 
+  </inputs>
+
+  <outputs> 
+    <content type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </content> 
+  </outputs>
+
+  <resources> 
+    <report-definition> 
+      <solution-file> 
+        <location>online_marketing_source_report.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>
+      <action-type>SQL Query - Customer</action-type>
+      <action-inputs> 
+        <!--
+        <hosted_client_sk type="string"/>  
+        -->  
+        <name type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <customer_list type="property-map-list"/> 
+      </action-outputs>
+      <component-definition> 
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[select distinct c.CUSTOMER_SK, c.CUSTOMER_NAME 
+from dimension_customer c, fact_advertisement_impression f, ADMIN_USER A
+WHERE f.CUSTOMER_SK = c.CUSTOMER_SK 
+and c.CUSTOMER_NAME IS NOT NULL 
+AND F.HOSTED_CLIENT_SK = A.HOSTED_CLIENT_SK
+AND A.USER_NAME = '{name}'
+ORDER BY c.CUSTOMER_NAME ASC]]></query> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>SecureFilterComponent</component-name>
+      <action-type>Secure Filter</action-type>
+      <action-inputs> 
+        <date_start type="string"/>  
+        <date_end type="string"/>  
+        <CUSTOMER_SK type="string"/>  
+        <customer_list type="property-map-list"/> 
+      </action-inputs>
+      <component-definition> 
+        <selections> 
+          <CUSTOMER_SK style="select"> 
+            <title>Please select the advertiser.</title>  
+            <filter value-col-name="CUSTOMER_SK" display-col-name="CUSTOMER_NAME">customer_list</filter> 
+          </CUSTOMER_SK>  
+          <date_start filter="none"> 
+            <title>Enter the minimum date for the date range (format mm/dd/yyyy).</title> 
+          </date_start>  
+          <date_end filter="none"> 
+            <title>Enter the maximum date for the date range (format mm/dd/yyyy).</title> 
+          </date_end> 
+        </selections> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>JavascriptRule</component-name>
+      <action-type>QueryBuilder</action-type>
+      <action-inputs> 
+        <date_start type="string"/>  
+        <date_end type="string"/>  
+        <CUSTOMER_SK type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <query_string type="string"/> 
+      </action-outputs>
+      <component-definition> 
+        <script><![CDATA[function getQuery(CUSTOMER_SK,date_start,date_end) {
+
+var where_clause="";
+
+if(CUSTOMER_SK.length>0){
+	where_clause+=" AND dimension_campaign_wave.CUSTOMER_SK="+CUSTOMER_SK+" ";
+}
+
+if(date_start.length>0 && date_end.length>0){
+	where_clause+=" AND (  fact_advertisement_impression.IMPRESSION_DATE>= STR_TO_DATE('"+date_start+"', '%m/%d/%Y') AND fact_advertisement_impression.IMPRESSION_DATE< STR_TO_DATE('"+date_end+"', '%m/%d/%Y') ) "; 
+}
+
+
+var query=
+"SELECT "+
+"dimension_campaign_wave.CAMPAIGN_NAME, "+
+"dimension_customer.CUSTOMER_NAME, "+
+"SUM(AD_CLICK_QTY)AS SUM_AD_CLICK_QTY "+
+"FROM "+
+"fact_advertisement_impression, "+
+"dimension_campaign_wave, "+
+"dimension_advertisement, "+
+"dimension_customer "+
+"WHERE "+
+"fact_advertisement_impression.campaign_wave_sk=dimension_campaign_wave.campaign_wave_sk and "+
+"dimension_advertisement.ad_sk=fact_advertisement_impression.ad_sk and  "+
+"dimension_customer.CUSTOMER_SK=fact_advertisement_impression.CUSTOMER_SK and "+
+"dimension_campaign_wave.CAMPAIGN_WAVE_NAME IS NOT NULL "+
+where_clause+" " +
+"GROUP BY "+
+"dimension_campaign_wave.CAMPAIGN_NAME,fact_advertisement_impression.IMPRESSION_DATE ";
+return query;
+
+}
+getQuery(CUSTOMER_SK,date_start,date_end);]]></script> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>
+      <action-inputs> 
+        <query_string type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <query_string type="result-set" mapping="query_result"/> 
+      </action-outputs>
+      <component-definition> 
+        <jndi><![CDATA[mdw_mysql]]></jndi>  
+        <query><![CDATA[{query_string}]]></query>  
+        <live><![CDATA[true]]></live> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <action-inputs> 
+        <output-type type="string" mapping="outputType"/>  
+        <data type="result-set" mapping="query_result"/>  
+        <date_start type="string"/>  
+        <date_end type="string"/>  
+        <CUSTOMER_SK type="string"/> 
+      </action-inputs>
+      <action-resources> 
+        <report-definition type="resource"/> 
+      </action-resources>
+      <action-outputs> 
+        <report-output type="content" mapping="content"/> 
+      </action-outputs>
+      <component-definition/> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

@@ -1,0 +1,1040 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>CRM_FACT_MARKET_BASKET</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts shipment information from PeopleSoft FSCM.</note>
+      <xloc>34</xloc>
+      <yloc>20</yloc>
+      <width>337</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>24.5.206.117</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>24.5.206.117</server>
+    <type>ORACLE</type>
+    <access>Native</access>
+    <database>orcl</database>
+    <port>1521</port>
+    <username>mdw</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_orcl</name>
+    <server>24.5.206.117</server>
+    <type>ORACLE</type>
+    <access>Native</access>
+    <database>orcl</database>
+    <port>1521</port>
+    <username>mdw</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_FSCM_SHIPMENT_METRICS</from><to>LKP_DIMENSION_INVENTORY_ITEM</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_INVENTORY_ITEM</from><to>LKP_DIMENSION_CARRIER</to><enabled>Y</enabled> </hop>  <hop> <from>CON_BUSINESS_UNIT_TYPE</from><to>LKP_DIMENSION_BUSINESS_UNIT_IN</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_BUSINESS_UNIT_IN</from><to>LKP_DIMENSION_BUSINESS_UNIT_OM</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CARRIER</from><to>LKP_DIMENSION_CUSTOMER_BILL</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CUSTOMER_BILL</from><to>LKP_DIMENSION_CUSTOMER_SHIP</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CUSTOMER_SHIP</from><to>LKP_DIMENSION_PRODUCT</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_PRODUCT</from><to>LKP_DIMENSION_DEPARTMENT</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_DEPARTMENT</from><to>CON_BUSINESS_UNIT_TYPE</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_BUSINESS_UNIT_OM</from><to>LKP_DIMENSION_UNIT_OF_MEASURE_SHIP</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_UNIT_OF_MEASURE_SHIP</from><to>LKP_DIMENSION_UNIT_OF_MEASURE_WEIGHT</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_UNIT_OF_MEASURE_WEIGHT</from><to>LKP_DIMENSION_UNIT_OF_MEASURE_VOLUME</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_UNIT_OF_MEASURE_VOLUME</from><to>LKP_DIMENSION_CURRENCY_BASE</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CURRENCY_BASE</from><to>LKP_DIMENSION_CURRENCY_TRXN</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CURRENCY_TRXN</from><to>FACT_SHIPMENT</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>CON_BUSINESS_UNIT_TYPE</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <fields>
+      <field>
+        <name>BUSINESS_UNIT_TYPE_OM</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>OM</nullif>
+        <length>2</length>
+        <precision>-1</precision>
+        </field>
+      <field>
+        <name>BUSINESS_UNIT_TYPE_IN</name>
+        <type/>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>IN</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+    <GUI>
+      <xloc>687</xloc>
+      <yloc>470</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>FACT_SHIPMENT</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_orcl</connection>
+    <commit>100</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>FACT_SHIPMENT</table>
+      <key>
+        <name>BUSINESS_UNIT_ID</name>
+        <field>BUSINESS_UNIT_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>DEMAND_SOURCE_ID</name>
+        <field>DEMAND_SOURCE_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>OM_BUSINESS_UNIT_ID</name>
+        <field>OM_BUSINESS_UNIT_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>ORDER_ID</name>
+        <field>ORDER_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>ORDER_INT_LINE_NUMBER</name>
+        <field>ORDER_INT_LINE_NUMBER</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>SCHEDULE_LINE_NUMBER</name>
+        <field>SCHEDULE_LINE_NUMBER</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>DEMAND_LINE_NUMBER</name>
+        <field>DEMAND_LINE_NUMBER</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>BUSINESS_UNIT_ID</name>
+        <rename>BUSINESS_UNIT_ID</rename>
+        </value>
+      <value>
+        <name>DEMAND_SOURCE_ID</name>
+        <rename>DEMAND_SOURCE_ID</rename>
+        </value>
+      <value>
+        <name>OM_BUSINESS_UNIT_ID</name>
+        <rename>OM_BUSINESS_UNIT_ID</rename>
+        </value>
+      <value>
+        <name>ORDER_ID</name>
+        <rename>ORDER_ID</rename>
+        </value>
+      <value>
+        <name>ORDER_INT_LINE_NUMBER</name>
+        <rename>ORDER_INT_LINE_NUMBER</rename>
+        </value>
+      <value>
+        <name>SCHEDULE_LINE_NUMBER</name>
+        <rename>SCHEDULE_LINE_NUMBER</rename>
+        </value>
+      <value>
+        <name>DEMAND_LINE_NUMBER</name>
+        <rename>DEMAND_LINE_NUMBER</rename>
+        </value>
+      <value>
+        <name>ORDER_DATE</name>
+        <rename>ORDER_DATE</rename>
+        </value>
+      <value>
+        <name>ORDER_DATE_SK</name>
+        <rename>ORDER_DATE_SK</rename>
+        </value>
+      <value>
+        <name>ORIGINAL_SCHEDULE_DATE</name>
+        <rename>ORIGINAL_SCHEDULE_DATE</rename>
+        </value>
+      <value>
+        <name>ORIGINAL_SCHEDULE_DATE_SK</name>
+        <rename>ORIGINAL_SCHEDULE_DATE_SK</rename>
+        </value>
+      <value>
+        <name>SCHEDULE_DATE</name>
+        <rename>SCHEDULE_DATE</rename>
+        </value>
+      <value>
+        <name>SCHEDULE_DATE_SK</name>
+        <rename>SCHEDULE_DATE_SK</rename>
+        </value>
+      <value>
+        <name>SHIP_DATE</name>
+        <rename>SHIP_DATE</rename>
+        </value>
+      <value>
+        <name>SHIP_DATE_SK</name>
+        <rename>SHIP_DATE_SK</rename>
+        </value>
+      <value>
+        <name>LAST_MAINT_DATE</name>
+        <rename>LAST_MAINT_DATE</rename>
+        </value>
+      <value>
+        <name>LAST_MAINT_DATE_SK</name>
+        <rename>LAST_MAINT_DATE_SK</rename>
+        </value>
+      <value>
+        <name>SHIP_EARLY_DATE</name>
+        <rename>SHIP_EARLY_DATE</rename>
+        </value>
+      <value>
+        <name>SHIP_EARLY_DATE_SK</name>
+        <rename>SHIP_EARLY_DATE_SK</rename>
+        </value>
+      <value>
+        <name>SHIP_LATE_DATE</name>
+        <rename>SHIP_LATE_DATE</rename>
+        </value>
+      <value>
+        <name>SHIP_LATE_DATE_SK</name>
+        <rename>SHIP_LATE_DATE_SK</rename>
+        </value>
+      <value>
+        <name>DEMAND_DATE</name>
+        <rename>DEMAND_DATE</rename>
+        </value>
+      <value>
+        <name>DEMAND_DATE_SK</name>
+        <rename>DEMAND_DATE_SK</rename>
+        </value>
+      <value>
+        <name>SHIP_TO_ORDER_DAY_QTY</name>
+        <rename>SHIP_TO_ORDER_DAY_QTY</rename>
+        </value>
+      <value>
+        <name>SHIP_TO_DEMAND_DAY_QTY</name>
+        <rename>SHIP_TO_DEMAND_DAY_QTY</rename>
+        </value>
+      <value>
+        <name>SHIP_BEFORE_DEMAND_DAY_CNT</name>
+        <rename>SHIP_BEFORE_DEMAND_DAY_CNT</rename>
+        </value>
+      <value>
+        <name>BACKORDER_CANCEL_CNT</name>
+        <rename>BACKORDER_CANCEL_CNT</rename>
+        </value>
+      <value>
+        <name>SCHEDULED_QTY</name>
+        <rename>SCHEDULED_QTY</rename>
+        </value>
+      <value>
+        <name>SHIPPED_QTY</name>
+        <rename>SHIPPED_QTY</rename>
+        </value>
+      <value>
+        <name>BACKORDER_QTY</name>
+        <rename>BACKORDER_QTY</rename>
+        </value>
+      <value>
+        <name>LIST_PRICE_AMT</name>
+        <rename>LIST_PRICE_AMT</rename>
+        </value>
+      <value>
+        <name>LIST_PRICE_BASE_AMT</name>
+        <rename>LIST_PRICE_BASE_AMT</rename>
+        </value>
+      <value>
+        <name>NET_UNIT_PRICE_AMT</name>
+        <rename>NET_UNIT_PRICE_AMT</rename>
+        </value>
+      <value>
+        <name>NET_UNIT_PRICE_BASE_AMT</name>
+        <rename>NET_UNIT_PRICE_BASE_AMT</rename>
+        </value>
+      <value>
+        <name>SHIP_AMT</name>
+        <rename>SHIP_AMT</rename>
+        </value>
+      <value>
+        <name>BASE_SHIP_AMT</name>
+        <rename>BASE_SHIP_AMT</rename>
+        </value>
+      <value>
+        <name>SHIPMENT_WEIGHT_QTY</name>
+        <rename>SHIPMENT_WEIGHT_QTY</rename>
+        </value>
+      <value>
+        <name>SHIP_VOLUME_QTY</name>
+        <rename>SHIP_VOLUME_QTY</rename>
+        </value>
+      <value>
+        <name>INVENTORY_ITEM_SK</name>
+        <rename>INVENTORY_ITEM_SK</rename>
+        </value>
+      <value>
+        <name>CARRIER_SK</name>
+        <rename>CARRIER_SK</rename>
+        </value>
+      <value>
+        <name>BILL_CUSTOMER_SK</name>
+        <rename>BILL_CUSTOMER_SK</rename>
+        </value>
+      <value>
+        <name>SHIP_CUSTOMER_SK</name>
+        <rename>SHIP_CUSTOMER_SK</rename>
+        </value>
+      <value>
+        <name>PRODUCT_SK</name>
+        <rename>PRODUCT_SK</rename>
+        </value>
+      <value>
+        <name>DEPARTMENT_SK</name>
+        <rename>DEPARTMENT_SK</rename>
+        </value>
+      <value>
+        <name>IN_BUSINESS_UNIT_SK</name>
+        <rename>IN_BUSINESS_UNIT_SK</rename>
+        </value>
+      <value>
+        <name>OM_BUSINESS_UNIT_SK</name>
+        <rename>OM_BUSINESS_UNIT_SK</rename>
+        </value>
+      <value>
+        <name>SHIP_UNIT_OF_MEASURE_SK</name>
+        <rename>SHIP_UNIT_OF_MEASURE_SK</rename>
+        </value>
+      <value>
+        <name>WEIGHT_UNIT_OF_MEASURE_SK</name>
+        <rename>WEIGHT_UNIT_OF_MEASURE_SK</rename>
+        </value>
+      <value>
+        <name>VOLUME_UNIT_OF_MEASURE_SK</name>
+        <rename>VOLUME_UNIT_OF_MEASURE_SK</rename>
+        </value>
+      <value>
+        <name>BASE_CURRENCY_SK</name>
+        <rename>BASE_CURRENCY_SK</rename>
+        </value>
+      <value>
+        <name>TRXN_CURRENCY_SK</name>
+        <rename>TRXN_CURRENCY_SK</rename>
+        </value>
+      </lookup>
+    <GUI>
+      <xloc>943</xloc>
+      <yloc>10</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_BUSINESS_UNIT_IN</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_BUSINESS_UNIT</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>BUSINESS_UNIT_ID</name>
+          <lookup>BUSINESS_UNIT_ID</lookup>
+          </key>
+        <key>
+          <name>BUSINESS_UNIT_TYPE_IN</name>
+          <lookup>BUSINESS_UNIT_TYPE</lookup>
+          </key>
+        <date>
+          <name>ORDER_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>BUSINESS_UNIT_SK</name>
+          <rename>IN_BUSINESS_UNIT_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>555</xloc>
+      <yloc>390</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_BUSINESS_UNIT_OM</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_BUSINESS_UNIT</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>BUSINESS_UNIT_ID</name>
+          <lookup>BUSINESS_UNIT_ID</lookup>
+          </key>
+        <key>
+          <name>BUSINESS_UNIT_TYPE_OM</name>
+          <lookup>BUSINESS_UNIT_TYPE</lookup>
+          </key>
+        <date>
+          <name>ORDER_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>BUSINESS_UNIT_SK</name>
+          <rename>OM_BUSINESS_UNIT_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>562</xloc>
+      <yloc>293</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CARRIER</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CARRIER</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>CARRIER_ID</name>
+          <lookup>CARRIER_ID</lookup>
+          </key>
+        <key>
+          <name>CARRIER_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>ORDER_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CARRIER_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>334</xloc>
+      <yloc>156</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CURRENCY_BASE</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CURRENCY</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>BASE_CURRENCY_SK</name>
+          <lookup>CURRENCY_ID</lookup>
+          </key>
+        <date>
+          <name>ORDER_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CURRENCY_SK</name>
+          <rename>BASE_CURRENCY_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>649</xloc>
+      <yloc>22</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CURRENCY_TRXN</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CURRENCY</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>TRXN_CURRENCY_SK</name>
+          <lookup>CURRENCY_ID</lookup>
+          </key>
+        <date>
+          <name>ORDER_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CURRENCY_SK</name>
+          <rename>TRXN_CURRENCY_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>829</xloc>
+      <yloc>67</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CUSTOMER_BILL</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CUSTOMER</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>BILL_CUSTOMER_ID</name>
+          <lookup>CUSTOMER_ID</lookup>
+          </key>
+        <key>
+          <name>CUSTOMER_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>ORDER_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CUSTOMER_SK</name>
+          <rename>BILL_CUSTOMER_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>368</xloc>
+      <yloc>263</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CUSTOMER_SHIP</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CUSTOMER</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>SHIP_CUSTOMER_ID</name>
+          <lookup>CUSTOMER_ID</lookup>
+          </key>
+        <key>
+          <name>CUSTOMER_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>ORDER_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CUSTOMER_SK</name>
+          <rename>SHIP_CUSTOMER_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>302</xloc>
+      <yloc>372</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_DEPARTMENT</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_DEPARTMENT</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>DEPARTMENT_ID</name>
+          <lookup>DEPARTMENT_ID</lookup>
+          </key>
+        <key>
+          <name>DEPARTMENT_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>ORDER_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>DEPARTMENT_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>522</xloc>
+      <yloc>507</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_INVENTORY_ITEM</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_INVENTORY_ITEM</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>INVENTORY_ITEM_ID</name>
+          <lookup>INVENTORY_ITEM_ID</lookup>
+          </key>
+        <key>
+          <name>INV_ITEM_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>ORDER_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>INVENTORY_ITEM_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>195</xloc>
+      <yloc>106</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_PRODUCT</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_PRODUCT</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>PRODUCT_ID</name>
+          <lookup>PRODUCT_ID</lookup>
+          </key>
+        <key>
+          <name>PRODUCT_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>ORDER_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>PRODUCT_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>347</xloc>
+      <yloc>486</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_UNIT_OF_MEASURE_SHIP</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CARRIER</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>SHIP_UOM_ID</name>
+          <lookup>UNIT_OF_MEASURE_ID</lookup>
+          </key>
+        <date>
+          <name>ORDER_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>UNIT_OF_MEASURE_SK</name>
+          <rename>SHIP_UNIT_OF_MEASURE_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>740</xloc>
+      <yloc>273</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_UNIT_OF_MEASURE_VOLUME</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CARRIER</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>VOLUME_UOM_ID</name>
+          <lookup>UNIT_OF_MEASURE_ID</lookup>
+          </key>
+        <date>
+          <name>ORDER_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>UNIT_OF_MEASURE_SK</name>
+          <rename>VOLUME_UNIT_OF_MEASURE_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>548</xloc>
+      <yloc>145</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_UNIT_OF_MEASURE_WEIGHT</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CARRIER</table>
+      <connection>mdw_sqlserver_pc-xp</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>WEIGHT_UOM_ID</name>
+          <lookup>UNIT_OF_MEASURE_ID</lookup>
+          </key>
+        <date>
+          <name>ORDER_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>UNIT_OF_MEASURE_SK</name>
+          <rename>WEIGHT_UNIT_OF_MEASURE_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>768</xloc>
+      <yloc>165</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_FSCM_SHIPMENT_METRICS</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the PS_RA_CAMPAIGN table.  It maintains all marketing campaign program information, such as name, start and end dates, relationship to a parent (roll up), overall campaign status, objective and description.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>select 
+RTRIM(SHIP.BUSINESS_UNIT) AS BUSINESS_UNIT_ID, --pk
+RTRIM(SHIP.DEMAND_SOURCE) AS DEMAND_SOURCE_ID, --pk
+RTRIM(SHIP.SOURCE_BUS_UNIT) AS OM_BUSINESS_UNIT_ID,--pk
+RTRIM(SHIP.ORDER_NO) AS ORDER_ID, --pk
+RTRIM(SHIP.ORDER_INT_LINE_NO) AS ORDER_INT_LINE_NUMBER, --DD --pk
+RTRIM(SHIP.SCHED_LINE_NO) AS SCHEDULE_LINE_NUMBER, --DD --pk
+RTRIM(SHIP.DEMAND_LINE_NO) AS DEMAND_LINE_NUMBER, --DD  --pk
+RTRIM(SHIP.INV_ITEM_ID) AS INV_ITEM_ID,
+RTRIM(MASTER_ITEM_TBL.SETID) AS INV_ITEM_SETID,
+RTRIM(SHIP.PRODUCT_ID) AS PRODUCT_ID,
+RTRIM(PROD_ITEM.SETID) AS PRODUCT_SETID,
+RTRIM(HEAD.BILL_TO_CUST_ID) AS BILL_CUSTOMER_ID,
+RTRIM(SHIP.SHIP_TO_CUST_ID) AS SHIP_CUSTOMER_ID,
+RTRIM(CUSTOMER.SETID) AS CUSTOMER_SETID,
+RTRIM(SHIP.SHIP_ID) AS SHIPMENT_ID,
+RTRIM(SHIP.CARRIER_ID) AS CARRIER_ID,
+RTRIM(CARRIER_ID.SETID) AS CARRIER_SETID,
+RTRIM(SCHED.ORD_SCH_STATUS) AS ORDER_SCHEDULE_STATUS_ID,
+RTRIM(SHIP.DEPTID) AS DEPARTMENT_ID,
+RTRIM(DEPT_TBL.SETID) AS DEPARTMENT_SETID,
+RTRIM(SCHED.SHIP_FROM_BU) AS IN_BUSINESS_UNIT,
+RTRIM(HEAD.ORDER_TYPE_CD) AS ORDER_TYPE_ID,
+RTRIM(SCHED.CURRENCY_CD) AS TRXN_CURRENCY_ID,
+RTRIM(SCHED.CURRENCY_CD_BASE) AS BASE_CURRENCY_ID,
+RTRIM(SHIP.UNIT_MEASURE_VOL) AS VOLUME_UOM_ID,
+RTRIM(SHIP.UNIT_MEASURE_SHIP) AS SHIP_UOM_ID,
+--SHIP.UNIT_OF_MEASURE AS ???
+RTRIM(SHIP.UNIT_MEASURE_WT) AS WEIGHT_UOM_ID,
+HEAD.ORDER_DATE,
+CAST (CONVERT(CHAR(10),HEAD.ORDER_DATE,112) as NUMERIC) AS ORDER_DATE_SK,
+SHIP.ORIG_SCHED_DATE AS ORIGINAL_SCHEDULE_DATE,
+CAST (CONVERT(CHAR(10),SHIP.ORIG_SCHED_DATE,112) as NUMERIC) AS ORIGINAL_SCHEDULE_DATE_SK,
+SHIP.SCHED_DATE AS SCHEDULE_DATE,
+CAST (CONVERT(CHAR(10),SHIP.SCHED_DATE,112) as NUMERIC) AS SCHEDULE_DATE_SK,
+SHIP.SHIP_DATE AS SHIP_DATE,
+CAST (CONVERT(CHAR(10),SHIP.SHIP_DATE,112) as NUMERIC) AS SHIP_DATE_SK,
+SHIP.DATE_LAST_MAINT AS LAST_MAINT_DATE,
+CAST (CONVERT(CHAR(10),SHIP.DATE_LAST_MAINT,112) as NUMERIC) AS LAST_MAINT_DATE_SK,
+SHIP.SHIP_EARLY_DATE AS SHIP_EARLY_DATE,
+CAST (CONVERT(CHAR(10),SHIP.SHIP_EARLY_DATE,112) as NUMERIC) AS SHIP_EARLY_DATE_SK,
+SHIP.SHIP_LATE_DATE AS SHIP_LATE_DATE,
+CAST (CONVERT(CHAR(10),SHIP.SHIP_LATE_DATE,112) as NUMERIC) AS SHIP_LATE_DATE_SK,
+SHIP.DEMAND_DATE AS DEMAND_DATE,
+CAST (CONVERT(CHAR(10),SHIP.DEMAND_DATE,112) as NUMERIC) AS DEMAND_DATE_SK,
+SHIP_DATE - ORDER_DATE AS SHIP_TO_ORDER_DAY_QTY,
+DEMAND_DATE - SHIP_DATE AS SHIP_TO_DEMAND_DAY_QTY,
+CASE WHEN SHIP_DATE &lt;= DEMAND_DATE THEN 1 ELSE 0 END AS SHIP_BEFORE_DEMAND_DAY_CNT,
+(CASE WHEN RTRIM(SHIP.BCKORDR_CNCL_FLAG) = &apos;Y&apos; THEN 1 ELSE 0 END) AS BACKORDER_CANCEL_CNT,
+SCHED.QTY_SCHEDULED AS SCHEDULED_QTY,
+SHIP.QTY_SHIPPED AS SHIPPED_QTY,
+SCHED.QTY_SCHEDULED - SHIP.QTY_SHIPPED AS BACKORDER_QTY,
+SCHED.LIST_PRICE AS LIST_PRICE_AMT, 
+SCHED.LIST_PRICE_BASE AS LIST_PRICE_BASE_AMT,
+SCHED.NET_UNIT_PRICE AS NET_UNIT_PRICE_AMT,
+SCHED.NET_UNIT_PRICE_BSE AS NET_UNIT_PRICE_BASE_AMT,
+(SHIP.QTY_SHIPPED  * SCHED.NET_UNIT_PRICE) AS SHIP_AMT,
+(SHIP.QTY_SHIPPED  * SCHED.NET_UNIT_PRICE_BSE) AS BASE_SHIP_AMT,
+NULL AS SHIPMENT_WEIGHT_QTY, --WEIGHT UOM EACH VALUE * QTY_SHIPPED 
+NULL AS SHIP_VOLUME_QTY --VOLUME UOM EACH VALUE * QTY_SHIPPED  
+FROM PS_SHIP_INF_INV SHIP
+LEFT OUTER JOIN PS_ORD_SCHEDULE SCHED
+ON SHIP.ORDER_NO = SCHED.ORDER_NO AND
+SHIP.SOURCE_BUS_UNIT = SCHED.BUSINESS_UNIT AND
+SHIP.ORDER_INT_LINE_NO = SCHED.ORDER_INT_LINE_NO AND
+SHIP.SCHED_LINE_NO = SCHED.SCHED_LINE_NBR
+LEFT OUTER JOIN PS_ORD_HEADER HEAD
+ON SHIP.ORDER_NO = HEAD.ORDER_NO AND
+SHIP.BUSINESS_UNIT = HEAD.BUSINESS_UNIT
+LEFT OUTER JOIN PS_SET_CNTRL_REC MASTER_ITEM_TBL
+ON SHIP.BUSINESS_UNIT = MASTER_ITEM_TBL.SETCNTRLVALUE
+AND MASTER_ITEM_TBL.RECNAME = &apos;MASTER_ITEM_TBL&apos;
+LEFT OUTER JOIN PS_SET_CNTRL_REC PROD_ITEM
+ON SHIP.BUSINESS_UNIT = PROD_ITEM.SETCNTRLVALUE
+AND PROD_ITEM.RECNAME = &apos;PROD_ITEM&apos;
+LEFT OUTER JOIN PS_SET_CNTRL_REC CARRIER_ID
+ON SHIP.BUSINESS_UNIT = CARRIER_ID.SETCNTRLVALUE
+AND CARRIER_ID.RECNAME = &apos;CARRIER_ID&apos;
+LEFT OUTER JOIN PS_SET_CNTRL_REC CUSTOMER
+ON SHIP.BUSINESS_UNIT = CUSTOMER.SETCNTRLVALUE
+AND CUSTOMER.RECNAME = &apos;CUSTOMER&apos;
+LEFT OUTER JOIN PS_SET_CNTRL_REC DEPT_TBL
+ON SHIP.BUSINESS_UNIT = DEPT_TBL.SETCNTRLVALUE
+AND DEPT_TBL.RECNAME = &apos;DEPT_TBL&apos;
+WHERE SHIP.DEMAND_SOURCE = &apos;OM&apos;
+--ADD INCREMENTAL LOGIC</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>107</xloc>
+      <yloc>233</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

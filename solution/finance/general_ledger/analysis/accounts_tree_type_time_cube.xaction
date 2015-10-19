@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>accounts_tree_type_time_cube.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <help/>  
+    <result-type>report</result-type>  
+    <description>%description</description>  
+    <icon>file.png|analysis.png</icon> 
+  </documentation>  
+  <inputs> 
+    <mdx type="string"> 
+      <default-value/>  
+      <sources> 
+        <request>MDX</request> 
+      </sources> 
+    </mdx>  
+    <mode type="string"> 
+      <sources> 
+        <request>mode</request> 
+      </sources>  
+      <default-value/> 
+    </mode>  
+    <period type="string"> 
+      <sources> 
+        <request>period</request> 
+      </sources>  
+      <default-value/> 
+    </period> 
+  </inputs>  
+  <outputs> 
+    <model type="string"/>  
+    <connection type="string"/>  
+    <mdx type="string"/>  
+    <options type="list"/>  
+    <title type="string"/>  
+    <url type="string"> 
+      <destinations> 
+        <response>redirect</response> 
+      </destinations> 
+    </url> 
+  </outputs>  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <component-name>PivotViewComponent</component-name>  
+      <action-inputs> 
+        <mode type="string"/>  
+        <period type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <model type="string"/>  
+        <connection type="string"/>  
+        <mdx type="string"/>  
+        <options type="list"/>  
+        <title type="string"/>  
+        <url type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <title>%title</title>  
+        <viewer>Pivot</viewer>  
+        <model>breadboard/analysis/breadboardbi.mondrian.xml</model>  
+        <jndi>mdw_mysql</jndi>  
+        <location>mondrian</location>  
+        <options> 
+          <personal/>  
+          <cube-nav/>  
+          <mdx-edit/>  
+          <sort-conf/>  
+          <spacer/>  
+          <level-style/>  
+          <hide-spans/>  
+          <properties/>  
+          <non-empty/>  
+          <swap-axes/>  
+          <spacer/>  
+          <drill-member/>  
+          <drill-position/>  
+          <drill-replace/>  
+          <drill-thru/>  
+          <spacer/>  
+          <chart/>  
+          <chart-conf/>  
+          <spacer/>  
+          <print-conf/>  
+          <print-pdf/>  
+          <spacer/>  
+          <excel/> 
+        </options>    
+<!-- This query is closely fit to a sample dataset, it must be changed to work properly -->
+        <query><![CDATA[select NON EMPTY Crossjoin(Hierarchize({[Time Period].[All Periods]}), {[GL Adjustment].[All Adjustments].[Debe], [GL Adjustment].[All Adjustments].[Haber]}) ON COLUMNS,
+  NON EMPTY {[Account.Account Tree].[All Accounts].[ACTIVOS                                                     ], [Account.Account Tree].[All Accounts].[ACTIVOS FIJOS                                               ], [Account.Account Tree].[All Accounts].[CUENTAS DE GASTOS                                           ], [Account.Account Tree].[All Accounts].[CUENTAS DE INGRESO                                          ], [Account.Account Tree].[All Accounts].[PASIVO CIRCULANTE                                           ]} ON ROWS
+from [GL Posted Transactions]
+where [Measures].[Transaction Amount]]]></query> 
+      </component-definition>  
+      <action-name>Pivot View</action-name>  
+      <logging-level>DEBUG</logging-level> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springsource.org/dtd/spring-beans.dtd">
+
+<!--+
+	| Application context containing JDBC AuthenticationProvider 
+	| implementation.
+	+-->
+
+<beans>
+
+	<bean id="daoAuthenticationProvider"
+		class="org.acegisecurity.providers.dao.DaoAuthenticationProvider">
+		<property name="userDetailsService">
+			<ref bean="userDetailsService" />
+		</property>
+		<property name="passwordEncoder">
+			<ref bean="passwordEncoder" />
+		</property>
+	</bean>
+
+	<bean id="userDetailsService"
+		class="org.acegisecurity.userdetails.jdbc.JdbcDaoImpl">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+		<property name="authoritiesByUsernameQuery">
+			<value>
+				<![CDATA[SELECT username, authority FROM GRANTED_AUTHORITIES WHERE username = ? ORDER BY authority]]>
+			</value>
+		</property>
+		<property name="usersByUsernameQuery">
+			<value>
+				<![CDATA[SELECT username, password, enabled FROM USERS WHERE username = ? ORDER BY username]]>
+			</value>
+		</property>
+	</bean>
+	<!--  This is only for Hypersonic. Please update this section for any other database you are using -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:hsqldb:hsql://localhost:3306/hibernate" />
+		<property name="username" value="mdw" />
+		<property name="password" value="password" />
+	</bean>
+
+  <bean id="passwordEncoder"
+    class="org.acegisecurity.providers.encoding.PlaintextPasswordEncoder" />
+ 
+
+</beans>

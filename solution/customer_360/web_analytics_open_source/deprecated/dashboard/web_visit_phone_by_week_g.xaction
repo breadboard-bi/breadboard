@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>Web Visits by Week and Country and Region</title>
+  <version>2</version>
+  <logging-level/>
+  <documentation> 
+    <author>Breadboard BI, LLC</author>  
+    <description>Return the unique visitors by week and country and region.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>
+
+  <inputs> 
+    <WEEK_OF_YEAR type="string"> 
+      <sources> 
+        <request>WEEK_OF_YEAR</request> 
+      </sources> 
+    </WEEK_OF_YEAR>  
+    <REGION type="string"> 
+      <sources> 
+        <request>REGION</request> 
+      </sources> 
+    </REGION> 
+  </inputs>
+
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>
+
+  <resources/>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>
+      <action-type>rule</action-type>
+      <action-inputs> 
+        <WEEK_OF_YEAR type="string"/>  
+        <REGION type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>
+      <component-definition> 
+        <query><![CDATA[SELECT CAST(V.PHONE_REGION_CODE AS CHAR(3)) AS "Area Code",
+        SUM(F.WEB_VISIT_QTY) AS "Unique Visits"
+FROM FACT_WEB_SITE_VISIT F, DIMENSION_DAY D, 
+DIMENSION_WEB_VISITOR V
+WHERE F.VISIT_DATE_SK = D.DATE_SK
+AND F.WEB_VISITOR_SK = V.WEB_VISITOR_SK
+AND D.WEEK_SK = '{WEEK_OF_YEAR}'
+AND V.COUNTRY_CODE = 'US'
+AND V.REGION_CODE = '{REGION}'
+GROUP BY V.PHONE_REGION_CODE
+ORDER BY SUM(F.WEB_VISIT_QTY) DESC]]></query>  
+        <jndi>mdw_mysql</jndi>  
+        <live>false</live> 
+      </component-definition> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

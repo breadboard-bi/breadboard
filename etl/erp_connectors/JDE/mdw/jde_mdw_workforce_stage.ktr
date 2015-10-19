@@ -1,0 +1,688 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>jde_workforce_stage</name>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <rejected/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+  <modified_user/>
+  <modified_date>2007&#47;02&#47;14 17:00:06.078</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>These table input steps can be used as a basis for loading workforce data mart staging tables.</note>
+      <xloc>40</xloc>
+      <yloc>34</yloc>
+      <width>462</width>
+      <heigth>23</heigth>
+      </notepad>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI, LLC. All rights reserved.</note>
+      <xloc>124</xloc>
+      <yloc>687</yloc>
+      <width>291</width>
+      <heigth>23</heigth>
+      </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>29</xloc>
+      <yloc>529</yloc>
+      <width>546</width>
+      <heigth>62</heigth>
+      </notepad>
+  </notepads>
+  <connection>
+    <name>jde</name>
+    <server>test</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port/>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  </order>
+  <step>
+    <name>JDE_HCM_BENEFIT</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection/>
+    <sql>SELECT F08320.BAPLTY AS BENEFIT_TYPECODE,
+F0005.DRDL01 AS BENEFIT_TYPE_DESC
+F08320.BAPLAN AS BENEFIT_PLAN_CODE,
+F08320.BADC AS BENEFIT_PLAN_NAME,
+F08320.BAEXA AS BENEFIT_PLAN_DESC,
+F08320.BAANN8 AS VENDOR_ID
+FROM F08320
+LEFT OUTER JOIN F0005
+ON F0005.DRKY = F08320.BAPLTY 
+AND F0005.DRRT = &apos;PT&apos; AND F0005.DRSY = &apos;08&apos; --MAY VARY BY CLIENT
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>93</xloc>
+      <yloc>78</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>JDE_HCM_COMPANY</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection/>
+    <sql>SELECT F0010.CCCO AS COMPANY_ID,
+F0010.CCNAME AS COMPANY_NAME,
+F0116.ALCTY1 AS CITY_NAME,
+F0116.ALCOUN AS COUNTY_NAME,
+F0116.ALADDS AS STATE_NAME,
+F0116.ALADDZ AS POSTAL_CODE,
+F0101.ABSIC AS INDUSTRY_CODE,
+F0005.DRDL01 AS INDUSTRY_NAME
+FROM F0010
+LEFT OUTER JOIN F0116 
+ON F0116.ALAN8 = F0010.CCCO
+LEFT OUTER JOIN F0101 
+ON F0101.ABAN8 = F0116.ALAN8
+LEFT OUTER JOIN F0005
+ON F0005.DRKY = F0101.ABSIC
+
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>98</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>JDE_HCM_COMPENSATION_RATE_CODE</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection/>
+    <sql>SELECT YNSALY AS COMPENSATION_RATE_TYPE_CODE,
+YNMTYPC AS COMPENSATION_RATE_CODE
+FROM F08830WF
+
+
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>103</xloc>
+      <yloc>213</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>JDE_HCM_DEDUCTION</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection/>
+    <sql>SELECT BAPLAN AS DEDUCTION_ID,
+BAEXA AS DEDUCTION_NAME,
+BADC AS DEDUCTION_DESC,
+BAPLTY AS PLAN_TYPE_CODE,
+BAMXPR AS DEDUCTION_YTD_MAX_AMT
+FROM F08320
+
+
+
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>102</xloc>
+      <yloc>275</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>JDE_HCM_EMPLOYEE_JOB_ACTION</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection/>
+    <sql>SELECT 
+F060118.YEANPA AS PERSON_ID,
+F060118.YEAN8 AS BUSINESS_UNIT_ID,
+F060118.YEEFTO AS EFFECTIVE_DATE, --JULIAN
+F060118.YEUPMJ AS JOB_ACTION_DATE, --JULIAN
+F060118.YETRS AS JOB_ACTION_REASON_CODE,
+F0005.DRDL01 AS JOB_ACTION_REASON_DESC,
+F060118.YEEEOJ AS EEO_CLASS_CODE,
+F060118.YEFLSA AS FLSA_STATUS_CODE,
+F060118.YEEST AS FULL_PART_TIME_CODE,
+F060118.YESHFT AS JOB_SHIFT_CODE,
+F060118.YESAL AS ANNUAL_RATE,
+F060118.YECMPA AS COMPENSATION_RATE,
+F060118.YEFTE AS FTE_EQUIVALENT_QTY,
+F060118.YESTDD AS WORK_DAY_HOURS_QTY,
+F060116.YABENS AS BENEFIT_STATUS_CODE
+FROM F060118
+LEFT OUTER JOIN F0005 
+ON F0005.DRRT = &apos;T&apos; AND F0005.DRSY = &apos;06&apos; --USER DEFINED, EACH CLIENT MAY VARY
+AND F0005.DRKY = F060118.YETRS
+LEFT OUTER JOIN F060116
+ON F060116.YAAN8 = F060118.YEAN8
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>105</xloc>
+      <yloc>341</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>JDE_HCM_JOBCODE</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection/>
+    <sql>SELECT F08001.JWJBCD AS JOBCODE_ID,
+F08001.JWJBST AS JOBCODE_STEP_ID,
+F08001.JWDL01 AS JOBCODE_DESC,
+F08001.JWFLSA AS FLSA_STATUS_CODE,
+F08001.JWUN AS LABOR_UNION_CODE,
+F0005_UN.DRDL01 AS LABOR_UNION_DESC,
+F08001.JWJGRP AS JOB_FAMILY_CODE,
+F0005_JF.DRDL01 AS JOB_FAMILY_DESC,
+F08001.JWWCMP AS WORKERS_COMPENSATION_CODE
+FROM F08001
+LEFT OUTER JOIN F0005 F0005_JF
+ON F0005_JF.DRRT = &apos;JG&apos; --MAY VARY BY CLIENT
+AND F08001.JWJGRP = F0005_JF.DRKY
+LEFT OUTER JOIN F0005_UN
+ON F0005_UN.DRRT = &apos;UN&apos; --MAY VARY BY CLIENT
+AND F08001.JWUN = F0005_UN.DRKY
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>109</xloc>
+      <yloc>407</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>JDE_HCM_PERSON</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection/>
+    <sql>SELECT F0111.WWAN8 AS PERSON_ID, 
+F0111.ABTAX AS NATIONAL_ID,
+F0111.WSRNM AS FIRST_NAME,
+F0111.WWMDNM AS MIDDLE_NAME,
+F0111.WWGNNM AS LAST_NAME,
+F060120.YAMSA AS MARITAL_STATUS_CODE,
+F0005_MARITAL.DRDL01 AS MARITAL_STATUS_DESC,
+F08042.JWEFTO AS MARITAL_STATUS_DATE,
+F060116.YADOB AS BIRTH_DATE,
+F08401.HARECB AS APPLICATION_DATE,
+F060116.YASEX AS GENDER_CODE,
+F060116.YAEEOM AS ETHNIC_GROUP_CODE,
+F0005_ETHNIC.DRDL01 AS ETHNIC_GROUP_DESC,
+F054101.EHFTS AS FULL_TIME_STUDENT_IND,
+F060120.YACTB1 AS US_CITIZEN_PROOF_DOC1_NAME,
+F060120.YACTB2 AS US_CITIZEN_PROOF_DOC2_NAME,
+F060116.YAHM04 AS DISABLED_IND,
+F060116.YAHM03 AS DISABLED_VETERAN_IND,
+F0115_HOME.WPAR1 AS HOME_PHONE_REGION_NUMBER,
+F0115_HOME.WPPH1 AS HOME_PHONE_NUMBER,
+F0115_MOBILE.WPAR1 AS MOBILE_PHONE_REGION_NUMBER,
+F0115_MOBILE.WPPH1 AS MOBILE_PHONE_NUMBER,
+F0115_WORK.WPAR1 AS WORK_PHONE_REGION_NUMBER,
+F0115_WORK.WPPH1 AS WORK_PHONE_NUMBER
+FROM F0111
+LEFT OUTER JOIN F060116 
+ON F0111.WWAN8 = F060116.YAAN8
+LEFT OUTER JOIN F0005_MARITAL 
+ON F0005_MARITAL.DRRT = &apos;MS&apos; AND F0005_MARITAL.DRSY = &apos;07&apos;  --MAY VARY BY CLIENT
+AND F060120.YAMSA = F0005.DRKY
+LEFT OUTER JOIN F08042
+ON F0111.WWAN8 = F08042.JWAN8 AND F08042.JWDTAI = &apos;MSTX&apos;
+LEFT OUTER JOIN F0005_ETHNIC 
+ON F0005.DRRT = &apos;M&apos; and F0005.DRSY = &apos;06&apos; 
+AND F0111.WWAN8 = F060116.YAAN8
+LEFT OUTER JOIN F054101
+ON F0111.WWAN8 = F054101.EHAN8
+LEFT OUTER JOIN F08401
+ON F0111.WWAN8 = F08401.HAAN8
+LEFT OUTER JOIN F060120
+ON F0111.WWAN8 = F060120.YAAN8
+LEFT OUTER JOIN F0115_HOME
+ON F0111.WWAN8 = F0115.WPAN8 and F0115.WPPHTP = &apos;HOM&apos;
+LEFT OUTER JOIN F0115_MOBILE
+ON F0111.WWAN8 = F0115.WPAN8 and F0115.WPPHTP = &apos;CAR&apos;
+LEFT OUTER JOIN F0115_WORK
+ON F0111.WWAN8 = F0115.WPAN8 and F0115.WPPHTP IS NULL
+LEFT OUTER JOIN F0101
+ON F0111.WWAN8 = F0101.ABAN8
+WHERE F0111.WWIDLN = &apos;0&apos;  --???</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>316</xloc>
+      <yloc>79</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>JDE_HCM_POSITION</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection/>
+    <sql>F08101.HPPOS AS POSITION_ID,
+F08101.HPDL01 AS POSITION_DESC,
+F08101.HPMCU AS BUSINESS_UNIT_ID, --SOURCE
+F08101.HPPOS AS JOBCODE_ID,
+F08101.HPPSST AS POSITION_STATUS_CODE,
+F0005_STATUS.DRDL01 AS POSITION_STATUS_DESC,
+F08101.HPPSSD AS POSITION_STATUS_DATE, --JULIAN
+F08101.HPPSTC AS BUDGETED_POSITION_QTY, --CONVERT TO QUANTITY, 1 = TRUE, 0 = FALSE
+F08101.HPHDCT AS HEAD_COUNT_MAX_QTY,
+F08001.JWUN AS LABOR_UNION_CODE,
+F0005_UN.DRDL01 AS LABOR_UNION_DESC,
+F08101.HPUPMJ AS LAST_AUDIT_DATE, --JULIAN
+F08111.HQFTE AS FTE --???
+FROM F08101
+
+LEFT OUTER JOIN F0005_STATUS 
+ON F0005_STATUS.DRRT = &apos;PL&apos; and F0005_STATUS.DRSY = &apos;08&apos; --MAY VARY BY CLIENT
+F08101.HPPSST = F0005_STATUS.DRKY
+
+LEFT OUTER JOIN F08001
+ON F08001.JWJBCD = F08101.HPJBCD AND F08001.JWJBST = F08101.HPJBST
+
+LEFT OUTER JOIN F0005_UN 
+ON F0005_UN.DRRT = &apos;UN&apos; and F0005_UN.DRSY = &apos;06&apos;
+AND F0005_UN.DRKY = F08101 S_F08001.JWUN
+
+LEFT OUTER JOIN F08111
+ON F08111.HQPOS = F08101.HPPOS</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>316</xloc>
+      <yloc>149</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>JDE_HCM_REGULATORY_REGION</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection/>
+    <sql>SELECT F00821.YACCPR AS REGULATORY_REGION_ID,
+F0005.DRDL01 AS REGULATORY_REGION_DESC
+FROM F060116
+LEFT OUTER JOIN F0005
+ON F0005.DRRT = &apos;CN&apos; AND F0005.DRSY = &apos;00&apos; --MAY VARY BY CLIENT.
+AND F0005.DRKY = F060116.YACCPR</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>317</xloc>
+      <yloc>214</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>JDE_HCM_SALARY_DEDUCTION</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection/>
+    <sql>F0709.Y$AN8 AS PERSON_ID,
+F0709.Y$HMCO AS COMPANY_ID,
+F0709.Y$CKDT AS DISBURSEMENT_DATE, --JULIAN
+F0709.Y$PPED AS PAY_PERIOD_END_DATE, --JULIAN
+F0709.Y$CKCN AS SEPARATE_CHECK_ID
+F0709.Y$GPA AS DEDUCTION_AMT,
+F07350.Y0PAYD AS PAYGROUP_ID,
+F08330.BGPLAN AS DEDUCTION_ID,
+F08320.BAPLTY AS BENEFIT_PLAN_ID,
+F060116.YADEPT AS DEPARTMENT_ID
+FROM F0709
+LEFT OUTER JOIN F07350
+ON F07350.Y0AN8 = F0709.Y$AN8 AND F07350.Y0PPED = F0709.Y$PPED
+LEFT OUTER JOIN F060116
+ON F0709.Y$AN8 = S_F060116.YAAN8
+LEFT OUTER JOIN F08330
+F0709.Y$DISO = &apos;B&apos; AND F0709.Y$AN8 = F08330.BGAN8
+LEFT OUTER JOIN F08320
+ON F0709.Y$DISO = &apos;B&apos; AND F0709.Y$AN8 = F08330.BGAN8 AND F08330.BGPLAN = F08320.BAPLAN
+
+
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>325</xloc>
+      <yloc>405</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>JDE_HCM_SALARY_PAID</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection/>
+    <sql>SELECT
+F07350.Y0AN8 AS PERSON_ID,
+F07350.Y0HMCO AS COMPANY_ID,
+F07350.Y0PAYD AS PAYGROUP_ID,
+F07350.Y0PPED AS PAY_END_DATE, --JULIAN
+F07350.Y0ICC AS OFF_CYCLE_IND,
+F07350.Y0PHRW AS REGULAR_PAY_HOUR_QTY,
+F060116.YAHMCU AS BUSINESS_UNIT_ID
+F060116.YADEPT AS DEPARTMENT_ID,
+F060116.YAJBCD AS JOBCODE_ID,
+F060116.YAPOS AS POSITION_ID,
+F060116.YAPHRT AS REGULAR_HOUR_AMT,
+F060116.YASAL AS REGULAR_SALARY_AMT,
+F060116.YAPHRT AS REGULAR_HOUR_QTY
+FROM F07350
+LEFT OUTER JOIN F060116
+ON F07350.Y0AN8 = F060116.YAAN8</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>321</xloc>
+      <yloc>341</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>JDE_HCM_SALARY_PLAN</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection/>
+    <sql>SELECT F082001.HSPGRD AS SALARY_GRADE_CODE,
+F082001.HSDEF AS EFFECTIVE_DATE, --JULIAN
+(CASE WHEN F082001.HSSALY = &apos;S&apos; THEN F082001.HSAAQ3 
+      WHEN F082001.HSSALY = &apos;H&apos; AND F082001.HSIH != 0 THEN F082001.HSAAQ3 * F082001.HSIH 
+      WHEN F082001.HSSALY = &apos;H&apos; AND F082001.HSIH = 0 THEN F082001.HSAAQ3 * 2080 
+END) AS MAX_ANNUAL_RATE,
+
+(CASE WHEN F082001.HSSALY = &apos;S&apos; THEN F082001.HSAAQ2 
+      WHEN F082001.HSSALY = &apos;H&apos; AND F082001.HSIH != 0 THEN F082001.HSAAQ2 * F082001.HSIH 
+      WHEN F082001.HSSALY = &apos;H&apos; AND F082001.HSIH = 0 THEN F082001.HSAAQ2 * 2080 
+END) AS MID_ANNUAL_RATE,
+
+(CASE WHEN F082001.HSSALY = &apos;S&apos; THEN F082001.HSAAQ1 
+      WHEN F082001.HSSALY = &apos;H&apos; AND F082001.HSIH != 0 THEN F082001.HSAAQ1 * F082001.HSIH 
+      WHEN F082001.HSSALY = &apos;H&apos; AND F082001.HSIH = 0 THEN F082001.HSAAQ1 * 2080 
+END) AS MIN_ANNUAL_RATE,
+
+(CASE WHEN F082001.HSSALY = &apos;H&apos; AND F082001.HSAAQ3 != 0 THEN F082001.HSAAQ3 * F082001.HSSTDD
+      WHEN F082001.HSSALY = &apos;S&apos; AND F082001.HSAAQ3 != 0 AND F082001.HSSDYY != 0 THEN F082001.HSAAQ3 &#47; F082001.HSSDYY
+      WHEN F082001.HSSALY = &apos;S&apos; AND F082001.HSAAQ3 != 0 AND F082001.HSSDYY = 0 THEN F082001.HSAAQ3 &#47; 260
+END) AS MAX_DAILY_RATE,
+
+(CASE WHEN F082001.HSSALY = &apos;H&apos; AND F082001.HSAAQ2 != 0 THEN F082001.HSAAQ2 * F082001.HSSTDD
+      WHEN F082001.HSSALY = &apos;S&apos; AND F082001.HSAAQ2 != 0 AND F082001.HSSDYY != 0 THEN F082001.HSAAQ2 &#47; F082001.HSSDYY
+      WHEN F082001.HSSALY = &apos;S&apos; AND F082001.HSAAQ2 != 0 AND F082001.HSSDYY = 0 THEN F082001.HSAAQ2 &#47; 260
+END) AS MID_DAILY_RATE,
+
+(CASE WHEN F082001.HSSALY = &apos;H&apos; AND F082001.HSAAQ1 != 0 THEN F082001.HSAAQ1 * F082001.HSSTDD
+      WHEN F082001.HSSALY = &apos;S&apos; AND F082001.HSAAQ1 != 0 AND F082001.HSSDYY != 0 THEN F082001.HSAAQ1 &#47; F082001.HSSDYY
+      WHEN F082001.HSSALY = &apos;S&apos; AND F082001.HSAAQ1 != 0 AND F082001.HSSDYY = 0 THEN F082001.HSAAQ1 &#47; 260
+END) AS MIN_DAILY_RATE,
+
+(CASE WHEN F082001.HSSALY = &apos;H&apos; AND F082001.HSIH != 0 THEN F082001.HSAAQ3
+      WHEN F082001.HSSALY = &apos;S&apos; AND F082001.HSAAQ3 != 0 AND F082001.HSIH != 0 THEN F082001.HSAAQ3 &#47; F082001.HSIH
+      WHEN F082001.HSSALY = &apos;S&apos; AND F082001.HSAAQ3 != 0 AND F082001.HSIH = 0 THEN F082001.HSAAQ3 &#47; 2080
+END) AS MAX_HOURLY_RATE,
+
+(CASE WHEN F082001.HSSALY = &apos;H&apos; AND F082001.HSIH != 0 THEN F082001.HSAAQ2
+      WHEN F082001.HSSALY = &apos;S&apos; AND F082001.HSAAQ2 != 0 AND F082001.HSIH != 0 THEN F082001.HSAAQ2 &#47; F082001.HSIH
+      WHEN F082001.HSSALY = &apos;S&apos; AND F082001.HSAAQ2 != 0 AND F082001.HSIH = 0 THEN F082001.HSAAQ2 &#47; 2080
+END) AS MID_HOURLY_RATE,
+
+(CASE WHEN F082001.HSSALY = &apos;H&apos; AND F082001.HSIH != 0 THEN F082001.HSAAQ1
+      WHEN F082001.HSSALY = &apos;S&apos; AND F082001.HSAAQ1 != 0 AND F082001.HSIH != 0 THEN F082001.HSAAQ1 &#47; F082001.HSIH
+      WHEN F082001.HSSALY = &apos;S&apos; AND F082001.HSAAQ1 != 0 AND F082001.HSIH = 0 THEN F082001.HSAAQ1 &#47; 2080
+END) AS MIN_HOURLY_RATE,
+
+F082001.HSPGRS AS SALARY_STEP_CODE,
+
+(CASE WHEN F082001.HSSALY = &apos;S&apos; THEN F082001.HSPGSR
+      WHEN F082001.HSSALY = &apos;H&apos; AND F082001.HSIH != 0 THEN F082001.HSPGSR * F082001.HSIH
+      WHEN F082001.HSSALY = &apos;H&apos; AND F082001.HSIH = 0 THEN F082001.HSPGSR * 2080 
+END) AS STEP_ANNUAL_RATE,
+
+(CASE WHEN F082001.HSSALY = &apos;H&apos; AND F082001.HSSDYY != 0 THEN F082001.HSPGSR * F082001.HSSTDD
+      WHEN F082001.HSSALY = &apos;S&apos; AND F082001.HSSDYY != 0 THEN F082001.HSPGSR &#47; F082001.HSSDYY
+      WHEN F082001.HSSALY = &apos;S&apos; AND F082001.HSSDYY != 0 THEN F082001.HSPGSR &#47; 260 
+END) AS STEP_DAILY_RATE,
+
+(CASE WHEN F082001.HSSALY = &apos;H&apos; AND F082001.HSIH != 0 THEN F082001.HSPGSR
+      WHEN F082001.HSSALY = &apos;S&apos; AND F082001.HSIH != 0 THEN F082001.HSPGSR &#47; F082001.HSIH
+      WHEN F082001.HSSALY = &apos;S&apos; AND F082001.HSIH = 0 THEN F082001.HSPGSR &#47; 2080 
+END) AS STEP_HOURLY_RATE
+
+FROM F082001</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>319</xloc>
+      <yloc>277</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>JDE_HCM_TIME_LABOR</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection/>
+    <sql>SELECT ZBEFTJ AS REPORT_DATE, --JULIAN
+F1760.ZBAN8 AS PERSON_ID, 
+F1760.ZBHMCU AS BUSINESS_UNIT_ID,
+F1760.ZBOPSQ AS SEQUENCE_ID,
+F1760.ZBPHRW AS TIME_LABOR_HOUR_QTY,
+F060116.YAJBCD AS JOBCODE_ID, 
+F060116.YAPOS AS POSITION_ID
+FROM F1760
+LEFT OUTER JOIN F060116
+ON F1760.ZBAN8 = F060116.YAAN8
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>329</xloc>
+      <yloc>469</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+</transformation>

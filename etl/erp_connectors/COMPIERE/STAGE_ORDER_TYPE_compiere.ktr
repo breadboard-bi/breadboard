@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>STAGE_ORDER_TYPE_compiere</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write>STAGE_ORDER_TYPE</write>
+      <input>COMPIERE_ORDER_TYPE</input>
+      <output/>
+      <update/>
+      <rejected/>
+      <connection>mdw_mysql</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <step_performance_table/>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>N</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+  <modified_user>-</modified_user>
+  <modified_date>2008&#47;08&#47;05 14:13:24.500</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>26</xloc>
+      <yloc>516</yloc>
+      <width>562</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2008 Breadboard BI, Inc. All rights reserved.</note>
+      <xloc>26</xloc>
+      <yloc>463</yloc>
+      <width>287</width>
+      <heigth>23</heigth>
+    </notepad>
+    <notepad>
+      <note>Breadboard BI - Compiere - Order Type Stage
+=============================================
+1.  This data flow extracts order type data from the Compiere ERP.
+
+2.  Incremental load logic is utilized in conjunction with the ADMIN_TRANSFORMATION_CONTROL table.  
+    This table must be built before running the transformation.</note>
+      <xloc>30</xloc>
+      <yloc>26</yloc>
+      <width>541</width>
+      <heigth>85</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>compiere</name>
+    <server/>
+    <type>ORACLE</type>
+    <access>JNDI</access>
+    <database>compiere</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_ORACLE.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_ORACLE.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>Get Transformation Last Start Date</from><to>COMPIERE_ORDER_TYPE</to><enabled>N</enabled> </hop>  <hop> <from>MAP_2_BREADBOARD_order_type</from><to>STAGE_ORDER_TYPE</to><enabled>Y</enabled> </hop>  <hop> <from>ADD_CONSTANTS_FOR_BBBI_DEMO_SERVER</from><to>MAP_2_BREADBOARD_order_type</to><enabled>Y</enabled> </hop>  <hop> <from>COMPIERE_ORDER_TYPE</from><to>ADD_CONSTANTS_FOR_BBBI_DEMO_SERVER</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>ADD_CONSTANTS_FOR_BBBI_DEMO_SERVER</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>SOURCE_SYSTEM_ID</name>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>19</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>HOSTED_CLIENT_SK</name>
+        <type>Integer</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>8</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>426</xloc>
+      <yloc>184</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>COMPIERE_ORDER_TYPE</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>compiere</connection>
+    <sql>SELECT AD_CLIENT_ID
+, AD_ORG_ID
+, AD_PRINTFORMAT_ID
+, C_DOCTYPEDIFFERENCE_ID
+, C_DOCTYPEINVOICE_ID
+, C_DOCTYPEPROFORMA_ID
+, C_DOCTYPESHIPMENT_ID
+, C_DOCTYPE_ID
+, CREATED
+, CREATEDBY
+, DESCRIPTION
+, DOCBASETYPE
+, DOCNOSEQUENCE_ID
+, DOCSUBTYPESO
+, DOCUMENTCOPIES
+, DOCUMENTNOTE
+, GL_CATEGORY_ID
+, HASCHARGES
+, HASPROFORMA
+, ISACTIVE
+, ISCREATECOUNTER
+, ISDEFAULT
+, ISDEFAULTCOUNTERDOC
+, ISDOCNOCONTROLLED
+, ISINTRANSIT
+, ISINDEXED
+, ISPICKQACONFIRM
+, ISRETURNTRX
+, ISSOTRX
+, ISSHIPCONFIRM
+, ISSPLITWHENDIFFERENCE
+, NAME
+, PRINTNAME
+, UPDATED
+, UPDATEDBY
+FROM COMPIERE.C_DOCTYPE
+WHERE DOCBASETYPE = &apos;SOO&apos;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>212</xloc>
+      <yloc>184</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Get Transformation Last Start Date</name>
+    <type>SystemInfo</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>MAX</name>
+        <type>start date range</type>
+        </field>
+      </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>36</xloc>
+      <yloc>185</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_2_BREADBOARD_order_type</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>AD_CLIENT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AD_ORG_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>AD_PRINTFORMAT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_DOCTYPEDIFFERENCE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_DOCTYPEINVOICE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_DOCTYPEPROFORMA_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_DOCTYPESHIPMENT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>C_DOCTYPE_ID</name>
+        <rename>ORDER_TYPE_ID</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CREATED</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CREATEDBY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DESCRIPTION</name>
+        <rename>ORDER_TYPE_DESC</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DOCBASETYPE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DOCNOSEQUENCE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DOCSUBTYPESO</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DOCUMENTCOPIES</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DOCUMENTNOTE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>GL_CATEGORY_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>HASCHARGES</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>HASPROFORMA</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISACTIVE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISCREATECOUNTER</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISDEFAULT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISDEFAULTCOUNTERDOC</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISDOCNOCONTROLLED</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISINTRANSIT</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISINDEXED</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISPICKQACONFIRM</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISRETURNTRX</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISSOTRX</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISSHIPCONFIRM</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ISSPLITWHENDIFFERENCE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>NAME</name>
+        <rename>ORDER_TYPE_NAME</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRINTNAME</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>UPDATED</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>UPDATEDBY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SOURCE_SYSTEM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>HOSTED_CLIENT_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>        <select_unspecified>N</select_unspecified>
+      <remove>        <name>AD_CLIENT_ID</name>
+      </remove>      <remove>        <name>AD_ORG_ID</name>
+      </remove>      <remove>        <name>AD_PRINTFORMAT_ID</name>
+      </remove>      <remove>        <name>C_DOCTYPEDIFFERENCE_ID</name>
+      </remove>      <remove>        <name>C_DOCTYPEINVOICE_ID</name>
+      </remove>      <remove>        <name>C_DOCTYPEPROFORMA_ID</name>
+      </remove>      <remove>        <name>C_DOCTYPESHIPMENT_ID</name>
+      </remove>      <remove>        <name>CREATED</name>
+      </remove>      <remove>        <name>CREATEDBY</name>
+      </remove>      <remove>        <name>DOCBASETYPE</name>
+      </remove>      <remove>        <name>DOCNOSEQUENCE_ID</name>
+      </remove>      <remove>        <name>DOCSUBTYPESO</name>
+      </remove>      <remove>        <name>DOCUMENTCOPIES</name>
+      </remove>      <remove>        <name>DOCUMENTNOTE</name>
+      </remove>      <remove>        <name>GL_CATEGORY_ID</name>
+      </remove>      <remove>        <name>HASCHARGES</name>
+      </remove>      <remove>        <name>HASPROFORMA</name>
+      </remove>      <remove>        <name>ISACTIVE</name>
+      </remove>      <remove>        <name>ISCREATECOUNTER</name>
+      </remove>      <remove>        <name>ISDEFAULT</name>
+      </remove>      <remove>        <name>ISDEFAULTCOUNTERDOC</name>
+      </remove>      <remove>        <name>ISDOCNOCONTROLLED</name>
+      </remove>      <remove>        <name>ISINTRANSIT</name>
+      </remove>      <remove>        <name>ISINDEXED</name>
+      </remove>      <remove>        <name>ISPICKQACONFIRM</name>
+      </remove>      <remove>        <name>ISRETURNTRX</name>
+      </remove>      <remove>        <name>ISSOTRX</name>
+      </remove>      <remove>        <name>ISSHIPCONFIRM</name>
+      </remove>      <remove>        <name>ISSPLITWHENDIFFERENCE</name>
+      </remove>      <remove>        <name>PRINTNAME</name>
+      </remove>      <remove>        <name>UPDATED</name>
+      </remove>      <remove>        <name>UPDATEDBY</name>
+      </remove>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>655</xloc>
+      <yloc>184</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_ORDER_TYPE</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <commit>1000</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema/>
+      <table>STAGE_ORDER_TYPE</table>
+      <key>
+        <name>ORDER_TYPE_ID</name>
+        <field>ORDER_TYPE_ID</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>SOURCE_SYSTEM_ID</name>
+        <field>SOURCE_SYSTEM_ID</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>ORDER_TYPE_ID</name>
+        <rename>ORDER_TYPE_ID</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>ORDER_TYPE_DESC</name>
+        <rename>ORDER_TYPE_DESC</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ORDER_TYPE_NAME</name>
+        <rename>ORDER_TYPE_NAME</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>SOURCE_SYSTEM_ID</name>
+        <rename>SOURCE_SYSTEM_ID</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>HOSTED_CLIENT_SK</name>
+        <rename>HOSTED_CLIENT_SK</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>847</xloc>
+      <yloc>184</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+   <slave-step-copy-partition-distribution>
+</slave-step-copy-partition-distribution>
+   <slave_transformation>N</slave_transformation>
+</transformation>

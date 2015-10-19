@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+  <modified_user/>
+  <modified_date>2006/12/15 13:40:51.795</modified_date>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts inventory data from JDE.</note>
+      <xloc>44</xloc>
+      <yloc>83</yloc>
+      <width>244</width>
+      <heigth>23</heigth>
+      </notepad>
+    <notepad>
+      <note>Copyright © 2006 Breadboard BI, LLC. All rights reserved.</note>
+      <xloc>189</xloc>
+      <yloc>336</yloc>
+      <width>291</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>localhost</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>JDE_STAGE_INVENTORY_BALANCE</from><to>STAGE_JDE_INVENTORY_BALANCE</to><enabled>Y</enabled> </hop>  <hop> <from>JDE_STAGE_INVENTORY_LEDGER</from><to>STAGE_JDE_INVENTORY_LEDGER</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>JDE_STAGE_INVENTORY_BALANCE</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT 
+F41021.LIITM AS INV_ITEM_ID, 
+F41021.LIMCU AS BUSINESS_UNIT_ID, 
+F41021.LILOCN AS LOCATION_ID, 
+F41021.LILOTN AS LOT_ID, 
+F41021.LIPBIN AS PRIMARY_LOCATION_IND, 
+F41021.LIPQOH AS ON_HAND_QTY, 
+F41021.LIPBCK AS BACK_ORDER_QTY, 
+F41021.LIPREQ AS PO_QTY, 
+F41021.LIQWBO AS WO_QTY, 
+F41021.LIOT1P AS OTHER1_PRIMARY_UNIT_QTY, 
+F41021.LIOT2P AS OTHER2_PRIMARY_UNIT_QTY, 
+F41021.LIOT1A AS OTHER_PURCHASING_QTY, 
+F41021.LIHCOM AS HARD_COMMIT_QTY, 
+F41021.LIPCOM AS SOFT_COMMIT_QTY, 
+F41021.LIFCOM AS FUTURE_COMMIT_QTY, 
+F41021.LIFUN1 AS WO_SOFT_COMMIT_QTY, 
+F41021.LIQOWO AS WO_HARD_COMMIT_QTY, 
+F41021.LIQTTR AS IN_TRANSIT_QTY, 
+F41021.LIQTIN AS IN_INSPECTION_QTY, 
+F41021.LIQONL AS ON_LOAN_QTY, 
+F41021.LIQTRI AS INBOUND_WAREHOUSE_QTY, 
+F41021.LIQTRO AS OUTBOUND_WAREHOUSE_QTY 
+FROM
+ ST_F41021</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI>
+      <xloc>126</xloc>
+      <yloc>163</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>JDE_STAGE_INVENTORY_LEDGER</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT 
+F4111.ILUKID AS TRXN_ID
+F4111.ILITM AS INV_ITEM_ID, 
+F4111.ILMCU AS BUSINESS_UNIT_ID, 
+F4111.ILLOCN AS LOCATION_ID, 
+F4111.ILLOTN AS LOT_ID, 
+F4111.ILKCO AS COMPANY_ID, 
+F4111.ILDOC AS DOCUMENT_ID, 
+F4111.ILDCT AS DOCUMENT_TYPE_CODE, 
+F4111.ILDGL AS SOURCE_DATE_ID, 
+F4111.ILLNID AS INV_LINE_NUMBER, 
+F4111.ILTRDJ AS INV_TRXN_SOURCE_DATE_ID, 
+F4111.ILTRUM AS TRXN_UNIT_OF_MEASURE_ID, 
+F4111.ILTREX AS INV_TRXN_DESC, 
+F4111.ILRCD AS INV_TRXN_REASON_CODE, 
+F4111.ILTRQT AS UNIT_QTY, --Needs conversion
+F4111.ILPAID AS EXTENDED_COST_AMT --Needs conversion
+FROM
+ ST_F4111</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI>
+      <xloc>126</xloc>
+      <yloc>226</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_JDE_INVENTORY_BALANCE</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection/>
+    <table>STAGE_JDE_INVENTORY_BALANCE</table>
+    <commit>100</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <GUI>
+      <xloc>533</xloc>
+      <yloc>163</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_JDE_INVENTORY_LEDGER</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection/>
+    <table>STAGE_JDE_INVENTORY_LEDGER</table>
+    <commit>100</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <GUI>
+      <xloc>531</xloc>
+      <yloc>226</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

@@ -1,0 +1,1792 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>DIMENSION_EMPLOYEE_JOB_ACTION</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input>STAGE_EMPLOYEE_JOB_ACTION</input>
+      <output>DIMENSION_EMPLOYEE_JOB_ACTION</output>
+      <update/>
+      <rejected/>
+      <connection>mdw_mysql</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>Y</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>1000</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2007&#47;10&#47;07 11:20:27.000</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Breadboard BI - Workforce - Dimension Employee Job Action Data Flow - Version 2.0 
+===================================================
+1.  This data flow extracts employee job action information from the staging area.
+
+2.  The error logic is basic and designed to be extended to meet the needs of individual customers.  
+      Error rows are flagged as errors in the stage table.  Rows without errors proceed to the target table as inserts or updates.
+
+3.  As delivered, this loads as a slowly changing dimension Type 1 (SCD1).  Add SCD2 Functionality by editing the settings in the 
+     dimension lookup&#47;update step.
+
+4.  Incremental load logic is utilized in conjunction with the ADMIN_TRANSFORMATION_CONTROL table.  This table must be built
+     before running the transformation.</note>
+      <xloc>6</xloc>
+      <yloc>6</yloc>
+      <width>626</width>
+      <heigth>166</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>10</xloc>
+      <yloc>571</yloc>
+      <width>546</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI, LLC. All rights reserved.</note>
+      <xloc>12</xloc>
+      <yloc>532</yloc>
+      <width>291</width>
+      <heigth>23</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>jde</name>
+    <server>test</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>rds</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>rds</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>STAGE_EMPLOYEE_JOB_ACTION</from><to>ROUTE_ROWS_WITH_ERRORS</to><enabled>Y</enabled> </hop>  <hop> <from>ROUTE_ROWS_WITH_ERRORS</from><to>DW_ERROR_IND</to><enabled>Y</enabled> </hop>  <hop> <from>DW_ERROR_IND</from><to>STAGE_EMPLOYEE_JOB_ACTION_errors</to><enabled>Y</enabled> </hop>  <hop> <from>ROUTE_ROWS_WITH_ERRORS</from><to>MAP_CONVERT_DATE_TO_SK_EFFECTIVE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_JOB_ACTION</from><to>MAP_LOOKUP_BUSINESS_UNIT</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_BUSINESS_UNIT</from><to>MAP_LOOKUP_COMPANY</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_COMPANY</from><to>MAP_LOOKUP_DEPARTMENT</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_DEPARTMENT</from><to>MAP_LOOKUP_JOBCODE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_JOBCODE</from><to>MAP_LOOKUP_POSITION</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_POSITION</from><to>MAP_LOOKUP_COMPANY_PAYGROUP</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_COMPANY_PAYGROUP</from><to>MAP_LOOKUP_PERSON_MANAGER</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_PERSON_MANAGER</from><to>MAP_LOOKUP_LOCATION</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_LOCATION</from><to>MAP_LOOKUP_SALARY_PLAN</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_SALARY_PLAN</from><to>MAP_LOOKUP_ACCOUNT</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_ACCOUNT</from><to>MAP_LOOKUP_FUND</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_FUND</from><to>MAP_LOOKUP_CLASSIFICATION</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_CLASSIFICATION</from><to>MAP_LOOKUP_PRODUCT</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_PRODUCT</from><to>MAP_LOOKUP_OPERATING_UNIT</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_OPERATING_UNIT</from><to>MAP_LOOKUP_CURRENCY</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_CURRENCY</from><to>MAP_LOOKUP_CONTRACT</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_CONTRACT</from><to>MAP_CONVERT_DATE_TO_SK_JOB_ACTION</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_CONVERT_DATE_TO_SK_JOB_ACTION</from><to>MAP_CONVERT_DATE_TO_SK_DEPARTMENT</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_CONVERT_DATE_TO_SK_DEPARTMENT</from><to>MAP_CONVERT_DATE_TO_SK_GRADE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_CONVERT_DATE_TO_SK_GRADE</from><to>MAP_CONVERT_DATE_TO_SK_POSITION</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_CONVERT_DATE_TO_SK_POSITION</from><to>MAP_CONVERT_DATE_TO_SK_STEP</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_CONVERT_DATE_TO_SK_STEP</from><to>MAP_CONVERT_DATE_TO_SK_HIRE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_CONVERT_DATE_TO_SK_HIRE</from><to>MAP_CONVERT_DATE_TO_SK_ASSIGN_START</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_CONVERT_DATE_TO_SK_ASSIGN_START</from><to>MAP_CONVERT_DATE_TO_SK_ASSIGN_STOP</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_CONVERT_DATE_TO_SK_ASSIGN_STOP</from><to>MAP_CONVERT_DATE_TO_SK_JOB_START</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_CONVERT_DATE_TO_SK_JOB_START</from><to>MAP_CONVERT_DATE_TO_SK_JOB_END</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_CONVERT_DATE_TO_SK_JOB_END</from><to>DIMENSION_EMPLOYEE_JOB_ACTION</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_PERSON_EMPLOYEE</from><to>MAP_LOOKUP_JOB_ACTION</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_CONVERT_DATE_TO_SK_EFFECTIVE</from><to>MAP_CONVERT_DATE_TO_SK_EXPIRATION</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_CONVERT_DATE_TO_SK_EXPIRATION</from><to>MAP_LOOKUP_PERSON_EMPLOYEE</to><enabled>Y</enabled> </hop>  <hop> <from>Get Transformation Last Start Date</from><to>STAGE_EMPLOYEE_JOB_ACTION</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>DIMENSION_EMPLOYEE_JOB_ACTION</name>
+    <type>DimensionLookup</type>
+    <description>This dimension lookup&#47;update step inserts or updates rows according to a slowly changing dimension Type 1 (SCD1) or slowly changing dimension Type 2 (SCD2) strategy.  The default configuration is SCD1. </description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+      <schema/>
+      <table>DIMENSION_EMPLOYEE_JOB_ACTION</table>
+      <connection>mdw_mysql</connection>
+      <commit>0</commit>
+      <update>Y</update>
+      <fields>
+        <key>
+          <name>JOB_ACTION_ID</name>
+          <lookup>JOB_ACTION_ID</lookup>
+        </key>
+        <key>
+          <name>EMPLOYEE_ID</name>
+          <lookup>EMPLOYEE_ID</lookup>
+        </key>
+        <key>
+          <name>JOB_ACTION_SEQUENCE_ID</name>
+          <lookup>JOB_ACTION_SEQUENCE_ID</lookup>
+        </key>
+        <key>
+          <name>SOURCE_SYSTEM_ID</name>
+          <lookup>SOURCE_SYSTEM_SK</lookup>
+        </key>
+        <date>
+          <name/>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+        </date>
+        <field>
+          <name>JOB_ACTION_REASON_ID</name>
+          <lookup>JOB_ACTION_REASON_ID</lookup>
+          <update>Insert</update>
+        </field>
+        <field>
+          <name>EMPLOYEE_SK</name>
+          <lookup>EMPLOYEE_SK</lookup>
+          <update>Insert</update>
+        </field>
+        <field>
+          <name>STANDARD_HOURS_FREQUENCY_CODE</name>
+          <lookup>STANDARD_HOURS_FREQUENCY_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>STANDARD_HOURS_FREQUENCY_DESC</name>
+          <lookup>STANDARD_HOURS_FREQUENCY_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>COMPENSATION_FREQUENCY_CODE</name>
+          <lookup>COMPENSATION_FREQUENCY_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>COMPENSATION_FREQUENCY_DESC</name>
+          <lookup>COMPENSATION_FREQUENCY_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>LABOR_AGREEMENT_CODE</name>
+          <lookup>LABOR_AGREEMENT_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>LABOR_AGREEMENT_DESC</name>
+          <lookup>LABOR_AGREEMENT_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>EMPLOYEE_CLASS_CODE</name>
+          <lookup>EMPLOYEE_CLASS_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>EMPLOYEE_CLASS_DESC</name>
+          <lookup>EMPLOYEE_CLASS_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>BENEFIT_STATUS_CODE</name>
+          <lookup>BENEFIT_STATUS_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>BENEFIT_STATUS_DESC</name>
+          <lookup>BENEFIT_STATUS_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>BENEFIT_SOURCE_CODE</name>
+          <lookup>BENEFIT_SOURCE_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>BENEFIT_SOURCE_DESC</name>
+          <lookup>BENEFIT_SOURCE_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>EARNINGS_DISTRIBUTION_CODE</name>
+          <lookup>EARNINGS_DISTRIBUTION_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>EARNINGS_DISTRIBUTION_DESC</name>
+          <lookup>EARNINGS_DISTRIBUTION_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>EMPLOYEE_STATUS_CODE</name>
+          <lookup>EMPLOYEE_STATUS_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>EMPLOYEE_STATUS_DESC</name>
+          <lookup>EMPLOYEE_STATUS_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>EMPLOYEE_TYPE_CODE</name>
+          <lookup>EMPLOYEE_TYPE_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>EMPLOYEE_TYPE_DESC</name>
+          <lookup>EMPLOYEE_TYPE_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>FULL_PART_TIME_CODE</name>
+          <lookup>FULL_PART_TIME_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>FULL_PART_TIME_DESC</name>
+          <lookup>FULL_PART_TIME_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>HR_STATUS_CODE</name>
+          <lookup>HR_STATUS_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>HR_STATUS_DESC</name>
+          <lookup>HR_STATUS_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>JOB_INDICATOR_CODE</name>
+          <lookup>JOB_INDICATOR_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>JOB_INDICATOR_DESC</name>
+          <lookup>JOB_INDICATOR_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>REGULAR_TEMPORARY_CODE</name>
+          <lookup>REGULAR_TEMPORARY_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>REGULAR_TEMPORARY_DESC</name>
+          <lookup>REGULAR_TEMPORARY_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>JOB_SHIFT_CODE</name>
+          <lookup>JOB_SHIFT_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>JOB_SHIFT_DESC</name>
+          <lookup>JOB_SHIFT_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>PAY_TYPE_CODE</name>
+          <lookup>PAY_TYPE_CODE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>PAY_TYPE_DESC</name>
+          <lookup>PAY_TYPE_DESC</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>FTE_EQUIVALENT_QTY</name>
+          <lookup>FTE_EQUIVALENT_QTY</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>ANNUAL_RATE</name>
+          <lookup>ANNUAL_RATE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>ANNUAL_BENEFIT_BASE_RATE</name>
+          <lookup>ANNUAL_BENEFIT_BASE_RATE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>CHANGE_AMT</name>
+          <lookup>CHANGE_AMT</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>CHANGE_PCT</name>
+          <lookup>CHANGE_PCT</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>COMPENSATION_RATE</name>
+          <lookup>COMPENSATION_RATE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>HOURLY_RATE</name>
+          <lookup>HOURLY_RATE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>DAILY_RATE</name>
+          <lookup>DAILY_RATE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>MONTHLY_RATE</name>
+          <lookup>MONTHLY_RATE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>SHIFT_RATE</name>
+          <lookup>SHIFT_RATE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>SHIFT_FACTOR_QTY</name>
+          <lookup>SHIFT_FACTOR_QTY</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>WORK_DAY_HOURS_QTY</name>
+          <lookup>WORK_DAY_HOURS_QTY</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>WORK_WEEK_HOURS_QTY</name>
+          <lookup>WORK_WEEK_HOURS_QTY</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>JOB_DURATION_DAY_QTY</name>
+          <lookup>JOB_DURATION_DAY_QTY</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>EFFECTIVE_DATE_SK</name>
+          <lookup>EFFECTIVE_DATE_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>EFFECTIVE_DATE</name>
+          <lookup>EFFECTIVE_DATE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>JOB_ACTION_SK</name>
+          <lookup>JOB_ACTION_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>BUSINESS_UNIT_SK</name>
+          <lookup>BUSINESS_UNIT_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>COMPANY_SK</name>
+          <lookup>COMPANY_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>DEPARTMENT_SK</name>
+          <lookup>DEPARTMENT_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>JOBCODE_SK</name>
+          <lookup>JOBCODE_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>POSITION_SK</name>
+          <lookup>POSITION_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>PAYGROUP_SK</name>
+          <lookup>PAYGROUP_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>MANAGER_SK</name>
+          <lookup>MANAGER_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>LOCATION_SK</name>
+          <lookup>LOCATION_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>SALARY_PLAN_SK</name>
+          <lookup>SALARY_PLAN_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>ACCOUNT_SK</name>
+          <lookup>ACCOUNT_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>FUND_SK</name>
+          <lookup>FUND_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>CLASSIFICATION_SK</name>
+          <lookup>CLASSIFICATION_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>PRODUCT_SK</name>
+          <lookup>PRODUCT_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>OPERATING_UNIT_SK</name>
+          <lookup>OPERATING_UNIT_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>CURRENCY_SK</name>
+          <lookup>CURRENCY_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>CONTRACT_SK</name>
+          <lookup>CONTRACT_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>JOB_ACTION_DATE_SK</name>
+          <lookup>JOB_ACTION_DATE_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>JOB_ACTION_DATE</name>
+          <lookup>JOB_ACTION_DATE</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>DEPARTMENT_START_DATE_SK</name>
+          <lookup>DEPARTMENT_START_DATE_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>GRADE_START_DATE_SK</name>
+          <lookup>GRADE_START_DATE_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>POSITION_START_DATE_SK</name>
+          <lookup>POSITION_START_DATE_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>STEP_START_DATE_SK</name>
+          <lookup>STEP_START_DATE_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>HIRE_DATE_SK</name>
+          <lookup>HIRE_DATE_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>ASSIGNMENT_START_DATE_SK</name>
+          <lookup>ASSIGNMENT_START_DATE_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>ASSIGNMENT_STOP_DATE_SK</name>
+          <lookup>ASSIGNMENT_STOP_DATE_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>JOB_START_DATE_SK</name>
+          <lookup>JOB_START_DATE_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>JOB_STOP_DATE_SK</name>
+          <lookup>JOB_STOP_DATE_SK</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>LATEST_ACTION_IND</name>
+          <lookup>LATEST_ACTION_IND</lookup>
+          <update>Update</update>
+        </field>
+        <field>
+          <name>EXPIRATION_DATE_SK</name>
+          <lookup>EXPIRATION_DATE_SK</lookup>
+          <update>Update</update>
+        </field>
+        <return>
+          <name>EMPLOYEE_JOB_ACTION_SK</name>
+          <rename/>
+          <creation_method>tablemax</creation_method>
+          <use_autoinc>N</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1970</min_year>
+      <max_year>2036</max_year>
+      <cache_size>0</cache_size>
+     <cluster_schema/>
+    <GUI>
+      <xloc>779</xloc>
+      <yloc>452</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>DW_ERROR_IND</name>
+    <type>Constant</type>
+    <description>This step adds the Y string constant to the data flow.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>DW_ERROR_IND</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>Y</nullif>
+        <length>1</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+     <cluster_schema/>
+    <GUI>
+      <xloc>31</xloc>
+      <yloc>411</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Get Transformation Last Start Date</name>
+    <type>SystemInfo</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>MAX</name>
+        <type>start date range</type>
+        </field>
+      </fields>
+     <cluster_schema/>
+    <GUI>
+      <xloc>77</xloc>
+      <yloc>194</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_CONVERT_DATE_TO_SK_ASSIGN_START</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CONVERT_DATE_TO_SK</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>ASSIGNMENT_START_DATE</field>  <mapping>IN_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>ASSIGNMENT_START_DATE_SK</field>  <mapping>DATE_SK</mapping></connector>
+    <connector><field>ASSIGNMENT_START_DATE</field>  <mapping>OUT_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>254</xloc>
+      <yloc>413</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_CONVERT_DATE_TO_SK_ASSIGN_STOP</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CONVERT_DATE_TO_SK</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>ASSIGNMENT_STOP_DATE</field>  <mapping>IN_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>ASSIGNMENT_STOP_DATE_SK</field>  <mapping>DATE_SK</mapping></connector>
+    <connector><field>ASSIGNMENT_STOP_DATE</field>  <mapping>OUT_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>394</xloc>
+      <yloc>431</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_CONVERT_DATE_TO_SK_DEPARTMENT</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CONVERT_DATE_TO_SK</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>DEPARTMENT_START_DATE</field>  <mapping>IN_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>DEPARTMENT_START_DATE_SK</field>  <mapping>DATE_SK</mapping></connector>
+    <connector><field>DEPARTMENT_START_DATE</field>  <mapping>OUT_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>759</xloc>
+      <yloc>344</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_CONVERT_DATE_TO_SK_EFFECTIVE</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CONVERT_DATE_TO_SK</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>EFFECTIVE_DATE</field>  <mapping>IN_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>EFFECTIVE_DATE_SK</field>  <mapping>DATE_SK</mapping></connector>
+    <connector><field>EFFECTIVE_DATE</field>  <mapping>OUT_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>207</xloc>
+      <yloc>273</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_CONVERT_DATE_TO_SK_EXPIRATION</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CONVERT_DATE_TO_SK</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>EXPIRATION_DATE</field>  <mapping>IN_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>EXPIRATION_DATE_SK</field>  <mapping>DATE_SK</mapping></connector>
+    <connector><field>EXPIRATION_DATE</field>  <mapping>OUT_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>266</xloc>
+      <yloc>219</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_CONVERT_DATE_TO_SK_GRADE</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CONVERT_DATE_TO_SK</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>GRADE_START_DATE</field>  <mapping>IN_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>GRADE_START_DATE_SK</field>  <mapping>DATE_SK</mapping></connector>
+    <connector><field>GRADE_START_DATE</field>  <mapping>OUT_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>644</xloc>
+      <yloc>321</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_CONVERT_DATE_TO_SK_HIRE</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CONVERT_DATE_TO_SK</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>HIRE_DATE</field>  <mapping>IN_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>HIRE_DATE_SK</field>  <mapping>DATE_SK</mapping></connector>
+    <connector><field>HIRE_DATE</field>  <mapping>OUT_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>252</xloc>
+      <yloc>337</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_CONVERT_DATE_TO_SK_JOB_ACTION</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CONVERT_DATE_TO_SK</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>JOB_ACTION_DATE</field>  <mapping>IN_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>JOB_ACTION_DATE_SK</field>  <mapping>DATE_SK</mapping></connector>
+    <connector><field>JOB_ACTION_DATE</field>  <mapping>OUT_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>893</xloc>
+      <yloc>328</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_CONVERT_DATE_TO_SK_JOB_END</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CONVERT_DATE_TO_SK</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>JOB_STOP_DATE</field>  <mapping>IN_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>JOB_STOP_DATE_SK</field>  <mapping>DATE_SK</mapping></connector>
+    <connector><field>JOB_STOP_DATE</field>  <mapping>OUT_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>647</xloc>
+      <yloc>438</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_CONVERT_DATE_TO_SK_JOB_START</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CONVERT_DATE_TO_SK</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>JOB_START_DATE</field>  <mapping>IN_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>JOB_START_DATE_SK</field>  <mapping>DATE_SK</mapping></connector>
+    <connector><field>JOB_START_DATE</field>  <mapping>OUT_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>523</xloc>
+      <yloc>450</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_CONVERT_DATE_TO_SK_POSITION</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CONVERT_DATE_TO_SK</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>POSITION_START_DATE</field>  <mapping>IN_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>POSITION_START_DATE_SK</field>  <mapping>DATE_SK</mapping></connector>
+    <connector><field>POSITION_START_DATE</field>  <mapping>OUT_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>510</xloc>
+      <yloc>335</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_CONVERT_DATE_TO_SK_STEP</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CONVERT_DATE_TO_SK</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>STEP_START_DATE</field>  <mapping>IN_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>STEP_START_DATE_SK</field>  <mapping>DATE_SK</mapping></connector>
+    <connector><field>STEP_START_DATE</field>  <mapping>OUT_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>386</xloc>
+      <yloc>321</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_ACCOUNT</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_ACCOUNT</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>ACCOUNT_ID</field>  <mapping>ACCOUNT_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>ACCOUNT_SETID</field>  <mapping>ACCOUNT_SETID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>ACCOUNT_SK</field>  <mapping>ACCOUNT_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>691</xloc>
+      <yloc>45</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_BUSINESS_UNIT</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_BUSINESS_UNIT</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>BUSINESS_UNIT_ID</field>  <mapping>BUSINESS_UNIT_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>BUSINESS_UNIT_SK</field>  <mapping>BUSINESS_UNIT_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>504</xloc>
+      <yloc>264</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_CLASSIFICATION</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_CLASSIFICATION</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>CLASSIFICATION_ID</field>  <mapping>CLASSIFICATION_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>CLASSIFICATION_SETID</field>  <mapping>CLASSIFICATION_SETID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>CLASSIFICATION_SK</field>  <mapping>CLASSIFICATION_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>844</xloc>
+      <yloc>18</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_COMPANY</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_COMPANY</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>COMPANY_ID</field>  <mapping>COMPANY_ID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>COMPANY_SK</field>  <mapping>COMPANY_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>588</xloc>
+      <yloc>249</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_COMPANY_PAYGROUP</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_COMPANY_PAYGROUP</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>PAYGROUP_ID</field>  <mapping>PAYGROUP_ID</mapping></connector>
+    <connector><field>COMPANY_ID</field>  <mapping>COMPANY_ID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>PAYGROUP_SK</field>  <mapping>PAYGROUP_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>921</xloc>
+      <yloc>245</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_CONTRACT</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_CONTRACT</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>CONTRACT_ID</field>  <mapping>CONTRACT_ID</mapping></connector>
+    <connector><field>BUSINESS_UNIT_ID</field>  <mapping>BUSINESS_UNIT_ID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>983</xloc>
+      <yloc>310</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_CURRENCY</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_CURRENCY</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    </input>
+  <output>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>976</xloc>
+      <yloc>161</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_DEPARTMENT</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_DEPARTMENT</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>DEPARTMENT_ID</field>  <mapping>DEPARTMENT_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>DEPARTMENT_SETID</field>  <mapping>DEPARTMENT_SETID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>DEPARTMENT_SK</field>  <mapping>DEPARTMENT_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>673</xloc>
+      <yloc>237</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_FUND</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_FUND</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>FUND_ID</field>  <mapping>FUND_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>FUND_SETID</field>  <mapping>FUND_SETID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>FUND_SK</field>  <mapping>FUND_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>766</xloc>
+      <yloc>6</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_JOBCODE</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_JOBCODE</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>JOBCODE_ID</field>  <mapping>JOBCODE_ID</mapping></connector>
+    <connector><field>JOBCODE_SETID</field>  <mapping>JOBCODE_SETID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>JOBCODE_SK</field>  <mapping>JOBCODE_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>753</xloc>
+      <yloc>225</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_JOB_ACTION</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_JOB_ACTION</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>JOB_ACTION_REASON_ID</field>  <mapping>JOB_ACTION_REASON_ID</mapping></connector>
+    <connector><field>JOB_ACTION_ID</field>  <mapping>JOB_ACTION_ID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>JOB_ACTION_SK</field>  <mapping>JOB_ACTION_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>417</xloc>
+      <yloc>245</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_LOCATION</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_LOCATION</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>LOCATION_ID</field>  <mapping>LOCATION_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>LOCATION_SETID</field>  <mapping>LOCATION_SETID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>LOCATION_SK</field>  <mapping>LOCATION_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>764</xloc>
+      <yloc>159</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_OPERATING_UNIT</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_OPERATING_UNIT</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>OPERATING_UNIT_ID</field>  <mapping>OPERATING_UNIT_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>OPERATING_UNIT_SETID</field>  <mapping>OPERATING_UNIT_SETID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>OPERATING_UNIT_SK</field>  <mapping>OPERATING_UNIT_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>950</xloc>
+      <yloc>91</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_PERSON_EMPLOYEE</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_PERSON</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>EMPLOYEE_ID</field>  <mapping>EMPLOYEE_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>EMPLOYEE_SK</field>  <mapping>PERSON_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>322</xloc>
+      <yloc>257</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_PERSON_MANAGER</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_PERSON</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>MANAGER_ID</field>  <mapping>MANAGER_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>MANAGER_SK</field>  <mapping>PERSON_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>852</xloc>
+      <yloc>177</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_POSITION</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_POSITION</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>POSITION_ID</field>  <mapping>POSITION_ID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>POSITION_SK</field>  <mapping>POSITION_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>838</xloc>
+      <yloc>234</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_PRODUCT</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_PRODUCT_SK</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>PRODUCT_ID</field>  <mapping>PRODUCT_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>PRODUCT_SETID</field>  <mapping>PRODUCT_SETID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>PRODUCT_SK</field>  <mapping>PRODUCT_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>917</xloc>
+      <yloc>32</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_SALARY_PLAN</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_SALARY_PLAN</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>SALARY_PLAN_ID</field>  <mapping>SALARY_PLAN_ID</mapping></connector>
+    <connector><field>SALARY_PLAN_SETID</field>  <mapping>SALARY_PLAN_SETID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>SALARY_PLAN_SK</field>  <mapping>SALARY_PLAN_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>704</xloc>
+      <yloc>102</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>ROUTE_ROWS_WITH_ERRORS</name>
+    <type>FilterRows</type>
+    <description>This step routes rows with error conditions (as defined by the client) back to the stage table flagged as an error.  The current error logic is basic and is designed to be extended to meet the needs of individual customers.  Rows without errors proceed to the target table as inserts or updates, they are subsequently removed from the stage table.</description>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+<send_true_to>DIMENSION_EMPLOYEE_JOB_ACTION</send_true_to>
+<send_false_to>DW_ERROR_IND</send_false_to>
+    <compare>
+<condition>
+ <negated>N</negated>
+ <leftvalue>JOB_ACTION_ID</leftvalue>
+ <function>IS NOT NULL</function>
+ <rightvalue/>
+ </condition>
+    </compare>
+     <cluster_schema/>
+    <GUI>
+      <xloc>121</xloc>
+      <yloc>359</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_EMPLOYEE_JOB_ACTION</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <sql>SELECT
+  EMPLOYEE_ID
+, JOB_ACTION_ID
+, JOB_ACTION_REASON_ID
+, JOB_ACTION_SEQUENCE_ID
+, SOURCE_SYSTEM_ID
+, EFFECTIVE_DATE
+, EFFECTIVE_DATE AS STREAM_DATE
+, EXPIRATION_DATE
+, BUSINESS_UNIT_ID
+, COMPANY_ID
+, DEPARTMENT_ID
+, DEPARTMENT_SETID
+, JOBCODE_ID
+, JOBCODE_SETID
+, POSITION_ID
+, PAYGROUP_ID
+, MANAGER_ID
+, LOCATION_ID
+, LOCATION_SETID
+, SALARY_PLAN_ID
+, SALARY_PLAN_SETID
+, ACCOUNT_ID
+, ACCOUNT_SETID
+, FUND_ID
+, FUND_SETID
+, CLASSIFICATION_ID
+, CLASSIFICATION_SETID
+, PRODUCT_ID
+, PRODUCT_SETID
+, OPERATING_UNIT_ID
+, OPERATING_UNIT_SETID
+, CURRENCY_ID
+, CONTRACT_ID
+, JOB_ACTION_DATE
+, DEPARTMENT_START_DATE
+, GRADE_START_DATE
+, JOB_START_DATE
+, JOB_STOP_DATE
+, POSITION_START_DATE
+, STEP_START_DATE
+, HIRE_DATE
+, ASSIGNMENT_START_DATE
+, ASSIGNMENT_STOP_DATE
+, STANDARD_HOURS_FREQUENCY_CODE
+, STANDARD_HOURS_FREQUENCY_DESC
+, COMPENSATION_FREQUENCY_CODE
+, COMPENSATION_FREQUENCY_DESC
+, LABOR_AGREEMENT_CODE
+, LABOR_AGREEMENT_DESC
+, EMPLOYEE_CLASS_CODE
+, EMPLOYEE_CLASS_DESC
+, BENEFIT_STATUS_CODE
+, BENEFIT_STATUS_DESC
+, BENEFIT_SOURCE_CODE
+, BENEFIT_SOURCE_DESC
+, EARNINGS_DISTRIBUTION_CODE
+, EARNINGS_DISTRIBUTION_DESC
+, EMPLOYEE_STATUS_CODE
+, EMPLOYEE_STATUS_DESC
+, EMPLOYEE_TYPE_CODE
+, EMPLOYEE_TYPE_DESC
+, FULL_PART_TIME_CODE
+, FULL_PART_TIME_DESC
+, HR_STATUS_CODE
+, HR_STATUS_DESC
+, JOB_INDICATOR_CODE
+, JOB_INDICATOR_DESC
+, REGULAR_TEMPORARY_CODE
+, REGULAR_TEMPORARY_DESC
+, JOB_SHIFT_CODE
+, JOB_SHIFT_DESC
+, PAY_TYPE_CODE
+, PAY_TYPE_DESC
+, FTE_EQUIVALENT_QTY
+, ANNUAL_RATE
+, ANNUAL_BENEFIT_BASE_RATE
+, CHANGE_AMT
+, CHANGE_PCT
+, COMPENSATION_RATE
+, HOURLY_RATE
+, DAILY_RATE
+, MONTHLY_RATE
+, SHIFT_RATE
+, SHIFT_FACTOR_QTY
+, WORK_DAY_HOURS_QTY
+, WORK_WEEK_HOURS_QTY
+, JOB_DURATION_DAY_QTY
+, LATEST_ACTION_IND
+FROM STAGE_EMPLOYEE_JOB_ACTION
+WHERE DW_LOAD_DATE &gt;= ?
+</sql>
+    <limit>0</limit>
+    <lookup>Get Transformation Last Start Date</lookup>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>Y</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>55</xloc>
+      <yloc>284</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_EMPLOYEE_JOB_ACTION_errors</name>
+    <type>Update</type>
+    <description>This step updates rows in the stage table with an error flag.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <commit>0</commit>
+    <error_ignored>N</error_ignored>
+    <ignore_flag_field/>
+    <lookup>
+      <schema/>
+      <table>STAGE_EMPLOYEE_JOB_ACTION</table>
+      <key>
+        <name>JOB_ACTION_ID</name>
+        <field>JOB_ACTION_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>EMPLOYEE_ID</name>
+        <field>EMPLOYEE_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>JOB_ACTION_SEQUENCE_ID</name>
+        <field>JOB_ACTION_SEQUENCE_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>SOURCE_SYSTEM_ID</name>
+        <field>SOURCE_SYSTEM_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>JOB_ACTION_ID</name>
+        <rename>JOB_ACTION_ID</rename>
+        </value>
+      <value>
+        <name>EMPLOYEE_ID</name>
+        <rename>EMPLOYEE_ID</rename>
+        </value>
+      <value>
+        <name>JOB_ACTION_SEQUENCE_ID</name>
+        <rename>JOB_ACTION_SEQUENCE_ID</rename>
+        </value>
+      <value>
+        <name>SOURCE_SYSTEM_ID</name>
+        <rename>SOURCE_SYSTEM_ID</rename>
+        </value>
+      <value>
+        <name>DW_ERROR_IND</name>
+        <rename>DW_ERROR_IND</rename>
+        </value>
+      </lookup>
+     <cluster_schema/>
+    <GUI>
+      <xloc>89</xloc>
+      <yloc>477</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+</transformation>

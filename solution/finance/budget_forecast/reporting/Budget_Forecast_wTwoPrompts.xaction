@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>Budget_Forecast.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>%description</description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help/>  
+    <result-type>rule</result-type> 
+  </documentation>  
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <min_date type="string"> 
+      <sources> 
+        <request>min_date</request> 
+      </sources>  
+      <default-value>200601</default-value> 
+    </min_date>  
+    <max_date type="string"> 
+      <sources> 
+        <request>max_date</request> 
+      </sources>  
+      <default-value>200606</default-value> 
+    </max_date>  
+    <business_unit type="string"> 
+      <sources> 
+        <request>business_unit</request> 
+      </sources>  
+      <default-value>Store17</default-value> 
+    </business_unit> 
+  </inputs>  
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>  
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>Budget_Forecast.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>SQL Query</action-type>  
+      <action-outputs> 
+        <business_unit_list type="property-map-list"/> 
+      </action-outputs>  
+      <component-definition> 
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT DISTINCT B.BUSINESS_UNIT_NAME 
+FROM DIMENSION_BUSINESS_UNIT B, FACT_BUDGET_FORECAST F 
+WHERE B.BUSINESS_UNIT_NAME IS NOT NULL AND B.BUSINESS_UNIT_SK = F.BUSINESS_UNIT_SK
+ORDER BY B.BUSINESS_UNIT_NAME ASC]]></query> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>SecureFilterComponent</component-name>  
+      <action-type>Secure Filter</action-type>  
+      <action-inputs> 
+        <min_date type="string"/>  
+        <max_date type="string"/>  
+        <business_unit type="string"/>  
+        <business_unit_list type="property-map-list"/> 
+      </action-inputs>  
+      <component-definition> 
+        <selections> 
+          <min_date filter="none"> 
+            <title>Enter the minimum fiscal period for the range (format YYYYMM).</title> 
+          </min_date>  
+          <max_date filter="none"> 
+            <title>Enter the maximum fiscal period for the range (format YYYYMM).</title> 
+          </max_date>  
+          <business_unit style="select"> 
+            <title>Please enter the business unit for analysis.</title>  
+            <filter value-col-name="business_unit_name" display-col-name="business_unit_name">business_unit_list</filter> 
+          </business_unit> 
+        </selections> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>  
+      <action-type>report</action-type>  
+      <action-inputs> 
+        <output-type type="string"/>  
+        <min_date type="string"/>  
+        <business_unit type="string"/>  
+        <max_date type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <report type="content"/> 
+      </action-outputs>  
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT FP.FISCAL_PERIOD_ID,
+BF.BUDGET_FRCST_DESC,
+P.PRODUCT_DESC,
+C.CUSTOMER_NAME,
+F.ORDER_BUDGET_QTY, 
+F.ORDER_BUDGET_AMT
+FROM FACT_BUDGET_FORECAST F, 
+DIMENSION_PRODUCT P, 
+DIMENSION_FISCAL_PERIOD FP, 
+DIMENSION_CUSTOMER C, 
+DIMENSION_BUSINESS_UNIT B, 
+DIMENSION_BUDGET_FORECAST_ITEM BF
+WHERE F.PRODUCT_SK = P.PRODUCT_SK 
+AND F.FISCAL_PERIOD_SK = FP.FISCAL_PERIOD_SK 
+AND C.CUSTOMER_SK = F.CUSTOMER_SK 
+AND F.BUSINESS_UNIT_SK = B.BUSINESS_UNIT_SK 
+AND F.BUDGET_ITEM_SK = BF.BUDGET_FRCST_ITEM_SK
+AND FP.FISCAL_PERIOD_NUMBER BETWEEN '{min_date}' AND '{max_date}' 
+AND B.BUSINESS_UNIT_NAME IN ('{business_unit}')
+ORDER BY FP.FISCAL_PERIOD_NUMBER, 
+BF.BUDGET_FRCST_DESC, 
+P.PRODUCT_DESC,
+C.CUSTOMER_NAME]]></query> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

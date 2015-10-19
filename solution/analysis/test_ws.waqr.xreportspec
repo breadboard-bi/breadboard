@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report-spec tool='waqr' tool-version='1.0' >
+<report-name><![CDATA[test_ws.waqr.xreportspec]]></report-name>
+<report-desc><![CDATA[description]]></report-desc>
+<query>
+<mql>
+<domain_type>relational</domain_type>
+<domain_id><![CDATA[breadboard]]></domain_id><model_id><![CDATA[Clickstream Open Source Model]]></model_id>
+<options>
+<disable_distinct>false</disable_distinct>
+</options>
+<selections>
+<selection><view>BC_DIMENSION_WEB_BROWSER_OS_</view><column>BC_DIMENSION_WEB_BROWSER_OS_OPERATING_SYSTEM_NAME</column></selection>
+<selection><view>BC_DIMENSION_WEB_BROWSER_OS_</view><column>BC_DIMENSION_WEB_BROWSER_OS_WEB_BROWSER_NAME</column></selection>
+<selection><view>Pages</view><column>BC_DIMENSION_WEB_FILE_WEB_FILE_CAT</column></selection>
+<selection><view>Visitors</view><column>BC_DIMENSION_WEB_VISITOR_COUNTRY_NAME</column></selection>
+<selection><view>Visitors</view><column>BC_DIMENSION_WEB_VISITOR_CITY_NAME</column></selection>
+<selection><view>Web Visitor Metrics</view><column>BC_FACT_WEB_SITE_VISIT_VISIT_DATE</column></selection>
+</selections>
+<constraints>
+</constraints>
+<orders>
+<order><direction>asc</direction><view_id>BC_DIMENSION_WEB_BROWSER_OS_</view_id><column_id>BC_DIMENSION_WEB_BROWSER_OS_OPERATING_SYSTEM_NAME</column_id></order>
+<order><direction>asc</direction><view_id>BC_DIMENSION_WEB_BROWSER_OS_</view_id><column_id>BC_DIMENSION_WEB_BROWSER_OS_WEB_BROWSER_NAME</column_id></order>
+<order><direction>asc</direction><view_id>Pages</view_id><column_id>BC_DIMENSION_WEB_FILE_WEB_FILE_CAT</column_id></order>
+<order><direction>asc</direction><view_id>Visitors</view_id><column_id>BC_DIMENSION_WEB_VISITOR_COUNTRY_NAME</column_id></order>
+</orders>
+</mql>
+</query>
+<field-mapping key="reportheader" value="header"/><field-mapping key="reportfooter" value="footer ... "/><field-mapping key="pageheader" value="page"/><field-mapping key="pagefooter" value="page footer wsws"/><page-format><![CDATA[LEGAL]]></page-format>
+<orientation><![CDATA[landscape]]></orientation>
+<field is-detail="false" name="BC_DIMENSION_WEB_BROWSER_OS_OPERATING_SYSTEM_NAME" horizontal-alignment="left" type="12" repeat-group-header="false" level-name="" group-totals-label="Total $(BC_DIMENSION_WEB_BROWSER_OS_OPERATING_SYSTEM_NAME)" page-break-before-header="false" page-break-after-header="false" page-break-before-footer="false" page-break-after-footer="false" calculate-group-totals="true" create-group-header="true" vertical-alignment="top"/>
+<field is-detail="false" name="BC_DIMENSION_WEB_BROWSER_OS_WEB_BROWSER_NAME" horizontal-alignment="left" type="12" repeat-group-header="false" level-name="" group-totals-label="Total $(BC_DIMENSION_WEB_BROWSER_OS_WEB_BROWSER_NAME)" page-break-before-header="false" page-break-after-header="false" page-break-before-footer="false" page-break-after-footer="false" calculate-group-totals="true" create-group-header="true" vertical-alignment="top"/>
+<field is-detail="false" name="BC_DIMENSION_WEB_FILE_WEB_FILE_CAT" horizontal-alignment="left" type="12" repeat-group-header="false" level-name="" group-totals-label="Total $(BC_DIMENSION_WEB_FILE_WEB_FILE_CAT)" page-break-before-header="false" page-break-after-header="false" page-break-before-footer="false" page-break-after-footer="false" calculate-group-totals="true" create-group-header="true" vertical-alignment="top"/>
+<field is-detail="false" name="BC_DIMENSION_WEB_VISITOR_COUNTRY_NAME" horizontal-alignment="left" type="12" repeat-group-header="false" level-name="" group-totals-label="Total $(BC_DIMENSION_WEB_VISITOR_COUNTRY_NAME)" page-break-before-header="false" page-break-after-header="false" page-break-before-footer="false" page-break-after-footer="false" calculate-group-totals="true" create-group-header="true" vertical-alignment="top"/>
+<field is-detail="true" name="BC_DIMENSION_WEB_VISITOR_CITY_NAME" horizontal-alignment="left" expression="none" type="12"/>
+<field is-detail="true" name="BC_FACT_WEB_SITE_VISIT_VISIT_DATE" horizontal-alignment="left" expression="none" type="91"/>
+</report-spec>

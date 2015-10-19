@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>sales_prompt_dimension_cube.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>BizCubed</author>  
+    <help>Created BizCubed, modified slightly by Breadboard BI.</help>  
+    <result-type>report</result-type>  
+    <description>%description</description>  
+    <icon>file.png|analysis.png</icon> 
+  </documentation>  
+  <inputs> 
+    <mdx type="string"> 
+      <default-value/>  
+      <sources> 
+        <request>MDX</request> 
+      </sources> 
+    </mdx>  
+    <mode type="string"> 
+      <sources> 
+        <request>mode</request> 
+      </sources>  
+      <default-value/> 
+    </mode>  
+    <dimensionprompt type="string"> 
+      <sources> 
+        <request>dimensionprompt</request> 
+      </sources>  
+      <default-value><![CDATA[Location]]></default-value> 
+    </dimensionprompt>  
+    <newInput1 type="property-map-list"> 
+      <sources> 
+        <request>newInput1</request> 
+      </sources>  
+      <default-value type="property-map-list"> 
+        <property-map> 
+          <entry key="DimensionValue">Business Unit</entry>  
+          <entry key="Dimension">Business Unit</entry> 
+        </property-map>  
+        <property-map> 
+          <entry key="DimensionValue">Customer</entry>  
+          <entry key="Dimension">Customer</entry> 
+        </property-map>  
+        <property-map> 
+          <entry key="DimensionValue">Promotion</entry>  
+          <entry key="Dimension">Promotion</entry> 
+        </property-map>  
+        <property-map> 
+          <entry key="DimensionValue">Sales Rep</entry>  
+          <entry key="Dimension">Sales Rep</entry> 
+        </property-map> 
+      </default-value> 
+    </newInput1> 
+  </inputs>  
+  <outputs> 
+    <model type="string"/>  
+    <connection type="string"/>  
+    <mdx type="string"/>  
+    <options type="list"/>  
+    <title type="string"/>  
+    <url type="string"> 
+      <destinations> 
+        <response>redirect</response> 
+      </destinations> 
+    </url> 
+  </outputs>  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <component-name>SecureFilterComponent</component-name>  
+      <action-type>Prompt/Secure Filter</action-type>  
+      <action-inputs> 
+        <newInput1 type="property-map-list"/>  
+        <dimensionprompt type="string"/> 
+      </action-inputs>  
+      <component-definition> 
+        <selections> 
+          <dimensionprompt> 
+            <title>Choose the dimension by which you would like to analyze sales data.</title>  
+            <filter value-col-name="DimensionValue" display-col-name="Dimension">newInput1</filter> 
+          </dimensionprompt> 
+        </selections> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>PivotViewComponent</component-name>  
+      <action-inputs> 
+        <mode type="string"/>  
+        <dimensionprompt type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <model type="string"/>  
+        <connection type="string"/>  
+        <mdx type="string"/>  
+        <options type="list"/>  
+        <title type="string"/>  
+        <url type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <title>%title</title>  
+        <viewer>Pivot</viewer>  
+        <model>breadboard/analysis/breadboardbi.mondrian.xml</model>  
+        <jndi>mdw_mysql</jndi>  
+        <location>mondrian</location>  
+        <query><![CDATA[SELECT NON EMPTY {[Measures].[Sale Revenue], [Measures].[Sale Quantity], [Measures].[Customer Quantity], [Measures].[Cost]} ON columns, 
+NON EMPTY {[{dimensionprompt}].[All {dimensionprompt}s]} ON rows 
+FROM [Orders]]]></query>  
+        <options> 
+          <personal/>  
+          <cube-nav/>  
+          <mdx-edit/>  
+          <sort-conf/>  
+          <spacer/>  
+          <level-style/>  
+          <hide-spans/>  
+          <properties/>  
+          <non-empty/>  
+          <swap-axes/>  
+          <spacer/>  
+          <drill-member/>  
+          <drill-position/>  
+          <drill-replace/>  
+          <drill-thru/>  
+          <spacer/>  
+          <chart/>  
+          <chart-conf/>  
+          <spacer/>  
+          <print-conf/>  
+          <print-pdf/>  
+          <spacer/>  
+          <excel/> 
+        </options> 
+      </component-definition>  
+      <action-name>Pivot View</action-name>  
+    </action-definition> 
+  </actions> 
+</action-sequence>

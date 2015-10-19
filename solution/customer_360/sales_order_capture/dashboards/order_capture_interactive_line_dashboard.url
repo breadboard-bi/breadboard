@@ -1,0 +1,12 @@
+[InternetShortcut]
+URL=http:/pentaho/order_capture_interactive_line_dashboard.jsp
+Modified=E0A24A2338B4C601A2
+HotKey=0
+IDList=
+[navigation]
+Name=%url_name
+Description=%url_description
+Icon=file.png|dashboard.png
+Author=Breadboard BI
+[{000214A0-0000-0000-C000-000000000046}]
+Prop3=19,2

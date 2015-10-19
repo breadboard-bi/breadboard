@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>Web Visits by Week and Web Browser</title>
+  <version>2</version>
+  <logging-level/>
+  <documentation> 
+    <author>Breadboard BI, LLC</author>  
+    <description>Return visits by week and web browser.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>
+
+  <inputs> 
+    <MONTH_OF_YEAR type="string"> 
+      <sources> 
+        <request>MONTH_OF_YEAR</request> 
+      </sources> 
+    </MONTH_OF_YEAR> 
+  </inputs>
+
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>
+
+  <resources/>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>
+      <action-type>rule</action-type>
+      <action-inputs> 
+        <MONTH_OF_YEAR type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>
+      <component-definition> 
+        <!-- Define the datasource for the query -->  
+        <jndi>mdw_mysql</jndi>  
+        <live>false</live>  
+        <query><![CDATA[select B.PARENT_WEB_BROWSER_NAME AS "Browser",
+COUNT(DISTINCT F.GEO_LOCATION_SK) AS "Visits"
+FROM FACT_WEB_PAGE_VIEW  F,
+DIMENSION_WEB_BROWSER_OS B,
+DIMENSION_DAY D
+WHERE F.REQUEST_DATE_SK = D.DATE_SK
+AND F.WEB_BROWSER_OS_SK = B.WEB_BROWSER_OS_SK
+AND D.WEEK_SK = '{MONTH_OF_YEAR}'
+GROUP BY B.PARENT_WEB_BROWSER_NAME
+ORDER BY COUNT(DISTINCT F.GEO_LOCATION_SK)  DESC]]></query> 
+      </component-definition> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

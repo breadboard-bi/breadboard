@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>inventory_product_list.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>%description</description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help/>  
+    <result-type>rule</result-type> 
+  </documentation>  
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <snapshot_date type="string"> 
+      <sources> 
+        <request>snapshot_date</request> 
+      </sources>  
+      <default-value>20060330</default-value> 
+    </snapshot_date>  
+    <business_unit type="string"> 
+      <sources> 
+        <request>business_unit</request> 
+      </sources>  
+      <default-value>0</default-value> 
+    </business_unit> 
+  </inputs>  
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>  
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>inventory_product_list.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>Snapshot SQL Query</action-type>  
+      <action-outputs> 
+        <snapshot_date_list type="property-map-list"/> 
+      </action-outputs>  
+      <component-definition> 
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT DISTINCT snapshot_date_sk
+FROM fact_physical_inventory
+ORDER BY snapshot_date_sk ASC]]></query> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>BU SQL Query</action-type>  
+      <action-outputs> 
+        <business_unit_list type="property-map-list"/> 
+      </action-outputs>  
+      <component-definition> 
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT DISTINCT d.business_unit_desc,d.business_unit_sk
+FROM dimension_business_unit d, fact_physical_inventory f
+WHERE d.business_unit_desc IS NOT NULL 
+and d.business_unit_sk = f.business_unit_sk
+ORDER BY d.business_unit_desc ASC]]></query> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>SecureFilterComponent</component-name>  
+      <action-type>Secure Filter</action-type>  
+      <action-inputs> 
+        <snapshot_date type="string"/>  
+        <snapshot_date_list type="property-map-list"/>  
+        <business_unit type="string"/>  
+        <business_unit_list type="property-map-list"/> 
+      </action-inputs>  
+      <component-definition> 
+        <selections> 
+          <snapshot_date style="select"> 
+            <title>Please enter the snapshot date for analysis.</title>  
+            <filter value-col-name="snapshot_date_sk" display-col-name="snapshot_date_sk">snapshot_date_list</filter> 
+          </snapshot_date>  
+          <business_unit style="select"> 
+            <title>Please enter the business_unit for analysis.</title>  
+            <filter value-col-name="business_unit_sk" display-col-name="business_unit_desc">business_unit_list</filter> 
+          </business_unit> 
+        </selections> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>  
+      <action-type>report</action-type>  
+      <action-inputs> 
+        <output-type type="string"/>  
+        <snapshot_date type="string"/>  
+        <business_unit type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <report type="content"/> 
+      </action-outputs>  
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT F.SNAPSHOT_DATE, B.BUSINESS_UNIT_DESC, P.PRODUCT_CATEGORY_DESC, 
+P.PRODUCT_NAME, P.UNIT_UOM_ID, 
+F.INV_OPEN_QTY, F.INV_RESTRICTED_QTY, F.INV_HOLD_QTY, F.INV_REJECTED_QTY
+FROM FACT_PHYSICAL_INVENTORY F, DIMENSION_BUSINESS_UNIT B,DIMENSION_PRODUCT P
+WHERE F.BUSINESS_UNIT_SK = B.BUSINESS_UNIT_SK
+AND F.PRODUCT_SK = P.PRODUCT_SK
+AND P.PRODUCT_SK > 0
+AND F.SNAPSHOT_DATE_SK  = '{snapshot_date}'
+AND F.BUSINESS_UNIT_SK = '{business_unit}'
+ORDER BY P.PRODUCT_CATEGORY_DESC
+LIMIT 100]]></query> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

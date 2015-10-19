@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read></read>
+      <write></write>
+      <input></input>
+      <output></output>
+      <update></update>
+      <connection></connection>
+      <table></table>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection></connection>
+      <table></table>
+      <field></field>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts contact center chat metrics from PeopleSoft CRM 8.8.  Only the input has been built.  It should be joined with sales representative and other data and loaded into a person target.</note>
+      <xloc>5</xloc>
+      <yloc>49</yloc>
+      <width>983</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_CRM_CONTACT_CENTER_CHAT</from><to>FACT_CONTACT_CENTER_CHAT</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>FACT_CONTACT_CENTER_CHAT</name>
+    <type>InsertUpdate</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <lookup>
+      <table>FACT_CONTACT_CENTER_CHAT</table>
+      </lookup>
+    <GUI>
+      <xloc>476</xloc>
+      <yloc>206</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_CRM_CONTACT_CENTER_CHAT</name>
+    <type>TableInput</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT CD.ROW_ADDED_DTTM AS CHAT_DATE, 
+IT.BUSINESS_UNIT AS BUSINESS_UNIT_ID,
+CD.RB_CHAT_ID AS CHAT_ID,
+CD.BO_ID_CUST AS BO_CUSTOMER_ID, 
+CD.BO_ID_CNTCT AS BO_CONTACT_ID, 
+CD.ASSOC_TP AS ASSOCIATION_TYPE_ID,
+IT.ROW_ADDED_OPRID AS AGENT_OPERATOR_ID,
+OPR.PERSON_ID AS AGENT_PERSON_ID, 
+IT.INTERACTION_ID,
+CD.CASE_ID, 
+CD.CAPTURE_ID AS ORDER_CAPTURE_ID, 
+CD.RB_CHAT_QUEUE AS CHAT_QUEUE_ID, 
+CD.DISP_TMPL_ID,
+(CASE WHEN CD.CASE_ID &lt;&gt; &apos; &apos; THEN 1 ELSE 0 END) AS CASE_CHAT_QTY,
+(CASE WHEN CD.CAPTURE_ID &lt;&gt; &apos; &apos; THEN 1 ELSE 0 END) AS ORDER_CHAT_QTY,
+(CASE WHEN IT.INTERACT_BEGIN IS NULL OR IT.INTERACT_END is NULL THEN 0 
+ELSE IT.INTERACT_END - IT.INTERACT_BEGIN END) AS CHAT_DURATION_QTY --IN SECONDS
+FROM PS_RB_CHAT_DETAIL CD
+INNER JOIN PS_RI_INTERACTION IT
+ON CD.INTERACTION_ID = IT.INTERACTION_ID
+LEFT OUTER JOIN PSOPRALIAS OPR
+ON IT.ROW_ADDED_OPRID = OPR.OPRID
+AND OPR.OPRALIASTYPE = &apos;PER&apos;
+--WHERE CD.LASTUPD_EW_DTTM &gt; last load date</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>140</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

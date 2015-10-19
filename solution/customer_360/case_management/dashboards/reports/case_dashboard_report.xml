@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<report name="case_dashboard_report" orientation="portrait" pageformat="LETTER" leftmargin="5pt" rightmargin="5pt" topmargin="0" bottommargin="0">
+<reportheader>  
+<label fontname="SansSerif" fontsize="14" fontstyle="bold" height="20" vertical-alignment="middle" alignment="left" width="370" x="0" y="0">Top Cases by Open Duration</label>
+</reportheader>
+  <groups>
+    <group name="dummy">
+      <groupheader repeat="true" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold" height="14">
+        <band name="DummyGroupNoDataBandElement">
+          <label height="10" vertical-alignment="middle" alignment="left" width="365" x="0" y="0">No Data Available</label>
+        </band>
+        <band name="DummyGroupDataBandElement">
+          <rectangle color="#808080" draw="false" fill="true" height="12" width="370" x="0" y="0"/>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="50" x="0" y="0">Rank</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="60" x="50" y="0">Case ID</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="65" x="110" y="0">Open Date</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="60" x="175" y="0">Closed Date</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="60" x="225" y="0">Agent Name</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="80" x="285" y="0">Case Day Age</label>
+        </band>
+      </groupheader>
+      <groupfooter name="dummyGroupFooter" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold">
+      </groupfooter>
+    </group>
+  </groups>
+  <items color="#000000" fontname="SansSerif" fontsize="9" fontstyle="bold">
+    <string-field name="AGE_RANKElement" fieldname="AGE_RANK" vertical-alignment="middle" alignment="left" width="50" x="0" y="0" height="11"/>
+    <string-field name="URL-Field" fieldname="CASE_ID" vertical-alignment="middle" alignment="left" width="60" x="50" y="0" height="11"/>
+    <date-field name="CASE_OPEN_DATEElement" fieldname="CASE_OPEN_DATE" format="MM/dd/yyyy" vertical-alignment="middle" alignment="left" width="65" x="110" y="0" height="11"/>
+    <date-field name="CASE_CLOSED_DATEElement" fieldname="CASE_CLOSED_DATE" format="MM/dd/yyyy" vertical-alignment="middle" alignment="left" width="60" x="175" y="0" height="11"/>
+    <string-field name="AGENT_NAMEElement" fieldname="AGENT_NAME" vertical-alignment="middle" alignment="left" width="60" x="225" y="0" height="11"/>
+    <number-field name="AVG_CASE_AGEElement" fieldname="AVG_CASE_AGE" vertical-alignment="middle" alignment="left" width="80" x="285" y="0" height="11"/>
+  </items>
+  <functions>
+    <expression class="org.jfree.report.function.HideElementIfDataAvailableExpression" name="DummyGroupNoDataBandElementHideIfNullTrigger">
+      <properties>
+        <property name="element">DummyGroupNoDataBandElement</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="DummyGroupDataBandElementHideIfNullTrigger">
+      <properties>
+        <property name="element">DummyGroupDataBandElement</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="dummyGroupFooterHideIfNullTrigger">
+      <properties>
+        <property name="element">dummyGroupFooter</property>
+      </properties>
+    </expression>
+ 
+  </functions>
+</report>

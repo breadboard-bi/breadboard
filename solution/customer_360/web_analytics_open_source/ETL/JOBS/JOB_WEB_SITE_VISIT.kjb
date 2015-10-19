@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job>
+  <name>JOB_WEB_SITE_VISIT</name>
+    <description/>
+    <extended_description/>
+    <job_version/>
+  <directory>&#47;</directory>
+  <created_user/>
+  <created_date>2007&#47;06&#47;09 09:36:51.906</created_date>
+  <modified_user/>
+  <modified_date>2007&#47;06&#47;09 09:36:51.906</modified_date>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <logconnection/>
+  <logtable>ADMIN_JOB_CONTROL</logtable>
+   <use_batchid>Y</use_batchid>
+   <pass_batchid>Y</pass_batchid>
+   <use_logfield>Y</use_logfield>
+   <shared_objects_file/>
+  <entries>
+    <entry>
+      <name>START</name>
+      <description>A job starts to process here.</description>
+      <type>SPECIAL</type>
+      <start>Y</start>
+      <dummy>N</dummy>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
+      <interval>60</interval>
+      <hour>12</hour>
+      <minutes>0</minutes>
+      <weekDay>1</weekDay>
+      <DayOfMonth>1</DayOfMonth>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>22</xloc>
+      <yloc>220</yloc>
+      </entry>
+    <entry>
+      <name>DUMMY</name>
+      <description>A dummy entry.</description>
+      <type>SPECIAL</type>
+      <start>N</start>
+      <dummy>Y</dummy>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
+      <interval>60</interval>
+      <hour>12</hour>
+      <minutes>0</minutes>
+      <weekDay>1</weekDay>
+      <DayOfMonth>1</DayOfMonth>
+      <parallel>N</parallel>
+      <draw>N</draw>
+      <nr>0</nr>
+      <xloc>53</xloc>
+      <yloc>109</yloc>
+      </entry>
+    <entry>
+      <name>OK</name>
+      <description>This comparisson is true when no errors have occured.</description>
+      <type>EVAL</type>
+      <script>errors == 0</script>
+      <parallel>N</parallel>
+      <draw>N</draw>
+      <nr>0</nr>
+      <xloc>0</xloc>
+      <yloc>0</yloc>
+      </entry>
+    <entry>
+      <name>ERROR</name>
+      <description>This comparisson is true when one or more errors have occured.</description>
+      <type>EVAL</type>
+      <script>errors != 0</script>
+      <parallel>N</parallel>
+      <draw>N</draw>
+      <nr>0</nr>
+      <xloc>0</xloc>
+      <yloc>0</yloc>
+      </entry>
+    <entry>
+      <name>TRANS_DIMENSION_WEB_VISITOR</name>
+      <description>This job entry moves data from the stage table into the web visitor dimension.</description>
+      <type>TRANS</type>
+      <filename>C:\Kettle-2.3.0B\tables transformations\GENERIC STAGE\TRANSFORMATIONS\dimension_web_visitor.ktr</filename>
+      <transname/>
+      <directory>&#47;</directory>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Error</loglevel>
+      <cluster>N</cluster>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>671</xloc>
+      <yloc>123</yloc>
+      </entry>
+    <entry>
+      <name>TRANS_FACT_WEB_PAGE_VIEW</name>
+      <description>This job entry moves data from the stage table into the web page view fact table.</description>
+      <type>TRANS</type>
+      <filename>C:\Kettle-2.3.0B\tables transformations\GENERIC STAGE\TRANSFORMATIONS\fact_web_page_view.ktr</filename>
+      <transname/>
+      <directory>&#47;</directory>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Error</loglevel>
+      <cluster>N</cluster>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>794</xloc>
+      <yloc>282</yloc>
+      </entry>
+    <entry>
+      <name>TRANS_STAGE_WEB_SERVER_REQUEST</name>
+      <description>This job entry moves data from the web server log file into the stage tables.</description>
+      <type>TRANS</type>
+      <filename>C:\Kettle-2.3.0B\tables transformations\GENERIC STAGE\TRANSFORMATIONS\stage_web_server_request.ktr</filename>
+      <transname/>
+      <directory>&#47;</directory>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Error</loglevel>
+      <cluster>N</cluster>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>338</xloc>
+      <yloc>218</yloc>
+      </entry>
+    <entry>
+      <name>TRANS_DIMENSION_WEB_FILE</name>
+      <description>This job entry moves data from the stage table into the web file dimension.</description>
+      <type>TRANS</type>
+      <filename>C:\Kettle-2.3.0B\tables transformations\GENERIC STAGE\TRANSFORMATIONS\dimension_web_file.ktr</filename>
+      <transname/>
+      <directory>&#47;</directory>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Error</loglevel>
+      <cluster>N</cluster>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>754</xloc>
+      <yloc>25</yloc>
+      </entry>
+    <entry>
+      <name>TRANS_DIMENSION_WEB_SITE_REFERER</name>
+      <description>This job entry moves data from the stage table into the web site referer dimension.</description>
+      <type>TRANS</type>
+      <filename>C:\Kettle-2.3.0B\tables transformations\GENERIC STAGE\TRANSFORMATIONS\dimension_web_site_referer.ktr</filename>
+      <transname/>
+      <directory>&#47;</directory>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Error</loglevel>
+      <cluster>N</cluster>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>793</xloc>
+      <yloc>166</yloc>
+      </entry>
+    <entry>
+      <name>HTTP_GET_WEB_SERVER_LOG_FILE</name>
+      <description>This job entry retrieves a web server log file from a remote web server.  The details will need to be changed to work in your environment. </description>
+      <type>HTTP</type>
+      <url>http:&#47;&#47;www.breadboardbi.com&#47;logs&#47;access.log</url>
+      <targetfilename>C:\Kettle-2.3.0B\source_files\access.log</targetfilename>
+      <file_appended>N</file_appended>
+      <date_time_added>N</date_time_added>
+      <targetfilename_extention/>
+      <uploadfilename/>
+      <url_fieldname/>
+      <run_every_row>N</run_every_row>
+      <username>clavigne</username>
+      <password>Encrypted: 2be98afc86aa7f2e4a118bd79cbc3fd89</password>
+      <proxy_host/>
+      <proxy_port>0</proxy_port>
+      <non_proxy_hosts/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>145</xloc>
+      <yloc>218</yloc>
+      </entry>
+    <entry>
+      <name>TRANS_FACT_WEB_SITE_VISIT</name>
+      <description>This job entry moves data from the stage table into the web site visit fact table.</description>
+      <type>TRANS</type>
+      <filename>C:\Kettle-2.3.0B\tables transformations\GENERIC STAGE\TRANSFORMATIONS\fact_web_site_visit.ktr</filename>
+      <transname/>
+      <directory>&#47;</directory>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Error</loglevel>
+      <cluster>N</cluster>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>795</xloc>
+      <yloc>403</yloc>
+      </entry>
+    <entry>
+      <name>HTTP_FLUSH_MONDRIAN_CACHE</name>
+      <description>This job entry flushes the Mondrian OLAP cache by executing a simple .jsp page.  As a by-product it also copies this .jsp page to a directory on the Kettle server.  In this instance (c:\logs\).</description>
+      <type>HTTP</type>
+      <url>http:&#47;&#47;192.168.0.103&#47;pentaho&#47;mondrian_cache_flush.jsp</url>
+      <targetfilename>c:\logs\mondrian_cache_flush.jsp</targetfilename>
+      <file_appended>N</file_appended>
+      <date_time_added>N</date_time_added>
+      <targetfilename_extention/>
+      <uploadfilename/>
+      <url_fieldname/>
+      <run_every_row>N</run_every_row>
+      <username/>
+      <proxy_host/>
+      <proxy_port>0</proxy_port>
+      <non_proxy_hosts/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>637</xloc>
+      <yloc>394</yloc>
+      </entry>
+    <entry>
+      <name>TRANS_FACT_WEB_SITE_REFERER</name>
+      <description>This job entry moves data from the stage table into the web site referer fact table.</description>
+      <type>TRANS</type>
+      <filename>C:\Kettle-2.3.0B\tables transformations\GENERIC STAGE\TRANSFORMATIONS\fact_web_site_referer.ktr</filename>
+      <transname/>
+      <directory>&#47;</directory>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Error</loglevel>
+      <cluster>N</cluster>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>797</xloc>
+      <yloc>510</yloc>
+      </entry>
+    <entry>
+      <name>TRANS_DIMENSION_WEB_BROWSER_OS</name>
+      <description>This job entry moves data from the stage table into the web browser operating system dimension.</description>
+      <type>TRANS</type>
+      <filename>C:\Kettle-2.3.0B\tables transformations\GENERIC STAGE\TRANSFORMATIONS\dimension_web_browser_os.ktr</filename>
+      <transname/>
+      <directory>&#47;</directory>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Error</loglevel>
+      <cluster>N</cluster>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>547</xloc>
+      <yloc>218</yloc>
+      </entry>
+    <entry>
+      <name>SHELL_RUN_ARCHIVE_WEB_LOG_FILES</name>
+      <description>This shell job entry calls a simple script (batch file) to archive the current web log file.  It is simply done, only one file per day will be saved.</description>
+      <type>SHELL</type>
+      <filename>C:\Kettle-2.3.0B\tables transformations\GENERIC STAGE\JOBS\RUN_ARCHIVE_WEB_LOG_FILES.bat</filename>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Error</loglevel>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>532</xloc>
+      <yloc>315</yloc>
+      </entry>
+  </entries>
+  <hops>
+    <hop>
+      <from>TRANS_DIMENSION_WEB_VISITOR</from>
+      <to>TRANS_DIMENSION_WEB_FILE</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>TRANS_DIMENSION_WEB_FILE</from>
+      <to>TRANS_DIMENSION_WEB_SITE_REFERER</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>TRANS_DIMENSION_WEB_SITE_REFERER</from>
+      <to>TRANS_FACT_WEB_PAGE_VIEW</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>START</from>
+      <to>HTTP_GET_WEB_SERVER_LOG_FILE</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>HTTP_GET_WEB_SERVER_LOG_FILE</from>
+      <to>TRANS_STAGE_WEB_SERVER_REQUEST</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>TRANS_FACT_WEB_PAGE_VIEW</from>
+      <to>TRANS_FACT_WEB_SITE_VISIT</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>TRANS_FACT_WEB_SITE_VISIT</from>
+      <to>TRANS_FACT_WEB_SITE_REFERER</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>TRANS_FACT_WEB_SITE_REFERER</from>
+      <to>HTTP_FLUSH_MONDRIAN_CACHE</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>TRANS_STAGE_WEB_SERVER_REQUEST</from>
+      <to>TRANS_DIMENSION_WEB_BROWSER_OS</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>TRANS_DIMENSION_WEB_BROWSER_OS</from>
+      <to>TRANS_DIMENSION_WEB_VISITOR</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>HTTP_FLUSH_MONDRIAN_CACHE</from>
+      <to>SHELL_RUN_ARCHIVE_WEB_LOG_FILES</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+  </hops>
+  <notepads>
+    <notepad>
+      <note>Breadboard BI - Marketing - Clickstream Data Mart - Main Data Load - Version 1.0
+=================================================
+1.  Retrieves the web server log file, loads the data, flushes the Mondrian cache, and archives the data file.
+
+2.  Job entry order in this job is important.
+
+3.  This job should be scheduled to run on a regular basis (the example RUN_JOB_WEB_SITE_VISIT.bat file
+      can be used with Windows Scheduler or modified and used with CRON to automate the load process).
+
+4.  All object must be pointed to the correct path (or repository) on you server.  Connection information must 
+     also be specified for your environment.</note>
+      <xloc>18</xloc>
+      <yloc>13</yloc>
+      <width>537</width>
+      <heigth>153</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+Add Your Changes Here.  This will assist you in upgrading to future versions 
+of Breadboard BI Solution Slices.  Be sure to submit bug fix and enhancement requests 
+to the SourceForge project.</note>
+      <xloc>4</xloc>
+      <yloc>365</yloc>
+      <width>428</width>
+      <heigth>75</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2006 Breadboard BI.  All rights reserved. 
+
+This component is free software; you can redistribute it and&#47;or modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this data mart; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA</note>
+      <xloc>4</xloc>
+      <yloc>458</yloc>
+      <width>621</width>
+      <heigth>140</heigth>
+    </notepad>
+  </notepads>
+</job>

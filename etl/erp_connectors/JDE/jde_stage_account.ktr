@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+  <modified_user/>
+  <modified_date>2006/12/15 13:40:51.795</modified_date>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts account data from JDE.</note>
+      <xloc>44</xloc>
+      <yloc>44</yloc>
+      <width>236</width>
+      <heigth>23</heigth>
+      </notepad>
+    <notepad>
+      <note>Copyright © 2006 Breadboard BI, LLC. All rights reserved.</note>
+      <xloc>213</xloc>
+      <yloc>244</yloc>
+      <width>291</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>localhost</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>JDE_STAGE_ACCOUNT</from><to>COMPUTE_JDE_PARENT_ACCOUNTS</to><enabled>Y</enabled> </hop>  <hop> <from>COMPUTE_JDE_PARENT_ACCOUNTS</from><to>STAGE_JDE_ACCOUNT</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>COMPUTE_JDE_PARENT_ACCOUNTS</name>
+    <type>ScriptValue</type>
+    <description>This step computes the account hierarchy from the chart of accounts.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <script>var cur_vOBJECT_ACCOUNT_ID = OBJECT_ACCOUNT_ID; // GMOBJ
+var cur_vBUSINESS_UNIT_ID = BUSINESS_UNIT_ID; // GMMCU
+var vLEVEL_NUMBER = LEVEL_NUMBER; // GMLDA
+var OBJECT_ACCOUNT_DESC = &quot;&quot;;
+var vLENGTH_OBJECT_ACCOUNT_ID = OBJECT_ACCOUNT_ID.length(); // NULL CHECK
+var v_ACCOUNT_ID = ACCOUNT_ID; // GMAID
+var ACCOUNT_LEVEL3_ID = &quot;&quot;;
+var ACCOUNT_LEVEL4_ID = &quot;&quot;;
+var ACCOUNT_LEVEL5_ID = &quot;&quot;;
+var ACCOUNT_LEVEL6_ID = &quot;&quot;;
+var ACCOUNT_LEVEL7_ID = &quot;&quot;;
+var ACCOUNT_LEVEL8_ID = &quot;&quot;;
+var ACCOUNT_LEVEL9_ID = &quot;&quot;;
+
+// OBJECT_ACCOUNT_DESC
+if (vLENGTH_OBJECT_ACCOUNT_ID &gt; 0 
+&amp;&amp; NOT prev_vOBJECT_ACCOUNT_ID.equals(cur_vOBJECT_ACCOUNT_ID))
+{OBJECT_ACCOUNT_DESC = ACCOUNT_DESC;}
+else if (vLENGTH_OBJECT_ACCOUNT_ID &gt; 0 
+&amp;&amp; prev_vOBJECT_ACCOUNT_ID.equals(cur_vOBJECT_ACCOUNT_ID))
+{OBJECT_ACCOUNT_DESC = prev_OBJECT_ACCOUNT_DESC;}
+
+// Compute ACCOUNT_LEVEL3_ID
+if (vLEVEL_NUMBER = 3)
+{ACCOUNT_LEVEL3_ID = v_ACCOUNT_ID;}
+else if (NOT cur_vBUSINESS_UNIT_ID.equals(prev_vBUSINESS_UNIT_ID))
+{ACCOUNT_LEVEL3_ID = &quot;&quot;;}
+else {ACCOUNT_LEVEL3_ID = prev_ACCOUNT_LEVEL3_ID;}
+
+// Compute ACCOUNT_LEVEL4_ID
+if (vLEVEL_NUMBER = 4)
+{ACCOUNT_LEVEL4_ID = v_ACCOUNT_ID;}
+else if (NOT cur_vBUSINESS_UNIT_ID.equals(prev_vBUSINESS_UNIT_ID)
+|| vLEVEL_NUMBER &lt; 4)
+{ACCOUNT_LEVEL4_ID = &quot;&quot;;}
+else {ACCOUNT_LEVEL4_ID = prev_ACCOUNT_LEVEL4_ID;}
+
+// Compute ACCOUNT_LEVEL5_ID
+if (vLEVEL_NUMBER = 5)
+{ACCOUNT_LEVEL5_ID = v_ACCOUNT_ID;}
+else if (NOT cur_vBUSINESS_UNIT_ID.equals(prev_vBUSINESS_UNIT_ID)
+|| vLEVEL_NUMBER &lt; 5)
+{ACCOUNT_LEVEL5_ID = &quot;&quot;;}
+else {ACCOUNT_LEVEL5_ID = prev_ACCOUNT_LEVEL5_ID;}
+
+// Compute ACCOUNT_LEVEL6_ID
+if (vLEVEL_NUMBER = 6)
+{ACCOUNT_LEVEL6_ID = v_ACCOUNT_ID;}
+else if (NOT cur_vBUSINESS_UNIT_ID.equals(prev_vBUSINESS_UNIT_ID)
+|| vLEVEL_NUMBER &lt; 6)
+{ACCOUNT_LEVEL6_ID = &quot;&quot;;}
+else {ACCOUNT_LEVEL6_ID = prev_ACCOUNT_LEVEL6_ID;}
+
+// Compute ACCOUNT_LEVEL7_ID
+if (vLEVEL_NUMBER = 7)
+{ACCOUNT_LEVEL7_ID = v_ACCOUNT_ID;}
+else if (NOT cur_vBUSINESS_UNIT_ID.equals(prev_vBUSINESS_UNIT_ID)
+|| vLEVEL_NUMBER &lt; 7)
+{ACCOUNT_LEVEL7_ID = &quot;&quot;;}
+else {ACCOUNT_LEVEL7_ID = prev_ACCOUNT_LEVEL7_ID;}
+
+// Compute ACCOUNT_LEVEL8_ID
+if (vLEVEL_NUMBER = 8)
+{ACCOUNT_LEVEL8_ID = v_ACCOUNT_ID;}
+else if (NOT cur_vBUSINESS_UNIT_ID.equals(prev_vBUSINESS_UNIT_ID)
+|| vLEVEL_NUMBER &lt; 8)
+{ACCOUNT_LEVEL8_ID = &quot;&quot;;}
+else {ACCOUNT_LEVEL8_ID = prev_ACCOUNT_LEVEL8_ID;}
+
+// Compute ACCOUNT_LEVEL9_ID
+if (vLEVEL_NUMBER = 9)
+{ACCOUNT_LEVEL9_ID = v_ACCOUNT_ID;}
+else if (NOT cur_vBUSINESS_UNIT_ID.equals(prev_vBUSINESS_UNIT_ID)
+|| vLEVEL_NUMBER &lt; 9)
+{ACCOUNT_LEVEL9_ID = &quot;&quot;;}
+else {ACCOUNT_LEVEL9_ID = prev_ACCOUNT_LEVEL9_ID;}
+
+// Set current values to previous values for next row.
+var prev_vOBJECT_ACCOUNT_ID = cur_vOBJECT_ACCOUNT_ID; // GMOBJ
+var prev_vBUSINESS_UNIT_ID = cur_vBUSINESS_UNIT_ID; // GMMCU
+var prev_OBJECT_ACCOUNT_DESC = OBJECT_ACCOUNT_DESC;
+var prev_ACCOUNT_LEVEL3_ID = ACCOUNT_LEVEL3_ID;
+var prev_ACCOUNT_LEVEL4_ID = ACCOUNT_LEVEL4_ID;
+var prev_ACCOUNT_LEVEL5_ID = ACCOUNT_LEVEL5_ID;
+var prev_ACCOUNT_LEVEL6_ID = ACCOUNT_LEVEL6_ID;
+var prev_ACCOUNT_LEVEL7_ID = ACCOUNT_LEVEL7_ID;
+var prev_ACCOUNT_LEVEL8_ID = ACCOUNT_LEVEL8_ID;
+var prev_ACCOUNT_LEVEL9_ID = ACCOUNT_LEVEL9_ID;
+
+</script>
+    <fields>      <field>        <name>OBJECT_ACCOUNT_DESC</name>
+        <rename>OBJECT_ACCOUNT_DESC</rename>
+        <type>String</type>
+        <length>255</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>ACCOUNT_LEVEL3_ID</name>
+        <rename>ACCOUNT_LEVEL3_ID</rename>
+        <type>String</type>
+        <length>32</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>ACCOUNT_LEVEL4_ID</name>
+        <rename>ACCOUNT_LEVEL4_ID</rename>
+        <type>String</type>
+        <length>32</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>ACCOUNT_LEVEL5_ID</name>
+        <rename>ACCOUNT_LEVEL5_ID</rename>
+        <type>String</type>
+        <length>32</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>ACCOUNT_LEVEL6_ID</name>
+        <rename>ACCOUNT_LEVEL6_ID</rename>
+        <type>String</type>
+        <length>32</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>ACCOUNT_LEVEL7_ID</name>
+        <rename>ACCOUNT_LEVEL7_ID</rename>
+        <type>String</type>
+        <length>32</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>ACCOUNT_LEVEL8_ID</name>
+        <rename>ACCOUNT_LEVEL8_ID</rename>
+        <type>String</type>
+        <length>32</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>ACCOUNT_LEVEL9_ID</name>
+        <rename>ACCOUNT_LEVEL9_ID</rename>
+        <type>String</type>
+        <length>32</length>
+        <precision>-1</precision>
+        </field>      </fields>    <GUI>
+      <xloc>340</xloc>
+      <yloc>137</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>JDE_STAGE_ACCOUNT</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT 
+F0901.GMCO AS COMPANY_ID, 
+F0901.GMMCU AS BUSINESS_UNIT_ID, 
+F0901.GMOBJ AS OBJECT_ACCOUNT_ID, 
+F0901.GMSUB AS SUBSIDIARY_ID, 
+(CASE WHEN F0901.GMSUB IS NOT NULL THEN F0901.GMDL01 END) AS SUBSIDIARY_DESC,
+F0901.GMAID AS ACCOUNT_ID,
+F0009.GCSEP AS ACCOUNT_SEPARATOR_CODE,
+CASE WHEN F0901.GMOBJ IS NULL AND F0901.GMSUB IS NULL THEN F0901.GMMCU || F0009.GCSEP
+WHEN F0901.GMOBJ IS NOT NULL AND F0901.GMSUB IS NULL THEN F0901.GMMCU || F0009.GCSEP || F0901.GMOBJ
+WHEN F0901.GMOBJ IS NULL AND F0901.GMSUB IS NOT NULL THEN F0901.GMMCU || F0009.GCSEP || F0901.GMSUB
+ELSE F0901.GMMCU || F0009.GCSEP || F0901.GMOBJ || F0901.GMSUB END AS ACCOUNT_NUMBER,
+F0901.GMDL01 AS ACCOUNT_DESC, 
+F0901.GMLDA AS LEVEL_NUMBER, --enure this is a number for subsequent evaluation.
+F0901.GMR002 AS ACCOUNT_LEVEL2_ID
+FROM
+ F0901 
+LEFT OUTER JOIN F0009
+ON F0009.GCSY = &apos;-   &apos;
+ORDER BY --Required by subsequent step.
+F0901.GMCO, 
+F0901.GMMCU, 
+F0901.GMOBJ, 
+F0901.GMSUB</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI>
+      <xloc>111</xloc>
+      <yloc>137</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_JDE_ACCOUNT</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>STAGE_JDE_ACCOUNT</table>
+      </lookup>
+    <GUI>
+      <xloc>595</xloc>
+      <yloc>137</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

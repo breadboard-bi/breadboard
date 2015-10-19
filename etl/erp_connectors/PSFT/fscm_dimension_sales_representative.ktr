@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>CRM_DIMENSION_SALES_REP</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts sales representative (sales organization) data from PeopleSoft FSCM.</note>
+      <xloc>32</xloc>
+      <yloc>50</yloc>
+      <width>457</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_oracle_orcl</name>
+    <server>192.168.0.103</server>
+    <type>ORACLE</type>
+    <access>Native</access>
+    <database>orcl</database>
+    <port>1521</port>
+    <username>mdw</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_SCM_SALES_REPRESENTATIVE</from><to>DIMENSION_SALES_REPRESENTATIVE</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>DIMENSION_SALES_REPRESENTATIVE</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_oracle_orcl</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>DIMENSION_SALES_REPRESENTATIVE</table>
+      <key>
+        <name>EMPLOYEE_ID</name>
+        <field>EMPLOYEE_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>SETID</name>
+        <field>SETID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>EFFECTIVE_DATE</name>
+        <field>EFFECTIVE_DATE</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>SALES_REPRESENTATIVE_NAME</name>
+        <rename>SALES_REPRESENTATIVE_NAME</rename>
+        </value>
+      <value>
+        <name>SALES_REPRESENTATIVE_TYPE</name>
+        <rename>SALES_REPRESENTATIVE_TYPE</rename>
+        </value>
+      <value>
+        <name>SALES_REGION_CODE</name>
+        <rename>SALES_REGION_CODE</rename>
+        </value>
+      <value>
+        <name>SALES_REGION_DESC</name>
+        <rename>SALES_REGION_DESC</rename>
+        </value>
+      </lookup>
+    <GUI>
+      <xloc>640</xloc>
+      <yloc>191</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_SCM_SALES_REPRESENTATIVE</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the columns from the PS_RSF_SUSER table.  It maintains the basic sales user record with descriptors and settings.
+</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT 
+S.EMPLID AS EMPLOYEE_ID,
+S.SETID AS SETID,
+S.EFFDT AS EFFECTIVE_DATE,
+S.NAME1 AS SALES_REPRESENTATIVE_NAME,
+S.SALES_AGENT_TYP_CD SALES_REPRESENTATIVE_TYPE,
+S.REGION_CD AS SALES_REGION_CODE,
+R.DESCR AS SALES_REGION_DESC
+FROM PS_SALES_PERSN_TBL S
+LEFT OUTER JOIN PS_REGION_CD R
+ON S.REGION_CD = R.REGION_CD
+WHERE S.EFFDT = (SELECT MAX(X.EFFDT) FROM
+PS_SALES_PERSN_TBL X WHERE
+S.SETID=X.SETID AND
+S.SALES_PERSON=X.SALES_PERSON)</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>193</xloc>
+      <yloc>190</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read></read>
+      <write></write>
+      <input></input>
+      <output></output>
+      <update></update>
+      <connection></connection>
+      <table></table>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection></connection>
+      <table></table>
+      <field></field>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts email assignment metrics from PeopleSoft CRM 8.8.  Only the input has been built.</note>
+      <xloc>5</xloc>
+      <yloc>49</yloc>
+      <width>517</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_CRM_EMAIL_ASSIGNMENT_METRICS</from><to>FACT_EMAIL_ASSIGNMENT</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>FACT_EMAIL_ASSIGNMENT</name>
+    <type>InsertUpdate</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <lookup>
+      <table>FACT_EMAIL_ASSIGNMENT</table>
+      </lookup>
+    <GUI>
+      <xloc>476</xloc>
+      <yloc>206</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_CRM_EMAIL_ASSIGNMENT_METRICS</name>
+    <type>TableInput</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT 
+EH.ROW_ADDED_DTTM AS ASSIGNMENT_DATE, 
+EM.BUSINESS_UNIT AS BUSINESS_UNIT_ID,
+EH.MCF_EMAIL_ID AS EMAIL_ID,
+EH.SEQ_NUM AS ASSIGNMENT_SEQUENCE_NUMBER, 
+EH.MAILBOX_ID AS MAILBOX_ID, 
+EH.CURRENT_WL AS WORKGROUP_NAME, 
+EH.ASSIGNED_TO AS AGENT_ASSIGNED_TO_ID,  --NEED OPERATOR TABLE FOR LOOKUP? 
+EH.EMAIL_STATUS AS INTERACTION_STATUS_ID,
+EM.ROW_ADDED_DTTM, 
+EM.CLOSED_DTTM,
+(CASE WHEN EH.SEQ_NUM = 1 THEN EM.ROW_ADDED_DTTM - EH.ROW_ADDED_DTTM
+ELSE (SELECT EH2.ROW_ADDED_DTTM FROM PS_RB_INEM_HIST EH2 WHERE EH2.MCF_EMAIL_ID = EH.MCF_EMAIL_ID and EH2.SEQ_NUM = EH.SEQ_NUM - 1) - EH.ROW_ADDED_DTTM --Previous assignment date.  Verify with real data.
+END) AS ASSIGNMENT_DURATION
+FROM 
+PS_RB_INEM_HIST EH, 
+PS_RB_IN_EMAIL EM
+WHERE EH.MCF_EMAIL_ID = EM.MCF_EMAIL_ID 
+and EH.EMAIL_STATUS in (&apos;ASGN&apos;,&apos;RASN&apos;)
+-- and EH.LASTUPD_EW_DTTM &gt; last load date</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>140</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

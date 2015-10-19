@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report-spec tool='waqr' tool-version='1.0' template-name='Pentaho'>
+<jndi-source><![CDATA[SampleData]]></jndi-source>
+<report-name><![CDATA[test.waqr.xreportspec]]></report-name>
+<report-desc><![CDATA[Created by the Web-based Adhoc Query and Reporting Client]]></report-desc>
+<query>
+<mql>
+<domain_type>relational</domain_type>
+<domain_id><![CDATA[breadboard]]></domain_id><model_id><![CDATA[Sales Orders Model]]></model_id>
+<options>
+<disable_distinct>false</disable_distinct>
+</options>
+<selections>
+<selection><view>Region</view><column>BC_DIMENSION_REGION_REGION_NAME</column></selection>
+<selection><view>Calendar Order</view><column>BC_DIMENSION_DAY_DAYS_IN_MONTH_QTY</column></selection>
+<selection><view>Customer</view><column>BC_DIMENSION_CUSTOMER_CITY_NAME</column></selection>
+<selection><view>Product</view><column>BC_DIMENSION_PRODUCT_PRODUCT_CATEGORY_NAME</column></selection>
+<selection><view>Sales Order Details</view><column>BC_FACT_ORDER_CAPTURE_PO_LINE_NUMBER</column></selection>
+</selections>
+<constraints>
+</constraints>
+<orders>
+<order><direction>asc</direction><view_id>Region</view_id><column_id>BC_DIMENSION_REGION_REGION_NAME</column_id></order>
+<order><direction>asc</direction><view_id>Calendar Order</view_id><column_id>BC_DIMENSION_DAY_DAYS_IN_MONTH_QTY</column_id></order>
+<order><direction>asc</direction><view_id>Customer</view_id><column_id>BC_DIMENSION_CUSTOMER_CITY_NAME</column_id></order>
+<order><direction>asc</direction><view_id>Product</view_id><column_id>BC_DIMENSION_PRODUCT_PRODUCT_CATEGORY_NAME</column_id></order>
+</orders>
+</mql>
+</query>
+<field-mapping key="reportheader" value="test"/><field-mapping key="reportfooter" value="test"/><field-mapping key="pageheader" value="test"/><field-mapping key="pagefooter" value="test"/><page-format><![CDATA[LETTER]]></page-format>
+<orientation><![CDATA[landscape]]></orientation>
+<use-row-banding><![CDATA[true]]></use-row-banding>
+<row-banding-color><![CDATA[#e7e7e7]]></row-banding-color>
+<use-column-header-background-color><![CDATA[true]]></use-column-header-background-color>
+<column-header-background-color><![CDATA[#9eaa36]]></column-header-background-color>
+<grand-totals-label><![CDATA[Grand Total]]></grand-totals-label>
+<grand-totals-horizontal-alignment><![CDATA[left]]></grand-totals-horizontal-alignment>
+<use-dummy-group-footer-background-color><![CDATA[true]]></use-dummy-group-footer-background-color>
+<dummy-group-footer-background-color><![CDATA[#e0d0c0]]></dummy-group-footer-background-color>
+<use-horizontal-gridlines><![CDATA[true]]></use-horizontal-gridlines>
+<use-vertical-gridlines><![CDATA[true]]></use-vertical-gridlines>
+<horizontal-gridlines-color><![CDATA[#c0c0c0]]></horizontal-gridlines-color>
+<vertical-gridlines-color><![CDATA[#c0c0c0]]></vertical-gridlines-color>
+<group-header-font-name><![CDATA[Arial]]></group-header-font-name>
+<group-header-font-style><![CDATA[1]]></group-header-font-style>
+<group-header-font-size><![CDATA[12]]></group-header-font-size>
+<group-header-font-color><![CDATA[#767676]]></group-header-font-color>
+<group-footer-font-name><![CDATA[Arial]]></group-footer-font-name>
+<group-footer-font-style><![CDATA[1]]></group-footer-font-style>
+<group-footer-font-size><![CDATA[12]]></group-footer-font-size>
+<group-footer-font-color><![CDATA[#ff7d17]]></group-footer-font-color>
+<column-header-font-name><![CDATA[Arial]]></column-header-font-name>
+<column-header-font-style><![CDATA[0]]></column-header-font-style>
+<column-header-font-size><![CDATA[10]]></column-header-font-size>
+<column-header-font-color><![CDATA[#ffffff]]></column-header-font-color>
+<column-header-gap><![CDATA[1]]></column-header-gap>
+<items-font-name><![CDATA[Arial]]></items-font-name>
+<items-font-style><![CDATA[0]]></items-font-style>
+<items-font-size><![CDATA[9]]></items-font-size>
+<items-font-color><![CDATA[#000000]]></items-font-color>
+<field is-detail="false" name="BC_DIMENSION_REGION_REGION_NAME" horizontal-alignment="left" type="12" repeat-group-header="false" level-name="" group-totals-label="Total $(BC_DIMENSION_REGION_REGION_NAME)" page-break-before-header="false" page-break-after-header="false" page-break-before-footer="false" page-break-after-footer="false" calculate-group-totals="true" create-group-header="true" vertical-alignment="top"/>
+<field is-detail="false" name="BC_DIMENSION_DAY_DAYS_IN_MONTH_QTY" horizontal-alignment="right" type="2" repeat-group-header="false" calculate-group-totals="false" create-group-header="true" vertical-alignment="top"/>
+<field is-detail="false" name="BC_DIMENSION_CUSTOMER_CITY_NAME" horizontal-alignment="left" type="12" repeat-group-header="false" level-name="" group-totals-label="Total $(BC_DIMENSION_CUSTOMER_CITY_NAME)" page-break-before-header="false" page-break-after-header="false" page-break-before-footer="false" page-break-after-footer="false" calculate-group-totals="true" create-group-header="true" vertical-alignment="top"/>
+<field is-detail="false" name="BC_DIMENSION_PRODUCT_PRODUCT_CATEGORY_NAME" horizontal-alignment="left" type="12" repeat-group-header="false" level-name="" group-totals-label="Total $(BC_DIMENSION_PRODUCT_PRODUCT_CATEGORY_NAME)" page-break-before-header="false" page-break-after-header="false" page-break-before-footer="false" page-break-after-footer="false" calculate-group-totals="true" create-group-header="true" vertical-alignment="top"/>
+<field is-detail="true" name="BC_FACT_ORDER_CAPTURE_PO_LINE_NUMBER" horizontal-alignment="left" expression="none" type="12"/>
+</report-spec>

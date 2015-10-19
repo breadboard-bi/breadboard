@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>web_site_referral_cube.xaction</name>  
+  <title>%title</title>  
+  <version>2</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI, LLC</author>  
+    <help>1. Make sure the path to your breadboardbi.mondrian.xml file is correct. 2. Do not forget to create a JNDI connection named "mdw". 3. Watch for case sensitivity issues with some databases. 4. Change the year value if you do not have data for 2006.</help>  
+    <result-type>report</result-type>  
+    <description>%description</description>  
+    <icon>file.png|analysis.png</icon> 
+  </documentation>  
+  <inputs> 
+    <mdx type="string"> 
+      <default-value/>  
+      <sources> 
+        <request>MDX</request> 
+      </sources> 
+    </mdx>  
+    <mode type="string"> 
+      <sources> 
+        <request>mode</request> 
+      </sources>  
+      <default-value/> 
+    </mode>  
+    <referer type="string"> 
+      <sources> 
+        <request>referer</request> 
+      </sources>  
+      <default-value/> 
+    </referer> 
+  </inputs>  
+  <outputs> 
+    <model type="string"/>  
+    <connection type="string"/>  
+    <mdx type="string"/>  
+    <options type="list"/>  
+    <title type="string"/>  
+    <url type="string"> 
+      <destinations> 
+        <response>redirect</response> 
+      </destinations> 
+    </url> 
+  </outputs>  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <component-name>PivotViewComponent</component-name>  
+      <action-inputs> 
+        <mode type="string"/>  
+        <period type="string"/>  
+        <referer type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <model type="string"/>  
+        <connection type="string"/>  
+        <mdx type="string"/>  
+        <options type="list"/>  
+        <title type="string"/>  
+        <url type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <title>%title</title>   
+        <viewer>Pivot</viewer>  
+        <model>breadboard/analysis/breadboardbi.mondrian.xml</model>  
+        <location>mondrian</location>  
+        <options> 
+          <personal/>  
+          <cube-nav/>  
+          <mdx-edit/>  
+          <sort-conf/>  
+          <spacer/>  
+          <level-style/>  
+          <hide-spans/>  
+          <properties/>  
+          <non-empty/>  
+          <swap-axes/>  
+          <spacer/>  
+          <drill-member/>  
+          <drill-position/>  
+          <drill-replace/>  
+          <drill-thru/>  
+          <spacer/>  
+          <chart/>  
+          <chart-conf/>  
+          <spacer/>  
+          <print-conf/>  
+          <print-pdf/>  
+          <spacer/>  
+          <excel/> 
+        </options>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[select NON EMPTY {[Measures].[Referrals], [Measures].[Previous Period Referral Variance], [Measures].[Previous Period % Referral Change], [Measures].[Ratio To Parent], [Measures].[QTD Referrals], [Measures].[MTD Referrals]} ON COLUMNS,
+  NON EMPTY {([Time Period].[All Periods].[2006], [Web Site Referer.Web Referers].[All Referers]{referer}), ([Time Period].[All Periods].[2006].[Q2], [Web Site Referer.Web Referers].[All Referers]{referer}), ([Time Period].[All Periods].[2006].[Q3], [Web Site Referer.Web Referers].[All Referers]{referer})} ON ROWS
+from [Web Site Referrals]]]></query> 
+      </component-definition>  
+      <action-name>Pivot View</action-name>  
+      <logging-level>DEBUG</logging-level>  
+      <action-type/> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

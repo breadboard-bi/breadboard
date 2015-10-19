@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+  <modified_user/>
+  <modified_date>2006/12/15 13:40:51.795</modified_date>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts sales order data from JDE.  Only the inputs have been built.  Each path should be divided into a separate transformation.</note>
+      <xloc>44</xloc>
+      <yloc>83</yloc>
+      <width>705</width>
+      <heigth>23</heigth>
+      </notepad>
+    <notepad>
+      <note>Copyright © 2006 Breadboard BI, LLC. All rights reserved.</note>
+      <xloc>234</xloc>
+      <yloc>260</yloc>
+      <width>291</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>localhost</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>JDE_STAGE_SALES_ORDER</from><to>STAGE_JDE_SALES_ORDER</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>JDE_STAGE_SALES_ORDER</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT F4211.SDKCOO AS COMPANY_ID, 
+F4211.SDDOCO AS ORDER_NUMBER, 
+F4211.SDLNID LINE_NUMBER, 
+F4211.SDDCTO AS ORDER_TYPE_ID,
+F4211.SDMCU AS BUSINESS_UNIT_ID, 
+F4211.SDCO AS COMPANY_ID, 
+F4211.SDAN8 AS CUSTOMER_ID, 
+F4211.SDSHAN AS SHIP_CUSTOMER_ID, 
+F4211.SDDRQJ AS REQUESTED_DATE, 
+F4211.SDTRDJ AS ORDERED_DATE, 
+F4211.SDPDDJ AS PICK_SCHEDULED_DATE, 
+F4211.SDOPDJ AS ORIGINAL_PROMISE_DATE, 
+F4211.SDADDJ AS ACTUAL_SHIP_DATE, 
+F4211.SDIVD AS INVOICED_DATE, 
+F4211.SDCNDJ AS CANCELLED_DATE, 
+F4211.SDRSDJ AS PROMISED_DELIVERY_DATE, 
+F4211.SDPPDJ AS PROMISED_SHIP_DATE, 
+F4211.SDITM AS ITEM_ID, 
+F4211.SDLNTY AS LINE_TYPE_ID, 
+F4211.SDNXTR AS NEXT_STATUS_ID, 
+F4211.SDLTTR AS LAST_STATUS_ID, 
+F4211.SDRLIT AS KIT_PARENT_ITEM_ID, 
+F4211.SDKTLN AS KIT_PARENT_LINE_NUMBER, 
+F4211.SDCPNT AS KIT_COMPONENT_LINE_NUMBER, 
+F4211.SDRKIT AS KIT_COMPONENT_ITEM_ID, 
+F4211.SDUOM AS TRXN_UOM_ID, 
+F4211.SDUORG AS ORDERED_QTY, 
+F4211.SDSOQS AS SHIPPED_QTY, 
+F4211.SDSOBK AS BACKORDER_QTY, 
+F4211.SDSOCN AS CANCELLED_QTY, 
+F4211.SDUPRC AS UNIT_PRICE_AMT, 
+F4211.SDAEXP AS EXTENDED_PRICE_AMT, 
+F4211.SDAPUM AS ENTERED_UOM_ID, 
+F4211.SDLPRC AS UNIT_LIST_PRICE_AMT, 
+F4211.SDUNCS AS PRIMARY_UNIT_COST_AMT, 
+F4211.SDECST AS EXTENDED_COST_AMT, 
+F4211.SDSLSM AS EMPLOYEE1_ID, 
+F4211.SDSLCM AS EMPLOYEE1_COMMISSION_AMT, 
+F4211.SDSLM2 AS EMPLOYEE2_ID, 
+F4211.SDSLC2 AS EMPLOYEE1_COMMISSION_AMT, 
+F4211.SDRCD AS REASON_CODE_ID, 
+F4211.SDUPMJ AS LAST_UPDATE_DATE,  --JULIAN 
+F4211.SDUOM4 AS PRICING_UOM_ID, 
+F4211.SDPQOR AS PRIMARY_ORDER_QTY
+FROM
+ F4211</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI>
+      <xloc>147</xloc>
+      <yloc>162</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_JDE_SALES_ORDER</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>STAGE_JDE_SALES_ORDER</table>
+      </lookup>
+    <GUI>
+      <xloc>575</xloc>
+      <yloc>162</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

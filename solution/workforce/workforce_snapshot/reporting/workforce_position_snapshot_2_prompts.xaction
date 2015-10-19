@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>workforce_snapshot_2_prompts.xaction</name>  
+  <title>%title</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>%description</description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help/>  
+    <result-type>rule</result-type> 
+  </documentation>  
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <snapshot_date type="string"> 
+      <sources> 
+        <request>snapshot_date</request> 
+      </sources>  
+      <default-value>20000301</default-value> 
+    </snapshot_date>  
+    <position type="string"> 
+      <sources> 
+        <request>position</request> 
+      </sources>  
+      <default-value>Human Resources</default-value> 
+    </position> 
+  </inputs>  
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>  
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>workforce_snapshot.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>SQL Query</action-type>  
+      <action-outputs> 
+        <position_list type="property-map-list"/> 
+      </action-outputs>  
+      <component-definition> 
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT DISTINCT D.POSITION_NAME 
+FROM DIMENSION_POSITION D, DIMENSION_EMPLOYEE_JOB_ACTION E 
+WHERE D.POSITION_SK = E.POSITION_SK
+AND D.POSITION_NAME IS NOT NULL 
+ORDER BY D.POSITION_NAME ASC]]></query> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>SecureFilterComponent</component-name>  
+      <action-type>Secure Filter</action-type>  
+      <action-inputs> 
+        <snapshot_date type="string"/>   
+        <position type="string"/>  
+        <position_list type="property-map-list"/> 
+      </action-inputs>  
+      <component-definition> 
+        <selections> 
+          <snapshot_date filter="none"> 
+            <title>Enter the date for the snapshot (format YYYYMMDD).</title> 
+          </snapshot_date>  
+          <position style="select"> 
+            <title>Please enter the position for analysis.</title>  
+            <filter value-col-name="position_name" display-col-name="position_name">position_list</filter> 
+          </position> 
+        </selections> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>  
+      <action-type>report</action-type>  
+      <action-inputs> 
+        <output-type type="string"/>  
+        <snapshot_date type="string"/>  
+        <position type="string"/>  
+      </action-inputs>  
+      <action-outputs> 
+        <report type="content"/> 
+      </action-outputs>  
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT MAX(D.DAY_DATE) AS DAY_DATE,
+E.FULL_NAME AS EMPLOYEE_NAME,
+MAX(P.POSITION_NAME) AS POSITION_NAME,
+MAX(F.EMPLOYEE_TYPE_DESC) AS EMPLOYEE_TYPE_NAME,
+MAX(F.FULL_PART_TIME_DESC) AS FULL_PART_TIME_NAME,
+MAX(F.ANNUAL_RATE) AS ANNUAL_RATE,
+MAX(F.WORK_WEEK_HOURS_QTY) AS WORK_WEEK_HOURS_QTY
+FROM DIMENSION_EMPLOYEE_JOB_ACTION F, 
+DIMENSION_PERSON E, 
+DIMENSION_DAY D, 
+DIMENSION_POSITION P
+WHERE F.EFFECTIVE_DATE_SK = D.DATE_SK
+AND F.EFFECTIVE_DATE_SK >= '{snapshot_date}' AND '{snapshot_date}' < F.EXPIRATION_DATE_SK
+AND F.POSITION_SK = P.POSITION_SK
+AND P.POSITION_NAME IN ('{position}')
+AND F.EMPLOYEE_SK = E.PERSON_SK 
+AND F.LATEST_ACTION_IND = 'Y'
+GROUP BY  E.FULL_NAME  /* change to F.EMPLOYEE_SK for your client */
+ORDER BY MAX(D.DAY_DATE), MAX(E.FULL_NAME)]]></query> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

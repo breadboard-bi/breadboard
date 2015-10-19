@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<action-sequence>
+  <name>position_metric_report.waqr.xaction</name>
+  <version>1</version>
+  <title>position_metric_report</title>
+  <documentation>
+    <author>clavigne</author>
+    <description>This simple position metrics report was created with the Pentaho Web-based Adhoc Query and Reporting Client.</description>
+    <icon>PentahoReporting.png</icon>
+    <help>Auto-generated action-sequence for WAQR.</help>
+    <result-type>report</result-type>
+  </documentation>
+  <inputs>
+    <output-type type="string">
+      <default-value>html</default-value>
+      <sources>
+        <request>type</request>
+      </sources>
+    </output-type>
+  </inputs>
+  <outputs>
+    <report type="content">
+      <destinations>
+        <response>content</response>
+      </destinations>
+    </report>
+  </outputs>
+  <resources>
+    <report-definition>
+      <xml>
+        <location>
+          <report bottommargin="10" topmargin="10" rightmargin="10" leftmargin="10" pageformat="LETTER" orientation="landscape" name="position_metric_report.waqr.xreportspec">
+            <parser-config>
+              <property name="reportheader">Position Metrics Report</property>
+              <property name="reportfooter"/>
+              <property name="pageheader"/>
+              <property name="pagefooter"/>
+            </parser-config>
+            <reportheader color="#133484" fontname="Arial" fontsize="16">
+              <message-field alignment="left" height="24" vertical-alignment="middle" width="100%" x="0%" y="0">${reportheader}</message-field>
+            </reportheader>
+            <reportfooter color="#133484" fontname="Arial" fontsize="16">
+              <message-field alignment="left" height="24" vertical-alignment="middle" width="100%" x="0%" y="0">${reportfooter}</message-field>
+            </reportfooter>
+            <pageheader color="#32384C" fontname="Arial" fontsize="8">
+              <round-rectangle height="18" arc-height="6" arc-width="6" color="#7EBAD2" width="100%" x="0%" y="0" fill="true" draw="true" dynamic="false" layout-cachable="false"/>
+              <message-field alignment="left" height="18" vertical-alignment="middle" width="50%" x="0%" y="0">${pageheader}</message-field>
+              <message-field alignment="right" height="18" vertical-alignment="middle" width="50%" x="50%" y="0">$(report.date, date, MMMM dd, yyyy @ hh:mm )</message-field>
+              <line color="#133346" height="3" weight="3" width="100%" x1="0%" x2="100%" y1="18" y2="18"/>
+            </pageheader>
+            <pagefooter color="#32384C" fontname="Arial" fontsize="8">
+              <round-rectangle height="18" arc-height="6" arc-width="6" color="#8689A0" width="100%" x="0%" y="0" fill="true" draw="true" dynamic="false" layout-cachable="false"/>
+              <line color="#133346" height="3" weight="3" width="100%" x1="0%" x2="100%" y1="0" y2="0"/>
+              <message-field alignment="left" height="18" width="50%" x="0" y="0">${pagefooter}</message-field>
+              <message-field alignment="right" height="18" width="50%" x="50%" y="0">Page $(PageofPages)</message-field>
+            </pagefooter>
+            <functions>
+              <property-ref name="report.date"/>
+              <function class="org.jfree.report.function.PageOfPagesFunction" name="PageofPages"/>
+              <function name="backgroundTrigger" class="org.jfree.report.function.ElementVisibilitySwitchFunction">
+                <properties>
+                  <property name="element">rowBandingElement</property>
+                  <property name="numberOfElements">1</property>
+                  <property name="initialState">true</property>
+                </properties>
+              </function>
+              <expression class="org.jfree.report.function.HideElementIfDataAvailableExpression" name="noDataLabelElementHideIfNullTrigger">
+                <properties>
+                  <property name="element">noDataLabelElement</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="dummyGroupFooterHideIfNullTrigger">
+                <properties>
+                  <property name="element">dummyGroupFooter</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ItemSumFunction" name="Summary_BC_FACT_PERSON_APPLICATION_APPLICATION_QTYExpression">
+                <properties>
+                  <property name="field">BC_FACT_PERSON_APPLICATION_APPLICATION_QTY</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ItemSumFunction" name="Summary_BC_FACT_PERSON_APPLICATION_OFFER_QTYExpression">
+                <properties>
+                  <property name="field">BC_FACT_PERSON_APPLICATION_OFFER_QTY</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ItemSumFunction" name="Summary_BC_FACT_PERSON_APPLICATION_REJECT_QTYExpression">
+                <properties>
+                  <property name="field">BC_FACT_PERSON_APPLICATION_REJECT_QTY</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ItemSumFunction" name="Summary_BC_FACT_PERSON_APPLICATION_ACCEPT_QTYExpression">
+                <properties>
+                  <property name="field">BC_FACT_PERSON_APPLICATION_ACCEPT_QTY</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_DAY_MONTH_NAMEGroupHeaderHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_DAY_MONTH_NAMEGroupHeader</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_DAY_MONTH_NAMEGroupFooterHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_DAY_MONTH_NAMEGroupFooter</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ItemSumFunction" name="BC_DIMENSION_DAY_MONTH_NAMEBC_FACT_PERSON_APPLICATION_APPLICATION_QTYExpression">
+                <properties>
+                  <property name="field">BC_FACT_PERSON_APPLICATION_APPLICATION_QTY</property>
+                  <property name="group">BC_DIMENSION_DAY_MONTH_NAME</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ItemSumFunction" name="BC_DIMENSION_DAY_MONTH_NAMEBC_FACT_PERSON_APPLICATION_OFFER_QTYExpression">
+                <properties>
+                  <property name="field">BC_FACT_PERSON_APPLICATION_OFFER_QTY</property>
+                  <property name="group">BC_DIMENSION_DAY_MONTH_NAME</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ItemSumFunction" name="BC_DIMENSION_DAY_MONTH_NAMEBC_FACT_PERSON_APPLICATION_REJECT_QTYExpression">
+                <properties>
+                  <property name="field">BC_FACT_PERSON_APPLICATION_REJECT_QTY</property>
+                  <property name="group">BC_DIMENSION_DAY_MONTH_NAME</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ItemSumFunction" name="BC_DIMENSION_DAY_MONTH_NAMEBC_FACT_PERSON_APPLICATION_ACCEPT_QTYExpression">
+                <properties>
+                  <property name="field">BC_FACT_PERSON_APPLICATION_ACCEPT_QTY</property>
+                  <property name="group">BC_DIMENSION_DAY_MONTH_NAME</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_DAY_YEAR_NUMBERGroupHeaderHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_DAY_YEAR_NUMBERGroupHeader</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_DAY_YEAR_NUMBERGroupFooterHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_DAY_YEAR_NUMBERGroupFooter</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_POSITION_POSITION_NAMEGroupHeaderHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_POSITION_POSITION_NAMEGroupHeader</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="BC_DIMENSION_POSITION_POSITION_NAMEGroupFooterHideIfNullTrigger">
+                <properties>
+                  <property name="element">BC_DIMENSION_POSITION_POSITION_NAMEGroupFooter</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ItemSumFunction" name="BC_DIMENSION_POSITION_POSITION_NAMEBC_FACT_PERSON_APPLICATION_APPLICATION_QTYExpression">
+                <properties>
+                  <property name="field">BC_FACT_PERSON_APPLICATION_APPLICATION_QTY</property>
+                  <property name="group">BC_DIMENSION_POSITION_POSITION_NAME</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ItemSumFunction" name="BC_DIMENSION_POSITION_POSITION_NAMEBC_FACT_PERSON_APPLICATION_OFFER_QTYExpression">
+                <properties>
+                  <property name="field">BC_FACT_PERSON_APPLICATION_OFFER_QTY</property>
+                  <property name="group">BC_DIMENSION_POSITION_POSITION_NAME</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ItemSumFunction" name="BC_DIMENSION_POSITION_POSITION_NAMEBC_FACT_PERSON_APPLICATION_REJECT_QTYExpression">
+                <properties>
+                  <property name="field">BC_FACT_PERSON_APPLICATION_REJECT_QTY</property>
+                  <property name="group">BC_DIMENSION_POSITION_POSITION_NAME</property>
+                </properties>
+              </expression>
+              <expression class="org.jfree.report.function.ItemSumFunction" name="BC_DIMENSION_POSITION_POSITION_NAMEBC_FACT_PERSON_APPLICATION_ACCEPT_QTYExpression">
+                <properties>
+                  <property name="field">BC_FACT_PERSON_APPLICATION_ACCEPT_QTY</property>
+                  <property name="group">BC_DIMENSION_POSITION_POSITION_NAME</property>
+                </properties>
+              </expression>
+            </functions>
+            <items color="#4F383C" fontname="Arial" fontsize="10" fontstyle="plain">
+              <rectangle name="rowBandingElement" color="#9CD8F1" draw="false" fill="true" height="12" x="0%" width="100%" y="0"/>
+              <number-field name="BC_FACT_PERSON_APPLICATION_APPLICATION_QTYElement" nullstring="-" fieldname="BC_FACT_PERSON_APPLICATION_APPLICATION_QTY" vertical-alignment="middle" alignment="right" width="25.0%" x="0.0%" y="0" height="12" color="#000000" fontname="Arial" fontsize="10" fontstyle="plain"/>
+              <number-field name="BC_FACT_PERSON_APPLICATION_OFFER_QTYElement" nullstring="-" fieldname="BC_FACT_PERSON_APPLICATION_OFFER_QTY" vertical-alignment="middle" alignment="right" width="25.0%" x="25.0%" y="0" height="12" color="#000000" fontname="Arial" fontsize="10" fontstyle="plain"/>
+              <number-field name="BC_FACT_PERSON_APPLICATION_REJECT_QTYElement" nullstring="-" fieldname="BC_FACT_PERSON_APPLICATION_REJECT_QTY" vertical-alignment="middle" alignment="right" width="25.0%" x="50.0%" y="0" height="12" color="#000000" fontname="Arial" fontsize="10" fontstyle="plain"/>
+              <number-field name="BC_FACT_PERSON_APPLICATION_ACCEPT_QTYElement" nullstring="-" fieldname="BC_FACT_PERSON_APPLICATION_ACCEPT_QTY" vertical-alignment="middle" alignment="right" width="25.0%" x="75.0%" y="0" height="12" color="#000000" fontname="Arial" fontsize="10" fontstyle="plain"/>
+              <line color="#7F887B" weight=".5" x1="0.0%" y1="0" x2="0.0%" y2="12"/>
+              <line color="#7F887B" weight=".5" x1="25.0%" y1="0" x2="25.0%" y2="12"/>
+              <line color="#7F887B" weight=".5" x1="50.0%" y1="0" x2="50.0%" y2="12"/>
+              <line color="#7F887B" weight=".5" x1="75.0%" y1="0" x2="75.0%" y2="12"/>
+              <line color="#7F887B" weight=".5" x1="100%" y1="0" x2="100%" y2="12"/>
+              <line color="#7F887B" weight=".5" x1="0%" y1="0" x2="100%" y2="0"/>
+              <line color="#7F887B" weight=".5" x1="0%" y1="12" x2="100%" y2="12"/>
+            </items>
+            <groups>
+              <group name="dummy">
+                <groupheader name="dummyGroupHeader" color="#1A7439" fontname="Arial" fontsize="12" fontstyle="bold" repeat="false">
+                  <label name="noDataLabelElement" height="12" vertical-alignment="middle" alignment="left" width="100%" x="0%" y="0" visible="false">No Data Available</label>
+                </groupheader>
+                <groupfooter name="dummyGroupFooter" color="#1A7439" fontname="Arial" fontsize="12" fontstyle="bold">
+                  <rectangle color="#E2869C" draw="false" fill="true" height="17" width="100%" y="1" x="0%"/>
+                  <number-field fieldname="Summary_BC_FACT_PERSON_APPLICATION_APPLICATION_QTYExpression" height="16" vertical-alignment="middle" alignment="right" width="25.0%" x="0.0%" y="2"/>
+                  <number-field fieldname="Summary_BC_FACT_PERSON_APPLICATION_OFFER_QTYExpression" height="16" vertical-alignment="middle" alignment="right" width="25.0%" x="25.0%" y="2"/>
+                  <number-field fieldname="Summary_BC_FACT_PERSON_APPLICATION_REJECT_QTYExpression" height="16" vertical-alignment="middle" alignment="right" width="25.0%" x="50.0%" y="2"/>
+                  <number-field fieldname="Summary_BC_FACT_PERSON_APPLICATION_ACCEPT_QTYExpression" height="16" vertical-alignment="middle" alignment="right" width="25.0%" x="75.0%" y="2"/>
+                  <message-field height="16" x="0%" width="0.0%" y="2" alignment="left" vertical-alignment="middle">Grand Total</message-field>
+                </groupfooter>
+              </group>
+              <group name="BC_DIMENSION_DAY_MONTH_NAME">
+                <fields>
+                  <field>BC_DIMENSION_DAY_MONTH_NAME</field>
+                </fields>
+                <groupheader name="BC_DIMENSION_DAY_MONTH_NAMEGroupHeader" repeat="false" pagebreak-before-print="false" pagebreak-after-print="false" color="#1A7439" fontname="Arial" fontsize="12" fontstyle="bold">
+                  <rectangle color="#FFFFFF" draw="false" fill="false" height="17" width="100%" x="0%" y="0"/>
+                  <message-field height="17" vertical-alignment="top" alignment="left" width="100%" x="0%" y="0" nullstring="-">Application Month: $(BC_DIMENSION_DAY_MONTH_NAME)</message-field>
+                </groupheader>
+                <groupfooter name="BC_DIMENSION_DAY_MONTH_NAMEGroupFooter" color="#1A7439" fontname="Arial" fontsize="12" fontstyle="bold" pagebreak-before-print="false" pagebreak-after-print="false">
+                  <rectangle color="#c0d0e0" draw="false" fill="true" height="17" width="100%" y="1" x="0%"/>
+                  <number-field fieldname="BC_DIMENSION_DAY_MONTH_NAMEBC_FACT_PERSON_APPLICATION_APPLICATION_QTYExpression" height="16" vertical-alignment="middle" alignment="right" width="25.0%" x="0.0%" y="2"/>
+                  <number-field fieldname="BC_DIMENSION_DAY_MONTH_NAMEBC_FACT_PERSON_APPLICATION_OFFER_QTYExpression" height="16" vertical-alignment="middle" alignment="right" width="25.0%" x="25.0%" y="2"/>
+                  <number-field fieldname="BC_DIMENSION_DAY_MONTH_NAMEBC_FACT_PERSON_APPLICATION_REJECT_QTYExpression" height="16" vertical-alignment="middle" alignment="right" width="25.0%" x="50.0%" y="2"/>
+                  <number-field fieldname="BC_DIMENSION_DAY_MONTH_NAMEBC_FACT_PERSON_APPLICATION_ACCEPT_QTYExpression" height="16" vertical-alignment="middle" alignment="right" width="25.0%" x="75.0%" y="2"/>
+                  <message-field height="16" x="0%" width="0.0%" y="2" alignment="left" vertical-alignment="middle">Total $(BC_DIMENSION_DAY_MONTH_NAME)</message-field>
+                </groupfooter>
+              </group>
+              <group name="BC_DIMENSION_DAY_YEAR_NUMBER">
+                <fields>
+                  <field>BC_DIMENSION_DAY_MONTH_NAME</field>
+                  <field>BC_DIMENSION_DAY_YEAR_NUMBER</field>
+                </fields>
+                <groupheader name="BC_DIMENSION_DAY_YEAR_NUMBERGroupHeader" repeat="false" pagebreak-before-print="false" pagebreak-after-print="false" color="#1A7439" fontname="Arial" fontsize="12" fontstyle="bold">
+                  <rectangle color="#FFFFFF" draw="false" fill="false" height="17" width="100%" x="0%" y="0"/>
+                  <message-field height="17" vertical-alignment="top" alignment="right" width="100%" x="0%" y="0" nullstring="-">Application Year: $(BC_DIMENSION_DAY_YEAR_NUMBER,number,####;-####)</message-field>
+                </groupheader>
+                <groupfooter name="BC_DIMENSION_DAY_YEAR_NUMBERGroupFooter" color="#1A7439" fontname="Arial" fontsize="12" fontstyle="bold" pagebreak-before-print="false" pagebreak-after-print="false"/>
+              </group>
+              <group name="BC_DIMENSION_POSITION_POSITION_NAME">
+                <fields>
+                  <field>BC_DIMENSION_DAY_MONTH_NAME</field>
+                  <field>BC_DIMENSION_DAY_YEAR_NUMBER</field>
+                  <field>BC_DIMENSION_POSITION_POSITION_NAME</field>
+                </fields>
+                <groupheader name="BC_DIMENSION_POSITION_POSITION_NAMEGroupHeader" repeat="false" pagebreak-before-print="false" pagebreak-after-print="false" color="#1A7439" fontname="Arial" fontsize="12" fontstyle="bold" height="43">
+                  <rectangle color="#FFFFFF" draw="false" fill="false" height="17" width="100%" x="0%" y="0"/>
+                  <message-field height="17" vertical-alignment="top" alignment="left" width="100%" x="0%" y="0" nullstring="-">Position Name: $(BC_DIMENSION_POSITION_POSITION_NAME)</message-field>
+                  <rectangle color="#133346" draw="false" fill="true" height="18" width="100%" x="0%" y="19"/>
+                  <rectangle draw="false" fill="false" height="2" width="100%" x="0%" y="17"/>
+                  <label color="#5B778D" fontname="Arial" fontsize="10" fontstyle="plain" height="18" vertical-alignment="middle" alignment="right" width="25.0%" x="0.0%" y="19">Application Qty</label>
+                  <label color="#5B778D" fontname="Arial" fontsize="10" fontstyle="plain" height="18" vertical-alignment="middle" alignment="right" width="25.0%" x="25.0%" y="19">Offer Qty</label>
+                  <label color="#5B778D" fontname="Arial" fontsize="10" fontstyle="plain" height="18" vertical-alignment="middle" alignment="right" width="25.0%" x="50.0%" y="19">Reject Qty</label>
+                  <label color="#5B778D" fontname="Arial" fontsize="10" fontstyle="plain" height="18" vertical-alignment="middle" alignment="right" width="25.0%" x="75.0%" y="19">Accept Qty</label>
+                </groupheader>
+                <groupfooter name="BC_DIMENSION_POSITION_POSITION_NAMEGroupFooter" color="#1A7439" fontname="Arial" fontsize="12" fontstyle="bold" pagebreak-before-print="false" pagebreak-after-print="false">
+                  <rectangle color="#c0d0e0" draw="false" fill="true" height="17" width="100%" y="1" x="0%"/>
+                  <number-field fieldname="BC_DIMENSION_POSITION_POSITION_NAMEBC_FACT_PERSON_APPLICATION_APPLICATION_QTYExpression" height="16" vertical-alignment="middle" alignment="right" width="25.0%" x="0.0%" y="2"/>
+                  <number-field fieldname="BC_DIMENSION_POSITION_POSITION_NAMEBC_FACT_PERSON_APPLICATION_OFFER_QTYExpression" height="16" vertical-alignment="middle" alignment="right" width="25.0%" x="25.0%" y="2"/>
+                  <number-field fieldname="BC_DIMENSION_POSITION_POSITION_NAMEBC_FACT_PERSON_APPLICATION_REJECT_QTYExpression" height="16" vertical-alignment="middle" alignment="right" width="25.0%" x="50.0%" y="2"/>
+                  <number-field fieldname="BC_DIMENSION_POSITION_POSITION_NAMEBC_FACT_PERSON_APPLICATION_ACCEPT_QTYExpression" height="16" vertical-alignment="middle" alignment="right" width="25.0%" x="75.0%" y="2"/>
+                  <message-field height="16" x="0%" width="0.0%" y="2" alignment="left" vertical-alignment="middle">Total $(BC_DIMENSION_POSITION_POSITION_NAME)</message-field>
+                </groupfooter>
+              </group>
+            </groups>
+          </report>
+        </location>
+        <mime-type>text/xml</mime-type>
+      </xml>
+    </report-definition>
+  </resources>
+  <actions>
+    <action-definition>
+      <action-outputs>
+        <rule-result type="result-set"/>
+      </action-outputs>
+      <component-name>MQLRelationalDataComponent</component-name>
+      <action-type>rule</action-type>
+      <component-definition>
+        <mql> 
+          <domain_type>relational</domain_type>  
+          <domain_id><![CDATA[breadboard]]></domain_id>
+          <model_id><![CDATA[Recruitment]]></model_id>  
+          <options> 
+            <disable_distinct>false</disable_distinct> 
+          </options>  
+          <selections> 
+            <selection>
+              <view>BC_FACT_PERSON_APPLICATION_</view>
+              <column>BC_DIMENSION_DAY_MONTH_NAME</column>
+            </selection>  
+            <selection>
+              <view>BC_FACT_PERSON_APPLICATION_</view>
+              <column>BC_DIMENSION_DAY_YEAR_NUMBER</column>
+            </selection>  
+            <selection>
+              <view>BC_DIMENSION_POSITION_</view>
+              <column>BC_DIMENSION_POSITION_POSITION_NAME</column>
+            </selection>  
+            <selection>
+              <view>BC_FACT_PERSON_APPLICATION_</view>
+              <column>BC_FACT_PERSON_APPLICATION_APPLICATION_QTY</column>
+            </selection>  
+            <selection>
+              <view>BC_FACT_PERSON_APPLICATION_</view>
+              <column>BC_FACT_PERSON_APPLICATION_OFFER_QTY</column>
+            </selection>  
+            <selection>
+              <view>BC_FACT_PERSON_APPLICATION_</view>
+              <column>BC_FACT_PERSON_APPLICATION_REJECT_QTY</column>
+            </selection>  
+            <selection>
+              <view>BC_FACT_PERSON_APPLICATION_</view>
+              <column>BC_FACT_PERSON_APPLICATION_ACCEPT_QTY</column>
+            </selection> 
+          </selections>  
+          <constraints></constraints>  
+          <orders> 
+            <order>
+              <direction>asc</direction>
+              <view_id>BC_FACT_PERSON_APPLICATION_</view_id>
+              <column_id>BC_DIMENSION_DAY_MONTH_NAME</column_id>
+            </order>  
+            <order>
+              <direction>asc</direction>
+              <view_id>BC_FACT_PERSON_APPLICATION_</view_id>
+              <column_id>BC_DIMENSION_DAY_YEAR_NUMBER</column_id>
+            </order>  
+            <order>
+              <direction>asc</direction>
+              <view_id>BC_DIMENSION_POSITION_</view_id>
+              <column_id>BC_DIMENSION_POSITION_POSITION_NAME</column_id>
+            </order> 
+          </orders> 
+        </mql>
+        <live>true</live>
+        <display-names>false</display-names>
+      </component-definition>
+    </action-definition>
+    <action-definition>
+      <action-outputs>
+        <report type="content"/>
+      </action-outputs>
+      <action-inputs>
+        <output-type type="string"/>
+        <data type="result-set" mapping="rule-result"/>
+      </action-inputs>
+      <action-resources>
+        <report-definition type="resource"/>
+      </action-resources>
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <component-definition>
+        <output-type>html</output-type>
+      </component-definition>
+    </action-definition>
+  </actions>
+</action-sequence>

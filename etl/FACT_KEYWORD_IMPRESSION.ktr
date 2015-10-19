@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>FACT_KEYWORD_IMPRESSION</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input>STAGE_ADVERTISEMENT_IMPRESSION</input>
+      <output>FACT_ADVERTISEMENT_IMPRESSION</output>
+      <update/>
+      <rejected/>
+      <connection>mdw_mysql</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>Y</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2007&#47;05&#47;19 08:54:25.000</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Breadboard BI - Customer 360 - Dimension Advertisement (Google) Data Flow - Version 1.1
+=======================================================
+1.  This data flow extracts Google Advertisement information from the staging area.
+
+2.  As delivered, this loads as a slowly changing dimension Type 1 (SCD1).  Add SCD2 Functionality by editing the settings in the 
+     dimension lookup&#47;update step.</note>
+      <xloc>5</xloc>
+      <yloc>20</yloc>
+      <width>626</width>
+      <heigth>88</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>2</xloc>
+      <yloc>297</yloc>
+      <width>546</width>
+      <heigth>62</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI LLC. All rights reserved.</note>
+      <xloc>5</xloc>
+      <yloc>387</yloc>
+      <width>287</width>
+      <heigth>23</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>jde</name>
+    <server>test</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>rds</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>rds</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>CONVERT_DATE_TO_SK</from><to>FACT_ADVERTISEMENT_IMPRESSION</to><enabled>Y</enabled> </hop>  <hop> <from>REMOVE_BOGUS_ROWS</from><to>MAP_LOOKUP_ADVERTISEMENT</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_ADVERTISEMENT</from><to>MAP_LOOKUP_KEYWORD_PHRASE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_KEYWORD_PHRASE</from><to>MAP_LOOKUP_CAMPAIGN_WAVE_GOOGLE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_CAMPAIGN_WAVE_GOOGLE</from><to>CONVERT_DATE_TO_SK</to><enabled>Y</enabled> </hop>  <hop> <from>STAGE_ADVERTISEMENT_IMPRESSION</from><to>REMOVE_BOGUS_ROWS</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>CONVERT_DATE_TO_SK</name>
+    <type>Mapping</type>
+    <description>This Map step returns the date surrogate key.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CONVERT_DATE_TO_SK</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>IMPRESSION_DATE</field>  <mapping>IN_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>IMPRESSION_DATE_SK</field>  <mapping>DATE_SK</mapping></connector>
+    <connector><field>IMPRESSION_DATE</field>  <mapping>OUT_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>673</xloc>
+      <yloc>203</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>FACT_ADVERTISEMENT_IMPRESSION</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <commit>100</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema/>
+      <table>FACT_ADVERTISEMENT_IMPRESSION</table>
+      <key>
+        <name>HOSTED_CLIENT_SK</name>
+        <field>HOSTED_CLIENT_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>CAMPAIGN_WAVE_SK</name>
+        <field>CAMPAIGN_WAVE_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>AD_SK</name>
+        <field>AD_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>KEYWORD_SK</name>
+        <field>KEYWORD_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>IMPRESSION_DATE_SK</name>
+        <field>IMPRESSION_DATE_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>SOURCE_SYSTEM_ID</name>
+        <field>SOURCE_SYSTEM_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>HOSTED_CLIENT_SK</name>
+        <rename>HOSTED_CLIENT_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>CONTENT_BID_AMT</name>
+        <rename>CONTENT_BID_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PREFERED_HIGH_RANK_QTY</name>
+        <rename>PREFERED_HIGH_RANK_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PREFERED_LOW_RANK_QTY</name>
+        <rename>PREFERED_LOW_RANK_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>AD_IMPRESSION_QTY</name>
+        <rename>AD_IMPRESSION_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>AD_CLICK_QTY</name>
+        <rename>AD_CLICK_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>AD_CLICK_RATE</name>
+        <rename>AD_CLICK_RATE</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>CPC_AVERAGE_AMT</name>
+        <rename>CPC_AVERAGE_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>AD_COST_AMT</name>
+        <rename>AD_COST_AMT</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>AVERAGE_POSITION_QTY</name>
+        <rename>AVERAGE_POSITION_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>CAMPAIGN_WAVE_SK</name>
+        <rename>CAMPAIGN_WAVE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>AD_SK</name>
+        <rename>AD_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>KEYWORD_SK</name>
+        <rename>KEYWORD_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>IMPRESSION_DATE_SK</name>
+        <rename>IMPRESSION_DATE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>SOURCE_SYSTEM_SK</name>
+        <rename>SOURCE_SYSTEM_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>IMPRESSION_DATE</name>
+        <rename>IMPRESSION_DATE</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+     <cluster_schema/>
+    <GUI>
+      <xloc>783</xloc>
+      <yloc>151</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_ADVERTISEMENT</name>
+    <type>Mapping</type>
+    <description>This Map step returns the advertisement surrogate key.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_ADVERTISEMENT</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>AD_ID</field>  <mapping>AD_ID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>AD_SK</field>  <mapping>AD_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>281</xloc>
+      <yloc>202</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_CAMPAIGN_WAVE_GOOGLE</name>
+    <type>Mapping</type>
+    <description>This Map step returns the campaign wave surrogate key.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_CAMPAIGN_WAVE_GOOGLE</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>CAMPAIGN_WAVE_NAME</field>  <mapping>CAMPAIGN_WAVE_NAME</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>CAMPAIGN_WAVE_SK</field>  <mapping>CAMPAIGN_WAVE_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>495</xloc>
+      <yloc>204</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_CURRENCY</name>
+    <type>Mapping</type>
+    <description>This Map step returns the advertisement surrogate key.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_CURRENCY</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>CURRENCY_ID</field>  <mapping>CURRENCY_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>TRXN_CURRENCY_SK</field>  <mapping>CURRENCY_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>639</xloc>
+      <yloc>288</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_KEYWORD_PHRASE</name>
+    <type>Mapping</type>
+    <description>This Map step returns the keyword phrase surrogate key.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_KEYWORD_PHRASE</trans_name>
+    <filename/>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>HOSTED_CLIENT_SK</field>  <mapping>HOSTED_CLIENT_SK</mapping></connector>
+    <connector><field>KEYWORD_DESC</field>  <mapping>KEYWORD_DESC</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>KEYWORD_SK</field>  <mapping>KEYWORD_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>388</xloc>
+      <yloc>152</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>REMOVE_BOGUS_ROWS</name>
+    <type>FilterRows</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+<send_true_to/>
+<send_false_to/>
+    <compare>
+<condition>
+ <negated>Y</negated>
+ <leftvalue>KEYWORD_DESC</leftvalue>
+ <function>=</function>
+ <rightvalue/>
+ <value><name>constant</name><type>String</type><text>Total - content targeting</text><length>-1</length><precision>-1</precision><isnull>N</isnull></value> </condition>
+    </compare>
+     <cluster_schema/>
+    <GUI>
+      <xloc>207</xloc>
+      <yloc>153</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_ADVERTISEMENT_IMPRESSION</name>
+    <type>TableInput</type>
+    <description>This step extracts data from the Breadboard BI stage table.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <sql>SELECT
+  HOSTED_CLIENT_SK
+, IMPRESSION_DATE
+, IMPRESSION_DATE AS STREAM_DATE
+, CAMPAIGN_WAVE_NAME
+, KEYWORD_DESC
+, AD_ID
+, CONTENT_BID_AMT
+, PREFERED_HIGH_RANK_QTY
+, PREFERED_LOW_RANK_QTY
+, DESTINATION_URL
+, AD_IMPRESSION_QTY
+, AD_CLICK_QTY
+, AD_CLICK_RATE
+, CPC_AVERAGE_AMT
+, AD_COST_AMT
+, AVERAGE_POSITION_QTY
+, SOURCE_SYSTEM_ID
+, CURRENCY_ID
+FROM STAGE_ADVERTISEMENT_IMPRESSION
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>83</xloc>
+      <yloc>200</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+</transformation>

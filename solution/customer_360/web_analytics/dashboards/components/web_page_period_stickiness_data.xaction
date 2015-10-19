@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>Web Page View Seconds By Period</title>
+  <version>1</version>
+  <logging-level/>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Return the web page view seconds by period.</description>  
+    <help>Oracle ==== query = "SELECT TRIM(CAST(" + select_column_name + " AS CHAR(8))), "; Note: First line of query only, remainder is ANSI standard. MySQL ==== query = "SELECT CAST(" + select_column_name + " AS CHAR), "; Note: Oracle version will work on MySQL, but TRIM and character precision are not required.</help>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>
+
+  <inputs> 
+    <TEMPORAL_VALUE type="string"> 
+      <sources> 
+        <request>TEMPORAL_VALUE</request> 
+      </sources> 
+    </TEMPORAL_VALUE>  
+    <SOURCE_SYSTEM_SK type="string"> 
+      <sources> 
+        <request>SOURCE_SYSTEM_SK</request> 
+      </sources> 
+    </SOURCE_SYSTEM_SK>  
+    <HOSTED_CLIENT_SK type="string"> 
+      <sources> 
+        <request>HOSTED_CLIENT_SK</request> 
+      </sources> 
+    </HOSTED_CLIENT_SK>  
+    <WEB_FILE_SK type="string"> 
+      <sources> 
+        <request>WEB_FILE_SK</request> 
+      </sources> 
+    </WEB_FILE_SK> 
+  </inputs>
+
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>
+
+  <resources/>
+  
+  <!-- Define an output called 'rule-result' -->  
+  <!-- This action sequence does not require any external resources -->  
+  <actions> 
+    <action-definition> 
+      <component-name>JavascriptRule</component-name>
+      <action-type>JavaScript DSQL</action-type>
+      <action-inputs> 
+        <TEMPORAL_VALUE type="string"/>  
+        <SOURCE_SYSTEM_SK type="string"/>  
+        <HOSTED_CLIENT_SK type="string"/>  
+        <WEB_FILE_SK type="string"/>
+      </action-inputs>
+      <action-outputs> 
+        <query type="string"/> 
+      </action-outputs>
+      <component-definition> 
+        <script><![CDATA[var select_column_name = "";
+var select_label_name = "";
+var column_name = "";
+
+if ('{TEMPORAL_VALUE}'.indexOf("W") >= 0)
+{
+ select_column_name = "DATE_SK";
+ column_name = "WEEK_NAME";
+ select_label_name = "Referrals for the Week ";
+}
+
+else if ('{TEMPORAL_VALUE}'.indexOf("Q") >= 0)
+{
+ select_column_name = "MONTH_SK";
+ column_name = "YEAR_QUARTER_NAME";
+ select_label_name = "Referrals for the Quarter ";
+}
+
+else if ('{TEMPORAL_VALUE}'.length == 6)
+{
+ select_column_name = "WEEK_NAME";
+ column_name ="MONTH_SK";
+ select_label_name = "Referrals for the Month ";
+}
+else if ('{TEMPORAL_VALUE}'.length == 4)
+{
+select_column_name = "YEAR_QUARTER_NAME";
+ column_name ="YEAR_SK";
+ select_label_name = "Referrals for the Year ";
+}
+else if ('{TEMPORAL_VALUE}'.length == 8)
+{
+ select_column_name = "DATE_SK";
+ column_name ="DATE_SK";
+ select_label_name = "Referrals for the Day ";
+}
+	     query = "SELECT TRIM(CAST(" + select_column_name + " AS CHAR(8))),  ";
+         query += "ROUND(1-SUM(F.BOUNCE_QTY)/SUM(F.LANDING_PAGE_QTY),2)*100 AS Stickiness  ";
+         query += "FROM FACT_WEB_PAGE_VIEW F, DIMENSION_DAY D, DIMENSION_SOURCE_SYSTEM S ";
+         query += "WHERE F.REQUEST_DATE_SK = D.DATE_SK ";
+         query += "AND F.WEB_FILE_SK =  '{WEB_FILE_SK}'  ";
+         query += "AND D."+column_name+ " = '{TEMPORAL_VALUE}'  ";
+         query += "AND S.PARENT_SOURCE_SYSTEM_SK =  '{SOURCE_SYSTEM_SK}'  ";
+         query += "AND S.SOURCE_SYSTEM_SK = F.SOURCE_SYSTEM_SK ";
+	     query += "AND F.HOSTED_CLIENT_SK = '{HOSTED_CLIENT_SK}'  ";
+	     query += "AND F.LANDING_PAGE_QTY = 1 "; 
+         query += "GROUP BY D."+select_column_name+" ";
+         query += "ORDER BY D."+select_column_name+" ASC ";]]></script> 
+      </component-definition> 
+    </action-definition> 
+  
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>
+      <action-type>rule</action-type>
+      <action-inputs> 
+        <query type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>
+      <component-definition> 
+        <!-- Define the datasource for the query -->  
+        <!-- Define the query to execute. Note the parameter {REGION} in the query -->  
+        <jndi>mdw_mysql</jndi>  
+        <live>false</live> 
+      </component-definition>  
+      <!-- Define a local output called 'rule-result' -->  
+      <!-- Specify the component to execute -->  
+      <!-- Define the settings for the component --> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

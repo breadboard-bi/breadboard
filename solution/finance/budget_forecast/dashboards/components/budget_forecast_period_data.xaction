@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <version>1</version>  
+  <title>Budget Forecast by Fiscal Periods</title>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Return the budget forecast amounts by fiscal period.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <inputs> 
+      
+    
+  </inputs>  
+  <!-- Define an output called 'rule-result' -->  
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>  
+  <!-- This action sequence does not require any external resources -->  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <component-name>JavascriptRule</component-name>  
+      <action-type>JavaScript DSQL</action-type>  
+      <action-inputs> 
+          
+        
+      </action-inputs>  
+      <action-outputs> 
+        <query type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+        <script><![CDATA[query   = "SELECT P.FISCAL_PERIOD_ID,  ";
+         query += "SUM(F.ORDER_BUDGET_AMT) AS 'Budget Amount' ";
+         query += "FROM FACT_BUDGET_FORECAST F, ";
+         query += "DIMENSION_FISCAL_PERIOD P ";
+         query += "WHERE F.FISCAL_PERIOD_SK = P.FISCAL_PERIOD_SK ";
+         query += "GROUP BY  P.FISCAL_PERIOD_NAME ";
+         query += "ORDER BY  P.FISCAL_PERIOD_ID ASC ";]]></script> 
+      </component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <action-inputs> 
+        <query type="string"/> 
+      </action-inputs>  
+      <!-- Define a local output called 'rule-result' -->  
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>  
+      <!-- Specify the component to execute -->  
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>rule</action-type>  
+      <!-- Define the settings for the component -->  
+      <component-definition> 
+        <!-- Define the datasource for the query -->  
+        <!-- Define the query to execute. Note the parameter {REGION} in the query -->  
+        <jndi>mdw_mysql</jndi> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

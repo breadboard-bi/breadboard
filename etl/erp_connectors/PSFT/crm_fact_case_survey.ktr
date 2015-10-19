@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read></read>
+      <write></write>
+      <input></input>
+      <output></output>
+      <update></update>
+      <connection></connection>
+      <table></table>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection></connection>
+      <table></table>
+      <field></field>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts case resolution source information from PeopleSoft CRM 8.8.  Only the input has been built.</note>
+      <xloc>5</xloc>
+      <yloc>49</yloc>
+      <width>563</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_CRM_CASE_SURVEY_METRICS</from><to>FACT_CASE_SURVEY</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>FACT_CASE_SURVEY</name>
+    <type>InsertUpdate</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <lookup>
+      <table>FACT_CASE_SURVEY</table>
+      </lookup>
+    <GUI>
+      <xloc>476</xloc>
+      <yloc>206</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_CRM_CASE_SURVEY_METRICS</name>
+    <type>TableInput</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT 
+BI.ROW_ADDED_DTTM AS SURVEY_DATE,
+BI.RC_BS_INSTANCE AS SURVEY_INSTANCE_ID, 
+CS.BUSINESS_UNIT AS BUSINESS_UNIT_ID, 
+CS.CASE_ID,
+CS.BO_ID_CUST AS BO_CUSTOMER_ID, 
+CS.PRODUCT_ID, 
+CS.INST_PROD_ID AS INSTALLED_PRODUCT_ID, 
+CS.ASSIGNED_TO AS AGENT_ASSIGNED_ID, 
+CS.PROVIDER_GRP_ID AS PROVIDER_GROUP_ID,
+BI.SCRIPT_ID, 
+SR.RC_RATE_ID AS RATE_ID, 
+BI.SETID AS SURVEY_INSTANCE_SETID,
+SR.RC_WEIGHT AS SCRIPT_WEIGHT,
+ANSWER.ANSWER_SCORE/SR.RC_WEIGHT AS SURVEY_SCORE,
+ANSWER.ANSWER_SCORE
+--RATE_SCORE NOT INCLUDED
+FROM PS_RC_BS_INSTANCE BI
+INNER JOIN PS_RC_CASE CS
+ON BI.RC_BS_INSTANCE = CS.RC_BS_INSTANCE 
+INNER JOIN PS_RC_BSCRIPT SR
+ON BI.SETID = SR.SETID
+AND BI.EFFDT = SR.EFFDT
+AND BI.SCRIPT_ID = SR.SCRIPT_ID
+LEFT OUTER JOIN (SELECT RC_BS_INSTANCE, SUM(RC_SCORE * RC_WEIGHT) AS ANSWER_SCORE FROM PS_RC_BS_ANSWER GROUP BY RC_BS_INSTANCE) ANSWER
+ON ANSWER.RC_BS_INSTANCE = BI.RC_BS_INSTANCE
+--WHERE BI.LASTUPD_EW_DTTM &gt; Last Load Date</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>140</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">  
+  <name>web_visit_dashboard_report.xaction</name>
+  <title>%title</title>
+  <version>1</version>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description><![CDATA[%description]]></description>  
+    <icon>file.png|BreadboardBIReporting.png</icon>  
+    <help>MySQL ==== SELECT V.WEB_ORGANIZATION_DESC, SUM(F.WEB_VISIT_QTY) AS DISTINCT_VISITOR_QTY, SUM(F.WEB_PAGE_VIEW_QTY) AS WEB_PAGE_VIEW_QTY, SUM(F.VIEW_SECONDS_QTY) AS VIEW_SECONDS_QTY, MAX(D.WEEK_SK) AS WEEK_SK FROM FACT_WEB_SITE_VISIT F, DIMENSION_DAY D, DIMENSION_WEB_VISITOR V WHERE F.VISIT_DATE_SK = D.DATE_SK AND F.WEB_VISITOR_SK = V.WEB_VISITOR_SK AND V.WEB_ORGANIZATION_DESC !='Missing' AND D.WEEK_SK = '{WEEK_OF_YEAR}' AND V.COUNTRY_CODE = '{COUNTRY}' AND V.REGION_NAME = '{REGION}' GROUP BY V.WEB_ORGANIZATION_DESC ORDER BY SUM(F.WEB_PAGE_VIEW_QTY) DESC LIMIT 10 Oracle ==== SELECT * FROM ( SELECT RANK() OVER(ORDER BY SUM(F.WEB_PAGE_VIEW_QTY) DESC) AS RANK, V.WEB_ORGANIZATION_DESC, SUM(F.WEB_VISIT_QTY) AS DISTINCT_VISITOR_QTY, SUM(F.WEB_PAGE_VIEW_QTY) AS WEB_PAGE_VIEW_QTY, SUM(F.VIEW_SECONDS_QTY) AS VIEW_SECONDS_QTY, MAX(D.WEEK_SK) AS WEEK_SK FROM FACT_WEB_SITE_VISIT F, DIMENSION_DAY D, DIMENSION_WEB_VISITOR V WHERE F.VISIT_DATE_SK = D.DATE_SK AND F.WEB_VISITOR_SK = V.WEB_VISITOR_SK AND V.WEB_ORGANIZATION_DESC !='Missing' AND D.WEEK_SK = '{WEEK_OF_YEAR}' AND V.COUNTRY_CODE = '{COUNTRY}' AND V.REGION_NAME = '{REGION}' GROUP BY V.WEB_ORGANIZATION_DESC ) WHERE RANK &lt;=11</help>  
+    <result-type>report</result-type> 
+  </documentation>
+
+  <inputs> 
+    <output-type type="string"> 
+      <default-value>html</default-value>  
+      <sources> 
+        <request>type</request> 
+      </sources> 
+    </output-type>  
+    <WEEK_OF_YEAR type="string"> 
+      <sources> 
+        <request>WEEK_OF_YEAR</request> 
+      </sources> 
+    </WEEK_OF_YEAR>  
+    <COUNTRY type="string"> 
+      <sources> 
+        <request>COUNTRY</request> 
+      </sources> 
+    </COUNTRY>  
+    <REGION type="string"> 
+      <sources> 
+        <request>REGION</request> 
+      </sources> 
+    </REGION> 
+  </inputs>
+
+  <outputs> 
+    <report type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </report> 
+  </outputs>
+
+  <resources> 
+    <!-- use this section to identify any files that the component needs to execute the report -->  
+    <report-definition> 
+      <solution-file> 
+        <location>web_visit_dashboard_report.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <action-inputs> 
+        <output-type type="string"/>  
+        <COUNTRY type="string"/>  
+        <WEEK_OF_YEAR type="string"/>  
+        <REGION type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <report-output type="content" mapping="report"/>
+      </action-outputs>
+      <component-definition> 
+        <source>sql</source>  
+        <live>false</live>  
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT V.WEB_ORGANIZATION_DESC, 
+SUM(F.WEB_VISIT_QTY) AS DISTINCT_VISITOR_QTY,
+SUM(F.WEB_PAGE_VIEW_QTY) AS WEB_PAGE_VIEW_QTY,
+SUM(F.VIEW_SECONDS_QTY) AS VIEW_SECONDS_QTY,
+MAX(D.WEEK_SK) AS WEEK_SK
+FROM FACT_WEB_SITE_VISIT F, DIMENSION_DAY D, 
+DIMENSION_WEB_VISITOR V
+WHERE F.VISIT_DATE_SK = D.DATE_SK
+AND F.WEB_VISITOR_SK = V.WEB_VISITOR_SK
+AND V.WEB_ORGANIZATION_DESC !='Missing'
+AND D.WEEK_SK = '{WEEK_OF_YEAR}' 
+AND V.COUNTRY_CODE = '{COUNTRY}'
+AND V.REGION_NAME = '{REGION}'
+GROUP BY V.WEB_ORGANIZATION_DESC
+ORDER BY SUM(F.WEB_PAGE_VIEW_QTY) DESC
+LIMIT 10]]></query> 
+      </component-definition> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+# Copyright 2006 Breadboard BI.  All rights reserved. 
+#
+# Version 1.1
+#
+# This software was developed by Breadboard BI and is provided under license. You may 
+# not use this file except in compliance with the license. This software is distributed 
+# on an AS IS basis, WITHOUT WARRANTY OF ANY KIND, neither express nor implied.
+#
+# Please send bug fixes and enhancement requests to submit@breadboardbi.com
+-->
+<report name="web_page_top_dashboard_report" orientation="landscape" pageformat="LETTER" leftmargin="0pt" rightmargin="0pt" topmargin="0" bottommargin="0">
+<reportheader>  
+<!--
+<label fontname="SansSerif" fontsize="14" fontstyle="bold" height="20" vertical-alignment="middle" alignment="left" width="100%" x="0" y="0">Top Pages for the Week</label>
+-->
+</reportheader>
+  <groups>
+    <group name="dummy">
+      <groupheader repeat="true" color="#000000" fontname="SansSerif" fontsize="12" fontstyle="bold" height="14">
+        <band name="DummyGroupNoDataBandElement">
+          <label height="10" vertical-alignment="middle" alignment="left" width="100%" x="0" y="0">No Data Available</label>
+        </band>
+        <band name="DummyGroupDataBandElement">
+          <rectangle color="#808080" draw="false" fill="true" height="12" width="100%" x="0" y="0"/>
+		<!-- <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="10%" x="0" y="0">Rank</label> -->
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="10%" x="0%" y="0">Visits</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="90%" x="10%" y="0">Path</label>
+        </band>
+      </groupheader>
+      <groupfooter name="dummyGroupFooter" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold">
+      </groupfooter>
+    </group>
+  </groups>
+  <items color="#000000" fontname="SansSerif" fontsize="11" >
+<rectangle name="rowBandingElement" color="#E0E0E0" draw="false" fill="true" height="11" x="0%" width="100%" y="0"/>
+<!--
+    <number-field name="WEEK_SKElement" fieldname="WEEK_SK" vertical-alignment="middle" alignment="left" width="0" x="0" y="0" height="0"/>
+    <number-field name="RANKElement" fieldname="RANK" vertical-alignment="middle" alignment="left" width="10%" x="0" y="0" height="11"/>
+-->
+    <number-field name="WEB_PAGE_VIEW_QTYElement" fieldname="WEB_VISIT_QTY" vertical-alignment="middle" alignment="left" width="10%" x="0%" y="0" height="11"/>
+    <string-field name="URL-Field" fieldname="WEB_NAVIGATION_PATH_DESC" vertical-alignment="middle" alignment="left" width="90%" x="10%" y="0" height="11"/>
+  </items>
+  
+  <functions>
+  
+<function name="backgroundTrigger" class="org.pentaho.jfreereport.functions.ElementVisibilitySwitchFunction">
+      <properties>
+        <property name="element">rowBandingElement</property>
+        <property name="numberOfElements">1</property>
+        <property name="initialState">true</property>
+      </properties>
+    </function>
+  
+    <expression class="org.jfree.report.function.HideElementIfDataAvailableExpression" name="DummyGroupNoDataBandElementHideIfNullTrigger">
+      <properties>
+        <property name="element">DummyGroupNoDataBandElement</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="DummyGroupDataBandElementHideIfNullTrigger">
+      <properties>
+        <property name="element">DummyGroupDataBandElement</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="dummyGroupFooterHideIfNullTrigger">
+      <properties>
+        <property name="element">dummyGroupFooter</property>
+      </properties>
+    </expression>
+<!-- 
+        <function name="AddHRefs" class="org.jfree.report.function.CreateHyperLinksFunction">
+       <properties>
+         <property name="field">URLCreateExpression</property>
+         <property name="element">URL-Field</property>
+               </properties>
+     </function>
+ 
+      <expression name="URLCreateExpression" class="org.jfree.report.function.TextFormatExpression">
+       <properties>
+       <property name="pattern">ViewAction?web_file_name={0}&amp;week_sk={1,number,####0}&amp;solution=breadboard&amp;action=web_week_file.xaction&amp;path=customer_360/web_analytics/dashboards/report</property>
+         <property name="field[0]">WEB_FILE_NAME</property>    
+         <property name="field[1]">WEEK_SK</property>           
+       </properties>
+     </expression>  
+-->  
+  </functions>
+</report>

@@ -1,0 +1,929 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>MAP_PARSE_KEYWORDS</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <rejected/>
+      <connection/>
+      <table/>
+      <step_performance_table/>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>N</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>0</step_performance_capturing_delay>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2008&#47;08&#47;28 08:25:37.000</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>This map parses keyword phrases.</note>
+      <xloc>24</xloc>
+      <yloc>30</yloc>
+      <width>180</width>
+      <heigth>23</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI.  All rights reserved.</note>
+      <xloc>21</xloc>
+      <yloc>343</yloc>
+      <width>270</width>
+      <heigth>23</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>jde</name>
+    <server>test</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server>localhost</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>mdw</database>
+    <port>3306</port>
+    <username>mdw</username>
+    <password>Encrypted 2be98afc86aa7f2e4a118bd79cbc3fd89</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_LOWERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>FORCE_IDENTIFIERS_TO_UPPERCASE</code><attribute>N</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>rds</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>rds</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server/>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database/>
+    <port/>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PARSE_KEYWORDS</from><to>TRIM_STRING</to><enabled>Y</enabled> </hop>  <hop> <from>IN_REFERER_URL_DESC</from><to>PARSE_KEYWORDS</to><enabled>Y</enabled> </hop>  <hop> <from>TRIM_STRING</from><to>OUT_KEYWORD_DESC</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>IN_REFERER_URL_DESC</name>
+    <type>MappingInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>REFERER_URL_DESC</name>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>WEB_FILE_NAME</name>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>URL_PARAMS_DESC</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+        <select_unspecified>N</select_unspecified>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>146</xloc>
+      <yloc>173</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>OUT_KEYWORD_DESC</name>
+    <type>MappingOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>KEYWORD_DESC</name>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        <added>Y</added>
+      </field>
+      <field>
+        <name>REFERER_URL_DESC</name>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        <added>N</added>
+      </field>
+      <field>
+        <name>v2_KEYWORD_DESC</name>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        <added>N</added>
+      </field>
+      <field>
+        <name>ORGANIC_IND</name>
+        <type>String</type>
+        <length>1</length>
+        <precision>-1</precision>
+        <added>Y</added>
+      </field>
+      <field>
+        <name>ADWORD_CAMPAIGN_IND</name>
+        <type>String</type>
+        <length>1</length>
+        <precision>-1</precision>
+        <added>Y</added>
+      </field>
+      <field>
+        <name>WEB_FILE_NAME</name>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        <added>Y</added>
+      </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>632</xloc>
+      <yloc>175</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PARSE_KEYWORDS</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>Y</compatible>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>var v2_KEYWORD_DESC =&quot;&quot;;
+var value_pair_string = &quot;&quot;;
+var url_pieces = &quot;&quot;;
+var v_keyword_desc = &quot;&quot;;
+var v_part1_str = &quot;&quot;;
+var v_part2_str = &quot;&quot;;
+var v_part3_str = &quot;&quot;;
+var v_part4_str = &quot;&quot;;
+var v_part5_str = &quot;&quot;;
+var v_part6_str = &quot;&quot;;
+var v_part7_str = &quot;&quot;;
+var ORGANIC_IND = &quot;&quot;;
+var ADWORD_CAMPAIGN_IND = &quot;&quot;;
+var v_question_mark_position = 0;
+var clean_string = &quot;&quot;;
+
+&#47;&#47; Latest Yahoo Paid
+if(URL_PARAMS_DESC.getString() != null &amp;&amp; URL_PARAMS_DESC.getString().toLowerCase().indexOf(&quot;ovkey=&quot;) &gt; 0)
+	{
+value_pair_string = URL_PARAMS_DESC.getString().toLowerCase();}
+
+&#47;&#47; All others
+else if (REFERER_URL_DESC.getString() != null)
+	{
+	v_question_mark_position = REFERER_URL_DESC.getString().indexOf(&quot;?&quot;)+1;
+	value_pair_string = REFERER_URL_DESC.getString().toLowerCase().substr(v_question_mark_position);
+	}
+
+else {value_pair_string = &quot; &quot;;}
+
+url_pieces = &quot;&quot;;
+url_pieces = value_pair_string.split(&quot;&amp;&quot;);
+
+v_keyword_desc = &quot;&quot;;
+ORGANIC_IND = &quot;&quot;;
+ADWORD_CAMPAIGN_IND = &quot;&quot;;
+
+&#47;&#47; Start yahoo (overture) paid key (not raw) logic
+if (value_pair_string != null &amp;&amp; value_pair_string.indexOf(&quot;ovkey=&quot;) &gt;= 0)
+ {
+	ADWORD_CAMPAIGN_IND = &quot;Y&quot;;
+	ORGANIC_IND = &apos;N&apos;
+	var i;
+	for (i=0;i&lt;50;i++)
+	{
+		if (url_pieces[i] != null &amp;&amp; url_pieces[i].indexOf(&quot;ovkey=&quot;) &gt;= 0)
+		{v_keyword_desc = url_pieces[i].substr(6);
+		break;
+		}
+ 	} 
+} &#47;&#47; end yahoo (overture) paid key (not raw) logic
+
+&#47;&#47; Start newer yahoo (overture) paid key (not raw) logic
+&#47;&#47; http:&#47;&#47;www.looksearch.com&#47;index.php?tpid=10201&amp;tspid=0&amp;ttid=100&amp;st=olap
+else if (value_pair_string != null &amp;&amp; value_pair_string.indexOf(&quot;tpid=&quot;) &gt;= 0)
+ {
+	ADWORD_CAMPAIGN_IND = &quot;Y&quot;;
+	ORGANIC_IND = &apos;N&apos;
+
+	var j;
+	for (j=0;j&lt;50;j++)
+	{
+		if (url_pieces[j] != null &amp;&amp; url_pieces[j].indexOf(&quot;st=&quot;) &gt;= 0)
+		{v_keyword_desc = url_pieces[j].substr(3);
+		break;
+		}
+ 	}  
+} &#47;&#47; end newer yahoo (overture) paid key (not raw) logic
+
+&#47;&#47; start yahoo organic
+else if (REFERER_URL_DESC.getString() != null &amp;&amp; (REFERER_URL_DESC.getString().indexOf(&quot;&amp;p=&quot;) &gt;= 0 
+|| REFERER_URL_DESC.getString().indexOf(&quot;?p=&quot;) &gt;= 0))
+{	ORGANIC_IND = &apos;Y&apos;;
+	ADWORD_CAMPAIGN_IND = &quot;N&quot;;
+	var k;
+	for (k=0;k&lt;50;k++)
+	{
+		if (url_pieces[k] != null &amp;&amp; url_pieces[k].indexOf(&quot;p=&quot;) &gt;= 0)
+		{v_keyword_desc = url_pieces[k].substr(2);
+		break;
+		}
+ 	} 
+} &#47;&#47; end yahoo organic logic
+
+
+&#47;&#47; Start Google
+
+&#47;&#47; http:&#47;&#47;www.google.ca&#47;search?q=software development firms toronto&amp;hl=en&amp;start=10&amp;sa=n
+
+
+else if (REFERER_URL_DESC.getString() != null &amp;&amp; (REFERER_URL_DESC.getString().indexOf(&quot;&amp;q=&quot;) &gt;0 
+|| REFERER_URL_DESC.getString().indexOf(&quot;?q=&quot;) &gt;0))
+{	
+	if (URL_PARAMS_DESC.getString() != null &amp;&amp; URL_PARAMS_DESC.getString().toLowerCase().indexOf(&quot;gclid&quot;) &gt; 0)
+	{	ADWORD_CAMPAIGN_IND = &quot;Y&quot;;
+		ORGANIC_IND = &apos;N&apos;;}
+	else {
+		ORGANIC_IND = &apos;Y&apos;;
+		ADWORD_CAMPAIGN_IND = &quot;N&quot;;}
+
+	var l;
+	for (l=0;l&lt;50;l++)
+	{
+		if (url_pieces[l] != null &amp;&amp; url_pieces[l].indexOf(&quot;q=&quot;) &gt;=0 &amp;&amp; url_pieces[l].indexOf(&quot;aq=&quot;) == -1)
+		{v_keyword_desc = url_pieces[l].substr(2);
+		break;
+		}
+ 	} 
+} &#47;&#47; end google logic
+
+
+else if (value_pair_string != null &amp;&amp; value_pair_string.indexOf(&quot;&amp;term=&quot;) &gt;= 0)
+{
+	ORGANIC_IND = &apos;Y&apos;;
+	ADWORD_CAMPAIGN_IND = &quot;N&quot;
+	var m;
+	for (m=0;m&lt;50;m++)
+	{
+		if (url_pieces[m] != null &amp;&amp; url_pieces[m].indexOf(&quot;term=&quot;) &gt;=0)
+		{v_keyword_desc = url_pieces[m].substr(5);
+		break;
+		}
+ 	} 
+} &#47;&#47; end term logic
+
+
+&#47;&#47; Newer Paid Google pid - http:&#47;&#47;www.netster.com&#47;results&#47;results_arb.asp?pid=valueclick&amp;keywords=olap
+
+else if ((value_pair_string != null &amp;&amp; value_pair_string.indexOf(&quot;pid=&quot;) &gt;= 0) 
+			&amp;&amp; (WEB_FILE_NAME.getString() != null &amp;&amp; WEB_FILE_NAME.getString().indexOf(&quot;gclid=&quot;) &gt;= 0))
+{
+	ADWORD_CAMPAIGN_IND = &quot;Y&quot;;
+	ORGANIC_IND = &apos;N&apos;;
+	var n;
+	for (n=0;n&lt;50;n++)
+	{
+		if (url_pieces[n] != null &amp;&amp; url_pieces[n].indexOf(&quot;keywords=&quot;) &gt;=0)
+		{v_keyword_desc = url_pieces[n].substr(9);
+		break;
+		}
+ 	} 
+} &#47;&#47; end newer Paid google logic
+
+&#47;&#47; Newer Paid Google st - http:&#47;&#47;search.upspiral.com&#47;?st=olap
+
+else if ((value_pair_string != null &amp;&amp; value_pair_string.indexOf(&quot;st=&quot;) &gt;= 0)
+		 &amp;&amp; (WEB_FILE_NAME.getString() != null &amp;&amp; WEB_FILE_NAME.getString().indexOf(&quot;gclid=&quot;) &gt;= 0))
+{
+	ADWORD_CAMPAIGN_IND = &quot;Y&quot;;
+	ORGANIC_IND = &apos;N&apos;
+	var o;
+	for (o=0;o&lt;50;o++)
+	{
+		if (url_pieces[o] != null &amp;&amp; url_pieces[o].indexOf(&quot;st=&quot;) &gt;=0)
+		{v_keyword_desc = url_pieces[o].substr(3);
+		break;
+		}
+ 	} 
+} &#47;&#47; end newer Paid google logic
+
+
+else if (value_pair_string != null &amp;&amp; value_pair_string.indexOf(&quot;words=&quot;) &gt;= 0)
+{
+	ORGANIC_IND = &apos;Y&apos;;
+	ADWORD_CAMPAIGN_IND = &quot;N&quot;
+	var p;
+	for (p=0;p&lt;50;p++)
+	{
+		if (url_pieces[p] != null &amp;&amp; url_pieces[p].indexOf(&quot;words=&quot;) &gt;=0)
+		{v_keyword_desc = url_pieces[p].substr(6);
+		break;
+		}
+ 	} 
+} &#47;&#47; end sourceforge logic
+
+else if (value_pair_string != null &amp;&amp; value_pair_string.indexOf(&quot;words=&quot;) &gt;= 0)
+{
+	ORGANIC_IND = &apos;Y&apos;;
+	ADWORD_CAMPAIGN_IND = &quot;N&quot;
+	var q;
+	for (q=0;q&lt;50;q++)
+	{
+		if (url_pieces[q] != null &amp;&amp; url_pieces[q].indexOf(&quot;query=&quot;) &gt;=0)
+		{v_keyword_desc = url_pieces[q].substr(6);
+		break;
+		}
+ 	} 
+} &#47;&#47; end AOL search logic
+
+
+v2_KEYWORD_DESC = v_keyword_desc.replace( &#47;\+&#47;g,&quot; &quot;).replace( &#47;%22&#47;g,&quot;\&quot;&quot;).replace( &#47;%3a&#47;g,&quot;:&quot;).replace( &#47;%2f&#47;g,&quot;&#47;&quot;).replace( &#47;%25&#47;g,&quot;%&quot;).replace( &#47;%26&#47;g,&quot;&amp;&quot;).replace( &#47;%3d&#47;g,&quot;=&quot;).replace( &#47;%3f&#47;g,&quot;?&quot;).replace( &#47;%2b&#47;g,&quot;+&quot;).replace( &#47;%2c&#47;g,&quot;,&quot;).replace( &#47;%2d&#47;g,&quot;-&quot;).replace( &#47;%2e&#47;g,&quot;.&quot;).replace( &#47;%27&#47;g,&quot;`&quot;).replace( &#47;%28&#47;g,&quot;(&quot;).replace( &#47;%29&#47;g,&quot;)&quot;).replace( &#47;%40&#47;g,&quot;@&quot;).replace( &#47;%7c&#47;g,&quot;|&quot;).replace( &#47;%20&#47;g,&quot;_&quot;);
+
+&#47;&#47; }</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>v2_KEYWORD_DESC</name>
+        <rename>v2_KEYWORD_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>ORGANIC_IND</name>
+        <rename>ORGANIC_IND</rename>
+        <type>String</type>
+        <length>1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>ADWORD_CAMPAIGN_IND</name>
+        <rename>ADWORD_CAMPAIGN_IND</rename>
+        <type>String</type>
+        <length>1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>v_keyword_desc</name>
+        <rename>v_keyword_desc</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>311</xloc>
+      <yloc>174</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PARSE_KEYWORDS_OLD</name>
+    <type>ScriptValue</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>Y</compatible>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>ScriptValue</jsScript_name>
+        <jsScript_script>var v2_KEYWORD_DESC;
+
+if (REFERER_URL_DESC.isNull())
+{v2_KEYWORD_DESC = &quot;&quot;;}
+
+else {
+
+var v_question_mark_position = REFERER_URL_DESC.getString().indexOf(&quot;?&quot;)+1;
+
+&#47;&#47; if(URL_PARAMS_DESC.getString().toLowerCase().indexOf(&quot;ovkey=&quot;) &gt; 0)
+
+
+var value_pair_string = REFERER_URL_DESC.getString().toLowerCase().substr(v_question_mark_position);
+
+
+var value_pair_string = REFERER_URL_DESC.getString().toLowerCase().substr(v_question_mark_position);
+
+
+
+var url_pieces = value_pair_string.split(&quot;&amp;&quot;);
+var v_keyword_desc = &quot;&quot;;
+var v_part1_str = &quot;&quot;+url_pieces[0];
+var v_part2_str = &quot;&quot;+url_pieces[1];
+var v_part3_str = &quot;&quot;+url_pieces[2];
+var v_part4_str = &quot;&quot;+url_pieces[3];
+var v_part5_str = &quot;&quot;+url_pieces[4];
+var v_part6_str = &quot;&quot;+url_pieces[5];
+var v_part7_str = &quot;&quot;+url_pieces[6];
+var ORGANIC_IND = &quot;&quot;;
+var ADWORD_CAMPAIGN_IND = &quot;&quot;;
+
+
+&#47;&#47; Start yahoo (overture) paid key (not raw) logic
+if (value_pair_string.indexOf(&quot;ovkey=&quot;) &gt;= 0)
+ {
+	ADWORD_CAMPAIGN_IND = &quot;Y&quot;;
+	if (v_part1_str.indexOf(&quot;ovkey=&quot;) &gt;= 0)
+	v_keyword_desc = v_part1_str.substr(6);
+	
+	else if (v_part2_str.indexOf(&quot;ovkey=&quot;) &gt;= 0)
+	{
+	v_keyword_desc = v_part2_str.substr(6);
+	}
+	else if (v_part3_str.indexOf(&quot;ovkey=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part3_str.substr(6);
+	}
+	else if (v_part4_str.indexOf(&quot;ovkey=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part4_str.substr(6);
+	}
+	else if (v_part5_str.indexOf(&quot;ovkey=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part5_str.substr(6);
+	}
+	else if (v_part6_str.indexOf(&quot;ovkey=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part6_str.substr(6);
+	}
+	else if (v_part7_str.indexOf(&quot;ovkey=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part7_str.substr(6);
+	}
+ }  &#47;&#47; end yahoo (overture) paid key (not raw) logic
+
+
+&#47;&#47; Start newer yahoo (overture) paid key (not raw) logic
+&#47;&#47; http:&#47;&#47;www.looksearch.com&#47;index.php?tpid=10201&amp;tspid=0&amp;ttid=100&amp;st=olap
+if (value_pair_string.indexOf(&quot;tpid=&quot;) &gt;= 0)
+ {
+	ADWORD_CAMPAIGN_IND = &quot;Y&quot;;
+	if (v_part1_str.indexOf(&quot;st=&quot;) &gt;= 0)
+	v_keyword_desc = v_part1_str.substr(3);
+	
+	else if (v_part2_str.indexOf(&quot;st=&quot;) &gt;= 0)
+	{
+	v_keyword_desc = v_part2_str.substr(3);
+	}
+	else if (v_part3_str.indexOf(&quot;st=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part3_str.substr(3);
+	}
+	else if (v_part4_str.indexOf(&quot;st=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part4_str.substr(3);
+	}
+	else if (v_part5_str.indexOf(&quot;st=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part5_str.substr(3);
+	}
+	else if (v_part6_str.indexOf(&quot;st=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part6_str.substr(3);
+	}
+	else if (v_part7_str.indexOf(&quot;st=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part7_str.substr(3);
+	}
+ }  &#47;&#47; end newer yahoo (overture) paid key (not raw) logic
+
+&#47;&#47; start yahoo organic
+else if (REFERER_URL_DESC.getString().indexOf(&quot;&amp;p=&quot;) &gt;= 0 
+|| REFERER_URL_DESC.getString().indexOf(&quot;?p=&quot;) &gt;= 0)
+{
+	if (v_part1_str.indexOf(&quot;p=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part1_str.substr(2);
+	}
+	else if (v_part2_str.indexOf(&quot;p=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part2_str.substr(2);
+	}
+	else if (v_part3_str.indexOf(&quot;p=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part3_str.substr(2);
+	}
+	else if (v_part4_str.indexOf(&quot;p=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part4_str.substr(2);
+	}
+	else if (v_part5_str.indexOf(&quot;p=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part5_str.substr(2);
+	}
+	else if (v_part6_str.indexOf(&quot;p=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part6_str.substr(2);
+	}
+	else if (v_part7_str.indexOf(&quot;p=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part7_str.substr(2);
+	}
+}  &#47;&#47; end yahoo organic logic
+
+&#47;&#47; Start Google
+else if (REFERER_URL_DESC.getString().indexOf(&quot;&amp;q=&quot;) &gt;0 
+|| REFERER_URL_DESC.getString().indexOf(&quot;?q=&quot;) &gt;0)
+{
+	if (v_part1_str.indexOf(&quot;q=&quot;) &gt;= 0 &amp;&amp; v_part1_str.indexOf(&quot;aq=&quot;) == -1)
+	{
+		v_keyword_desc = v_part1_str.substr(2);
+	}
+
+	else if (v_part2_str.indexOf(&quot;q=&quot;) &gt;= 0 &amp;&amp; v_part2_str.indexOf(&quot;aq=&quot;) == -1)
+	{
+		v_keyword_desc = v_part2_str.substr(2)
+	}
+
+	else if (v_part3_str.indexOf(&quot;q=&quot;) &gt;= 0 &amp;&amp; v_part3_str.indexOf(&quot;aq=&quot;) == -1)
+	{
+		v_keyword_desc = v_part3_str.substr(2);
+	}
+
+	else if (v_part4_str.indexOf(&quot;q=&quot;) &gt;= 0 &amp;&amp; v_part4_str.indexOf(&quot;aq=&quot;) == -1)
+	{
+		v_keyword_desc = v_part4_str.substr(2);
+	}
+
+	else if (v_part5_str.indexOf(&quot;q=&quot;) &gt;= 0 &amp;&amp; v_part5_str.indexOf(&quot;aq=&quot;) == -1)
+	{
+		v_keyword_desc = v_part5_str.substr(2);
+	}
+
+	else if (v_part6_str.indexOf(&quot;q=&quot;) &gt;= 0 &amp;&amp; v_part6_str.indexOf(&quot;aq=&quot;) == -1)
+	{
+		v_keyword_desc = v_part6_str.substr(2);
+	}
+
+	else if (v_part7_str.indexOf(&quot;q=&quot;) &gt;= 0 &amp;&amp; v_part7_str.indexOf(&quot;aq=&quot;) == -1)
+	{
+		v_keyword_desc = v_part7_str.substr(2);
+	}
+
+}  &#47;&#47; end google logic
+
+
+else if (value_pair_string.indexOf(&quot;&amp;term=&quot;) &gt;= 0)
+{
+	ORGANIC_IND = &apos;Y&apos;;	
+	if (v_part1_str.indexOf(&quot;term=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part1_str.substr(5);
+	}
+
+	else if (v_part2_str.indexOf(&quot;term=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part2_str.substr(5);
+	}
+
+	else if (v_part3_str.indexOf(&quot;term=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part3_str.substr(5);
+	}
+
+	else if (v_part4_str.indexOf(&quot;term=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part4_str.substr(5);
+	}
+
+	else if (v_part5_str.indexOf(&quot;term=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part5_str.substr(5);
+	}
+
+	else if (v_part6_str.indexOf(&quot;term=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part6_str.substr(5);
+	}
+
+	else if (v_part7_str.indexOf(&quot;term=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part7_str.substr(5);
+	}
+
+}  &#47;&#47; end term logic
+
+
+&#47;&#47; Newer Paid Google pid - http:&#47;&#47;www.netster.com&#47;results&#47;results_arb.asp?pid=valueclick&amp;keywords=olap
+
+else if (value_pair_string.indexOf(&quot;pid=&quot;) &gt;= 0 &amp;&amp; WEB_FILE_NAME.getString().indexOf(&quot;gclid=&quot;) &gt;= 0)
+{
+	ADWORD_CAMPAIGN_IND = &quot;Y&quot;;
+	if (v_part1_str.indexOf(&quot;keywords=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part1_str.substr(9);
+	}
+
+	else if (v_part2_str.indexOf(&quot;keywords=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part2_str.substr(9);
+	}
+
+	else if (v_part3_str.indexOf(&quot;keywords=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part3_str.substr(9);
+	}
+
+	else if (v_part4_str.indexOf(&quot;keywords=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part4_str.substr(9);
+	}
+
+	else if (v_part5_str.indexOf(&quot;keywords=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part5_str.substr(9);
+	}
+
+	else if (v_part6_str.indexOf(&quot;keywords=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part6_str.substr(9);
+	}
+
+	else if (v_part7_str.indexOf(&quot;keywords=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part7_str.substr(9);
+	}
+
+}  &#47;&#47; end newer Paid google logic
+
+&#47;&#47; Newer Paid Google st - http:&#47;&#47;search.upspiral.com&#47;?st=olap
+
+else if (value_pair_string.indexOf(&quot;st=&quot;) &gt;= 0 &amp;&amp; WEB_FILE_NAME.getString().indexOf(&quot;gclid=&quot;) &gt;= 0)
+{
+	ADWORD_CAMPAIGN_IND = &quot;Y&quot;;
+	if (v_part1_str.indexOf(&quot;st=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part1_str.substr(3);
+	}
+
+	else if (v_part2_str.indexOf(&quot;st=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part2_str.substr(3);
+	}
+
+	else if (v_part3_str.indexOf(&quot;st=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part3_str.substr(3);
+	}
+
+	else if (v_part4_str.indexOf(&quot;st=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part4_str.substr(3);
+	}
+
+	else if (v_part5_str.indexOf(&quot;st=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part5_str.substr(3);
+	}
+
+	else if (v_part6_str.indexOf(&quot;st=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part6_str.substr(3);
+	}
+
+	else if (v_part7_str.indexOf(&quot;st=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part7_str.substr(3);
+	}
+
+}  &#47;&#47; end newer Paid google logic
+
+
+else if (value_pair_string.indexOf(&quot;words=&quot;) &gt;= 0)
+{
+	ORGANIC_IND = &apos;Y&apos;;
+	if (v_part1_str.indexOf(&quot;words=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part1_str.substr(6);
+	}
+
+	else if (v_part2_str.indexOf(&quot;words=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part2_str.substr(6);
+	}
+
+	else if (v_part3_str.indexOf(&quot;words=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part3_str.substr(6);
+	}
+
+	else if (v_part4_str.indexOf(&quot;words=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part4_str.substr(6);
+	}
+
+	else if (v_part5_str.indexOf(&quot;words=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part5_str.substr(6);
+	}
+
+	else if (v_part6_str.indexOf(&quot;words=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part6_str.substr(6);
+	}
+
+	else if (v_part7_str.indexOf(&quot;words=&quot;) &gt;= 0)
+	{
+		v_keyword_desc = v_part7_str.substr(6);
+	}
+
+}  &#47;&#47; end sourceforge logic
+
+v2_KEYWORD_DESC = v_keyword_desc.replace( &#47;\+&#47;g,&quot; &quot;).replace( &#47;%22&#47;g,&quot;\&quot;&quot;).replace( &#47;%3a&#47;g,&quot;:&quot;).replace( &#47;%2f&#47;g,&quot;&#47;&quot;).replace( &#47;%25&#47;g,&quot;%&quot;).replace( &#47;%26&#47;g,&quot;&amp;&quot;).replace( &#47;%3d&#47;g,&quot;=&quot;).replace( &#47;%3f&#47;g,&quot;?&quot;).replace( &#47;%2b&#47;g,&quot;+&quot;).replace( &#47;%2c&#47;g,&quot;,&quot;).replace( &#47;%2d&#47;g,&quot;-&quot;).replace( &#47;%2e&#47;g,&quot;.&quot;).replace( &#47;%27&#47;g,&quot;`&quot;).replace( &#47;%28&#47;g,&quot;(&quot;).replace( &#47;%29&#47;g,&quot;)&quot;).replace( &#47;%40&#47;g,&quot;@&quot;).replace( &#47;%7c&#47;g,&quot;|&quot;).replace( &#47;%20&#47;g,&quot;_&quot;);
+
+}</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>v2_KEYWORD_DESC</name>
+        <rename>v2_KEYWORD_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>ORGANIC_IND</name>
+        <rename>ORGANIC_IND</rename>
+        <type>String</type>
+        <length>1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>ADWORD_CAMPAIGN_IND</name>
+        <rename>ADWORD_CAMPAIGN_IND</rename>
+        <type>String</type>
+        <length>1</length>
+        <precision>-1</precision>
+      </field>      <field>        <name>v_keyword_desc</name>
+        <rename>v_keyword_desc</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>79</xloc>
+      <yloc>418</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>TRIM_STRING</name>
+    <type>ScriptValue</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <compatible>Y</compatible>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>ScriptValue</jsScript_name>
+        <jsScript_script>&#47;&#47; No idea why not, but I was unable to trim the variable in the last step without an error
+if (v2_KEYWORD_DESC.getString() != null)
+{
+var KEYWORD_DESC = v2_KEYWORD_DESC.getString().trim();
+}</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>KEYWORD_DESC</name>
+        <rename>KEYWORD_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+      </field>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>467</xloc>
+      <yloc>174</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+   <slave-step-copy-partition-distribution>
+</slave-step-copy-partition-distribution>
+   <slave_transformation>N</slave_transformation>
+</transformation>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>order_capture_google_map.xaction</name>  
+  <title>query data for order capture google map dashboard</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author/>  
+    <description/>  
+    <help>Help rule</help>  
+    <result-type/>  
+    <icon/> 
+  </documentation>  
+  <inputs> 
+    <dept type="string"> 
+      <default-value>Product Development</default-value>  
+      <sources> 
+        <request>dept</request> 
+      </sources> 
+    </dept> 
+  </inputs>  
+  <outputs> 
+    <data type="result-set"/> 
+  </outputs>  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>Perform SQL Query</action-type>  
+      <action-inputs> 
+        <dept type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <query-result type="result-set" mapping="data"/> 
+      </action-outputs>  
+      <component-definition> 
+        <jndi>mdw_mysql</jndi>  
+        <query><![CDATA[SELECT customers.customer_sk AS customernumber,
+  customer_name AS customername,
+  city_name AS city,
+  state_province_code AS state,
+  postal_code AS postalcode,
+  SUM(order_unit_qty * trxn_price_amt) AS
+VALUE
+FROM dimension_customer customers,
+  fact_order_capture orders
+WHERE customers.customer_sk = orders.customer_sk 
+/* and COUNTRY_CODE= 'USA' */
+GROUP BY customers.customer_sk,
+  customer_name,
+  city_name,
+  state_province_code,
+  postal_code,COUNTRY_CODE
+	LIMIT 200]]></query> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

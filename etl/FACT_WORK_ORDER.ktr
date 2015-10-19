@@ -1,0 +1,2699 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>FACT_WORK_ORDER</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input>STAGE_WORK_ORDER</input>
+      <output>FACT_WORK_ORDER</output>
+      <update/>
+      <rejected/>
+      <connection>mdw_mysql</connection>
+      <table>ADMIN_TRANSFORMATION_CONTROL</table>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>Y</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>1000</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2007&#47;10&#47;07 13:04:00.000</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>Customer Change Log
+=============
+Added Select Values steps to work around 2.5.2 mapping bug.
+Pushed date subtraction logic in table input (only valid for MySQL).
+&lt;Add Your Changes Here.  This will assist you in upgrading to future versions of Breadboard BI Solution Slices.  
+Be sure to submit bug fix and enhancement requests to Breadboard BI - submit@breadboardbi.com.&gt;</note>
+      <xloc>7</xloc>
+      <yloc>586</yloc>
+      <width>546</width>
+      <heigth>88</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2008 Breadboard BI. All rights reserved.</note>
+      <xloc>11</xloc>
+      <yloc>702</yloc>
+      <width>267</width>
+      <heigth>23</heigth>
+    </notepad>
+    <notepad>
+      <note>Breadboard BI - Workforce -  Work Order Fact - Version 2.1
+====================================
+1.  This data flow extracts work order information from the staging area.
+
+2.  The error logic is basic and designed to be extended to meet the needs of individual customers.  
+      Error rows are flagged as errors in the stage table.  Rows without errors proceed to the target 
+      table as inserts or updates.  They are removed from the stage table.
+
+3.  Incremental load logic is utilized in conjunction with the ADMIN_TRANSFORMATION_CONTROL table.  This table must be built
+     before running the transformation.
+
+4.  If performance suffers in your environment, remove some or all lookups and convert to outer joins
+     in the table input step.</note>
+      <xloc>3</xloc>
+      <yloc>2</yloc>
+      <width>624</width>
+      <heigth>179</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>jde</name>
+    <server>test</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>rds</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>rds</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>Get Transformation Last Start Date</from><to>STAGE_WORK_ORDER</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_WORK_ORDER_STATUS</from><to>MAP_LOOKUP_WORK_ORDER_TYPE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_CUSTOMER</from><to>MAP_LOOKUP_PRODUCT</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_DATE_TO_SK_WO</from><to>MAP_DATE_TO_SK_ORDER</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_WORK_ORDER_PHASE</from><to>MAP_LOOKUP_WORK_ORDER_CATEGORY_1</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_WORK_ORDER_VARIANCE</from><to>MAP_LOOKUP_WORK_ORDER_PHASE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_WORK_ORDER_TYPE</from><to>MAP_LOOKUP_WORK_ORDER_VARIANCE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_BUSINESS_UNIT</from><to>MAP_LOOKUP_PERSON_ORIGINATOR</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_COMPANY</from><to>MAP_LOOKUP_BUSINESS_UNIT</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_DATE_TO_SK_WORK_ORDER_COMPLETE</from><to>MAP_LOOKUP_COMPANY</to><enabled>Y</enabled> </hop>  <hop> <from>ROUTE_ROWS_WITH_ERRORS</from><to>MAP_DATE_TO_SK_WO</to><enabled>Y</enabled> </hop>  <hop> <from>STAGE_WORK_ORDER</from><to>ROUTE_ROWS_WITH_ERRORS</to><enabled>Y</enabled> </hop>  <hop> <from>ROUTE_ROWS_WITH_ERRORS</from><to>DW_ERROR_IND</to><enabled>Y</enabled> </hop>  <hop> <from>DW_ERROR_IND</from><to>STAGE_WORK_ORDER_errors</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_PERSON_ORIGINATOR</from><to>RENAME_PERSON_ORIGINATOR</to><enabled>Y</enabled> </hop>  <hop> <from>RENAME_PERSON_ORIGINATOR</from><to>MAP_LOOKUP_PERSON_PLANNER</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_PERSON_PLANNER</from><to>RENAME_PERSON_PLANNER</to><enabled>Y</enabled> </hop>  <hop> <from>RENAME_PERSON_PLANNER</from><to>MAP_LOOKUP_PERSON_SUPERVISOR</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_PERSON_SUPERVISOR</from><to>RENAME_PERSON_SUPERVISOR</to><enabled>Y</enabled> </hop>  <hop> <from>RENAME_PERSON_SUPERVISOR</from><to>MAP_LOOKUP_CUSTOMER</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_ORDER_TYPE_RELATED</from><to>RENAME_RELATED_ORDER_TYPE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_PRODUCT</from><to>MAP_LOOKUP_ORDER_TYPE_RELATED</to><enabled>Y</enabled> </hop>  <hop> <from>RENAME_RELATED_ORDER_TYPE</from><to>MAP_LOOKUP_ORDER_TYPE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_ORDER_TYPE</from><to>MAP_LOOKUP_WORK_ORDER_STATUS</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_WORK_ORDER_CATEGORY_1</from><to>RENAME_WORK_ORDER_CATEGORY1</to><enabled>Y</enabled> </hop>  <hop> <from>RENAME_WORK_ORDER_CATEGORY1</from><to>MAP_LOOKUP_WORK_ORDER_CATEGORY_2</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_WORK_ORDER_CATEGORY_2</from><to>RENAME_WORK_ORDER_CATEGORY2</to><enabled>Y</enabled> </hop>  <hop> <from>RENAME_WORK_ORDER_CATEGORY2</from><to>MAP_LOOKUP_UNIT_OF_MEASURE</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_LOOKUP_UNIT_OF_MEASURE</from><to>RENAME_WORK_ORDER_UOM</to><enabled>Y</enabled> </hop>  <hop> <from>ADD_WORK_ORDER_QTY</from><to>FACT_WORK_ORDER</to><enabled>Y</enabled> </hop>  <hop> <from>RENAME_WORK_ORDER_UOM</from><to>ADD_WORK_ORDER_QTY</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_DATE_TO_SK_ORDER</from><to>MAP_DATE_TO_SK_ASSIGNED</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_DATE_TO_SK_ASSIGNED</from><to>MAP_DATE_TO_SK_WORK_ORDER_START</to><enabled>Y</enabled> </hop>  <hop> <from>MAP_DATE_TO_SK_WORK_ORDER_START</from><to>MAP_DATE_TO_SK_WORK_ORDER_COMPLETE</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>DW_ERROR_IND</name>
+    <type>Constant</type>
+    <description>This step adds the Y string constant to the data flow.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>DW_ERROR_IND</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>Y</nullif>
+        <length>1</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+     <cluster_schema/>
+    <GUI>
+      <xloc>130</xloc>
+      <yloc>517</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>FACT_WORK_ORDER</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema/>
+      <table>FACT_WORK_ORDER</table>
+      <key>
+        <name>WORK_ORDER_ID</name>
+        <field>WORK_ORDER_ID</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>WORK_ORDER_LINE_ID</name>
+        <field>WORK_ORDER_LINE_ID</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>SOURCE_SYSTEM_ID</name>
+        <field>SOURCE_SYSTEM_SK</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>BUSINESS_UNIT_SK</name>
+        <rename>BUSINESS_UNIT_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>COMPANY_SK</name>
+        <rename>COMPANY_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>CUSTOMER_SK</name>
+        <rename>CUSTOMER_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PRODUCT_SK</name>
+        <rename>PRODUCT_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ORDERED_PRIMARY_QTY</name>
+        <rename>ORDERED_PRIMARY_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ORIGINATOR_SK</name>
+        <rename>ORIGINATOR_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>PLANNER_SK</name>
+        <rename>PLANNER_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>RELATED_ORDER_TYPE_SK</name>
+        <rename>RELATED_ORDER_TYPE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>SCRAPPED_PRIMARY_QTY</name>
+        <rename>SCRAPPED_PRIMARY_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>SHIPPED_PRIMARY_QTY</name>
+        <rename>SHIPPED_PRIMARY_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>SOURCE_SYSTEM_SK</name>
+        <rename>SOURCE_SYSTEM_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>SUPERVISOR_SK</name>
+        <rename>SUPERVISOR_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_ASSIGN_DATE</name>
+        <rename>WORK_ORDER_ASSIGN_DATE</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_ASSIGN_DATE_SK</name>
+        <rename>WORK_ORDER_ASSIGN_DATE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_CATEGORY1_SK</name>
+        <rename>WORK_ORDER_CATEGORY1_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_CATEGORY2_SK</name>
+        <rename>WORK_ORDER_CATEGORY2_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_COMPLETE_DATE</name>
+        <rename>WORK_ORDER_COMPLETE_DATE</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_COMPLETE_DATE_SK</name>
+        <rename>WORK_ORDER_COMPLETE_DATE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_DATE</name>
+        <rename>WORK_ORDER_DATE</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_DATE_SK</name>
+        <rename>WORK_ORDER_DATE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_ID</name>
+        <rename>WORK_ORDER_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_LINE_ID</name>
+        <rename>WORK_ORDER_LINE_ID</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_ORDER_DATE</name>
+        <rename>WORK_ORDER_ORDER_DATE</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_ORDER_DATE_SK</name>
+        <rename>WORK_ORDER_ORDER_DATE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_PHASE_SK</name>
+        <rename>WORK_ORDER_PHASE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_START_DATE</name>
+        <rename>WORK_ORDER_START_DATE</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_START_DATE_SK</name>
+        <rename>WORK_ORDER_START_DATE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_TYPE_SK</name>
+        <rename>WORK_ORDER_TYPE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_UOM_SK</name>
+        <rename>WORK_ORDER_UOM_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_VARIANCE_SK</name>
+        <rename>WORK_ORDER_VARIANCE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_TYPE_SK</name>
+        <rename>WORK_ORDER_TYPE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_STATUS_SK</name>
+        <rename>WORK_ORDER_STATUS_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ORDER_TYPE_SK</name>
+        <rename>ORDER_TYPE_SK</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>WORK_ORDER_QTY</name>
+        <rename>WORK_ORDER_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>ASSIGN_MINUTE_QTY</name>
+        <rename>ASSIGN_MINUTE_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>START_MINUTE_QTY</name>
+        <rename>START_MINUTE_QTY</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>COMPLETE_MINUTE_QTY</name>
+        <rename>COMPLETE_MINUTE_QTY</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+     <cluster_schema/>
+    <GUI>
+      <xloc>1009</xloc>
+      <yloc>178</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Get Transformation Last Start Date</name>
+    <type>SystemInfo</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>MAX</name>
+        <type>start date range</type>
+        </field>
+      </fields>
+     <cluster_schema/>
+    <GUI>
+      <xloc>78</xloc>
+      <yloc>227</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_DATE_TO_SK_ASSIGNED</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CONVERT_DATE_TO_SK</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_CONVERT_DATE_TO_SK.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>WORK_ORDER_ASSIGN_DATE</field>  <mapping>IN_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>WORK_ORDER_ASSIGN_DATE_SK</field>  <mapping>DATE_SK</mapping></connector>
+    <connector><field>WORK_ORDER_ASSIGN_DATE</field>  <mapping>OUT_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>355</xloc>
+      <yloc>296</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_DATE_TO_SK_ORDER</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CONVERT_DATE_TO_SK</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_CONVERT_DATE_TO_SK.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>WORK_ORDER_ORDER_DATE</field>  <mapping>IN_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>WORK_ORDER_ORDER_DATE_SK</field>  <mapping>DATE_SK</mapping></connector>
+    <connector><field>WORK_ORDER_ORDER_DATE</field>  <mapping>OUT_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>262</xloc>
+      <yloc>240</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_DATE_TO_SK_WO</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CONVERT_DATE_TO_SK</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_CONVERT_DATE_TO_SK.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>WORK_ORDER_DATE</field>  <mapping>IN_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>WORK_ORDER_DATE_SK</field>  <mapping>DATE_SK</mapping></connector>
+    <connector><field>WORK_ORDER_DATE</field>  <mapping>OUT_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>174</xloc>
+      <yloc>299</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_DATE_TO_SK_WORK_ORDER_COMPLETE</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CONVERT_DATE_TO_SK</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_CONVERT_DATE_TO_SK.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>WORK_ORDER_COMPLETE_DATE</field>  <mapping>IN_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>WORK_ORDER_COMPLETE_DATE_SK</field>  <mapping>DATE_SK</mapping></connector>
+    <connector><field>WORK_ORDER_COMPLETE_DATE</field>  <mapping>OUT_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>594</xloc>
+      <yloc>298</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_DATE_TO_SK_WORK_ORDER_START</name>
+    <type>Mapping</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_CONVERT_DATE_TO_SK</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_CONVERT_DATE_TO_SK.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>WORK_ORDER_START_DATE</field>  <mapping>IN_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>WORK_ORDER_START_DATE_SK</field>  <mapping>DATE_SK</mapping></connector>
+    <connector><field>WORK_ORDER_START_DATE</field>  <mapping>OUT_DATE</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>480</xloc>
+      <yloc>242</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_BUSINESS_UNIT</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_BUSINESS_UNIT</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_BUSINESS_UNIT.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>BUSINESS_UNIT_ID</field>  <mapping>BUSINESS_UNIT_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>BUSINESS_UNIT_SK</field>  <mapping>BUSINESS_UNIT_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>824</xloc>
+      <yloc>157</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_COMPANY</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_COMPANY</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_COMPANY.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>COMPANY_ID</field>  <mapping>COMPANY_ID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>COMPANY_SK</field>  <mapping>COMPANY_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>709</xloc>
+      <yloc>242</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_CUSTOMER</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_CUSTOMER</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_CUSTOMER.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>CUSTOMER_ID</field>  <mapping>CUSTOMER_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>CUSTOMER_SETID</field>  <mapping>CUSTOMER_SETID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>CUSTOMER_SK</field>  <mapping>CUSTOMER_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>1161</xloc>
+      <yloc>194</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_ORDER_TYPE</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_ORDER_TYPE</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_ORDER_TYPE.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>ORDER_TYPE_ID</field>  <mapping>ORDER_TYPE_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>ORDER_TYPE_SK</field>  <mapping>ORDER_TYPE_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>1098</xloc>
+      <yloc>491</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_ORDER_TYPE_RELATED</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_ORDER_TYPE</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_ORDER_TYPE.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>RELATED_ORDER_TYPE_ID</field>  <mapping>ORDER_TYPE_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>ORDER_TYPE_SK</field>  <mapping>ORDER_TYPE_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>1089</xloc>
+      <yloc>348</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_PERSON_ORIGINATOR</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_PERSON</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_PERSON.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>ORIGINATOR_ID</field>  <mapping>EMPLOYEE_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>PERSON_SK</field>  <mapping>PERSON_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>838</xloc>
+      <yloc>14</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_PERSON_PLANNER</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_PERSON</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_PERSON.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>PLANNER_ID</field>  <mapping>EMPLOYEE_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>PERSON_SK</field>  <mapping>PERSON_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>1025</xloc>
+      <yloc>14</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_PERSON_SUPERVISOR</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_PERSON</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_PERSON.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>SUPERVISOR_ID</field>  <mapping>EMPLOYEE_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>PERSON_SK</field>  <mapping>PERSON_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>1231</xloc>
+      <yloc>14</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_PRODUCT</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_PRODUCT</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_PRODUCT.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>PRODUCT_ID</field>  <mapping>PRODUCT_ID</mapping></connector>
+    <connector><field>PRODUCT_SETID</field>  <mapping>PRODUCT_SETID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>PRODUCT_SK</field>  <mapping>PRODUCT_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>1129</xloc>
+      <yloc>273</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_UNIT_OF_MEASURE</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_UNIT_OF_MEASURE</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_UNIT_OF_MEASURE.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>WORK_ORDER_UOM_ID</field>  <mapping>UNIT_OF_MEASURE_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    </input>
+  <output>
+    <connector><field>UNIT_OF_MEASURE_SK</field>  <mapping>UNIT_OF_MEASURE_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>699</xloc>
+      <yloc>421</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_WORK_ORDER_CATEGORY_1</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_WORK_ORDER_CATEGORY</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_WORK_ORDER_CATEGORY.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>WORK_ORDER_CATEGORY1_ID</field>  <mapping>WORK_ORDER_CATEGORY_ID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>WORK_ORDER_CATEGORY_SK</field>  <mapping>WORK_ORDER_CATEGORY_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>801</xloc>
+      <yloc>724</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_WORK_ORDER_CATEGORY_2</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_WORK_ORDER_CATEGORY</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_WORK_ORDER_CATEGORY.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>WORK_ORDER_CATEGORY2_ID</field>  <mapping>WORK_ORDER_CATEGORY_ID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>WORK_ORDER_CATEGORY_SK</field>  <mapping>WORK_ORDER_CATEGORY_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>712</xloc>
+      <yloc>580</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_WORK_ORDER_PHASE</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_WORK_ORDER_PHASE</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_WORK_ORDER_PHASE.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>WORK_ORDER_PHASE_ID</field>  <mapping>WORK_ORDER_PHASE_ID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>WORK_ORDER_PHASE_SK</field>  <mapping>WORK_ORDER_PHASE_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>952</xloc>
+      <yloc>770</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_WORK_ORDER_STATUS</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_WORK_ORDER_STATUS</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_WORK_ORDER_STATUS.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>WORK_ORDER_STATUS_ID</field>  <mapping>WORK_ORDER_STATUS_ID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>WORK_ORDER_STATUS_SK</field>  <mapping>WORK_ORDER_STATUS_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>1112</xloc>
+      <yloc>571</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_WORK_ORDER_TYPE</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_WORK_ORDER_TYPE</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_WORK_ORDER_TYPE.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>WORK_ORDER_TYPE_ID</field>  <mapping>WORK_ORDER_TYPE_ID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>WORK_ORDER_TYPE_SK</field>  <mapping>WORK_ORDER_TYPE_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>1150</xloc>
+      <yloc>646</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>MAP_LOOKUP_WORK_ORDER_VARIANCE</name>
+    <type>Mapping</type>
+    <description>The reusable mapping returns the surrogate key from the dimension.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <trans_name>MAP_LOOKUP_WORK_ORDER_VARIANCE</trans_name>
+    <filename>${Internal.Transformation.Filename.Directory}\MAP_LOOKUP_WORK_ORDER_VARIANCE.ktr</filename>
+    <directory_path>&#47;</directory_path>
+  <input>
+    <connector><field>WORK_ORDER_VARIANCE_ID</field>  <mapping>WORK_ORDER_VARIANCE_ID</mapping></connector>
+    <connector><field>SOURCE_SYSTEM_ID</field>  <mapping>SOURCE_SYSTEM_ID</mapping></connector>
+    <connector><field>STREAM_DATE</field>  <mapping>STREAM_DATE</mapping></connector>
+    </input>
+  <output>
+    <connector><field>WORK_ORDER_VARIANCE_SK</field>  <mapping>WORK_ORDER_VARIANCE_SK</mapping></connector>
+    </output>
+     <cluster_schema/>
+    <GUI>
+      <xloc>1099</xloc>
+      <yloc>750</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>ROUTE_ROWS_WITH_ERRORS</name>
+    <type>FilterRows</type>
+    <description>This step routes rows with error conditions (as defined by the client) back to the stage table flagged as an error.  The current error logic is basic and is designed to be extended to meet the needs of individual customers.  Rows without errors proceed to the target table as inserts or updates, they are subsequently removed from the stage table.</description>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+<send_true_to>MAP_DATE_TO_SK_WO</send_true_to>
+<send_false_to>DW_ERROR_IND</send_false_to>
+    <compare>
+<condition>
+ <negated>N</negated>
+ <leftvalue>WORK_ORDER_ID</leftvalue>
+ <function>IS NOT NULL</function>
+ <rightvalue/>
+ <value><name>constant</name><type>String</type><text>Y</text><length>-1</length><precision>-1</precision><isnull>N</isnull></value> </condition>
+    </compare>
+     <cluster_schema/>
+    <GUI>
+      <xloc>153</xloc>
+      <yloc>417</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_WORK_ORDER</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the PS_RA_CAMPAIGN table.  It maintains all marketing campaign program information, such as name, start and end dates, relationship to a parent (roll up), overall campaign status, objective and description.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <sql>SELECT
+  WORK_ORDER_ID
+, WORK_ORDER_LINE_ID
+, SOURCE_SYSTEM_ID
+, COMPANY_ID
+, BUSINESS_UNIT_ID
+, SUPERVISOR_ID
+, PLANNER_ID
+, ORIGINATOR_ID
+, CUSTOMER_ID
+, CUSTOMER_SETID
+, PRODUCT_ID
+, PRODUCT_SETID
+, ORDER_TYPE_ID
+, RELATED_ORDER_TYPE_ID
+, WORK_ORDER_TYPE_ID
+, WORK_ORDER_STATUS_ID
+, WORK_ORDER_VARIANCE_ID
+, WORK_ORDER_PHASE_ID
+, WORK_ORDER_CATEGORY1_ID
+, WORK_ORDER_CATEGORY2_ID
+, WORK_ORDER_UOM_ID
+, WORK_ORDER_DATE
+, WORK_ORDER_DATE AS STREAM_DATE
+, WORK_ORDER_ORDER_DATE
+, WORK_ORDER_ASSIGN_DATE
+, WORK_ORDER_START_DATE
+, WORK_ORDER_COMPLETE_DATE
+, SCRAPPED_PRIMARY_QTY
+, SHIPPED_PRIMARY_QTY
+, ORDERED_PRIMARY_QTY
+, (CASE WHEN WORK_ORDER_DATE IS NULL OR WORK_ORDER_ASSIGN_DATE IS NULL THEN 0 ELSE
+TIMEDIFF(WORK_ORDER_ASSIGN_DATE,WORK_ORDER_DATE) END) * 60 AS ASSIGN_MINUTE_QTY
+, (CASE WHEN WORK_ORDER_DATE IS NULL OR WORK_ORDER_START_DATE IS NULL THEN 0 ELSE
+TIMEDIFF(WORK_ORDER_START_DATE,WORK_ORDER_DATE) END) * 60 AS START_MINUTE_QTY
+, (CASE WHEN WORK_ORDER_DATE IS NULL OR WORK_ORDER_COMPLETE_DATE IS NULL THEN 0 ELSE
+TIMEDIFF(WORK_ORDER_COMPLETE_DATE,WORK_ORDER_DATE) END) * 60 AS COMPLETE_MINUTE_QTY
+, DW_LOAD_DATE
+FROM STAGE_WORK_ORDER
+WHERE DW_LOAD_DATE &gt;= ?</sql>
+    <limit>0</limit>
+    <lookup>Get Transformation Last Start Date</lookup>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>Y</variables_active>
+     <cluster_schema/>
+    <GUI>
+      <xloc>62</xloc>
+      <yloc>343</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_WORK_ORDER_errors</name>
+    <type>Update</type>
+    <description>This step updates rows in the stage table with an error flag.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <connection>mdw_mysql</connection>
+    <commit>0</commit>
+    <error_ignored>N</error_ignored>
+    <ignore_flag_field/>
+    <lookup>
+      <schema/>
+      <table>STAGE_WORK_ORDER</table>
+      <key>
+        <name>WORK_ORDER_ID</name>
+        <field>WORK_ORDER_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>WORK_ORDER_LINE_ID</name>
+        <field>WORK_ORDER_LINE_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>SOURCE_SYSTEM_ID</name>
+        <field>SOURCE_SYSTEM_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>WORK_ORDER_ID</name>
+        <rename>WORK_ORDER_ID</rename>
+        </value>
+      <value>
+        <name>WORK_ORDER_LINE_ID</name>
+        <rename>WORK_ORDER_LINE_ID</rename>
+        </value>
+      <value>
+        <name>SOURCE_SYSTEM_ID</name>
+        <rename>SOURCE_SYSTEM_ID</rename>
+        </value>
+      <value>
+        <name>DW_ERROR_IND</name>
+        <rename>DW_ERROR_IND</rename>
+        </value>
+      </lookup>
+     <cluster_schema/>
+    <GUI>
+      <xloc>302</xloc>
+      <yloc>525</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>RENAME_PERSON_ORIGINATOR</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>WORK_ORDER_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_LINE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SOURCE_SYSTEM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPANY_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>BUSINESS_UNIT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SUPERVISOR_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PLANNER_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CUSTOMER_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CUSTOMER_SETID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_SETID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORDER_TYPE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>RELATED_ORDER_TYPE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_TYPE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_STATUS_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_VARIANCE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_PHASE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_CATEGORY1_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_CATEGORY2_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_UOM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>STREAM_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SCRAPPED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SHIPPED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORDERED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DW_LOAD_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ORDER_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ORDER_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_START_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_START_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ASSIGN_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ASSIGN_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_COMPLETE_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_COMPLETE_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPANY_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>BUSINESS_UNIT_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PERSON_SK</name>
+        <rename>ORIGINATOR_SK</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ASSIGN_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>START_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPLETE_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>    </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>943</xloc>
+      <yloc>82</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>RENAME_PERSON_PLANNER</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>WORK_ORDER_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_LINE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SOURCE_SYSTEM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPANY_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>BUSINESS_UNIT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SUPERVISOR_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CUSTOMER_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CUSTOMER_SETID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_SETID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORDER_TYPE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>RELATED_ORDER_TYPE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_TYPE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_STATUS_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_VARIANCE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_PHASE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_CATEGORY1_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_CATEGORY2_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_UOM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>STREAM_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SCRAPPED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SHIPPED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORDERED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DW_LOAD_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ORDER_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ORDER_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_START_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_START_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ASSIGN_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ASSIGN_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_COMPLETE_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_COMPLETE_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPANY_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>BUSINESS_UNIT_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORIGINATOR_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PERSON_SK</name>
+        <rename>PLANNER_SK</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ASSIGN_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>START_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPLETE_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>    </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>1115</xloc>
+      <yloc>83</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>RENAME_PERSON_SUPERVISOR</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>WORK_ORDER_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_LINE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SOURCE_SYSTEM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPANY_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>BUSINESS_UNIT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CUSTOMER_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CUSTOMER_SETID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_SETID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORDER_TYPE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>RELATED_ORDER_TYPE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_TYPE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_STATUS_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_VARIANCE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_PHASE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_CATEGORY1_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_CATEGORY2_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_UOM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>STREAM_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SCRAPPED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SHIPPED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORDERED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DW_LOAD_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ORDER_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ORDER_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_START_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_START_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ASSIGN_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ASSIGN_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_COMPLETE_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_COMPLETE_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPANY_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>BUSINESS_UNIT_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORIGINATOR_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PLANNER_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PERSON_SK</name>
+        <rename>SUPERVISOR_SK</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ASSIGN_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>START_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPLETE_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>    </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>1268</xloc>
+      <yloc>113</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>RENAME_RELATED_ORDER_TYPE</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>WORK_ORDER_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_LINE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SOURCE_SYSTEM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPANY_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>BUSINESS_UNIT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CUSTOMER_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CUSTOMER_SETID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_SETID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORDER_TYPE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_TYPE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_STATUS_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_VARIANCE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_PHASE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_CATEGORY1_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_CATEGORY2_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_UOM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>STREAM_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SCRAPPED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SHIPPED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORDERED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DW_LOAD_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ORDER_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ORDER_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_START_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_START_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ASSIGN_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ASSIGN_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_COMPLETE_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_COMPLETE_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPANY_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>BUSINESS_UNIT_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORIGINATOR_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PLANNER_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SUPERVISOR_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CUSTOMER_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORDER_TYPE_SK</name>
+        <rename>RELATED_ORDER_TYPE_SK</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ASSIGN_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>START_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPLETE_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>    </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>1087</xloc>
+      <yloc>419</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>RENAME_WORK_ORDER_CATEGORY1</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>WORK_ORDER_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_LINE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SOURCE_SYSTEM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPANY_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>BUSINESS_UNIT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CUSTOMER_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CUSTOMER_SETID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_SETID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_TYPE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_STATUS_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_VARIANCE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_PHASE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_CATEGORY2_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_UOM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>STREAM_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SCRAPPED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SHIPPED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORDERED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DW_LOAD_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ORDER_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ORDER_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_START_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_START_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ASSIGN_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ASSIGN_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_COMPLETE_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_COMPLETE_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPANY_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>BUSINESS_UNIT_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORIGINATOR_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PLANNER_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SUPERVISOR_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CUSTOMER_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>RELATED_ORDER_TYPE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORDER_TYPE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_STATUS_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_TYPE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_VARIANCE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_PHASE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_CATEGORY_SK</name>
+        <rename>WORK_ORDER_CATEGORY1_SK</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ASSIGN_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>START_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPLETE_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>    </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>748</xloc>
+      <yloc>647</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>RENAME_WORK_ORDER_CATEGORY2</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>WORK_ORDER_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_LINE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SOURCE_SYSTEM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPANY_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>BUSINESS_UNIT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CUSTOMER_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CUSTOMER_SETID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_SETID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_TYPE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_STATUS_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_VARIANCE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_PHASE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_UOM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>STREAM_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SCRAPPED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SHIPPED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORDERED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DW_LOAD_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ORDER_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ORDER_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_START_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_START_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ASSIGN_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ASSIGN_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_COMPLETE_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_COMPLETE_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPANY_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>BUSINESS_UNIT_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORIGINATOR_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PLANNER_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SUPERVISOR_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CUSTOMER_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>RELATED_ORDER_TYPE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORDER_TYPE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_STATUS_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_TYPE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_VARIANCE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_PHASE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_CATEGORY1_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_CATEGORY_SK</name>
+        <rename>WORK_ORDER_CATEGORY2_SK</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ASSIGN_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>START_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPLETE_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>    </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>687</xloc>
+      <yloc>512</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>RENAME_WORK_ORDER_UOM</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>WORK_ORDER_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_LINE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SOURCE_SYSTEM_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPANY_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>BUSINESS_UNIT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CUSTOMER_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CUSTOMER_SETID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_SETID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_TYPE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_STATUS_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_VARIANCE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_PHASE_ID</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>STREAM_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SCRAPPED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SHIPPED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORDERED_PRIMARY_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>DW_LOAD_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ORDER_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ORDER_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_START_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_START_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ASSIGN_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_ASSIGN_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_COMPLETE_DATE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_COMPLETE_DATE</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPANY_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>BUSINESS_UNIT_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORIGINATOR_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PLANNER_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>SUPERVISOR_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>CUSTOMER_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>PRODUCT_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>RELATED_ORDER_TYPE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ORDER_TYPE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_STATUS_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_TYPE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_VARIANCE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_PHASE_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_CATEGORY1_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>WORK_ORDER_CATEGORY2_SK</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>UNIT_OF_MEASURE_SK</name>
+        <rename>WORK_ORDER_UOM_SK</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>ASSIGN_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>START_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>COMPLETE_MINUTE_QTY</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>    </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>797</xloc>
+      <yloc>320</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>ADD_WORK_ORDER_QTY</name>
+    <type>ScriptValueMod</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <script/>
+    <jsScripts>      <jsScript>        <jsScript_type>0</jsScript_type>
+        <jsScript_name>Script 1</jsScript_name>
+        <jsScript_script>var WORK_ORDER_QTY = 1;
+</jsScript_script>
+      </jsScript>      <jsScript>        <jsScript_type>-1</jsScript_type>
+        <jsScript_name>date2str_Sample</jsScript_name>
+        <jsScript_script>&#47;&#47; Converts the given Date to a string Value.
+&#47;&#47;
+&#47;&#47; Usage:
+&#47;&#47; date2str(var);
+&#47;&#47; 1: Date - The Variable with the Date to convert.
+&#47;&#47; This call uses your localized format.
+&#47;&#47;
+&#47;&#47; date2str(var, var);
+&#47;&#47; 1: Date - The Variable with the Date to convert.
+&#47;&#47; 2: String - The Format:
+&#47;&#47; yy &#47; yyyy - 06 &#47; 2006
+&#47;&#47; MM &#47; MMM &#47; MMMMM - 11 &#47; Nov &#47; November
+&#47;&#47; d &#47; dd  - 1 &#47; 01
+&#47;&#47; E &#47; EEEE - Tue &#47; Tuesday
+&#47;&#47; hh &#47; HH - 11 &#47; 23
+&#47;&#47; m &#47; mm - 5 &#47; 05
+&#47;&#47; s &#47; ss - 8 &#47; 08
+&#47;&#47;
+&#47;&#47; date2str(var, var, var);
+&#47;&#47; 1: Date - The Variable with the Date to convert.
+&#47;&#47; 2: String - The Format:
+&#47;&#47; 3: String - The Locale Parameter
+&#47;&#47; An valid ISO Language Code. (DE = German, EN = English, FR = France, ...)
+&#47;&#47; 
+&#47;&#47; 2006-11-15
+&#47;&#47;
+var dValue = new Date();
+Alert(date2str(dValue));
+Alert(date2str(dValue,&quot;dd.MM.yyyy&quot;));
+Alert(date2str(dValue,&quot;dd.MM.yyyy HH:mm:ss&quot;));
+Alert(date2str(dValue,&quot;dd.MMM.yyyy&quot;,&quot;GE&quot;));
+Alert(date2str(dValue,&quot;E.MMM.yyyy&quot;,&quot;EN&quot;));
+     </jsScript_script>
+      </jsScript>      <jsScript>        <jsScript_type>-1</jsScript_type>
+        <jsScript_name>dateDiff_Sample</jsScript_name>
+        <jsScript_script>&#47;&#47; Returns the difference, of a given type, between 
+&#47;&#47; two dates.
+&#47;&#47;
+&#47;&#47; Usage:
+&#47;&#47; dateDiff(var,var,var);
+&#47;&#47; 1: Date - The Variable with the Startdate.
+&#47;&#47; 2: Date - The Variable with the Endate.
+&#47;&#47; 3: String - The Type which represents the 
+&#47;&#47; the return value.
+&#47;&#47; y - Years
+&#47;&#47; m - Months
+&#47;&#47; d - Days
+&#47;&#47; w - Weeks
+&#47;&#47; wd - Workingdays
+&#47;&#47; hh - Hours
+&#47;&#47; mi - Minutes
+&#47;&#47; ss - Seconds
+&#47;&#47; 
+&#47;&#47; 2006-11-15
+&#47;&#47;
+var d1 = new Date();
+var d2 = dateAdd(d1,&quot;y&quot;,1);
+Alert(dateDiff(d1,d2,&quot;y&quot;));
+Alert(dateDiff(d1,d2,&quot;m&quot;));
+Alert(dateDiff(d1,d2,&quot;d&quot;));
+Alert(dateDiff(d1,d2,&quot;wd&quot;));</jsScript_script>
+      </jsScript>    </jsScripts>    <fields>      <field>        <name>WORK_ORDER_QTY</name>
+        <rename>WORK_ORDER_QTY</rename>
+        <type>Number</type>
+        <length>16</length>
+        <precision>2</precision>
+      </field>    </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>899</xloc>
+      <yloc>240</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+</transformation>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>Web Visits by Country and Region Grouped by Week</title>
+  <version>2</version>
+  <logging-level/>
+  <documentation> 
+    <author>Breadboard BI, LLC</author>  
+    <description>Returns metrics for country and region, grouped by week.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>
+
+  <inputs> 
+    <COUNTRY type="string"> 
+      <sources> 
+        <request>COUNTRY</request> 
+      </sources> 
+    </COUNTRY>  
+    <REGION type="string"> 
+      <sources> 
+        <request>REGION</request> 
+      </sources> 
+    </REGION>  
+    <MONTH_OF_YEAR type="string"> 
+      <sources> 
+        <request>MONTH_OF_YEAR</request> 
+      </sources> 
+    </MONTH_OF_YEAR> 
+  </inputs>
+
+  <outputs> 
+    <swresult type="result-set"/> 
+  </outputs>
+
+  <resources/>
+  
+  <actions> 
+    <actions> 
+      <action-definition> 
+        <component-name>SQLLookupRule</component-name>
+        <action-type>Web Visit SQL Query with Country and Region Filters</action-type>
+        <action-inputs> 
+          <COUNTRY type="string"/>  
+          <REGION type="string"/>  
+          <MONTH_OF_YEAR type="string"/> 
+        </action-inputs>
+        <action-outputs> 
+          <query-result type="result-set" mapping="swresult"/> 
+        </action-outputs>
+        <component-definition> 
+          <query><![CDATA[SELECT MAX(D.DAY_NAME) AS Day, 
+          SUM(F.WEB_VISIT_QTY) AS "Unique Visits", 
+          SUM(F.WEB_PAGE_VIEW_QTY) AS "Page Views"
+FROM FACT_WEB_SITE_VISIT F, DIMENSION_DAY D, 
+DIMENSION_WEB_VISITOR V
+WHERE F.VISIT_DATE_SK = D.DATE_SK
+AND F.WEB_VISITOR_SK = V.WEB_VISITOR_SK
+AND V.COUNTRY_CODE = '{COUNTRY}'
+AND V.REGION_NAME = '{REGION}'
+AND D.MONTH_SK = '{MONTH_OF_YEAR}'
+GROUP BY D.DATE_SK
+ORDER BY D.DATE_SK ASC]]></query>  
+          <jndi>mdw_mysql</jndi>  
+          <live>false</live> 
+        </component-definition> 
+      </action-definition>
+ 
+    </actions>
+ 
+  </actions> 
+</action-sequence>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>Accounts Receivable by Period, Account Type, and BU</title>  
+  <version>1</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Return the AR amounts for a particular period, account type, and product category.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <inputs> 
+      
+    
+  </inputs>  
+  <outputs> 
+    <swresult type="result-set"/> 
+  </outputs>  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <component-name>JavascriptRule</component-name>  
+      <action-type>JavaScript DSQL</action-type>  
+      <action-inputs> 
+          
+        
+      </action-inputs>  
+      <action-outputs> 
+        <query type="string"/> 
+      </action-outputs>  
+      <component-definition> 
+         
+      <script><![CDATA[query   = "SELECT P.FISCAL_PERIOD_NAME,  ";
+         query += "SUM(F.MANUFACTURING_BUDGET_AMT) AS 'Manufacturing Budget Amount', ";
+         query += "SUM(F.MANUFACTURING_ACTUALS_AMT) AS 'Manufacturing Actuals Amount' ";
+         query += "FROM FACT_BUDGET_FORECAST F, ";
+         query += "DIMENSION_FISCAL_PERIOD P ";
+         query += "WHERE F.FISCAL_PERIOD_SK = P.FISCAL_PERIOD_SK ";
+         query += "GROUP BY  P.FISCAL_PERIOD_NAME ";
+         query += "ORDER BY  P.FISCAL_PERIOD_ID ASC ";
+         query += "LIMIT 5 ";]]></script></component-definition> 
+    </action-definition>  
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>Sales Order Capture SQL Query with Country and Category Filters</action-type>  
+      <action-inputs> 
+        <query type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <query-result type="result-set" mapping="swresult"/> 
+      </action-outputs>  
+      <component-definition> 
+        <jndi>mdw_mysql</jndi> 
+      </component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

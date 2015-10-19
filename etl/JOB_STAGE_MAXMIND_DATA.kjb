@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job>
+  <name>JOB_STAGE_MAXMIND_DATA</name>
+    <description/>
+    <extended_description/>
+    <job_version/>
+  <directory>&#47;</directory>
+  <created_user/>
+  <created_date>2007&#47;09&#47;05 09:51:49.000</created_date>
+  <modified_user>admin</modified_user>
+  <modified_date>2007&#47;03&#47;03 08:32:03.000</modified_date>
+  <connection>
+    <name>jde</name>
+    <server>test</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>rds</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>rds</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <logconnection/>
+  <logtable>ADMIN_JOB_CONTROL</logtable>
+   <use_batchid>Y</use_batchid>
+   <pass_batchid>Y</pass_batchid>
+   <use_logfield>Y</use_logfield>
+   <shared_objects_file/>
+  <entries>
+    <entry>
+      <name>START</name>
+      <description>A job starts to process here.</description>
+      <type>SPECIAL</type>
+      <start>Y</start>
+      <dummy>N</dummy>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
+      <interval>60</interval>
+      <hour>12</hour>
+      <minutes>0</minutes>
+      <weekDay>1</weekDay>
+      <DayOfMonth>1</DayOfMonth>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>82</xloc>
+      <yloc>186</yloc>
+      </entry>
+    <entry>
+      <name>DUMMY</name>
+      <description>A dummy entry.</description>
+      <type>SPECIAL</type>
+      <start>N</start>
+      <dummy>Y</dummy>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
+      <interval>60</interval>
+      <hour>12</hour>
+      <minutes>0</minutes>
+      <weekDay>1</weekDay>
+      <DayOfMonth>1</DayOfMonth>
+      <parallel>N</parallel>
+      <draw>N</draw>
+      <nr>0</nr>
+      <xloc>50</xloc>
+      <yloc>50</yloc>
+      </entry>
+    <entry>
+      <name>OK</name>
+      <description>This comparisson is true when no errors have occured.</description>
+      <type>EVAL</type>
+      <script>errors == 0</script>
+      <parallel>N</parallel>
+      <draw>N</draw>
+      <nr>0</nr>
+      <xloc>0</xloc>
+      <yloc>0</yloc>
+      </entry>
+    <entry>
+      <name>ERROR</name>
+      <description>This comparisson is true when one or more errors have occured.</description>
+      <type>EVAL</type>
+      <script>errors != 0</script>
+      <parallel>N</parallel>
+      <draw>N</draw>
+      <nr>0</nr>
+      <xloc>0</xloc>
+      <yloc>0</yloc>
+      </entry>
+    <entry>
+      <name>STAGE_GEO_CITY</name>
+      <description>This job entry loads the free MaxMind GeoLite City file and the MaxMind World Cities files into database staging tables.</description>
+      <type>TRANS</type>
+      <filename/>
+      <transname>STAGE_GEO_CITY</transname>
+      <directory>&#47;</directory>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>Y</clear_rows>
+      <clear_files>Y</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Error</loglevel>
+      <cluster>N</cluster>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>250</xloc>
+      <yloc>186</yloc>
+      </entry>
+    <entry>
+      <name>STAGE_GEO_ORGANIZATION</name>
+      <description>This job entry stages the MaxMind GeoIP® Organization file data into a database stage table.  This data is used to determine the organization origin for corporate networks and the name of the ISP for home users.
+</description>
+      <type>TRANS</type>
+      <filename/>
+      <transname>STAGE_GEO_ORGANIZATION</transname>
+      <directory>&#47;</directory>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>Y</clear_rows>
+      <clear_files>Y</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Error</loglevel>
+      <cluster>N</cluster>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>249</xloc>
+      <yloc>273</yloc>
+      </entry>
+    <entry>
+      <name>DIMENSION_WEB_ORGANIZATION</name>
+      <description>This job entry loads the web organization dimension.  It is currently not used.</description>
+      <type>TRANS</type>
+      <filename/>
+      <transname>DIMENSION_WEB_ORGANIZATION</transname>
+      <directory>&#47;</directory>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>Y</clear_rows>
+      <clear_files>Y</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Error</loglevel>
+      <cluster>N</cluster>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>583</xloc>
+      <yloc>274</yloc>
+      </entry>
+    <entry>
+      <name>DIMENSION_GEO_LOCATION</name>
+      <description>This job entry loads the web organization dimension.  It is currently not used.</description>
+      <type>TRANS</type>
+      <filename/>
+      <transname>DIMENSION_GEO_LOCATION</transname>
+      <directory>&#47;</directory>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>Y</clear_rows>
+      <clear_files>Y</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Error</loglevel>
+      <cluster>N</cluster>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>422</xloc>
+      <yloc>186</yloc>
+      </entry>
+  </entries>
+  <hops>
+    <hop>
+      <from>START</from>
+      <to>STAGE_GEO_CITY</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>START</from>
+      <to>STAGE_GEO_CITY</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>STAGE_GEO_ORGANIZATION</from>
+      <to>DIMENSION_WEB_ORGANIZATION</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>STAGE_GEO_CITY</from>
+      <to>DIMENSION_GEO_LOCATION</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>START</from>
+      <to>STAGE_GEO_ORGANIZATION</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+  </hops>
+  <notepads>
+    <notepad>
+      <note>Breadboard BI - Marketing - Clickstream Data Mart - Location Lookup Files - Version 2.0
+====================================================
+1.  This job stages the free MaxMind GeoLite City, World Cities, and GeoIP® Organization files into database staging tables.
+
+2.  This job should be run whenever new files are available (generally once per month).
+
+3.  For greater accurracy, MaxMind sells the &quot;GeoIP® City Database&quot;, &quot;World Cities with Population&quot;, 
+     and GeoIP® Organization files at http:&#47;&#47;www.maxmind.com&#47;?rId=breadboad
+
+4.  Automatic retrieval of the file from MaxMind may be possible using the FTP Files or Get a file Using HTTP job entry types.</note>
+      <xloc>9</xloc>
+      <yloc>12</yloc>
+      <width>606</width>
+      <heigth>140</heigth>
+    </notepad>
+    <notepad>
+      <note>Customer Change Log
+=============
+Add Your Changes Here.  This will assist you in upgrading to future versions 
+of Breadboard BI Solution Slices.  Be sure to submit bug fix and enhancement requests 
+to the SourceForge project.</note>
+      <xloc>22</xloc>
+      <yloc>345</yloc>
+      <width>428</width>
+      <heigth>75</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2006 Breadboard BI, LLC.  All rights reserved. </note>
+      <xloc>24</xloc>
+      <yloc>441</yloc>
+      <width>297</width>
+      <heigth>23</heigth>
+    </notepad>
+  </notepads>
+</job>

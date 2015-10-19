@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This is a Spring file that defines how Pentaho system objects are created and managed.  
+An implementation of IPentahoObjectFactory, such as WebSpringPentahoObjectFactory, is 
+responsible for serving objects to callers based on this file.
+
+Possible values for scope attribute:
+*singleton* - each request for this object returns the same instance
+*prototype* - each request for this object returns a new instance
+*session* - each request for this object within a session returns the same instance
+
+default-lazy-init is set to true since some of these object make calls into 
+PentahoSystem which is initialized after Spring
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+  default-lazy-init="true">
+  
+  <bean id="ISolutionEngine" class="org.pentaho.platform.engine.services.solution.SolutionEngine" scope="prototype" />
+  <!-- Uncomment the following line to use a filesystem-based repository. Note: does not support ACLs.  -->
+  <!--  <bean id="ISolutionRepository" class="org.pentaho.platform.repository.solution.filebased.FileBasedSolutionRepository" scope="session" />-->
+  <!-- Uncomment the following line to use a filesystem/db-based repository with meta information stored in a db  -->
+  <bean id="ISolutionRepository" class="org.pentaho.platform.repository.solution.dbbased.DbBasedSolutionRepository" scope="session" />
+  <bean id="IContentRepository" class="org.pentaho.platform.repository.content.ContentRepository" scope="session" />
+  <bean id="IRuntimeRepository" class="org.pentaho.platform.repository.runtime.RuntimeRepository" scope="session" />
+  <bean id="IAuditEntry" class="org.pentaho.platform.engine.services.audit.AuditFileEntry" scope="singleton" />
+  <bean id="IUITemplater" class="org.pentaho.platform.web.http.WebTemplateHelper" scope="singleton" />
+  <bean id="IUserFilesComponent" class="org.pentaho.platform.web.refactor.UserFilesComponent" scope="session" />
+  <bean id="IBackgroundExecution" class="org.pentaho.platform.scheduler.SecurityAwareBackgroundExecutionHelper" scope="singleton" />
+  <bean id="BackgroundSubscriptionExecution" class="org.pentaho.platform.scheduler.SecurityAwareBackgroundSubscriptionHelper" scope="singleton" />
+  <bean id="ISubscriptionRepository" class="org.pentaho.platform.repository.subscription.SubscriptionRepository" scope="singleton" />
+  <bean id="ISubscriptionScheduler" class="org.pentaho.platform.scheduler.QuartzSubscriptionScheduler" scope="singleton" />
+  <!--  Use this schema factory to enable PMD security -->
+<!--
+  <bean id="ICwmSchemaFactory" class="org.pentaho.platform.engine.services.metadata.cwm.SecurityAwareCwmSchemaFactory" scope="session" />
+-->
+  <!--  Use this schema factory to disable PMD security -->
+  <bean id="ICwmSchemaFactory" class="org.pentaho.platform.engine.services.metadata.cwm.PlatformCWMSchemaFactory" scope="session"/>
+  <bean id="IUserSettingService" class="org.pentaho.platform.repository.usersettings.UserSettingService" scope="session" />
+  <bean id="file" class="org.pentaho.platform.plugin.outputs.FileOutputHandler" scope="session" />
+  <bean id="contentrepo" class="org.pentaho.platform.repository.content.ContentRepositoryOutputHandler" scope="session" />
+  <bean id="IAclPublisher" class="org.pentaho.platform.engine.security.acls.AclPublisher" scope="singleton" />
+  <bean id="IAclVoter" class="org.pentaho.platform.engine.security.acls.voter.PentahoBasicAclVoter" scope="singleton" />
+  <bean id="IVersionHelper" class="org.pentaho.platform.util.VersionHelper" scope="singleton" />
+  <bean id="ICacheManager" class="org.pentaho.platform.plugin.services.cache.CacheManager" scope="singleton" />
+  <bean id="IScheduler" class="org.pentaho.platform.scheduler.QuartzScheduler" scope="session" />
+  <bean id="IConditionalExecution" class="org.pentaho.platform.plugin.condition.javascript.ConditionalExecution" scope="prototype" />
+  <bean id="IMessageFormatter" class="org.pentaho.platform.engine.services.MessageFormatter" scope="singleton" />
+  <bean id="INavigationComponent" class="org.pentaho.platform.uifoundation.component.xml.NavigationComponent" scope="prototype" />
+  <!--
+    IDatasourceService - other options are: 
+    org.pentaho.platform.engine.services.connection.datasource.dbcp.JndiDatasourceService
+    org.pentaho.platform.engine.services.connection.datasource.dbcp.NonPooledOrJndiDatasourceService
+    org.pentaho.platform.engine.services.connection.datasource.dbcp.PooledDatasourceService
+    org.pentaho.platform.engine.services.connection.datasource.dbcp.NonPooledDatasourceService
+    -->
+  <bean id="IDatasourceService" class="org.pentaho.platform.engine.services.connection.datasource.dbcp.PooledOrJndiDatasourceService" scope="prototype" />
+  <bean id="IPasswordService" class="org.pentaho.platform.util.Base64PasswordService" scope="singleton" />
+  <bean id="IDatasource" class="org.pentaho.platform.repository.datasource.Datasource" scope="singleton" />
+  <bean id="IDatasourceMgmtService" class="org.pentaho.platform.repository.datasource.DatasourceMgmtService" scope="prototype" />
+  <!--
+    The SpringPentahoObjectFactory is set to return a null when the bean is a java.lang.String. We will 
+    eventually define an actual IPluginSettings implementation when it becomes available  
+    -->
+  <bean id="IPluginSettings" class="java.lang.String" scope="prototype" />
+
+  <bean id="systemStartupSession" class="org.pentaho.platform.engine.security.session.TrustedSystemStartupSession" scope="prototype" />
+  
+  <!-- Data connections.  Connections objects should be accessed through PentahoConnectionFactory, 
+       not directly from the PentahoObjectFactory. -->
+  <bean id="connection-SQL" class="org.pentaho.platform.plugin.services.connections.sql.SQLConnection" scope="prototype" />
+  <bean id="connection-MDX" class="org.pentaho.platform.plugin.services.connections.mondrian.MDXConnection" scope="prototype" />
+  <bean id="connection-XML" class="org.pentaho.platform.plugin.services.connections.xquery.XQConnection" scope="prototype" />
+  <bean id="connection-HQL" class="org.pentaho.platform.plugin.services.connections.hql.HQLConnection" scope="prototype" />
+  
+</beans>

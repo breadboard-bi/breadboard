@@ -1,0 +1,1033 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>MAP_PARSE_REFERER_DELETE</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_status>0</trans_status>
+    <directory>&#47;</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <rejected/>
+      <connection/>
+      <table/>
+      <use_batchid>Y</use_batchid>
+      <use_logfield>N</use_logfield>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>5000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+         <slaveserver><name>bbbi_localhost_8080</name><hostname>localhost</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>bbbi_dev_8080</name><hostname>10.10.10.3</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server8080</name><hostname>127.0.0.1</hostname><port>8080</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>Y</master></slaveserver>
+         <slaveserver><name>server8090</name><hostname>127.0.0.1</hostname><port>8090</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+         <slaveserver><name>server9000</name><hostname>127.0.0.1</hostname><port>9000</port><username>cluster</username><password>Encrypted 2be98afc86aa7f2e4cb1aa265cd86aac8</password><proxy_hostname/><proxy_port/><non_proxy_hosts/><master>N</master></slaveserver>
+    </slaveservers>
+    <clusterschemas>
+        <clusterschema>
+          <name>cluster1</name>
+          <base_port>40000</base_port>
+          <sockets_buffer_size>2000</sockets_buffer_size>
+          <sockets_flush_interval>5000</sockets_flush_interval>
+          <sockets_compressed>Y</sockets_compressed>
+          <slaveservers>
+            <name>server9000</name>
+            <name>server8090</name>
+            <name>server8080</name>
+          </slaveservers>
+        </clusterschema>
+    </clusterschemas>
+  <modified_user>admin</modified_user>
+  <modified_date>2007&#47;04&#47;16 19:28:42.000</modified_date>
+  </info>
+  <notepads>
+    <notepad>
+      <note>This map parses value pairs from the referer url description.</note>
+      <xloc>14</xloc>
+      <yloc>20</yloc>
+      <width>297</width>
+      <heigth>23</heigth>
+    </notepad>
+    <notepad>
+      <note>Copyright © 2007 Breadboard BI, LLC.  All rights reserved.</note>
+      <xloc>16</xloc>
+      <yloc>229</yloc>
+      <width>294</width>
+      <heigth>23</heigth>
+    </notepad>
+  </notepads>
+  <connection>
+    <name>jde</name>
+    <server>test</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>test</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_mysql</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mdw_mysql</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>rds</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>rds</database>
+    <port>-1</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>EXTRA_OPTION_MYSQL.defaultFetchSize</code><attribute>500</attribute></attribute>
+      <attribute><code>EXTRA_OPTION_MYSQL.useCursorFetch</code><attribute>true</attribute></attribute>
+      <attribute><code>INITIAL_POOL_SIZE</code><attribute>5</attribute></attribute>
+      <attribute><code>IS_CLUSTERED</code><attribute>N</attribute></attribute>
+      <attribute><code>MAXIMUM_POOL_SIZE</code><attribute>10</attribute></attribute>
+      <attribute><code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code><attribute>N</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>-1</attribute></attribute>
+      <attribute><code>QUOTE_ALL_FIELDS</code><attribute>N</attribute></attribute>
+      <attribute><code>STREAM_RESULTS</code><attribute>Y</attribute></attribute>
+      <attribute><code>USE_POOLING</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PARSE_REFERER_f-ed</from><to>OUT_REFERER_URL_DESC 2</to><enabled>Y</enabled> </hop>  <hop> <from>IN_REFERER_URL_DESC</from><to>PARSE_REFERER_f-ed</to><enabled>Y</enabled> </hop>  </order>
+  <step>
+    <name>IN_REFERER_URL_DESC</name>
+    <type>MappingInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>REFERER_URL_DESC</name>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+     <cluster_schema/>
+    <GUI>
+      <xloc>159</xloc>
+      <yloc>144</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>OUT_REFERER_URL_DESC</name>
+    <type>MappingOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>REFERER_URL_DESC</name>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        <added>N</added>
+        </field>
+      <field>
+        <name>v_REFERER_URL_DESC</name>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        <added>Y</added>
+        </field>
+      <field>
+        <name>SYNDICATION_VIEW_QTY</name>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>0</precision>
+        <added>Y</added>
+        </field>
+      <field>
+        <name>OLD_REFERER_URL_DESC</name>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        <added>Y</added>
+        </field>
+      <field>
+        <name>REFERER_DOMAIN_DESC</name>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        <added>Y</added>
+        </field>
+      </fields>
+     <cluster_schema/>
+    <GUI>
+      <xloc>169</xloc>
+      <yloc>446</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>OUT_REFERER_URL_DESC 2</name>
+    <type>MappingOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <fields>
+      <field>
+        <name>REFERER_URL_DESC</name>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        <added>N</added>
+        </field>
+      <field>
+        <name>v_REFERER_URL_DESC</name>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        <added>Y</added>
+        </field>
+      <field>
+        <name>SYNDICATION_VIEW_QTY</name>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>0</precision>
+        <added>Y</added>
+        </field>
+      <field>
+        <name>OLD_REFERER_URL_DESC</name>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        <added>Y</added>
+        </field>
+      <field>
+        <name>REFERER_DOMAIN_DESC</name>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        <added>Y</added>
+        </field>
+      <field>
+        <name>REFERER_DESC</name>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        <added>Y</added>
+        </field>
+      <field>
+        <name>PARENT_REFERER_DESC</name>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        <added>Y</added>
+        </field>
+      </fields>
+     <cluster_schema/>
+    <GUI>
+      <xloc>568</xloc>
+      <yloc>143</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PARSE_REFERER</name>
+    <type>ScriptValue</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <script>var v_content_string = &quot;&quot;+REFERER_URL_DESC.getString();
+var v_REFERER_URL_DESC = &quot;&quot;;
+var SYNDICATION_VIEW_QTY = 0;
+
+
+
+&#47;&#47; Google Syndication + parsing logic
+if (v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0 || v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{
+SYNDICATION_VIEW_QTY = 1;
+var result = v_content_string.replace( &#47;%3A&#47;g,&quot;:&quot;).replace( &#47;%2F&#47;g,&quot;&#47;&quot;).replace( &#47;%25&#47;g,&quot;%&quot;).replace( &#47;%26&#47;g,&quot;&amp;&quot;).replace( &#47;%3D&#47;g,&quot;=&quot;).replace( &#47;%3F&#47;g,&quot;?&quot;).replace( &#47;%2B&#47;g,&quot;+&quot;).replace( &#47;%2C&#47;g,&quot;,&quot;).replace( &#47;%2D&#47;g,&quot;-&quot;).replace( &#47;%2E&#47;g,&quot;.&quot;).replace( &#47;%27&#47;g,&quot;`&quot;).replace( &#47;%28&#47;g,&quot;(&quot;).replace( &#47;%29&#47;g,&quot;)&quot;).replace( &#47;%40&#47;g,&quot;@&quot;).replace( &#47;%7C&#47;g,&quot;|&quot;).replace( &#47;%20&#47;g,&quot;_&quot;);
+var pieces = result.split(&quot;&amp;&quot;);
+var v_part1_str = &quot;&quot;+pieces[0];
+var v_part2_str = &quot;&quot;+pieces[1];
+var v_part3_str = &quot;&quot;+pieces[2];
+var v_part4_str = &quot;&quot;+pieces[3];
+var v_part5_str = &quot;&quot;+pieces[4];
+var v_part6_str = &quot;&quot;+pieces[5];
+var v_part7_str = &quot;&quot;+pieces[6];
+var v_part8_str = &quot;&quot;+pieces[7];
+var v_part9_str = &quot;&quot;+pieces[8];
+var v_part10_str = &quot;&quot;+pieces[9];
+var v_part11_str = &quot;&quot;+pieces[10];
+var v_part12_str = &quot;&quot;+pieces[11];
+var v_part13_str = &quot;&quot;+pieces[12];
+var v_part14_str = &quot;&quot;+pieces[13];
+var v_part15_str = &quot;&quot;+pieces[14];
+&#47;&#47; add more pieces as needed
+
+&#47;&#47; Google Parse
+if (v_part1_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part1_str.substr(4);
+}
+
+else if (v_part2_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part2_str.substr(4);
+}
+
+else if (v_part3_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part3_str.substr(4);
+}
+
+else if (v_part4_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part4_str.substr(4);
+}
+
+else if (v_part5_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part5_str.substr(4);
+}
+
+else if (v_part6_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part6_str.substr(4);
+}
+else if (v_part7_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part7_str.substr(4);
+}
+else if (v_part8_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part8_str.substr(4);
+}
+else if (v_part9_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part9_str.substr(4);
+}
+else if (v_part10_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part10_str.substr(4);
+}
+else if (v_part11_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part11_str.substr(4);
+}
+else if (v_part12_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part12_str.substr(4);
+}
+else if (v_part13_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part13_str.substr(4);
+}
+else if (v_part14_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part14_str.substr(4);
+}
+else if (v_part15_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part15_str.substr(4);
+}
+
+&#47;&#47; Yahoo Parse
+else if (v_part1_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part1_str.substr(7);
+}
+
+else if (v_part2_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part2_str.substr(7);
+}
+
+else if (v_part3_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part3_str.substr(7);
+}
+
+else if (v_part4_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part4_str.substr(7);
+}
+
+else if (v_part5_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part5_str.substr(7);
+}
+
+else if (v_part6_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part6_str.substr(7);
+}
+else if (v_part7_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part7_str.substr(7);
+}
+else if (v_part8_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part8_str.substr(7);
+}
+else if (v_part9_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part9_str.substr(7);
+}
+else if (v_part10_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part10_str.substr(7);
+}
+else if (v_part11_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part11_str.substr(7);
+}
+else if (v_part12_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part12_str.substr(7);
+}
+else if (v_part13_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part13_str.substr(7);
+}
+else if (v_part14_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part14_str.substr(7);
+}
+else if (v_part15_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part15_str.substr(7);
+}
+
+else {v_REFERER_URL_DESC = result;}
+
+v_REFERER_URL_DESC = v_REFERER_URL_DESC.replace( &#47;%26&#47;g,&quot;&amp;&quot;);
+
+} &#47;&#47; END GOOGLE SYNDICATION LOGIC
+
+&#47;&#47; assign non syndication value to variable
+else {v_REFERER_URL_DESC = v_content_string;}
+
+&#47;&#47;remove junk from referrer
+if (v_REFERER_URL_DESC.indexOf(&quot;?&quot;) &gt;= 0)
+{
+v_question_position = v_REFERER_URL_DESC.indexOf(&quot;?&quot;);
+v_REFERER_URL_DESC = v_REFERER_URL_DESC.substr(0,v_question_position);
+}
+
+&#47;&#47;Further parse, since syndication referrer URLs may be long.
+var REFERER_DOMAIN_DESC;
+var domain_result = v_REFERER_URL_DESC;
+
+if (v_REFERER_URL_DESC.indexOf(&quot;&#47;&#47;&quot;) &gt;=0)
+{
+var domain_pieces = domain_result.split(&quot;&#47;&quot;);
+REFERER_DOMAIN_DESC = &quot;&quot; + domain_pieces[2];
+
+}
+else
+{
+REFERER_DOMAIN_DESC = v_REFERER_URL_DESC;
+}</script>
+    <fields>      <field>        <name>v_REFERER_URL_DESC</name>
+        <rename>v_REFERER_URL_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>SYNDICATION_VIEW_QTY</name>
+        <rename>SYNDICATION_VIEW_QTY</rename>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>v_content_string</name>
+        <rename>OLD_REFERER_URL_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>REFERER_DOMAIN_DESC</name>
+        <rename>REFERER_DOMAIN_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        </field>      </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>167</xloc>
+      <yloc>379</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PARSE_REFERER_f-ed</name>
+    <type>ScriptValue</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <script>var v_temp_referer_url_desc = &quot;&quot;+REFERER_URL_DESC.getString();
+var v_REFERER_URL_DESC = &quot;&quot;;
+var SYNDICATION_VIEW_QTY = 0;
+
+&#47;&#47; Define REFERRER_DESC
+var first_result = v_temp_referer_url_desc.replace( &#47;www.&#47;g,&quot;&quot;);
+var first_pieces = first_result.split(&quot;&#47;&quot;);
+var v_content_string = &quot;&quot;+first_pieces[2];
+var REFERER_DESC = &quot;&quot;+first_pieces[2];
+
+&#47;&#47; Define PARENT_REFERER_DESC
+var PARENT_REFERER_DESC = &quot;&quot;;
+if (REFERER_DESC.indexOf(&quot;oogle&quot;) &gt;= 0 || REFERER_DESC.indexOf(&quot;gclid=&quot;) &gt;= 0)
+{PARENT_REFERER_DESC = &quot;google&quot;;}
+else if (REFERER_DESC.indexOf(&quot;.yahoo.&quot;) &gt;= 0 || REFERER_DESC.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0 || REFERER_DESC.indexOf(&quot;OVKEY=&quot;) &gt;= 0)
+{PARENT_REFERER_DESC = &quot;yahoo&quot;;}
+else if (REFERER_DESC.indexOf(&quot;.msn.&quot;) &gt;= 0)
+{PARENT_REFERER_DESC = &quot;msn&quot;;}
+else if (REFERER_DESC.indexOf(&quot;breadboardbi&quot;) &gt;= 0 || REFERER_DESC.indexOf(&quot;192.168.0&quot;) &gt;= 0)
+{PARENT_REFERER_DESC = &quot;breadboardbi.com&quot;;}
+else {PARENT_REFERER_DESC = REFERER_DESC;}
+
+&#47;&#47; Extract Intelligence from REFERER_DESC
+&#47;&#47; Google Syndication + parsing logic
+if (v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0 || v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{
+SYNDICATION_VIEW_QTY = 1;
+var result = v_content_string.replace( &#47;%3A&#47;g,&quot;:&quot;).replace( &#47;%2F&#47;g,&quot;&#47;&quot;).replace( &#47;%25&#47;g,&quot;%&quot;).replace( &#47;%26&#47;g,&quot;&amp;&quot;).replace( &#47;%3D&#47;g,&quot;=&quot;).replace( &#47;%3F&#47;g,&quot;?&quot;).replace( &#47;%2B&#47;g,&quot;+&quot;).replace( &#47;%2C&#47;g,&quot;,&quot;).replace( &#47;%2D&#47;g,&quot;-&quot;).replace( &#47;%2E&#47;g,&quot;.&quot;).replace( &#47;%27&#47;g,&quot;`&quot;).replace( &#47;%28&#47;g,&quot;(&quot;).replace( &#47;%29&#47;g,&quot;)&quot;).replace( &#47;%40&#47;g,&quot;@&quot;).replace( &#47;%7C&#47;g,&quot;|&quot;).replace( &#47;%20&#47;g,&quot;_&quot;);
+var pieces = result.split(&quot;&amp;&quot;);
+var v_part1_str = &quot;&quot;+pieces[0];
+var v_part2_str = &quot;&quot;+pieces[1];
+var v_part3_str = &quot;&quot;+pieces[2];
+var v_part4_str = &quot;&quot;+pieces[3];
+var v_part5_str = &quot;&quot;+pieces[4];
+var v_part6_str = &quot;&quot;+pieces[5];
+var v_part7_str = &quot;&quot;+pieces[6];
+var v_part8_str = &quot;&quot;+pieces[7];
+var v_part9_str = &quot;&quot;+pieces[8];
+var v_part10_str = &quot;&quot;+pieces[9];
+var v_part11_str = &quot;&quot;+pieces[10];
+var v_part12_str = &quot;&quot;+pieces[11];
+var v_part13_str = &quot;&quot;+pieces[12];
+var v_part14_str = &quot;&quot;+pieces[13];
+var v_part15_str = &quot;&quot;+pieces[14];
+&#47;&#47; add more pieces as needed
+
+&#47;&#47; Google Parse
+if (v_part1_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part1_str.substr(4);
+}
+
+else if (v_part2_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part2_str.substr(4);
+}
+
+else if (v_part3_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part3_str.substr(4);
+}
+
+else if (v_part4_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part4_str.substr(4);
+}
+
+else if (v_part5_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part5_str.substr(4);
+}
+
+else if (v_part6_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part6_str.substr(4);
+}
+else if (v_part7_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part7_str.substr(4);
+}
+else if (v_part8_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part8_str.substr(4);
+}
+else if (v_part9_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part9_str.substr(4);
+}
+else if (v_part10_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part10_str.substr(4);
+}
+else if (v_part11_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part11_str.substr(4);
+}
+else if (v_part12_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part12_str.substr(4);
+}
+else if (v_part13_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part13_str.substr(4);
+}
+else if (v_part14_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part14_str.substr(4);
+}
+else if (v_part15_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part15_str.substr(4);
+}
+
+&#47;&#47; Yahoo Parse
+else if (v_part1_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part1_str.substr(7);
+}
+
+else if (v_part2_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part2_str.substr(7);
+}
+
+else if (v_part3_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part3_str.substr(7);
+}
+
+else if (v_part4_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part4_str.substr(7);
+}
+
+else if (v_part5_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part5_str.substr(7);
+}
+
+else if (v_part6_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part6_str.substr(7);
+}
+else if (v_part7_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part7_str.substr(7);
+}
+else if (v_part8_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part8_str.substr(7);
+}
+else if (v_part9_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part9_str.substr(7);
+}
+else if (v_part10_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part10_str.substr(7);
+}
+else if (v_part11_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part11_str.substr(7);
+}
+else if (v_part12_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part12_str.substr(7);
+}
+else if (v_part13_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part13_str.substr(7);
+}
+else if (v_part14_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part14_str.substr(7);
+}
+else if (v_part15_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part15_str.substr(7);
+}
+
+else {v_REFERER_URL_DESC = result;}
+
+v_REFERER_URL_DESC = v_REFERER_URL_DESC.replace( &#47;%26&#47;g,&quot;&amp;&quot;);
+
+} &#47;&#47; END GOOGLE SYNDICATION LOGIC
+
+&#47;&#47; assign non syndication value to variable
+else {v_REFERER_URL_DESC = v_content_string;}
+
+&#47;&#47;remove junk from referrer
+if (v_REFERER_URL_DESC.indexOf(&quot;?&quot;) &gt;= 0)
+{
+v_question_position = v_REFERER_URL_DESC.indexOf(&quot;?&quot;);
+v_REFERER_URL_DESC = v_REFERER_URL_DESC.substr(0,v_question_position);
+}
+
+&#47;&#47;Further parse, since syndication referrer URLs may be long.
+var REFERER_DOMAIN_DESC;
+var domain_result = v_REFERER_URL_DESC;
+
+if (v_REFERER_URL_DESC.indexOf(&quot;&#47;&#47;&quot;) &gt;=0)
+{
+var domain_pieces = domain_result.split(&quot;&#47;&quot;);
+REFERER_DOMAIN_DESC = &quot;&quot; + domain_pieces[2];
+
+}
+else
+{
+REFERER_DOMAIN_DESC = v_REFERER_URL_DESC;
+}</script>
+    <fields>      <field>        <name>v_REFERER_URL_DESC</name>
+        <rename>v_REFERER_URL_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>SYNDICATION_VIEW_QTY</name>
+        <rename>SYNDICATION_VIEW_QTY</rename>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>v_content_string</name>
+        <rename>OLD_REFERER_URL_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>REFERER_DOMAIN_DESC</name>
+        <rename>REFERER_DOMAIN_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>REFERER_DESC</name>
+        <rename>REFERER_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>PARENT_REFERER_DESC</name>
+        <rename>PARENT_REFERER_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        </field>      </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>350</xloc>
+      <yloc>143</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PARSE_REFERER_old</name>
+    <type>ScriptValue</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <field_name/>
+           <schema_name/>
+           </partitioning>
+    <script>var v_temp_referer_url_desc = &quot;&quot;+REFERER_URL_DESC.getString();
+var v_REFERER_URL_DESC = &quot;&quot;;
+var SYNDICATION_VIEW_QTY = 0;
+
+var first_result = v_temp_referer_url_desc.replace( &#47;www.&#47;g,&quot;&quot;);
+var first_pieces = first_result.split(&quot;&#47;&quot;);
+var v_content_string = &quot;&quot;+first_pieces[2];
+
+&#47;&#47; Google Syndication + parsing logic
+if (v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0 || v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{
+SYNDICATION_VIEW_QTY = 1;
+var result = v_content_string.replace( &#47;%3A&#47;g,&quot;:&quot;).replace( &#47;%2F&#47;g,&quot;&#47;&quot;).replace( &#47;%25&#47;g,&quot;%&quot;).replace( &#47;%26&#47;g,&quot;&amp;&quot;).replace( &#47;%3D&#47;g,&quot;=&quot;).replace( &#47;%3F&#47;g,&quot;?&quot;).replace( &#47;%2B&#47;g,&quot;+&quot;).replace( &#47;%2C&#47;g,&quot;,&quot;).replace( &#47;%2D&#47;g,&quot;-&quot;).replace( &#47;%2E&#47;g,&quot;.&quot;).replace( &#47;%27&#47;g,&quot;`&quot;).replace( &#47;%28&#47;g,&quot;(&quot;).replace( &#47;%29&#47;g,&quot;)&quot;).replace( &#47;%40&#47;g,&quot;@&quot;).replace( &#47;%7C&#47;g,&quot;|&quot;).replace( &#47;%20&#47;g,&quot;_&quot;);
+var pieces = result.split(&quot;&amp;&quot;);
+var v_part1_str = &quot;&quot;+pieces[0];
+var v_part2_str = &quot;&quot;+pieces[1];
+var v_part3_str = &quot;&quot;+pieces[2];
+var v_part4_str = &quot;&quot;+pieces[3];
+var v_part5_str = &quot;&quot;+pieces[4];
+var v_part6_str = &quot;&quot;+pieces[5];
+var v_part7_str = &quot;&quot;+pieces[6];
+var v_part8_str = &quot;&quot;+pieces[7];
+var v_part9_str = &quot;&quot;+pieces[8];
+var v_part10_str = &quot;&quot;+pieces[9];
+var v_part11_str = &quot;&quot;+pieces[10];
+var v_part12_str = &quot;&quot;+pieces[11];
+var v_part13_str = &quot;&quot;+pieces[12];
+var v_part14_str = &quot;&quot;+pieces[13];
+var v_part15_str = &quot;&quot;+pieces[14];
+&#47;&#47; add more pieces as needed
+
+&#47;&#47; Google Parse
+if (v_part1_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part1_str.substr(4);
+}
+
+else if (v_part2_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part2_str.substr(4);
+}
+
+else if (v_part3_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part3_str.substr(4);
+}
+
+else if (v_part4_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part4_str.substr(4);
+}
+
+else if (v_part5_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part5_str.substr(4);
+}
+
+else if (v_part6_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part6_str.substr(4);
+}
+else if (v_part7_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part7_str.substr(4);
+}
+else if (v_part8_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part8_str.substr(4);
+}
+else if (v_part9_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part9_str.substr(4);
+}
+else if (v_part10_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part10_str.substr(4);
+}
+else if (v_part11_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part11_str.substr(4);
+}
+else if (v_part12_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part12_str.substr(4);
+}
+else if (v_part13_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part13_str.substr(4);
+}
+else if (v_part14_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part14_str.substr(4);
+}
+else if (v_part15_str.indexOf(&quot;url=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;googlesyndication&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part15_str.substr(4);
+}
+
+&#47;&#47; Yahoo Parse
+else if (v_part1_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part1_str.substr(7);
+}
+
+else if (v_part2_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part2_str.substr(7);
+}
+
+else if (v_part3_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part3_str.substr(7);
+}
+
+else if (v_part4_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part4_str.substr(7);
+}
+
+else if (v_part5_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part5_str.substr(7);
+}
+
+else if (v_part6_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part6_str.substr(7);
+}
+else if (v_part7_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part7_str.substr(7);
+}
+else if (v_part8_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part8_str.substr(7);
+}
+else if (v_part9_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part9_str.substr(7);
+}
+else if (v_part10_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part10_str.substr(7);
+}
+else if (v_part11_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part11_str.substr(7);
+}
+else if (v_part12_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part12_str.substr(7);
+}
+else if (v_part13_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part13_str.substr(7);
+}
+else if (v_part14_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part14_str.substr(7);
+}
+else if (v_part15_str.indexOf(&quot;refUrl=&quot;) == 0 &amp;&amp; v_content_string.indexOf(&quot;ypn-js.overture&quot;) &gt;= 0)
+{ 
+v_REFERER_URL_DESC = v_part15_str.substr(7);
+}
+
+else {v_REFERER_URL_DESC = result;}
+
+v_REFERER_URL_DESC = v_REFERER_URL_DESC.replace( &#47;%26&#47;g,&quot;&amp;&quot;);
+
+} &#47;&#47; END GOOGLE SYNDICATION LOGIC
+
+&#47;&#47; assign non syndication value to variable
+else {v_REFERER_URL_DESC = v_content_string;}
+
+&#47;&#47;remove junk from referrer
+if (v_REFERER_URL_DESC.indexOf(&quot;?&quot;) &gt;= 0)
+{
+v_question_position = v_REFERER_URL_DESC.indexOf(&quot;?&quot;);
+v_REFERER_URL_DESC = v_REFERER_URL_DESC.substr(0,v_question_position);
+}
+
+&#47;&#47;Further parse, since syndication referrer URLs may be long.
+var REFERER_DOMAIN_DESC;
+var domain_result = v_REFERER_URL_DESC;
+
+if (v_REFERER_URL_DESC.indexOf(&quot;&#47;&#47;&quot;) &gt;=0)
+{
+var domain_pieces = domain_result.split(&quot;&#47;&quot;);
+REFERER_DOMAIN_DESC = &quot;&quot; + domain_pieces[2];
+
+}
+else
+{
+REFERER_DOMAIN_DESC = v_REFERER_URL_DESC;
+}</script>
+    <fields>      <field>        <name>v_REFERER_URL_DESC</name>
+        <rename>v_REFERER_URL_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>SYNDICATION_VIEW_QTY</name>
+        <rename>SYNDICATION_VIEW_QTY</rename>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>v_content_string</name>
+        <rename>OLD_REFERER_URL_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        </field>      <field>        <name>REFERER_DOMAIN_DESC</name>
+        <rename>REFERER_DOMAIN_DESC</rename>
+        <type>String</type>
+        <length>2000</length>
+        <precision>-1</precision>
+        </field>      </fields>     <cluster_schema/>
+    <GUI>
+      <xloc>169</xloc>
+      <yloc>310</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step_error_handling>
+  </step_error_handling>
+</transformation>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>listarVendedores.xaction</name>
+  <title/>
+  <version>2</version>
+  <logging-level/>
+  <documentation> 
+    <author/>  
+    <description/>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>
+
+  <inputs/>
+
+  <outputs> 
+    <vendedores type="result-set"/> 
+  </outputs>
+
+  <resources/>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>
+      <action-type>Relational</action-type>
+      <action-inputs/>
+      <action-outputs> 
+        <query-result type="result-set" mapping="vendedores"/> 
+      </action-outputs>
+      <component-definition> 
+        <live><![CDATA[true]]></live>  
+        <jndi><![CDATA[mdw_mysql]]></jndi>  
+        <query><![CDATA[Select DISTINCT D.FULL_NAME,D.PERSON_SK
+from DIMENSION_PERSON D, FACT_ORDER_CAPTURE F
+where F.SALES_REPRESENTATIVE_SK = D.PERSON_SK
+order by D.PERSON_SK
+limit 50]]></query> 
+      </component-definition> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>

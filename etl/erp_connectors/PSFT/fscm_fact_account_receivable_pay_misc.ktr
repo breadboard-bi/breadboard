@@ -1,0 +1,1272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>CRM_FACT_ORDER_CAPTURE</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This transformation pay misc account receivable data from PeopleSoft FSCM 8.8 and loads an accounts receivable fact table.</note>
+      <xloc>206</xloc>
+      <yloc>12</yloc>
+      <width>609</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_oracle_orcl</name>
+    <server>192.168.0.103</server>
+    <type>ORACLE</type>
+    <access>Native</access>
+    <database>orcl</database>
+    <port>1521</port>
+    <username>mdw</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_FSCM_ACCOUNT_RECEIVABLE_PAY_MISC</from><to>CON_BUSINESS_UNIT_TYPE_GL</to><enabled>Y</enabled> </hop>  <hop> <from>CON_BUSINESS_UNIT_TYPE_GL</from><to>LKP_DIMENSION_BUSINESS_UNIT_GL</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CURRENCY_BASE</from><to>LKP_DIMENSION_CURRENCY_ALT</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_BUSINESS_UNIT_GL</from><to>CON_BUSINESS_UNIT_TYPE_AR</to><enabled>Y</enabled> </hop>  <hop> <from>CON_BUSINESS_UNIT_TYPE_AR</from><to>LKP_DIMENSION_BUSINESS_UNIT_AR</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_BUSINESS_UNIT_AR</from><to>LKP_DIMENSION_PRODUCT</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_LEDGER</from><to>LKP_DIMENSION_ACCOUNT</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_ACCOUNT</from><to>LKP_DIMENSION_ACCOUNT_ALT</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_PRODUCT</from><to>LKP_DIMENSION_OPERATING_UNIT</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_OPERATING_UNIT</from><to>LKP_DIMENSION_LEDGER</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_FUND</from><to>LKP_DIMENSION_DEPARTMENT</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_DEPARTMENT</from><to>LKP_DIMENSION_PROGRAM</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_BUDGET_REFERENCE</from><to>LKP_DIMENSION_FUND</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_PROGRAM</from><to>LKP_DIMENSION_STATISTICS</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_ACCOUNT_ALT</from><to>LKP_DIMENSION_CLASS</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CLASS</from><to>CON_CHARTFIELD1</to><enabled>Y</enabled> </hop>  <hop> <from>CON_CHARTFIELD1</from><to>LKP_DIMENSION_CHARTFIELD1</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CHARTFIELD1</from><to>CON_CHARTFIELD2</to><enabled>Y</enabled> </hop>  <hop> <from>CON_CHARTFIELD2</from><to>LKP_DIMENSION_CHARTFIELD2</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CHARTFIELD2</from><to>CON_CHARTFIELD3</to><enabled>Y</enabled> </hop>  <hop> <from>CON_CHARTFIELD3</from><to>LKP_DIMENSION_CHARTFIELD3</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CHARTFIELD3</from><to>LKP_DIMENSION_BUDGET_REFERENCE</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CURRENCY_ALT</from><to>FACT_ACCOUNT_RECEIVABLE</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_STATISTICS</from><to>LKP_DIMENSION_CURRENCY_BASE</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>CON_BUSINESS_UNIT_TYPE_AR</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <fields>
+      <field>
+        <name>BUSINESS_UNIT_TYPE_AR</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>AR</nullif>
+        <length>2</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+    <GUI>
+      <xloc>95</xloc>
+      <yloc>284</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>CON_BUSINESS_UNIT_TYPE_GL</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <fields>
+      <field>
+        <name>BUSINESS_UNIT_TYPE_GL</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>GL</nullif>
+        <length>2</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+    <GUI>
+      <xloc>76</xloc>
+      <yloc>108</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>CON_CHARTFIELD1</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <fields>
+      <field>
+        <name>CHARTFIELD_TYPE_NAME1</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>CHARTFIELD1</nullif>
+        <length>2</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+    <GUI>
+      <xloc>387</xloc>
+      <yloc>442</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>CON_CHARTFIELD2</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <fields>
+      <field>
+        <name>CHARTFIELD_TYPE_NAME2</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>CHARTFIELD2</nullif>
+        <length>2</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+    <GUI>
+      <xloc>304</xloc>
+      <yloc>380</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>CON_CHARTFIELD3</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <fields>
+      <field>
+        <name>CHARTFIELD_TYPE_NAME3</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>CHARTFIELD3</nullif>
+        <length>2</length>
+        <precision>-1</precision>
+        </field>
+      </fields>
+    <GUI>
+      <xloc>278</xloc>
+      <yloc>228</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>FACT_ACCOUNT_RECEIVABLE</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_oracle_orcl</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>FACT_ACCOUNT_RECEIVABLE</table>
+      <key>
+        <name>JOURNAL_DATE_SK</name>
+        <field>JOURNAL_DATE_SK</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>GL_BUSINESS_UNIT_ID</name>
+        <field>GL_BUSINESS_UNIT_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>AR_BUSINESS_UNIT_ID</name>
+        <field>AR_BUSINESS_UNIT_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>JOURNAL_ID</name>
+        <field>JOURNAL_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>JOURNAL_LINE_ID</name>
+        <field>JOURNAL_LINE_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>JOURNAL_DATE_SK</name>
+        <rename>JOURNAL_DATE_SK</rename>
+        </value>
+      <value>
+        <name>GL_BUSINESS_UNIT_ID</name>
+        <rename>GL_BUSINESS_UNIT_ID</rename>
+        </value>
+      <value>
+        <name>AR_BUSINESS_UNIT_ID</name>
+        <rename>AR_BUSINESS_UNIT_ID</rename>
+        </value>
+      <value>
+        <name>JOURNAL_ID</name>
+        <rename>JOURNAL_ID</rename>
+        </value>
+      <value>
+        <name>JOURNAL_LINE_ID</name>
+        <rename>JOURNAL_LINE_ID</rename>
+        </value>
+      <value>
+        <name>BASE_RECEIVABLE_AMT</name>
+        <rename>BASE_RECEIVABLE_AMT</rename>
+        </value>
+      <value>
+        <name>ALT_RECEIVABLE_AMT</name>
+        <rename>ALT_RECEIVABLE_AMT</rename>
+        </value>
+      <value>
+        <name>STATISTIC_AMT</name>
+        <rename>STATISTIC_AMT</rename>
+        </value>
+      <value>
+        <name>DOCUMENT_TYPE_ID</name>
+        <rename>DOCUMENT_TYPE_ID</rename>
+        </value>
+      <value>
+        <name>DOCUMENT_SEQUENCE_NUMBER</name>
+        <rename>DOCUMENT_SEQUENCE_NUMBER</rename>
+        </value>
+      <value>
+        <name>JOURNAL_REFERENCE_LINE_NUMBER</name>
+        <rename>JOURNAL_REFERENCE_LINE_NUMBER</rename>
+        </value>
+      <value>
+        <name>GL_BUSINESS_UNIT_SK</name>
+        <rename>GL_BUSINESS_UNIT_SK</rename>
+        </value>
+      <value>
+        <name>AR_BUSINESS_UNIT_SK</name>
+        <rename>AR_BUSINESS_UNIT_SK</rename>
+        </value>
+      <value>
+        <name>PRODUCT_SK</name>
+        <rename>PRODUCT_SK</rename>
+        </value>
+      <value>
+        <name>OPERATING_UNIT_SK</name>
+        <rename>OPERATING_UNIT_SK</rename>
+        </value>
+      <value>
+        <name>LEDGER_SK</name>
+        <rename>LEDGER_SK</rename>
+        </value>
+      <value>
+        <name>ACCOUNT_SK</name>
+        <rename>ACCOUNT_SK</rename>
+        </value>
+      <value>
+        <name>ALT_ACCOUNT_SK</name>
+        <rename>ALT_ACCOUNT_SK</rename>
+        </value>
+      <value>
+        <name>CLASS_SK</name>
+        <rename>CLASS_SK</rename>
+        </value>
+      <value>
+        <name>CHARTFIELD1_SK</name>
+        <rename>CHARTFIELD1_SK</rename>
+        </value>
+      <value>
+        <name>CHARTFIELD2_SK</name>
+        <rename>CHARTFIELD2_SK</rename>
+        </value>
+      <value>
+        <name>CHARTFIELD3_SK</name>
+        <rename>CHARTFIELD3_SK</rename>
+        </value>
+      <value>
+        <name>FUND_SK</name>
+        <rename>FUND_SK</rename>
+        </value>
+      <value>
+        <name>DEPARTMENT_SK</name>
+        <rename>DEPARTMENT_SK</rename>
+        </value>
+      <value>
+        <name>PROGRAM_SK</name>
+        <rename>PROGRAM_SK</rename>
+        </value>
+      <value>
+        <name>STATISTICS_SK</name>
+        <rename>STATISTICS_SK</rename>
+        </value>
+      <value>
+        <name>CUSTOMER_SK</name>
+        <rename>CUSTOMER_SK</rename>
+        </value>
+      <value>
+        <name>BASE_CURRENCY_SK</name>
+        <rename>BASE_CURRENCY_SK</rename>
+        </value>
+      <value>
+        <name>ALT_CURRENCY_SK</name>
+        <rename>ALT_CURRENCY_SK</rename>
+        </value>
+      <value>
+        <name>BUDGET_REFERENCE_SK</name>
+        <rename>BUDGET_REFERENCE_SK</rename>
+        </value>
+      </lookup>
+    <GUI>
+      <xloc>795</xloc>
+      <yloc>240</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_ACCOUNT</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_ACCOUNT</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>ACCOUNT_ID</name>
+          <lookup>ACCOUNT_ID</lookup>
+          </key>
+        <key>
+          <name>ACCOUNT_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>JOURNAL_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>ACCOUNT_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>363</xloc>
+      <yloc>574</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_ACCOUNT_ALT</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_ACCOUNT</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>ALT_ACCOUNT_ID</name>
+          <lookup>ACCOUNT_ID</lookup>
+          </key>
+        <key>
+          <name>ALT_ACCOUNT_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>JOURNAL_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>ACCOUNT_SK</name>
+          <rename>ALT_ACCOUNT_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>499</xloc>
+      <yloc>530</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_BUDGET_REFERENCE</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_BUDGET_REFERENCE</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>BUDGET_REFERENCE_ID</name>
+          <lookup>BUDGET_REFERENCE_ID</lookup>
+          </key>
+        <key>
+          <name>BUDGET_REFERENCE_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>JOURNAL_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>BUDGET_REFERENCE_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>249</xloc>
+      <yloc>69</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_BUSINESS_UNIT_AR</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_BUSINESS_UNIT</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>AR_BUSINESS_UNIT_ID</name>
+          <lookup>BUSINESS_UNIT_ID</lookup>
+          </key>
+        <key>
+          <name>BUSINESS_UNIT_TYPE_AR</name>
+          <lookup>BUSINESS_UNIT_TYPE</lookup>
+          </key>
+        <date>
+          <name>JOURNAL_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>BUSINESS_UNIT_SK</name>
+          <rename>AR_BUSINESS_UNIT_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>111</xloc>
+      <yloc>363</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_BUSINESS_UNIT_GL</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_BUSINESS_UNIT</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>GL_BUSINESS_UNIT_ID</name>
+          <lookup>BUSINESS_UNIT_ID</lookup>
+          </key>
+        <key>
+          <name>BUSINESS_UNIT_TYPE_GL</name>
+          <lookup>BUSINESS_UNIT_TYPE</lookup>
+          </key>
+        <date>
+          <name>JOURNAL_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>BUSINESS_UNIT_SK</name>
+          <rename>GL_BUSINESS_UNIT_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>80</xloc>
+      <yloc>205</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CHARTFIELD1</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CHARTFIELD</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>CHARTFIELD1_ID</name>
+          <lookup>CHARTFIELD_ID</lookup>
+          </key>
+        <key>
+          <name>CHARTFIELD1_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <key>
+          <name>CHARTFIELD_TYPE_NAME1</name>
+          <lookup>CHARTFIELD_TYPE_NAME</lookup>
+          </key>
+        <date>
+          <name>JOURNAL_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CHARTFIELD_SK</name>
+          <rename>CHARTFIELD1_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>276</xloc>
+      <yloc>460</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CHARTFIELD2</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CHARTFIELD</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>CHARTFIELD2_ID</name>
+          <lookup>CHARTFIELD_ID</lookup>
+          </key>
+        <key>
+          <name>CHARTFIELD2_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <key>
+          <name>CHARTFIELD_TYPE_NAME2</name>
+          <lookup>CHARTFIELD_TYPE_NAME</lookup>
+          </key>
+        <date>
+          <name>JOURNAL_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CHARTFIELD_SK</name>
+          <rename>CHARTFIELD2_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>312</xloc>
+      <yloc>305</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CHARTFIELD3</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CHARTFIELD</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>CHARTFIELD3_ID</name>
+          <lookup>CHARTFIELD_ID</lookup>
+          </key>
+        <key>
+          <name>CHARTFIELD3_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <key>
+          <name>CHARTFIELD_TYPE_NAME3</name>
+          <lookup>CHARTFIELD_TYPE_NAME</lookup>
+          </key>
+        <date>
+          <name>JOURNAL_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CHARTFIELD_SK</name>
+          <rename>CHARTFIELD3_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>244</xloc>
+      <yloc>151</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CLASS</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CLASS</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>CLASS_ID</name>
+          <lookup>CLASS_ID</lookup>
+          </key>
+        <key>
+          <name>CLASS_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>JOURNAL_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CLASS_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>478</xloc>
+      <yloc>458</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CURRENCY_ALT</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CURRENCY</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>ALT_CURRENCY_ID</name>
+          <lookup>CURRENCY_ID</lookup>
+          </key>
+        <date>
+          <name>JOURNAL_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CURRENCY_SK</name>
+          <rename>ALT_CURRENCY_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>748</xloc>
+      <yloc>344</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CURRENCY_BASE</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CURRENCY</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>BASE_CURRENCY_ID</name>
+          <lookup>CURRENCY_ID</lookup>
+          </key>
+        <date>
+          <name>JOURNAL_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CURRENCY_SK</name>
+          <rename>BASE_CURRENCY_SK</rename>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>664</xloc>
+      <yloc>494</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_DEPARTMENT</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_DEPARTMENT</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>DEPARTMENT_ID</name>
+          <lookup>DEPARTMENT_ID</lookup>
+          </key>
+        <key>
+          <name>DEPARTMENT_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>JOURNAL_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>DEPARTMENT_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>431</xloc>
+      <yloc>126</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_FUND</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_FUND</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>FUND_ID</name>
+          <lookup>FUND_ID</lookup>
+          </key>
+        <key>
+          <name>FUND_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>JOURNAL_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>FUND_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>378</xloc>
+      <yloc>47</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_LEDGER</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_LEDGER</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>LEDGER_ID</name>
+          <lookup>LEDGER_ID</lookup>
+          </key>
+        <key>
+          <name>LEDGER_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>JOURNAL_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>LEDGER_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>212</xloc>
+      <yloc>576</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_OPERATING_UNIT</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_OPERATING_UNIT</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>OPERATING_UNIT_ID</name>
+          <lookup>OPERATING_UNIT_ID</lookup>
+          </key>
+        <key>
+          <name>OPERATING_UNIT_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>JOURNAL_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>OPERATING_UNIT_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>142</xloc>
+      <yloc>516</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_PRODUCT</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_PRODUCT</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>PRODUCT_ID</name>
+          <lookup>PRODUCT_ID</lookup>
+          </key>
+        <key>
+          <name>PRODUCT_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>JOURNAL_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>PRODUCT_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>78</xloc>
+      <yloc>452</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_PROGRAM</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_PROGRAM</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>PROGRAM_ID</name>
+          <lookup>PROGRAM_ID</lookup>
+          </key>
+        <key>
+          <name>PROGRAM_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>JOURNAL_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>PROGRAM_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>472</xloc>
+      <yloc>219</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_STATISTICS</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_STATISTICS</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>STATISTICS_ID</name>
+          <lookup>STATISTICS_ID</lookup>
+          </key>
+        <key>
+          <name>STATISTICS_SETID</name>
+          <lookup>SETID</lookup>
+          </key>
+        <date>
+          <name>JOURNAL_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>STATISTICS_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>499</xloc>
+      <yloc>326</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_FSCM_ACCOUNT_RECEIVABLE_PAY_MISC</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the columns from the PS_RO_HEADER (order header) table. It maintains the order header information.</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT 
+PAY_MISC.FISCAL_YEAR, 
+PAY_MISC.ACCOUNTING_PERIOD, 
+PAY_MISC.JOURNAL_DATE, --KEY
+CAST (CONVERT(CHAR(10),PAY_MISC.JOURNAL_DATE,112) as NUMERIC) AS JOURNAL_DATE_SK, --DBMS SPECIFIC
+RTRIM(PAY_MISC.BUSINESS_UNIT_GL) AS GL_BUSINESS_UNIT_ID, --KEY
+RTRIM(PAY_MISC.BUSINESS_UNIT) AS AR_BUSINESS_UNIT_ID, --KEY
+RTRIM(PAY_MISC.JOURNAL_ID) AS JOURNAL_ID, --KEY
+RTRIM(PAY_MISC.JOURNAL_LINE) AS JOURNAL_LINE_ID, --KEY
+RTRIM(PAY_MISC.LEDGER) AS LEDGER_ID, 
+RTRIM(LEDGER_REC.SETID) AS LEDGER_SETID,
+RTRIM(PAY_MISC.LEDGER_GROUP) AS LEDGER_GROUP_ID, 
+RTRIM(PAY_MISC.ACCOUNT) AS ACCOUNT_ID,
+RTRIM(ACCOUNT_REC.SETID) AS ACCOUNT_SETID,
+RTRIM(PAY_MISC.ALTACCT) AS ALT_ACCOUNT_ID,
+RTRIM(ALT_ACCOUNT_REC.SETID) AS ALT_ACCOUNT_SETID,
+RTRIM(PAY_MISC.DEPTID) AS DEPARTMENT_ID,
+RTRIM(DEPT_REC.SETID) AS DEPT_SETID,
+RTRIM(PAY_MISC.AFFILIATE) AS AFFILIATE_BUSINESS_UNIT_ID,
+RTRIM(PAY_MISC.OPERATING_UNIT) AS OPERATING_UNIT_ID,
+RTRIM(OPER_UNIT_REC.SETID) AS OPERATING_UNIT_SETID,
+RTRIM(PAY_MISC.FUND_CODE) AS FUND_ID,
+RTRIM(FUND_REC.SETID) AS FUND_SETID,
+RTRIM(PAY_MISC.PRODUCT) AS PRODUCT_ID,
+RTRIM(PRODUCT_REC.SETID) AS PRODUCT_SETID,
+RTRIM(PAY_MISC.PROGRAM_CODE) AS PROGRAM_ID,
+RTRIM(PROGRAM_REC.SETID) AS PROGRAM_SETID,
+RTRIM(PAY_MISC.BUDGET_REF) AS BUDGET_REFERENCE_ID,
+RTRIM(BUD_REF_REC.SETID) AS BUDGET_REFERENCE_SETID,
+RTRIM(PAY_MISC.STATISTICS_CODE) AS STATISTICS_ID,
+RTRIM(STAT_REC.SETID) AS STATISTICS_SETID,
+RTRIM(PAY_MISC.AFFILIATE_INTRA2) AS AFFILIATE_OPERATING_UNIT_ID,
+RTRIM(PAY_MISC.AFFILIATE_INTRA1) AS AFFILIATE_FUND_ID,
+RTRIM(PAY_MISC.CLASS_FLD) AS CLASS_ID,
+RTRIM(CLASS_REC.SETID) AS CLASS_SETID,
+RTRIM(PAY_MISC.CHARTFIELD1) AS CHARTFIELD1_ID,
+RTRIM(CHARTFIELD1_REC.SETID) AS CHARTFIELD1_SETID,
+RTRIM(PAY_MISC.CHARTFIELD2) AS CHARTFIELD2_ID,
+RTRIM(CHARTFIELD2_REC.SETID) AS CHARTFIELD2_SETID,
+RTRIM(PAY_MISC.CHARTFIELD3) AS CHARTFIELD3_ID,
+RTRIM(CHARTFIELD3_REC.SETID) AS CHARTFIELD3_SETID,
+RTRIM(PAY_MISC.CURRENCY_CD) AS BASE_CURRENCY_ID,
+MONETARY_AMOUNT AS BASE_RECEIVABLE_AMT,
+RTRIM(PAY_MISC.FOREIGN_CURRENCY) AS ALT_CURRENCY_ID,
+FOREIGN_AMOUNT AS ALT_RECEIVABLE_AMT,
+STATISTIC_AMOUNT AS STATISTIC_AMT,
+RTRIM(PAY_MISC.DOC_SEQ_NBR) AS DOCUMENT_SEQUENCE_NUMBER, --DD
+RTRIM(PAY_MISC.JRNL_LN_REF) AS JOURNAL_REFERENCE_LINE_NUMBER --DD
+FROM PS_PAY_MISC_DST PAY_MISC
+LEFT OUTER JOIN PS_SET_CNTRL_REC LEDGER_REC
+ON PAY_MISC.BUSINESS_UNIT = LEDGER_REC.SETCNTRLVALUE
+AND LEDGER_REC.RECNAME = &apos;LED_DEFN_TBL&apos;
+LEFT OUTER JOIN PS_SET_CNTRL_REC ACCOUNT_REC
+ON PAY_MISC.BUSINESS_UNIT = ACCOUNT_REC.SETCNTRLVALUE
+AND ACCOUNT_REC.RECNAME = &apos;GL_ACCOUNT_TBL&apos;
+LEFT OUTER JOIN PS_SET_CNTRL_REC ALT_ACCOUNT_REC
+ON PAY_MISC.BUSINESS_UNIT = ALT_ACCOUNT_REC.SETCNTRLVALUE
+AND ALT_ACCOUNT_REC.RECNAME = &apos;ALTACCT_TBL&apos;
+LEFT OUTER JOIN PS_SET_CNTRL_REC DEPT_REC
+ON PAY_MISC.BUSINESS_UNIT = DEPT_REC.SETCNTRLVALUE
+AND DEPT_REC.RECNAME = &apos;DEPT_TBL&apos;
+LEFT OUTER JOIN PS_SET_CNTRL_REC OPER_UNIT_REC
+ON PAY_MISC.BUSINESS_UNIT = OPER_UNIT_REC.SETCNTRLVALUE
+AND OPER_UNIT_REC.RECNAME = &apos;OPER_UNIT_TBL&apos;
+LEFT OUTER JOIN PS_SET_CNTRL_REC FUND_REC
+ON PAY_MISC.BUSINESS_UNIT = FUND_REC.SETCNTRLVALUE
+AND FUND_REC.RECNAME = &apos;FUND_CODE_TBL&apos;
+LEFT OUTER JOIN PS_SET_CNTRL_REC PRODUCT_REC
+ON PAY_MISC.BUSINESS_UNIT = PRODUCT_REC.SETCNTRLVALUE
+AND PRODUCT_REC.RECNAME = &apos;PRODUCT_TBL&apos;
+LEFT OUTER JOIN PS_SET_CNTRL_REC PROGRAM_REC
+ON PAY_MISC.BUSINESS_UNIT = PROGRAM_REC.SETCNTRLVALUE
+AND PROGRAM_REC.RECNAME = &apos;PROGRAM_TBL&apos;
+LEFT OUTER JOIN PS_SET_CNTRL_REC BUD_REF_REC
+ON PAY_MISC.BUSINESS_UNIT = BUD_REF_REC.SETCNTRLVALUE
+AND BUD_REF_REC.RECNAME = &apos;BUD_REF_TBL&apos;
+LEFT OUTER JOIN PS_SET_CNTRL_REC STAT_REC
+ON PAY_MISC.BUSINESS_UNIT = STAT_REC.SETCNTRLVALUE
+AND STAT_REC.RECNAME = &apos;STAT_TBL&apos;
+LEFT OUTER JOIN PS_SET_CNTRL_REC CLASS_REC
+ON PAY_MISC.BUSINESS_UNIT = CLASS_REC.SETCNTRLVALUE
+AND CLASS_REC.RECNAME = &apos;CLASS_CF_TBL&apos;
+LEFT OUTER JOIN PS_SET_CNTRL_REC CHARTFIELD1_REC
+ON PAY_MISC.BUSINESS_UNIT = CHARTFIELD1_REC.SETCNTRLVALUE
+AND CHARTFIELD1_REC.RECNAME = &apos;CHARTFIELD1_TBL&apos;
+LEFT OUTER JOIN PS_SET_CNTRL_REC CHARTFIELD2_REC
+ON PAY_MISC.BUSINESS_UNIT = CHARTFIELD2_REC.SETCNTRLVALUE
+AND CHARTFIELD2_REC.RECNAME = &apos;CHARTFIELD2_TBL&apos;
+LEFT OUTER JOIN PS_SET_CNTRL_REC CHARTFIELD3_REC
+ON PAY_MISC.BUSINESS_UNIT = CHARTFIELD3_REC.SETCNTRLVALUE
+AND CHARTFIELD3_REC.RECNAME = &apos;CHARTFIELD3_TBL&apos;
+WHERE PAY_MISC.GL_DISTRIB_STATUS = &apos;D&apos;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>81</xloc>
+      <yloc>19</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

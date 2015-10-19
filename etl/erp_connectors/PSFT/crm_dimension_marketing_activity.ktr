@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>CRM_DIMENSION_MARKETING_ACTIVITY</name>
+    <directory>/</directory>
+    <log>
+      <read></read>
+      <write></write>
+      <input></input>
+      <output></output>
+      <update></update>
+      <connection></connection>
+      <table></table>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection></connection>
+      <table></table>
+      <field></field>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts campaign activity information from PeopleSoft CRM 8.8.  The output could be used to create a marketing activity dimension.</note>
+      <xloc>133</xloc>
+      <yloc>34</yloc>
+      <width>717</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername></servername>
+    <data_tablespace></data_tablespace>
+    <index_tablespace></index_tablespace>
+    <attributes>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_CRM_MARKETING_ACTIVITY</from><to>DIMENSION_MARKETING_ACTIVITY</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>DIMENSION_MARKETING_ACTIVITY</name>
+    <type>InsertUpdate</type>
+    <description></description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw</connection>
+    <commit>0</commit>
+    <lookup>
+      <table>DIMENSION_MARKETING_ACTIVITY</table>
+      <key>
+        <name>BUSINESS_UNIT</name>
+        <field>BUSINESS_UNIT</field>
+        <condition>=</condition>
+        <name2></name2>
+        </key>
+      <key>
+        <name>CAMPAIGN_WAVE_ID</name>
+        <field>CAMPAIGN_WAVE_ID</field>
+        <condition>=</condition>
+        <name2></name2>
+        </key>
+      <value>
+        <name>BUSINESS_UNIT</name>
+        <rename>BUSINESS_UNIT</rename>
+        </value>
+      <value>
+        <name>CAMPAIGN_ID</name>
+        <rename>CAMPAIGN_ID</rename>
+        </value>
+      <value>
+        <name>CAMPAIGN_WAVE_ID</name>
+        <rename>CAMPAIGN_WAVE_ID</rename>
+        </value>
+      <value>
+        <name>CAMPAIGN_WAVE_NAME</name>
+        <rename>CAMPAIGN_WAVE_NAME</rename>
+        </value>
+      <value>
+        <name>START_DATE</name>
+        <rename>START_DATE</rename>
+        </value>
+      <value>
+        <name>END_DATE</name>
+        <rename>END_DATE</rename>
+        </value>
+      <value>
+        <name>CAMPAIGN_STATUS_CODE</name>
+        <rename>CAMPAIGN_STATUS_CODE</rename>
+        </value>
+      <value>
+        <name>AUDIENCE_LIST_ID</name>
+        <rename>AUDIENCE_LIST_ID</rename>
+        </value>
+      <value>
+        <name>OFFER_ID</name>
+        <rename>OFFER_ID</rename>
+        </value>
+      <value>
+        <name>CONTENT_ID</name>
+        <rename>CONTENT_ID</rename>
+        </value>
+      <value>
+        <name>PROMOTION_CODE</name>
+        <rename>PROMOTION_CODE</rename>
+        </value>
+      <value>
+        <name>OBJECTIVE_CODE</name>
+        <rename>OBJECTIVE_CODE</rename>
+        </value>
+      <value>
+        <name>CONTENT_SUBTYPE</name>
+        <rename>CONTENT_SUBTYPE</rename>
+        </value>
+      <value>
+        <name>CONTENT_TYPE</name>
+        <rename>CONTENT_TYPE</rename>
+        </value>
+      <value>
+        <name>PROGRAM_OWNER_ID</name>
+        <rename>PROGRAM_OWNER_ID</rename>
+        </value>
+      <value>
+        <name>CAMPAIGN_NAME</name>
+        <rename>CAMPAIGN_NAME</rename>
+        </value>
+      <value>
+        <name>CAMPAIGN_STATUS_DESC</name>
+        <rename>CAMPAIGN_STATUS_DESC</rename>
+        </value>
+      <value>
+        <name>CAMPAIGN_OBJECTIVE_DESC</name>
+        <rename>CAMPAIGN_OBJECTIVE_DESC</rename>
+        </value>
+      <value>
+        <name>CAMPAIGN_OFFER_NAME</name>
+        <rename>CAMPAIGN_OFFER_NAME</rename>
+        </value>
+      <value>
+        <name>CAMPAIGN_CONTENT_DESC</name>
+        <rename>CAMPAIGN_CONTENT_DESC</rename>
+        </value>
+      <value>
+        <name>CAMPAIGN_CONTENT_TYPE_DESC</name>
+        <rename>CAMPAIGN_CONTENT_TYPE_DESC</rename>
+        </value>
+      <value>
+        <name>CAMPAIGN_CONTENT_SUBTYPE_DESC</name>
+        <rename>CAMPAIGN_CONTENT_SUBTYPE_DESC</rename>
+        </value>
+      <value>
+        <name>PROGRAM_OWNER</name>
+        <rename>PROGRAM_OWNER</rename>
+        </value>
+      </lookup>
+    <GUI>
+      <xloc>474</xloc>
+      <yloc>282</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_CRM_MARKETING_ACTIVITY</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the PS_RA_CMPGN_WAVE table.  It maintains marketing campaign wave (Activity) information.
+</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT WAVE.BUSINESS_UNIT,
+WAVE.RA_CAMPAIGN_ID AS CAMPAIGN_ID,
+WAVE.RA_CMPGN_WAVE_ID AS CAMPAIGN_WAVE_ID,
+WAVE.RA_WAVE_NAME AS CAMPAIGN_WAVE_NAME,
+WAVE.START_DATE, 
+WAVE.END_DATE,
+WAVE.RA_CMPGN_STATUS_CD AS CAMPAIGN_STATUS_CODE,
+WAVE.RA_LIST_ID AS AUDIENCE_LIST_ID, 
+WAVE.RA_OFFER_ID AS OFFER_ID,
+WAVE.RA_CONTENT_ID AS CONTENT_ID,
+WAVE.RA_PROMOTION_CODE AS PROMOTION_CODE, 
+WAVE.RA_OBJECTIVE_CD AS OBJECTIVE_CODE,
+CONTENT.RA_CONTENT_SUBTYPE AS CONTENT_SUBTYPE,
+CONTENT.RA_CONTENT_TYPE AS CONTENT_TYPE,
+CAMPAIGN.BO_ID_OWNER AS PROGRAM_OWNER_ID,
+CAMPAIGN.RA_CMPGN_NAME AS CAMPAIGN_NAME,
+CAMPAIGN_STATUS.DESCR AS CAMPAIGN_STATUS_DESC,
+OBJECTIVE.DESCR CAMPAIGN_OBJECTIVE_DESC,
+OFFER.RA_OFFER_NAME AS CAMPAIGN_OFFER_NAME,
+CONTENT.DESCR AS CAMPAIGN_CONTENT_DESC,
+TYPE.DESCR AS CAMPAIGN_CONTENT_TYPE_DESC,
+STYPE.DESCR AS CAMPAIGN_CONTENT_SUBTYPE_DESC,
+BO.BO_NAME AS PROGRAM_OWNER
+FROM PS_RA_CMPGN_WAVE WAVE
+LEFT OUTER JOIN PS_RA_CAMPAIGN CAMPAIGN
+ON WAVE.BUSINESS_UNIT = CAMPAIGN.BUSINESS_UNIT 
+and WAVE.RA_CAMPAIGN_ID = CAMPAIGN.RA_CAMPAIGN_ID
+LEFT OUTER JOIN PS_BO BO
+ON CAMPAIGN.BO_ID_OWNER = BO.BO_ID
+LEFT OUTER JOIN PS_RA_UD_CPGN_STAT CAMPAIGN_STATUS   
+ON WAVE.RA_CMPGN_STATUS_CD = CAMPAIGN_STATUS.RA_CMPGN_STATUS_CD
+AND WAVE.BUSINESS_UNIT = (SELECT REC_CAMPAIGN_STATUS.SETCNTRLVALUE FROM PS_SET_CNTRL_REC REC_CAMPAIGN_STATUS, PS_RA_UD_CPGN_STAT CAMPAIGN_STATUS1
+WHERE CAMPAIGN_STATUS1.SETID = REC_CAMPAIGN_STATUS.SETID  AND REC_CAMPAIGN_STATUS.RECNAME = &apos;RA_UD_CPGN_STAT&apos;)
+LEFT OUTER JOIN PS_RA_UD_CMPGN_OBJ OBJECTIVE
+ON OBJECTIVE.RA_OBJECTIVE_CD = WAVE.RA_OBJECTIVE_CD
+AND WAVE.BUSINESS_UNIT = (SELECT REC_OBJECTIVE.SETCNTRLVALUE FROM PS_SET_CNTRL_REC REC_OBJECTIVE,PS_RA_UD_CMPGN_OBJ OBJECTIVE1
+WHERE OBJECTIVE1.SETID = REC_OBJECTIVE.SETID AND REC_OBJECTIVE.RECNAME = &apos;RA_UD_CMPGN_OBJ&apos;)
+LEFT OUTER JOIN PS_RA_OFFER OFFER 
+ON OFFER.RA_OFFER_ID = WAVE.RA_OFFER_ID
+AND WAVE.BUSINESS_UNIT = (SELECT REC_OFFER.SETCNTRLVALUE FROM PS_SET_CNTRL_REC REC_OFFER,PS_RA_OFFER OFFER1 		
+WHERE OFFER1.SETID = REC_OFFER.SETID AND REC_OFFER.RECNAME = &apos;RA_OFFER&apos;) 
+LEFT OUTER JOIN PS_RA_CONTENT CONTENT 
+ON CONTENT.RA_CONTENT_ID = WAVE.RA_CONTENT_ID
+AND WAVE.BUSINESS_UNIT = (SELECT REC_CONTENT.SETCNTRLVALUE FROM PS_SET_CNTRL_REC REC_CONTENT,PS_RA_CONTENT CONTENT1
+WHERE CONTENT1.SETID = REC_CONTENT.SETID AND REC_CONTENT.RECNAME = &apos;RA_CONTENT&apos;)
+LEFT OUTER JOIN PS_RA_UD_CONT_TYPE TYPE 
+ON TYPE.RA_CONTENT_TYPE = CONTENT.RA_CONTENT_TYPE
+AND WAVE.BUSINESS_UNIT = (SELECT REC_TYPE.SETCNTRLVALUE FROM PS_SET_CNTRL_REC REC_TYPE, PS_RA_UD_CONT_TYPE TYPE1
+WHERE TYPE1.SETID = REC_TYPE.SETID 
+AND REC_TYPE.RECNAME = &apos;RA_UD_CONT_TYPE&apos;)
+LEFT OUTER JOIN PS_RA_UD_CNT_STYPE STYPE
+ON STYPE.RA_CONTENT_SUBTYPE = CONTENT.RA_CONTENT_SUBTYPE
+AND WAVE.BUSINESS_UNIT = (SELECT REC_STYPE.SETCNTRLVALUE FROM PS_SET_CNTRL_REC REC_STYPE,PS_RA_UD_CNT_STYPE STYPE1
+WHERE STYPE1.SETID = REC_STYPE.SETID 
+AND REC_STYPE.RECNAME = &apos;RA_UD_CNT_STYPE&apos;)</sql>
+    <limit>0</limit>
+    <lookup></lookup>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>163</xloc>
+      <yloc>281</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

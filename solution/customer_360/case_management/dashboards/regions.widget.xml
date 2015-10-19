@@ -1,0 +1,76 @@
+
+<chart>
+
+	<!-- This file defines the pie chart that shows the actual values for each region -->
+
+	<!-- Specify the title of the chart -->
+	<title>Cases by Category</title>
+
+	<!-- Specify the location of the title -->
+	<title-position>top</title-position>
+
+	<!-- Specify the font of the title -->
+	<title-font>
+		<font-family>Ariel</font-family>
+		<size>20</size>
+		<is-bold>false</is-bold>
+		<is-italic>false</is-italic>
+	</title-font>
+
+	<width>450</width>
+	<height>300</height>
+		
+		<color-palette>
+		<color>#CCFFCC</color>
+		<color>#FFCC66</color>
+		<color>#FFFFCC</color>
+		<color>#FFCC99</color>
+		<color>#CCFFFF</color>
+		
+		<color>#FF9966</color>
+		<color>#CC9933</color>
+		<color>#CCCCCC</color>
+		<color>#99999</color> <!-- DARK GREEN -->
+	
+<!-- CJL:  Needs Revision	
+		<color>#9999FF</color>
+		<color>#3399FF</color>
+		<color>#993300</color>
+		<color>#CCCC99</color>
+		<color>#666666</color>
+		<color>#FFCC66</color>
+		<color>#6699CC</color>
+		<color>#663366</color>
+		<color>#CCFFFF</color>
+		<color>#FFF999</color>
+		<color>#FF9966</color>
+		<color>#FFCC66</color>
+		<color>#CC9933</color>
+-->	
+	</color-palette>
+
+	
+
+	<!-- Specify the 3D-ness of the bars -->
+	<is-3D>false</is-3D>
+
+	<!-- Specify if the chart has a border and the border color -->
+	<border-visible>false</border-visible>
+
+	<!-- Specify is the chart legend should be shown -->
+	<include-legend>false</include-legend>
+
+	<!-- Specify where the data for the chart comes from -->
+	<data>
+		<!-- Specify the path to the action sequence that provides the data -->
+		<data-solution>breadboard</data-solution>
+		<data-path>customer_360/case_management/dashboards/components</data-path>
+		<data-action>regions_headcount_data.xaction</data-action>
+
+		<!-- Specify the output of the action sequence that contains the data -->
+		<data-output>rule-result</data-output>
+		
+		<!-- Specify whether to get the pie series from the rows or columns -->
+		<data-orientation>columns</data-orientation>
+	</data>
+</chart>

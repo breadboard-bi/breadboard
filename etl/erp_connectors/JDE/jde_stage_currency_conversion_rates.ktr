@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>region_sample</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+  <modified_user/>
+  <modified_date>2006/12/15 13:40:51.795</modified_date>
+    </info>
+  <notepads>
+    <notepad>
+      <note>Early Draft - This data flow extracts currency conversion data from JDE.  Only the inputs have been built.</note>
+      <xloc>44</xloc>
+      <yloc>83</yloc>
+      <width>517</width>
+      <heigth>23</heigth>
+      </notepad>
+    <notepad>
+      <note>Copyright © 2006 Breadboard BI, LLC. All rights reserved.</note>
+      <xloc>234</xloc>
+      <yloc>260</yloc>
+      <width>291</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>localhost</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>JDE_STAGE_CURRENCY_CONVERSION_RATES</from><to>STAGE_JDE_CURRENCY_CONVERSION_RATES</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>JDE_STAGE_CURRENCY_CONVERSION_RATES</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT F0015.CXCRCD AS CURRENCY_FROM_CODE, --pk
+F0015.CXCRDC AS CURRENCY_TO_CODE, --pk
+F0015.CXAN8 AS CUSTOMER_ID, --??? --pk
+F0015.CXEFT AS RATE_EFFECTIVE_DATE, --pk
+F0015.CXCRRD AS EXCHANGE_DIVISOR_RATE,
+F0015.CXCRR AS EXCHANGE_MULTIPLIER_RATE, 
+F0010.CCCRYR AS CONVERSION_TYPE1_CODE --N (no conversion),Y (multiplier), Z (divisor)
+F00151.T1TRCR AS TRIANGULATION_CURRENCY_CODE
+F00151.T1CRCM AS NO_INVERSE_CONVERSION_METHOD,
+
+CASE WHEN F0010.CCCRYR = &apos;N&apos; OR F0015.CXCRCD = F0015.CXCRDC THEN &apos;No Conversion&apos;
+WHEN F0010.CCCRYR != &apos;N&apos; AND F0015.CXCRCD != F0015.CXCRDC AND F0015.CXCRR != 0 AND F0015.CXCRRD != 0 THEN &apos;Inverse Conversion&apos;
+WHEN F0010.CCCRYR != &apos;N&apos; AND F0015.CXCRCD != F0015.CXCRDC AND (F0015.CXCRR !=0 OR F0015.CXCRRD !=0) AND (F0015.CXCRR = 0 F0015.CXCRRD = 0) THEN &apos;No Inverse Conversion&apos;
+WHEN F0010.CCCRYR != &apos;N&apos; AND F0015.CXCRCD != F0015.CXCRDC AND F0015.CXCRR = 0 AND F0015.CXCRRD = 0 THEN &apos;Triangulation Conversion&apos; END AS CONVERSION_METHOD_DESC
+
+
+FROM F0015
+JOIN F0010
+ON  F0010.CCCO = &apos;00000&apos;
+LEFT OUTER JOIN F00151
+ON 
+F0015.CXCRCD = F00151.T1CRCD AND F0015.CXCRDC = F00151.T1CRDC</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <GUI>
+      <xloc>148</xloc>
+      <yloc>161</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>STAGE_JDE_CURRENCY_CONVERSION_RATES</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>STAGE_JDE_CURRENCY_CONVERSION_RATES</table>
+      </lookup>
+    <GUI>
+      <xloc>575</xloc>
+      <yloc>162</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

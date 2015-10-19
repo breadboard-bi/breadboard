@@ -1,0 +1,633 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>CRM_DIMENSION_SALES_REP</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts salary admin plan data from PeopleSoft HCM.</note>
+      <xloc>32</xloc>
+      <yloc>50</yloc>
+      <width>340</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_oracle_orcl</name>
+    <server>192.168.0.103</server>
+    <type>ORACLE</type>
+    <access>Native</access>
+    <database>orcl</database>
+    <port>1521</port>
+    <username>mdw</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_HCM_SALARY_ADMIN_PLAN</from><to>LKP_DIMENSION_CURRENCY</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_CURRENCY</from><to>LKP_DIMENSION_COMPANY</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_COMPANY</from><to>LKP_DIMENSION_REGULATORY_REGION</to><enabled>Y</enabled> </hop>  <hop> <from>LKP_DIMENSION_REGULATORY_REGION</from><to>DIMENSION_SALARY_ADMIN_PLAN</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>DIMENSION_SALARY_ADMIN_PLAN</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_oracle_orcl</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>DIMENSION_SALARY_ADMIN_PLAN</table>
+      <key>
+        <name>SALARY_ADMIN_PLAN_ID</name>
+        <field>SALARY_ADMIN_PLAN_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>SALARY_PLAN_EFFECTIVE_DATE</name>
+        <field>SALARY_PLAN_EFFECTIVE_DATE</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>SETID</name>
+        <field>SETID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>SALARY_GRADE_ID</name>
+        <field>SALARY_GRADE_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>SALARY_GRADE_EFFECTIVE_DATE</name>
+        <field>SALARY_GRADE_EFFECTIVE_DATE</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>SALARY_STEP_ID</name>
+        <field>SALARY_STEP_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>SALARY_STEP_EFFECTIVE_DATE</name>
+        <field>SALARY_STEP_EFFECTIVE_DATE</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>SALARY_ADMIN_PLAN_ID</name>
+        <rename>SALARY_ADMIN_PLAN_ID</rename>
+        </value>
+      <value>
+        <name>SALARY_PLAN_EFFECTIVE_DATE</name>
+        <rename>SALARY_PLAN_EFFECTIVE_DATE</rename>
+        </value>
+      <value>
+        <name>SETID</name>
+        <rename>SETID</rename>
+        </value>
+      <value>
+        <name>SALARY_GRADE_ID</name>
+        <rename>SALARY_GRADE_ID</rename>
+        </value>
+      <value>
+        <name>SALARY_GRADE_EFFECTIVE_DATE</name>
+        <rename>SALARY_GRADE_EFFECTIVE_DATE</rename>
+        </value>
+      <value>
+        <name>SALARY_STEP_ID</name>
+        <rename>SALARY_STEP_ID</rename>
+        </value>
+      <value>
+        <name>SALARY_STEP_EFFECTIVE_DATE</name>
+        <rename>SALARY_STEP_EFFECTIVE_DATE</rename>
+        </value>
+      <value>
+        <name>SALARY_PLAN_NAME</name>
+        <rename>SALARY_PLAN_NAME</rename>
+        </value>
+      <value>
+        <name>SALARY_PLAN_DESC</name>
+        <rename>SALARY_PLAN_DESC</rename>
+        </value>
+      <value>
+        <name>SALARY_GRADE_NAME</name>
+        <rename>SALARY_GRADE_NAME</rename>
+        </value>
+      <value>
+        <name>SALARY_GRADE_DESC</name>
+        <rename>SALARY_GRADE_DESC</rename>
+        </value>
+      <value>
+        <name>SALARY_STEP_DESC</name>
+        <rename>SALARY_STEP_DESC</rename>
+        </value>
+      <value>
+        <name>SALARY_PLAN_EFFECT_STATUS_CODE</name>
+        <rename>SALARY_PLAN_EFFECT_STATUS_CODE</rename>
+        </value>
+      <value>
+        <name>SALARY_PLAN_SCOPE_CODE</name>
+        <rename>SALARY_PLAN_SCOPE_CODE</rename>
+        </value>
+      <value>
+        <name>SALARY_PLAN_SCOPE_NAME</name>
+        <rename>SALARY_PLAN_SCOPE_NAME</rename>
+        </value>
+      <value>
+        <name>SALARY_PLAN_SCOPE_DESC</name>
+        <rename>SALARY_PLAN_SCOPE_DESC</rename>
+        </value>
+      <value>
+        <name>NEXT_PAY_ADJUSTMENT_AMT</name>
+        <rename>NEXT_PAY_ADJUSTMENT_AMT</rename>
+        </value>
+      <value>
+        <name>SALARY_BASIS_CODE</name>
+        <rename>SALARY_BASIS_CODE</rename>
+        </value>
+      <value>
+        <name>SALARY_BASIS_NAME</name>
+        <rename>SALARY_BASIS_NAME</rename>
+        </value>
+      <value>
+        <name>SALARY_BASIS_DESC</name>
+        <rename>SALARY_BASIS_DESC</rename>
+        </value>
+      <value>
+        <name>DAILY_FREQUENCY_CODE</name>
+        <rename>DAILY_FREQUENCY_CODE</rename>
+        </value>
+      <value>
+        <name>DAILY_FREQUENCY_NAME</name>
+        <rename>DAILY_FREQUENCY_NAME</rename>
+        </value>
+      <value>
+        <name>DAILY_FREQUENCY_DESC</name>
+        <rename>DAILY_FREQUENCY_DESC</rename>
+        </value>
+      <value>
+        <name>HOURLY_FREQUENCY_CODE</name>
+        <rename>HOURLY_FREQUENCY_CODE</rename>
+        </value>
+      <value>
+        <name>HOURLY_FREQUENCY_NAME</name>
+        <rename>HOURLY_FREQUENCY_NAME</rename>
+        </value>
+      <value>
+        <name>HOURLY_FREQUENCY_DESC</name>
+        <rename>HOURLY_FREQUENCY_DESC</rename>
+        </value>
+      <value>
+        <name>MONTHLY_FREQUENCY_CODE</name>
+        <rename>MONTHLY_FREQUENCY_CODE</rename>
+        </value>
+      <value>
+        <name>MONTHLY_FREQUENCY_NAME</name>
+        <rename>MONTHLY_FREQUENCY_NAME</rename>
+        </value>
+      <value>
+        <name>MONTHLY_FREQUENCY_DESC</name>
+        <rename>MONTHLY_FREQUENCY_DESC</rename>
+        </value>
+      <value>
+        <name>MAX_ANNUAL_RT</name>
+        <rename>MAX_ANNUAL_RT</rename>
+        </value>
+      <value>
+        <name>MID_ANNUAL_RT</name>
+        <rename>MID_ANNUAL_RT</rename>
+        </value>
+      <value>
+        <name>MIN_ANNUAL_RT</name>
+        <rename>MIN_ANNUAL_RT</rename>
+        </value>
+      <value>
+        <name>MAX_MONTHLY_RT</name>
+        <rename>MAX_MONTHLY_RT</rename>
+        </value>
+      <value>
+        <name>MID_MONTHLY_RT</name>
+        <rename>MID_MONTHLY_RT</rename>
+        </value>
+      <value>
+        <name>MIN_MONTHLY_RT</name>
+        <rename>MIN_MONTHLY_RT</rename>
+        </value>
+      <value>
+        <name>MAX_DAILY_RT</name>
+        <rename>MAX_DAILY_RT</rename>
+        </value>
+      <value>
+        <name>MID_DAILY_RT</name>
+        <rename>MID_DAILY_RT</rename>
+        </value>
+      <value>
+        <name>MIN_DAILY_RT</name>
+        <rename>MIN_DAILY_RT</rename>
+        </value>
+      <value>
+        <name>MAX_HOURLY_RT</name>
+        <rename>MAX_HOURLY_RT</rename>
+        </value>
+      <value>
+        <name>MID_HOURLY_RT</name>
+        <rename>MID_HOURLY_RT</rename>
+        </value>
+      <value>
+        <name>MIN_HOURLY_RT</name>
+        <rename>MIN_HOURLY_RT</rename>
+        </value>
+      <value>
+        <name>SALARY_STEP_MAX_CLASSIFY_CODE</name>
+        <rename>SALARY_STEP_MAX_CLASSIFY_CODE</rename>
+        </value>
+      <value>
+        <name>SALARY_STEP_MIN_CLASSIFY_CODE</name>
+        <rename>SALARY_STEP_MIN_CLASSIFY_CODE</rename>
+        </value>
+      <value>
+        <name>SALARY_STEP_JOB_CLASSIFY_NBR</name>
+        <rename>SALARY_STEP_JOB_CLASSIFY_NBR</rename>
+        </value>
+      <value>
+        <name>STEP_BIWEEKLY_RT</name>
+        <rename>STEP_BIWEEKLY_RT</rename>
+        </value>
+      <value>
+        <name>INCREMENT_DAYS_QTY</name>
+        <rename>INCREMENT_DAYS_QTY</rename>
+        </value>
+      <value>
+        <name>INCREMENT_WEEK_QTY</name>
+        <rename>INCREMENT_WEEK_QTY</rename>
+        </value>
+      <value>
+        <name>STEP_ANNUAL_RT</name>
+        <rename>STEP_ANNUAL_RT</rename>
+        </value>
+      <value>
+        <name>STEP_DAILY_RT</name>
+        <rename>STEP_DAILY_RT</rename>
+        </value>
+      <value>
+        <name>STEP_HOURLY_RT</name>
+        <rename>STEP_HOURLY_RT</rename>
+        </value>
+      <value>
+        <name>STEP_MONTHLY_RT</name>
+        <rename>STEP_MONTHLY_RT</rename>
+        </value>
+      <value>
+        <name>CURRENCY_SK</name>
+        <rename>CURRENCY_SK</rename>
+        </value>
+      <value>
+        <name>COMPANY_SK</name>
+        <rename>COMPANY_SK</rename>
+        </value>
+      <value>
+        <name>REGULATORY_REGION_SK</name>
+        <rename>REGULATORY_REGION_SK</rename>
+        </value>
+      </lookup>
+    <GUI>
+      <xloc>841</xloc>
+      <yloc>192</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_COMPANY</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_COMPANY</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>COMPANY_ID</name>
+          <lookup>COMPANY_ID</lookup>
+          </key>
+        <date>
+          <name>SALARY_PLAN_EFFECTIVE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>COMPANY_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>437</xloc>
+      <yloc>191</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_CURRENCY</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_CURRENCY</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>CURRENCY_ID</name>
+          <lookup>CURRENCY_ID</lookup>
+          </key>
+        <date>
+          <name>SALARY_PLAN_EFFECTIVE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>CURRENCY_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>277</xloc>
+      <yloc>190</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>LKP_DIMENSION_REGULATORY_REGION</name>
+    <type>DimensionLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+      <table>DIMENSION_REGULATORY_REGION</table>
+      <connection>mdw_oracle_orcl</connection>
+      <commit>0</commit>
+      <update>N</update>
+      <fields>
+        <key>
+          <name>REGULATORY_REGION_ID</name>
+          <lookup>REGULATORY_REGION_ID</lookup>
+          </key>
+        <date>
+          <name>SALARY_PLAN_EFFECTIVE_DATE</name>
+          <from>DW_START_DATE</from>
+          <to>DW_STOP_DATE</to>
+          </date>
+        <return>
+          <name>REGULATORY_REGION_SK</name>
+          <rename/>
+          <use_autoinc>Y</use_autoinc>
+          <version>DW_VERSION_NUMBER</version>
+        </return>
+      </fields>
+      <sequence/>
+      <min_year>1900</min_year>
+      <max_year>2199</max_year>
+    <GUI>
+      <xloc>631</xloc>
+      <yloc>192</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_HCM_SALARY_ADMIN_PLAN</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the columns from the PS_RSF_SUSER table.  It maintains the basic sales user record with descriptors and settings.
+</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT RTRIM(SALARY_PLAN.SAL_ADMIN_PLAN) AS SALARY_ADMIN_PLAN_ID, --AK
+SALARY_PLAN.EFFDT AS SALARY_PLAN_EFFECTIVE_DATE, --AK
+RTRIM(SALARY_PLAN.SETID) AS SETID, --AK
+RTRIM(SALARY_GRADE.GRADE) AS SALARY_GRADE_ID, --AK
+SALARY_GRADE.EFFDT AS SALARY_GRADE_EFFECTIVE_DATE, --AK
+RTRIM(SALARY_STEP.STEP) AS SALARY_STEP_ID, --AK
+SALARY_STEP.EFFDT AS SALARY_STEP_EFFECTIVE_DATE, --AK
+RTRIM(SALARY_PLAN.COMPANY) AS COMPANY_ID,
+RTRIM(SALARY_GRADE.REG_REGION) AS REGULATORY_REGION_ID,
+RTRIM(SALARY_GRADE.CURRENCY_CD) AS CURRENCY_ID,
+RTRIM(SALARY_PLAN.DESCRSHORT) AS SALARY_PLAN_NAME,
+RTRIM(SALARY_PLAN.DESCR) AS SALARY_PLAN_DESC ,
+RTRIM(SALARY_GRADE.DESCRSHORT) AS SALARY_GRADE_NAME,
+RTRIM(SALARY_GRADE.DESCR) AS SALARY_GRADE_DESC,
+RTRIM(SALARY_STEP.STEP_DESCR) AS SALARY_STEP_DESC,
+RTRIM(SALARY_PLAN.EFF_STATUS) AS SALARY_PLAN_EFFECT_STATUS_CODE,
+RTRIM(SALARY_PLAN.GVT_GEOG_SCOPE) AS SALARY_PLAN_SCOPE_CODE,
+RTRIM(GVT_GEOG_SCOPE.XLATSHORTNAME) AS SALARY_PLAN_SCOPE_NAME,
+RTRIM(GVT_GEOG_SCOPE.XLATLONGNAME) AS SALARY_PLAN_SCOPE_DESC,
+RTRIM(SALARY_PLAN.GVT_NEXT_PAY_ADJ) AS NEXT_PAY_ADJUSTMENT_AMT,
+RTRIM(SALARY_PLAN.GVT_SAL_BASIS) AS SALARY_BASIS_CODE,
+RTRIM(GVT_SAL_BASIS.XLATSHORTNAME) AS SALARY_BASIS_NAME,
+RTRIM(GVT_SAL_BASIS.XLATLONGNAME) AS SALARY_BASIS_DESC,
+RTRIM(SALARY_PLAN.FREQ_ID_DAILY) AS DAILY_FREQUENCY_CODE,
+RTRIM(DAY_FREQUENCY.XLATSHORTNAME) AS DAILY_FREQUENCY_NAME, 
+RTRIM(DAY_FREQUENCY.XLATLONGNAME) AS DAILY_FREQUENCY_DESC,
+RTRIM(SALARY_PLAN.FREQ_ID_HOURLY) AS HOURLY_FREQUENCY_CODE,
+RTRIM(HOUR_FREQUENCY.XLATSHORTNAME) AS HOURLY_FREQUENCY_NAME, 
+RTRIM(HOUR_FREQUENCY.XLATLONGNAME) AS HOURLY_FREQUENCY_DESC,
+RTRIM(SALARY_PLAN.FREQ_ID_MONTHLY) AS MONTHLY_FREQUENCY_CODE,
+RTRIM(MONTH_FREQUENCY.XLATSHORTNAME) AS MONTHLY_FREQUENCY_NAME,
+RTRIM(MONTH_FREQUENCY.XLATLONGNAME) AS MONTHLY_FREQUENCY_DESC,
+SALARY_GRADE.MAX_RT_ANNUAL AS MAX_ANNUAL_RT,
+SALARY_GRADE.MID_RT_ANNUAL AS MID_ANNUAL_RT,
+SALARY_GRADE.MIN_RT_ANNUAL AS MIN_ANNUAL_RT,
+SALARY_GRADE.MAX_RT_MONTHLY AS MAX_MONTHLY_RT,
+SALARY_GRADE.MID_RT_MONTHLY AS MID_MONTHLY_RT,
+SALARY_GRADE.MIN_RT_MONTHLY AS MIN_MONTHLY_RT,
+SALARY_GRADE.MAX_RT_DAILY AS MAX_DAILY_RT,
+SALARY_GRADE.MID_RT_DAILY AS MID_DAILY_RT,
+SALARY_GRADE.MIN_RT_DAILY AS MIN_DAILY_RT,
+SALARY_GRADE.MAX_RT_HOURLY AS MAX_HOURLY_RT,
+SALARY_GRADE.MID_RT_HOURLY AS MID_HOURLY_RT,
+SALARY_GRADE.MIN_RT_HOURLY AS MIN_HOURLY_RT,
+RTRIM(SALARY_STEP.APS_MAX_CLS_AUS) AS SALARY_STEP_MAX_CLASSIFY_CODE,
+RTRIM(SALARY_STEP.APS_MIN_CLS_AUS) AS SALARY_STEP_MIN_CLASSIFY_CODE,
+SALARY_STEP.CLASSN_CURRENT_AUS AS SALARY_STEP_JOB_CLASSIFY_NBR,
+SALARY_STEP.GVT_BIWEEKLY_RT AS STEP_BIWEEKLY_RT,
+SALARY_STEP.GVT_INCREM_DAYS AS INCREMENT_DAYS_QTY,
+SALARY_STEP.GVT_INCREM_WEEKS AS INCREMENT_WEEK_QTY,
+SALARY_STEP.ANNUAL_RT AS STEP_ANNUAL_RT,
+SALARY_STEP.DAILY_RT AS STEP_DAILY_RT,
+SALARY_STEP.HOURLY_RT AS STEP_HOURLY_RT,
+SALARY_STEP.MONTHLY_RT AS STEP_MONTHLY_RT
+FROM PS_SAL_PLAN_TBL SALARY_PLAN
+LEFT OUTER JOIN PSXLATITEM GVT_SAL_BASIS
+ON GVT_SAL_BASIS.FIELDNAME = &apos;GVT_SAL_BASIS&apos;
+AND SALARY_PLAN.GVT_SAL_BASIS = GVT_SAL_BASIS.FIELDVALUE
+AND GVT_SAL_BASIS.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE GVT_SAL_BASIS.FIELDNAME = A1.FIELDNAME 
+	AND GVT_SAL_BASIS.FIELDVALUE = A1.FIELDVALUE
+	AND GVT_SAL_BASIS.FIELDNAME = &apos;GVT_SAL_BASIS&apos;)
+LEFT OUTER JOIN PS_SAL_GRADE_TBL SALARY_GRADE
+ON SALARY_PLAN.SETID = SALARY_GRADE.SETID AND
+SALARY_PLAN.SAL_ADMIN_PLAN=SALARY_GRADE.SAL_ADMIN_PLAN
+AND SALARY_GRADE.EFFDT = (SELECT MAX(X.EFFDT) FROM PS_SAL_GRADE_TBL X WHERE SALARY_GRADE.SAL_ADMIN_PLAN = X.SAL_ADMIN_PLAN AND SALARY_GRADE.GRADE = X.GRADE AND SALARY_GRADE.SETID = X.SETID)
+LEFT OUTER JOIN PS_SAL_STEP_TBL SALARY_STEP
+ON SALARY_STEP.SETID = SALARY_GRADE.SETID AND
+SALARY_STEP.SAL_ADMIN_PLAN=SALARY_GRADE.SAL_ADMIN_PLAN AND
+SALARY_STEP.GRADE=SALARY_GRADE.GRADE AND
+SALARY_STEP.EFFDT = (SELECT MAX(X.EFFDT) FROM PS_SAL_STEP_TBL X WHERE SALARY_STEP.SAL_ADMIN_PLAN = X.SAL_ADMIN_PLAN AND SALARY_STEP.GRADE = X.GRADE AND SALARY_STEP.STEP = X.STEP AND SALARY_STEP.SETID = X.SETID)
+LEFT OUTER JOIN PSXLATITEM HOUR_FREQUENCY
+ON HOUR_FREQUENCY.FIELDNAME = &apos;FREQUENCY_TYPE&apos;
+AND SALARY_PLAN.FREQ_ID_HOURLY = HOUR_FREQUENCY.FIELDVALUE
+AND HOUR_FREQUENCY.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE HOUR_FREQUENCY.FIELDNAME = A1.FIELDNAME 
+	AND HOUR_FREQUENCY.FIELDVALUE = A1.FIELDVALUE
+	AND HOUR_FREQUENCY.FIELDNAME = &apos;FREQUENCY_TYPE&apos;)
+LEFT OUTER JOIN PSXLATITEM DAY_FREQUENCY
+ON DAY_FREQUENCY.FIELDNAME = &apos;FREQUENCY_TYPE&apos;
+AND SALARY_PLAN.FREQ_ID_DAILY = DAY_FREQUENCY.FIELDVALUE
+AND DAY_FREQUENCY.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE DAY_FREQUENCY.FIELDNAME = A1.FIELDNAME 
+	AND DAY_FREQUENCY.FIELDVALUE = A1.FIELDVALUE
+	AND DAY_FREQUENCY.FIELDNAME = &apos;FREQUENCY_TYPE&apos;)
+LEFT OUTER JOIN PSXLATITEM MONTH_FREQUENCY
+ON MONTH_FREQUENCY.FIELDNAME = &apos;FREQUENCY_TYPE&apos;
+AND SALARY_PLAN.FREQ_ID_MONTHLY = MONTH_FREQUENCY.FIELDVALUE
+AND MONTH_FREQUENCY.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE MONTH_FREQUENCY.FIELDNAME = A1.FIELDNAME 
+	AND MONTH_FREQUENCY.FIELDVALUE = A1.FIELDVALUE
+	AND MONTH_FREQUENCY.FIELDNAME = &apos;FREQUENCY_TYPE&apos;)
+LEFT OUTER JOIN PSXLATITEM GVT_GEOG_SCOPE
+ON GVT_GEOG_SCOPE.FIELDNAME = &apos;GVT_GEOG_SCOPE&apos;
+AND SALARY_PLAN.GVT_GEOG_SCOPE = GVT_GEOG_SCOPE.FIELDVALUE
+AND GVT_GEOG_SCOPE.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE GVT_GEOG_SCOPE.FIELDNAME = A1.FIELDNAME 
+	AND GVT_GEOG_SCOPE.FIELDVALUE = A1.FIELDVALUE
+	AND GVT_GEOG_SCOPE.FIELDNAME = &apos;GVT_GEOG_SCOPE&apos;)
+WHERE SALARY_PLAN.EFFDT = (SELECT MAX(X.EFFDT) FROM PS_SAL_PLAN_TBL X WHERE SALARY_PLAN.SAL_ADMIN_PLAN = X.SAL_ADMIN_PLAN AND SALARY_PLAN.SETID = X.SETID)</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>91</xloc>
+      <yloc>186</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

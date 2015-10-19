@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <version>1</version>  
+  <title>Work Force Snapshot by Period and Position</title>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>Return the employee counts by period and position.</description>  
+    <help/>  
+    <icon>file.png|dashboard.png</icon> 
+  </documentation>  
+  <inputs> 
+    <TEMPORAL_VALUE type="string"> 
+      <sources> 
+        <request>TEMPORAL_VALUE</request> 
+      </sources> 
+    </TEMPORAL_VALUE> 
+  </inputs>  
+  <!-- Define an output called 'rule-result' -->  
+  <outputs> 
+    <rule-result> 
+      <type>list</type> 
+    </rule-result> 
+  </outputs>  
+  <!-- This action sequence does not require any external resources -->  
+  <resources/>  
+  <actions> 
+      
+    <action-definition> 
+      <action-inputs> 
+         
+      <TEMPORAL_VALUE type="string"/></action-inputs>  
+      <!-- Define a local output called 'rule-result' -->  
+      <action-outputs> 
+        <rule-result type="list"/> 
+      </action-outputs>  
+      <!-- Specify the component to execute -->  
+      <component-name>SQLLookupRule</component-name>  
+      <action-type>rule</action-type>  
+      <!-- Define the settings for the component -->  
+      <component-definition> 
+        <!-- Define the datasource for the query -->  
+        <!-- Define the query to execute. Note the parameter {REGION} in the query -->  
+        <jndi>mdw_mysql</jndi> 
+      <query><![CDATA[SELECT P.POSITION_NAME AS POSITION,
+COUNT(DISTINCT F.EMPLOYEE_SK) AS Quantity
+FROM DIMENSION_EMPLOYEE_JOB_ACTION F, 
+DIMENSION_POSITION P, DIMENSION_DAY D
+WHERE F.POSITION_SK = P.POSITION_SK
+AND F.EFFECTIVE_DATE_SK = D.DATE_SK
+AND  '{TEMPORAL_VALUE}' >= F.EFFECTIVE_DATE_SK
+AND  '{TEMPORAL_VALUE}' < F.EXPIRATION_DATE_SK 
+AND P.POSITION_NAME IS NOT NULL
+GROUP BY P.POSITION_NAME
+ORDER BY COUNT(DISTINCT F.EMPLOYEE_SK)]]></query></component-definition> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

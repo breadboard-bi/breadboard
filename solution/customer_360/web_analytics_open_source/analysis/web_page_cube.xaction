@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <name>web_page_cube.xaction</name>  
+  <title>Web Page Time Analysis</title>  
+  <version>2</version>  
+  <logging-level/>  
+  <documentation> 
+    <author>Breadboard BI, LLC</author>  
+    <help>1. Make sure the path to your breadboardbi.mondrian.xml file is correct. 2. Do not forget to create a JNDI connection named "mdw". 3. Watch for case sensitivity issues with some databases. 4. Change the year value if you do not have data for 2006.</help>  
+    <result-type>report</result-type>  
+    <description>%description</description>  
+    <icon>file.png|analysis.png</icon> 
+  </documentation>  
+  <inputs> 
+    <mdx type="string"> 
+      <default-value/>  
+      <sources> 
+        <request>MDX</request> 
+      </sources> 
+    </mdx>  
+    <mode type="string"> 
+      <sources> 
+        <request>mode</request> 
+      </sources>  
+      <default-value/> 
+    </mode>  
+    <page type="string"> 
+      <sources> 
+        <request>page</request> 
+      </sources>  
+      <default-value/> 
+    </page> 
+  </inputs>  
+  <outputs> 
+    <model type="string"/>  
+    <connection type="string"/>  
+    <mdx type="string"/>  
+    <options type="list"/>  
+    <title type="string"/>  
+    <url type="string"> 
+      <destinations> 
+        <response>redirect</response> 
+      </destinations> 
+    </url> 
+  <chartaxistickfontsize type="string"/><chartslicerfontsize type="string"/><chartlegendfontfamily type="string"/><showgrid type="string"/><actionreference type="string"/><chartaxislabelfontsize type="string"/><chartslicerlocation type="string"/><chartaxistickfontfamily type="string"/><chartheight type="string"/><chartslicerfontfamily type="string"/><chartvertaxislabel type="string"/><chartaxislabelfontstyle type="string"/><chartdrillthroughenabled type="string"/><chartbackgroundb type="string"/><chartwidth type="string"/><role type="string"/><chartaxistickfontstyle type="string"/><charttitlefontsize type="string"/><chartbackgroundg type="string"/><chartlegendfontstyle type="string"/><chartshowslicer type="string"/><charttitlefontstyle type="string"/><chartlegendlocation type="string"/><chartlocation type="string"/><chartbackgroundr type="string"/><charttype type="string"/><chartaxislabelfontfamily type="string"/><chartlegendfontsize type="string"/><chartshowlegend type="string"/><chartaxisticklabelrotation type="string"/><charthorizaxislabel type="string"/><charttitle type="string"/><chartsliceralignment type="string"/><chartslicerfontstyle type="string"/><charttitlefontfamily type="string"/></outputs>  
+  <resources/>  
+  <actions> 
+    <action-definition> 
+      <component-name>PivotViewComponent</component-name>  
+      <action-inputs> 
+        <mode type="string"/>  
+        <period type="string"/>  
+        <page type="string"/> 
+      </action-inputs>  
+      <action-outputs> 
+        <model type="string"/>  
+        <connection type="string"/>  
+        <mdx type="string"/>  
+        <options type="list"/>  
+        <title type="string"/>  
+        <url type="string"/> 
+      <chartaxistickfontsize type="string"/><chartslicerfontsize type="string"/><chartlegendfontfamily type="string"/><showgrid type="string"/><actionreference type="string"/><chartaxislabelfontsize type="string"/><chartslicerlocation type="string"/><chartaxistickfontfamily type="string"/><chartheight type="string"/><chartslicerfontfamily type="string"/><chartvertaxislabel type="string"/><chartaxislabelfontstyle type="string"/><chartdrillthroughenabled type="string"/><chartbackgroundb type="string"/><chartwidth type="string"/><role type="string"/><chartaxistickfontstyle type="string"/><charttitlefontsize type="string"/><chartbackgroundg type="string"/><chartlegendfontstyle type="string"/><chartshowslicer type="string"/><charttitlefontstyle type="string"/><chartlegendlocation type="string"/><chartlocation type="string"/><chartbackgroundr type="string"/><charttype type="string"/><chartaxislabelfontfamily type="string"/><chartlegendfontsize type="string"/><chartshowlegend type="string"/><chartaxisticklabelrotation type="string"/><charthorizaxislabel type="string"/><charttitle type="string"/><chartsliceralignment type="string"/><chartslicerfontstyle type="string"/><charttitlefontfamily type="string"/></action-outputs>  
+      <component-definition> 
+        <title>Web Page Time Analysis</title>    
+        <viewer>Pivot</viewer>  
+        <model>solution:breadboard/analysis/breadboardbi.mondrian.xml</model>  
+        <location>mondrian</location>  
+        <options> 
+          <personal/>  
+          <cube-nav/>  
+          <mdx-edit/>  
+          <sort-conf/>  
+          <spacer/>  
+          <level-style/>  
+          <hide-spans/>  
+          <properties/>  
+          <non-empty/>  
+          <swap-axes/>  
+          <spacer/>  
+          <drill-member/>  
+          <drill-position/>  
+          <drill-replace/>  
+          <drill-thru/>  
+          <spacer/>  
+          <chart/>  
+          <chart-conf/>  
+          <spacer/>  
+          <print-conf/>  
+          <print-pdf/>  
+          <spacer/>  
+          <excel/> 
+        </options>  
+        <jndi>mdw_mysql</jndi>  
+        <query>select NON EMPTY {[Measures].[Page Views], [Measures].[Previous Period Page View Variance], [Measures].[Previous Period % Page View Change], [Measures].[Ratio To Parent], [Measures].[QTD Page Views], [Measures].[MTD Page Views]} ON COLUMNS,
+  NON EMPTY {([Time Period].[All Periods].[2006], [Web File.Web Files].[All Files]), ([Time Period].[All Periods].[2006].[Q2], [Web File.Web Files].[All Files]), ([Time Period].[All Periods].[2006].[Q3], [Web File.Web Files].[All Files])} ON ROWS
+from [Web Page Views]
+</query> 
+      <chartaxistickfontsize>12</chartaxistickfontsize><chartslicerfontsize>12</chartslicerfontsize><chartlegendfontfamily>SansSerif</chartlegendfontfamily><showgrid>true</showgrid><actionreference>breadboard/customer_360/web_analytics_open_source/analysis/web_page_cube.xaction</actionreference><chartaxislabelfontsize>12</chartaxislabelfontsize><chartslicerlocation>1</chartslicerlocation><chartaxistickfontfamily>SansSerif</chartaxistickfontfamily><chartheight>300</chartheight><chartslicerfontfamily>SansSerif</chartslicerfontfamily><chartvertaxislabel></chartvertaxislabel><chartaxislabelfontstyle>0</chartaxislabelfontstyle><chartdrillthroughenabled>false</chartdrillthroughenabled><chartbackgroundb>255</chartbackgroundb><chartwidth>500</chartwidth><role/><chartaxistickfontstyle>0</chartaxistickfontstyle><charttitlefontsize>18</charttitlefontsize><chartbackgroundg>255</chartbackgroundg><mdx>select NON EMPTY {[Measures].[Page Views], [Measures].[Previous Period Page View Variance], [Measures].[Previous Period % Page View Change], [Measures].[Ratio To Parent], [Measures].[QTD Page Views], [Measures].[MTD Page Views]} ON COLUMNS,
+  NON EMPTY {([Time Period].[All Periods].[2006], [Web File.Web Files].[All Files]), ([Time Period].[All Periods].[2006].[Q2], [Web File.Web Files].[All Files]), ([Time Period].[All Periods].[2006].[Q3], [Web File.Web Files].[All Files])} ON ROWS
+from [Web Page Views]
+</mdx><chartlegendfontstyle>0</chartlegendfontstyle><chartshowslicer>true</chartshowslicer><charttitlefontstyle>1</charttitlefontstyle><connection/><chartlegendlocation>3</chartlegendlocation><chartlocation>none</chartlocation><chartbackgroundr>255</chartbackgroundr><charttype>1</charttype><chartaxislabelfontfamily>SansSerif</chartaxislabelfontfamily><chartlegendfontsize>10</chartlegendfontsize><chartshowlegend>true</chartshowlegend><chartaxisticklabelrotation>30</chartaxisticklabelrotation><charthorizaxislabel></charthorizaxislabel><charttitle></charttitle><chartsliceralignment>3</chartsliceralignment><chartslicerfontstyle>0</chartslicerfontstyle><charttitlefontfamily>SansSerif</charttitlefontfamily></component-definition>  
+      <action-name>Pivot View</action-name>  
+      <logging-level>DEBUG</logging-level>  
+      <action-type/> 
+    </action-definition> 
+  </actions> 
+</action-sequence>

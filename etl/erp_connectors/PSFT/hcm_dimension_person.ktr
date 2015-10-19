@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>CRM_DIMENSION_SALES_REP</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts person data from PeopleSoft HCM.  A separate job loads the PeopleSoft FSCM person data.</note>
+      <xloc>32</xloc>
+      <yloc>50</yloc>
+      <width>564</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>24.5.207.85</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_oracle_orcl</name>
+    <server>24.5.207.85</server>
+    <type>ORACLE</type>
+    <access>Native</access>
+    <database>orcl</database>
+    <port>1521</port>
+    <username>mdw</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_HCM_PERSON</from><to>DIMENSION_PERSON</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>DIMENSION_PERSON</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_oracle_orcl</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>DIMENSION_PERSON</table>
+      <key>
+        <name>EMPLOYEE_ID</name>
+        <field>EMPLOYEE_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>EMPLOYEE_ID</name>
+        <rename>EMPLOYEE_ID</rename>
+        </value>
+      <value>
+        <name>ALTERNATE_EMPLOYEE_ID</name>
+        <rename>ALTERNATE_EMPLOYEE_ID</rename>
+        </value>
+      <value>
+        <name>NATIONAL_ID</name>
+        <rename>NATIONAL_ID</rename>
+        </value>
+      <value>
+        <name>APPLICANT_ID</name>
+        <rename>APPLICANT_ID</rename>
+        </value>
+      <value>
+        <name>APPLICATION_DATE</name>
+        <rename>APPLICATION_DATE</rename>
+        </value>
+      <value>
+        <name>BIRTH_DATE</name>
+        <rename>BIRTH_DATE</rename>
+        </value>
+      <value>
+        <name>DEATH_DATE</name>
+        <rename>DEATH_DATE</rename>
+        </value>
+      <value>
+        <name>LAST_NAME</name>
+        <rename>LAST_NAME</rename>
+        </value>
+      <value>
+        <name>MIDDLE_NAME</name>
+        <rename>MIDDLE_NAME</rename>
+        </value>
+      <value>
+        <name>FIRST_NAME</name>
+        <rename>FIRST_NAME</rename>
+        </value>
+      <value>
+        <name>MARITAL_STATUS_CODE</name>
+        <rename>MARITAL_STATUS_CODE</rename>
+        </value>
+      <value>
+        <name>MARITAL_STATUS_NAME</name>
+        <rename>MARITAL_STATUS_NAME</rename>
+        </value>
+      <value>
+        <name>MARITAL_STATUS_DESC</name>
+        <rename>MARITAL_STATUS_DESC</rename>
+        </value>
+      <value>
+        <name>MARITAL_STATUS_DATE</name>
+        <rename>MARITAL_STATUS_DATE</rename>
+        </value>
+      <value>
+        <name>GENDER_CODE</name>
+        <rename>GENDER_CODE</rename>
+        </value>
+      <value>
+        <name>FULL_TIME_STUDENT_IND</name>
+        <rename>FULL_TIME_STUDENT_IND</rename>
+        </value>
+      <value>
+        <name>US_WORK_ELIGIBILITY_IND</name>
+        <rename>US_WORK_ELIGIBILITY_IND</rename>
+        </value>
+      <value>
+        <name>EU_WORK_ELIGIBILTY_IND</name>
+        <rename>EU_WORK_ELIGIBILTY_IND</rename>
+        </value>
+      <value>
+        <name>US_CITIZEN_PROOF_DOC1_NAME</name>
+        <rename>US_CITIZEN_PROOF_DOC1_NAME</rename>
+        </value>
+      <value>
+        <name>US_CITIZEN_PROOF_DOC2_NAME</name>
+        <rename>US_CITIZEN_PROOF_DOC2_NAME</rename>
+        </value>
+      <value>
+        <name>US_MILITARY_STATUS_CODE</name>
+        <rename>US_MILITARY_STATUS_CODE</rename>
+        </value>
+      <value>
+        <name>HIGHEST_EDUCATION_LEVEL_CODE</name>
+        <rename>HIGHEST_EDUCATION_LEVEL_CODE</rename>
+        </value>
+      <value>
+        <name>HIGHEST_EDUCATION_LEVEL_NAME</name>
+        <rename>HIGHEST_EDUCATION_LEVEL_NAME</rename>
+        </value>
+      <value>
+        <name>HIGHEST_EDUCATION_LEVEL_DESC</name>
+        <rename>HIGHEST_EDUCATION_LEVEL_DESC</rename>
+        </value>
+      <value>
+        <name>ETHNIC_GROUP_CODE</name>
+        <rename>ETHNIC_GROUP_CODE</rename>
+        </value>
+      <value>
+        <name>ETHNIC_GROUP_NAME</name>
+        <rename>ETHNIC_GROUP_NAME</rename>
+        </value>
+      <value>
+        <name>ETHNIC_GROUP_DESC</name>
+        <rename>ETHNIC_GROUP_DESC</rename>
+        </value>
+      <value>
+        <name>HIGH_COMPENSATION_IND</name>
+        <rename>HIGH_COMPENSATION_IND</rename>
+        </value>
+      <value>
+        <name>HIGH_COMPENSATION_PLAN_IND</name>
+        <rename>HIGH_COMPENSATION_PLAN_IND</rename>
+        </value>
+      <value>
+        <name>EXPERIENCE_YEAR_QTY</name>
+        <rename>EXPERIENCE_YEAR_QTY</rename>
+        </value>
+      <value>
+        <name>HOME_CITY_NAME</name>
+        <rename>HOME_CITY_NAME</rename>
+        </value>
+      <value>
+        <name>HOME_STATE_CODE</name>
+        <rename>HOME_STATE_CODE</rename>
+        </value>
+      <value>
+        <name>HOME_POSTAL_CODE</name>
+        <rename>HOME_POSTAL_CODE</rename>
+        </value>
+      <value>
+        <name>HOME_GEOGRAPHY_CODE</name>
+        <rename>HOME_GEOGRAPHY_CODE</rename>
+        </value>
+      <value>
+        <name>HOME_COUNTRY_NAME</name>
+        <rename>HOME_COUNTRY_NAME</rename>
+        </value>
+      <value>
+        <name>REGULATORY_REGION_CODE</name>
+        <rename>REGULATORY_REGION_CODE</rename>
+        </value>
+      <value>
+        <name>HOME_PHONE_NUMBER</name>
+        <rename>HOME_PHONE_NUMBER</rename>
+        </value>
+      <value>
+        <name>CELL_PHONE_NUMBER</name>
+        <rename>CELL_PHONE_NUMBER</rename>
+        </value>
+      <value>
+        <name>BUSINESS_PHONE_NUMBER</name>
+        <rename>BUSINESS_PHONE_NUMBER</rename>
+        </value>
+      <value>
+        <name>HOME_EMAIL_ADDRESS_DESC</name>
+        <rename>HOME_EMAIL_ADDRESS_DESC</rename>
+        </value>
+      <value>
+        <name>BUSINESS_EMAIL_ADDRESS_DESC</name>
+        <rename>BUSINESS_EMAIL_ADDRESS_DESC</rename>
+        </value>
+      <value>
+        <name>OTHER_EMAIL_ADDRESS_DESC</name>
+        <rename>OTHER_EMAIL_ADDRESS_DESC</rename>
+        </value>
+      <value>
+        <name>EMERGENCY_CONTACT_NAME</name>
+        <rename>EMERGENCY_CONTACT_NAME</rename>
+        </value>
+      <value>
+        <name>EMERGENCY_CONTACT_PHONE_NUMBER</name>
+        <rename>EMERGENCY_CONTACT_PHONE_NUMBER</rename>
+        </value>
+      </lookup>
+    <GUI>
+      <xloc>640</xloc>
+      <yloc>190</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_HCM_PERSON</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the columns from the PS_RSF_SUSER table.  It maintains the basic sales user record with descriptors and settings.
+</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>SELECT RTRIM(PERSON.EMPLID) AS EMPLOYEE_ID,
+RTRIM(PERSON_DATA.ALTER_EMPLID) AS ALTERNATE_EMPLOYEE_ID,
+RTRIM(NID.NATIONAL_ID) AS NATIONAL_ID,
+RTRIM(APPLICATION_INFO.HRS_PERSON_ID) AS APPLICANT_ID,
+APPLICATION_PROFILE.HRS_SUBMITTED_DTTM AS APPLICATION_DATE,
+PERSON.BIRTHDATE AS BIRTH_DATE,
+PERSON.DT_OF_DEATH AS DEATH_DATE,
+RTRIM(NAMES.LAST_NAME) AS LAST_NAME,
+RTRIM(NAMES.MIDDLE_NAME) AS MIDDLE_NAME,
+RTRIM(NAMES.FIRST_NAME) AS FIRST_NAME,
+RTRIM(PERSON_DATA.MAR_STATUS) AS MARITAL_STATUS_CODE,
+RTRIM(MAR_STATUS.XLATSHORTNAME) AS MARITAL_STATUS_NAME,
+RTRIM(MAR_STATUS.XLATLONGNAME) AS MARITAL_STATUS_DESC,
+PERSON_DATA.MAR_STATUS_DT AS MARITAL_STATUS_DATE,
+RTRIM(PERSON_DATA.SEX) AS GENDER_CODE,
+RTRIM(PERSON_DATA.FT_STUDENT) AS FULL_TIME_STUDENT_IND,
+RTRIM(PERSON_DATA_USA.US_WORK_ELIGIBILTY) AS US_WORK_ELIGIBILITY_IND,
+NULL AS EU_WORK_ELIGIBILTY_IND,
+RTRIM(PERSON_DATA_USA.CITIZEN_PROOF1) AS US_CITIZEN_PROOF_DOC1_NAME,
+RTRIM(PERSON_DATA_USA.CITIZEN_PROOF2) AS US_CITIZEN_PROOF_DOC2_NAME,
+RTRIM(PERSON_DATA_USA.MILITARY_STATUS) AS US_MILITARY_STATUS_CODE,
+RTRIM(PERSON_DATA.HIGHEST_EDUC_LVL) AS HIGHEST_EDUCATION_LEVEL_CODE,
+RTRIM(HIGHEST_EDUC_LVL.XLATSHORTNAME) AS HIGHEST_EDUCATION_LEVEL_NAME,
+RTRIM(HIGHEST_EDUC_LVL.XLATLONGNAME) AS HIGHEST_EDUCATION_LEVEL_DESC,
+RTRIM(ETHNIC.ETHNIC_GRP_CD) AS ETHNIC_GROUP_CODE,
+RTRIM(ETHNIC_GROUP.XLATSHORTNAME) AS ETHNIC_GROUP_NAME,
+RTRIM(ETHNIC_GROUP.XLATLONGNAME) AS ETHNIC_GROUP_DESC,
+RTRIM(BN_PERSON.HIGHLY_COMP_EMPL_C) AS HIGH_COMPENSATION_IND,
+RTRIM(BN_PERSON.HIGHLY_COMP_EMPL_P) AS HIGH_COMPENSATION_PLAN_IND,
+RTRIM(PRIORWORK.YEARS_OF_EXP) EXPERIENCE_YEAR_QTY,
+RTRIM(ADDRESSES.CITY) AS HOME_CITY_NAME,
+RTRIM(ADDRESSES.STATE) AS HOME_STATE_CODE,
+RTRIM(ADDRESSES.POSTAL) AS HOME_POSTAL_CODE,
+RTRIM(ADDRESSES.GEO_CODE) AS HOME_GEOGRAPHY_CODE,
+RTRIM(ADDRESSES.COUNTRY) AS HOME_COUNTRY_NAME,
+RTRIM(ADDRESSES.REG_REGION) AS REGULATORY_REGION_CODE,
+RTRIM(HOME_PHONE.PHONE) AS HOME_PHONE_NUMBER,
+RTRIM(CELL_PHONE.PHONE) AS CELL_PHONE_NUMBER,
+RTRIM(BUSINESS_PHONE.PHONE) AS BUSINESS_PHONE_NUMBER,
+RTRIM(HOME_EMAIL.EMAIL_ADDR) AS HOME_EMAIL_ADDRESS_DESC,
+RTRIM(BUSINESS_EMAIL.EMAIL_ADDR) AS BUSINESS_EMAIL_ADDRESS_DESC,
+RTRIM(OTHER_EMAIL.EMAIL_ADDR) AS OTHER_EMAIL_ADDRESS_DESC,
+RTRIM(EMERGENCY_CONTACT.CONTACT_NAME) AS EMERGENCY_CONTACT_NAME,
+RTRIM(EMERGENCY_CONTACT.PHONE) AS EMERGENCY_CONTACT_PHONE_NUMBER
+FROM PS_PERSON PERSON
+LEFT OUTER JOIN PS_NAMES NAMES
+ON PERSON.EMPLID = NAMES.EMPLID
+AND NAMES.NAME_TYPE = &apos;PRI&apos;
+AND NAMES.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PS_NAMES A1
+	WHERE NAMES.EMPLID = A1.EMPLID AND A1.NAME_TYPE = &apos;PRI&apos;)
+LEFT OUTER JOIN PS_BN_PERSON AS BN_PERSON
+ON PERSON.EMPLID=BN_PERSON.EMPLID
+LEFT OUTER JOIN PS_PERS_DATA_EFFDT PERSON_DATA
+ON PERSON.EMPLID = PERSON_DATA.EMPLID
+AND PERSON_DATA.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PS_PERS_DATA_EFFDT A1
+	WHERE PERSON_DATA.EMPLID = A1.EMPLID)
+LEFT OUTER JOIN PSXLATITEM MAR_STATUS
+ON MAR_STATUS.FIELDNAME = &apos;MAR_STATUS&apos;
+AND PERSON_DATA.MAR_STATUS = MAR_STATUS.FIELDVALUE
+AND MAR_STATUS.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE MAR_STATUS.FIELDNAME = A1.FIELDNAME 
+	AND MAR_STATUS.FIELDVALUE = A1.FIELDVALUE
+	AND MAR_STATUS.FIELDNAME = &apos;MAR_STATUS&apos;)
+LEFT OUTER JOIN PS_DIVERS_ETHNIC ETHNIC
+ON PERSON.EMPLID = ETHNIC.EMPLID --AND ETHNIC.REG_REGION (this is part of key, but not in person - but is in addresses)
+AND ETHNIC.PRIMARY_INDICATOR = &apos;Y&apos;
+LEFT OUTER JOIN PSXLATITEM ETHNIC_GROUP
+ON ETHNIC_GROUP.FIELDNAME = &apos;ETHNIC_GROUP&apos;
+AND ETHNIC.ETHNIC_GRP_CD = ETHNIC_GROUP.FIELDVALUE
+AND ETHNIC_GROUP.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE ETHNIC_GROUP.FIELDNAME = A1.FIELDNAME 
+	AND ETHNIC_GROUP.FIELDVALUE = A1.FIELDVALUE
+	AND ETHNIC_GROUP.FIELDNAME = &apos;ETHNIC_GROUP&apos;)
+LEFT OUTER JOIN PS_PERS_DATA_USA PERSON_DATA_USA	
+ON PERSON.EMPLID = PERSON_DATA_USA.EMPLID AND
+PERSON_DATA_USA.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PS_PERS_DATA_USA A1
+	WHERE PERSON_DATA_USA.EMPLID = A1.EMPLID) 
+LEFT OUTER JOIN PSXLATITEM HIGHEST_EDUC_LVL
+ON HIGHEST_EDUC_LVL.FIELDNAME = &apos;HIGHEST_EDUC_LVL&apos;
+AND PERSON_DATA.HIGHEST_EDUC_LVL = HIGHEST_EDUC_LVL.FIELDVALUE
+AND HIGHEST_EDUC_LVL.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE HIGHEST_EDUC_LVL.FIELDNAME = A1.FIELDNAME 
+	AND HIGHEST_EDUC_LVL.FIELDVALUE = A1.FIELDVALUE
+	AND HIGHEST_EDUC_LVL.FIELDNAME = &apos;HIGHEST_EDUC_LVL&apos;)
+LEFT OUTER JOIN PS_HRS_APP_PROFILE APPLICATION_PROFILE
+ON PERSON.EMPLID = APPLICATION_PROFILE.HRS_PERSON_ID AND 
+APPLICATION_PROFILE.HRS_PROFILE_SEQ = 
+	(SELECT MAX(HRS_PROFILE_SEQ) FROM PS_HRS_APP_PROFILE A1
+	WHERE APPLICATION_PROFILE.HRS_PERSON_ID = A1.HRS_PERSON_ID)
+LEFT OUTER JOIN PS_PERS_APPL_INFO APPLICATION_INFO
+ON PERSON.EMPLID = APPLICATION_INFO.EMPLID AND
+APPLICATION_INFO.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PS_PERS_APPL_INFO A1
+	WHERE APPLICATION_INFO.EMPLID = A1.EMPLID)
+LEFT OUTER JOIN PS_PRIORWORK_SUM PRIORWORK
+ON PERSON.EMPLID = PRIORWORK.EMPLID
+LEFT OUTER JOIN PSXLATITEM MILITARY_STATUS
+ON MILITARY_STATUS.FIELDNAME = &apos;MILITARY_STATUS&apos;
+AND PERSON_DATA_USA.MILITARY_STATUS = MILITARY_STATUS.FIELDVALUE
+AND MILITARY_STATUS.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PSXLATITEM A1
+	WHERE MILITARY_STATUS.FIELDNAME = A1.FIELDNAME 
+	AND MILITARY_STATUS.FIELDVALUE = A1.FIELDVALUE
+	AND MILITARY_STATUS.FIELDNAME = &apos;MILITARY_STATUS&apos;)
+LEFT OUTER JOIN PS_ADDRESSES ADDRESSES
+ON PERSON.EMPLID = ADDRESSES.EMPLID AND
+ADDRESSES.ADDRESS_TYPE = &apos;HOME&apos; AND
+ADDRESSES.EFFDT = (SELECT MAX(A1.EFFDT) 
+	FROM PS_ADDRESSES A1
+	WHERE ADDRESSES.EMPLID = A1.EMPLID 
+	AND A1.ADDRESS_TYPE = &apos;HOME&apos;)
+LEFT OUTER JOIN PS_PERSONAL_PHONE HOME_PHONE
+ON PERSON.EMPLID = HOME_PHONE.EMPLID AND
+HOME_PHONE.PHONE_TYPE = &apos;HOME&apos;
+LEFT OUTER JOIN PS_PERSONAL_PHONE CELL_PHONE
+ON PERSON.EMPLID = CELL_PHONE.EMPLID AND
+CELL_PHONE.PHONE_TYPE = &apos;CELL&apos;
+LEFT OUTER JOIN PS_PERSONAL_PHONE BUSINESS_PHONE
+ON PERSON.EMPLID = BUSINESS_PHONE.EMPLID AND
+BUSINESS_PHONE.PHONE_TYPE = &apos;BUSN&apos;
+LEFT OUTER JOIN PS_EMAIL_ADDRESSES HOME_EMAIL
+ON PERSON.EMPLID = HOME_EMAIL.EMPLID AND
+HOME_EMAIL.E_ADDR_TYPE = &apos;HOME&apos;
+LEFT OUTER JOIN PS_EMAIL_ADDRESSES BUSINESS_EMAIL
+ON PERSON.EMPLID = BUSINESS_EMAIL.EMPLID AND
+BUSINESS_EMAIL.E_ADDR_TYPE = &apos;BUSN&apos;
+LEFT OUTER JOIN PS_EMAIL_ADDRESSES OTHER_EMAIL
+ON PERSON.EMPLID = OTHER_EMAIL.EMPLID AND
+OTHER_EMAIL.E_ADDR_TYPE = &apos;OTHR&apos;
+LEFT OUTER JOIN PS_EMERGENCY_CNTCT EMERGENCY_CONTACT
+ON PERSON.EMPLID = EMERGENCY_CONTACT.EMPLID AND
+EMERGENCY_CONTACT.PRIMARY_CONTACT = &apos;Y&apos;
+LEFT OUTER JOIN PS_PERS_NID NID
+ON PERSON.EMPLID = NID.EMPLID AND
+NID.PRIMARY_NID = &apos;Y&apos;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>193</xloc>
+      <yloc>190</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

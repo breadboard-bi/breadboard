@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+# Copyright 2006 Breadboard BI.  All rights reserved. 
+#
+# Version 1.1
+#
+# This software was developed by Breadboard BI and is provided under license. You may 
+# not use this file except in compliance with the license. This software is distributed 
+# on an AS IS basis, WITHOUT WARRANTY OF ANY KIND, neither express nor implied.
+#
+# Please send bug fixes and enhancement requests to submit@breadboardbi.com
+-->
+<report name="web_page_top_dashboard_report" orientation="portrait" pageformat="LETTER" leftmargin="5pt" rightmargin="0pt" topmargin="0" bottommargin="0">
+<reportheader>  
+<!--
+<label fontname="SansSerif" fontsize="14" fontstyle="bold" height="20" vertical-alignment="middle" alignment="left" width="330" x="0" y="0">Top Pages for the Week</label>
+-->
+</reportheader>
+  <groups>
+    <group name="dummy">
+      <groupheader repeat="true" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold" height="14">
+        <band name="DummyGroupNoDataBandElement">
+          <label height="10" vertical-alignment="middle" alignment="left" width="450" x="0" y="0">No Data Available</label>
+        </band>
+        <band name="DummyGroupDataBandElement">
+          <rectangle color="#808080" draw="false" fill="true" height="12" width="450" x="0" y="0"/>
+<!--
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="50" x="0" y="0">Rank</label>
+-->
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="250" x="0" y="0">Web Page</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="40" x="250" y="0">Page Views</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="50" x="290" y="0">View Minutes</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="50" x="340" y="0">Entrances</label>
+          <label color="#D0D0D0" fontname="SansSerif" fontsize="12" fontstyle="bold" height="12" vertical-alignment="middle" alignment="left" width="40" x="410" y="0">Exits</label>
+        </band>
+      </groupheader>
+      <groupfooter name="dummyGroupFooter" color="#000000" fontname="SansSerif" fontsize="11" fontstyle="bold">
+      </groupfooter>
+    </group>
+  </groups>
+  <items color="#000000" fontname="SansSerif" fontsize="9" fontstyle="bold">
+    <number-field name="TEMPORAL_KEYElement" fieldname="TEMPORAL_SK" vertical-alignment="middle" alignment="left" width="0" x="0" y="0" height="0"/>
+    <string-field name="TEMPORAL_VALUEElement" fieldname="TEMPORAL_VALUE" vertical-alignment="middle" alignment="left" width="0" x="0" y="0" height="0"/>
+    <number-field name="SOURCE_SYSTEM_SKElement" fieldname="SOURCE_SYSTEM_SK" vertical-alignment="middle" alignment="left" width="0" x="0" y="0" height="0"/>
+<!--
+    <string-field name="RANKElement" fieldname="VIEW_RANK" vertical-alignment="middle" alignment="left" width="50" x="0" y="0" height="11"/>
+-->
+    <string-field name="URL-Field" fieldname="WEB_FILE_NAME" vertical-alignment="middle" alignment="left" width="250" x="0" y="0" height="11"/>
+    <number-field name="WEB_PAGE_VIEW_QTYElement" fieldname="WEB_PAGE_VIEW_QTY" vertical-alignment="middle" alignment="left" width="40" x="250" y="0" height="11"/>
+    <number-field name="VIEW_MINUTES_QTYElement" fieldname="VIEW_MINUTES_QTY" vertical-alignment="middle" alignment="left" width="50" x="290" y="0" height="11"/>
+    <number-field name="LANDING_PAGE_QTYElement" fieldname="LANDING_PAGE_QTY" vertical-alignment="middle" alignment="left" width="50" x="340" y="0" height="11"/>
+    <number-field name="EXIT_PAGE_QTYElement" fieldname="EXIT_PAGE_QTY" vertical-alignment="middle" alignment="left" width="40" x="410" y="0" height="11"/>
+  </items>
+  <functions>
+    <expression class="org.jfree.report.function.HideElementIfDataAvailableExpression" name="DummyGroupNoDataBandElementHideIfNullTrigger">
+      <properties>
+        <property name="element">DummyGroupNoDataBandElement</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="DummyGroupDataBandElementHideIfNullTrigger">
+      <properties>
+        <property name="element">DummyGroupDataBandElement</property>
+      </properties>
+    </expression>
+    <expression class="org.jfree.report.function.ShowElementIfDataAvailableExpression" name="dummyGroupFooterHideIfNullTrigger">
+      <properties>
+        <property name="element">dummyGroupFooter</property>
+      </properties>
+    </expression>
+ 
+        <function name="AddHRefs" class="org.jfree.report.function.CreateHyperLinksFunction">
+       <properties>
+         <property name="field">URLCreateExpression</property>
+         <property name="element">URL-Field</property>
+               </properties>
+     </function>
+ 
+      <expression name="URLCreateExpression" class="org.jfree.report.function.TextFormatExpression">
+       <properties>
+       <property name="pattern">ViewAction?TEMPORAL_SK={0,number,####0}&amp;TEMPORAL_VALUE={1}&amp;WEB_FILE_NAME={2}&amp;SOURCE_SYSTEM_SK={3,number,####0}&amp;solution=breadboard&amp;action=web_period_file.xaction&amp;path=customer_360/web_analytics/dashboards/report</property>
+         <property name="field[0]">TEMPORAL_SK</property>
+         <property name="field[1]">TEMPORAL_VALUE</property>    
+         <property name="field[2]">WEB_FILE_NAME</property>    
+         <property name="field[3]">SOURCE_SYSTEM_SK</property>        
+       </properties>
+     </expression>  
+  
+  </functions>
+</report>

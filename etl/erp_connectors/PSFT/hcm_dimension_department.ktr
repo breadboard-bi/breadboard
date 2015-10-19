@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>CRM_DIMENSION_SALES_REP</name>
+    <directory>/</directory>
+    <log>
+      <read/>
+      <write/>
+      <input/>
+      <output/>
+      <update/>
+      <connection/>
+      <table/>
+      <use_batchid>N</use_batchid>
+      <use_logfield>N</use_logfield>
+      </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+      </maxdate>
+    <size_rowset>350</size_rowset>
+    <sleep_time_empty>1</sleep_time_empty>
+    <sleep_time_full>1</sleep_time_full>
+    <dependencies>
+      </dependencies>
+    </info>
+  <notepads>
+    <notepad>
+      <note>This data flow extracts department data from PeopleSoft HCM.</note>
+      <xloc>32</xloc>
+      <yloc>50</yloc>
+      <width>313</width>
+      <heigth>23</heigth>
+      </notepad>
+    </notepads>
+  <connection>
+    <name>hcm890_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>hcm890</database>
+    <port>1433</port>
+    <username>hc</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce78ddd1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>pf890_sqlserver_pc-xp</name>
+    <server>24.5.206.117</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>pf890</database>
+    <port>1433</port>
+    <username>pf</username>
+    <password>Encrypted 2be98afc86aa7f2e4cb79ce60d8d1fbcf</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>kettle_mysql_localhost</name>
+    <server>192.168.0.159</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>kettle</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>3306</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_sqlserver_pc-xp</name>
+    <server>PC-XP</server>
+    <type>MSSQL</type>
+    <access>Native</access>
+    <database>MDW</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1433</attribute></attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mdw_oracle_orcl</name>
+    <server>24.5.206.117</server>
+    <type>ORACLE</type>
+    <access>Native</access>
+    <database>orcl</database>
+    <port>1521</port>
+    <username>mdw</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute><code>PORT_NUMBER</code><attribute>1521</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+  <hop> <from>PSFT_HCM_DEPARTMENT</from><to>DIMENSION_DEPARTMENT</to><enabled>Y</enabled> </hop>  </order>
+
+  <step>
+    <name>DIMENSION_DEPARTMENT</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>mdw_oracle_orcl</connection>
+    <commit>0</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <table>DIMENSION_DEPARTMENT</table>
+      <key>
+        <name>SETID</name>
+        <field>SETID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>DEPARTMENT_ID</name>
+        <field>DEPARTMENT_ID</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <key>
+        <name>EFFECTIVE_DATE</name>
+        <field>EFFECTIVE_DATE</field>
+        <condition>=</condition>
+        <name2/>
+        </key>
+      <value>
+        <name>SETID</name>
+        <rename>SETID</rename>
+        </value>
+      <value>
+        <name>DEPARTMENT_ID</name>
+        <rename>DEPARTMENT_ID</rename>
+        </value>
+      <value>
+        <name>EFFECTIVE_DATE</name>
+        <rename>EFFECTIVE_DATE</rename>
+        </value>
+      <value>
+        <name>EFFECTIVE_STATUS_CODE</name>
+        <rename>EFFECTIVE_STATUS_CODE</rename>
+        </value>
+      <value>
+        <name>EFFECTIVE_STATUS_NAME</name>
+        <rename>EFFECTIVE_STATUS_NAME</rename>
+        </value>
+      <value>
+        <name>EFFECTIVE_STATUS_DESC</name>
+        <rename>EFFECTIVE_STATUS_DESC</rename>
+        </value>
+      <value>
+        <name>DEPARTMENT_NAME</name>
+        <rename>DEPARTMENT_NAME</rename>
+        </value>
+      <value>
+        <name>DEPARTMENT_DESC</name>
+        <rename>DEPARTMENT_DESC</rename>
+        </value>
+      <value>
+        <name>MANAGER_ID</name>
+        <rename>MANAGER_ID</rename>
+        </value>
+      <value>
+        <name>BUDGET_YEAR_END_NUMBER</name>
+        <rename>BUDGET_YEAR_END_NUMBER</rename>
+        </value>
+      <value>
+        <name>BUDGET_LEVEL_CODE</name>
+        <rename>BUDGET_LEVEL_CODE</rename>
+        </value>
+      <value>
+        <name>BUDGET_LEVEL_NAME</name>
+        <rename>BUDGET_LEVEL_NAME</rename>
+        </value>
+      <value>
+        <name>BUDGET_LEVEL_DESC</name>
+        <rename>BUDGET_LEVEL_DESC</rename>
+        </value>
+      </lookup>
+    <GUI>
+      <xloc>640</xloc>
+      <yloc>191</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>PSFT_HCM_DEPARTMENT</name>
+    <type>TableInput</type>
+    <description>This step represents a subset of the columns from the PS_RSF_SUSER table.  It maintains the basic sales user record with descriptors and settings.
+</description>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+    <connection>pf890_sqlserver_pc-xp</connection>
+    <sql>select RTRIM(DEPT.SETID) AS SETID,
+RTRIM(DEPT.DEPTID) AS DEPARTMENT_ID,
+DEPT.EFFDT AS EFFECTIVE_DATE,
+RTRIM(DEPT.EFF_STATUS) AS EFFECTIVE_STATUS_CODE,
+RTRIM(STATUS.XLATSHORTNAME) AS EFFECTIVE_STATUS_NAME,
+RTRIM(STATUS.XLATLONGNAME) AS EFFECTIVE_STATUS_DESC,
+RTRIM(DEPT.DESCRSHORT) AS DEPARTMENT_NAME,
+RTRIM(DEPT.DESCR) AS DEPARTMENT_DESC,
+RTRIM(DEPT.MANAGER_ID) AS MANAGER_ID,
+DEPT.BUDGET_YR_END_DT AS BUDGET_YEAR_END_NUMBER,
+RTRIM(DEPT.BUDGET_LVL) AS BUDGET_LEVEL_CODE,
+RTRIM(LEVEL.XLATSHORTNAME) AS BUDGET_LEVEL_NAME,
+RTRIM(LEVEL.XLATLONGNAME) AS BUDGET_LEVEL_DESC
+FROM PS_DEPT_TBL DEPT
+LEFT OUTER JOIN PSXLATITEM STATUS
+ON STATUS.FIELDNAME = &apos;EFF_STATUS&apos;  
+AND STATUS.FIELDVALUE = DEPT.EFF_STATUS
+AND STATUS.EFFDT = (SELECT MAX(X.EFFDT) FROM PSXLATITEM X
+WHERE X.FIELDNAME = &apos;EFF_STATUS&apos;  AND X.FIELDVALUE=STATUS.FIELDVALUE)
+LEFT OUTER JOIN PSXLATITEM LEVEL
+ON LEVEL.FIELDNAME = &apos;BUDGET_LVL&apos;  
+AND LEVEL.FIELDVALUE = DEPT.BUDGET_LVL
+AND LEVEL.EFFDT = (SELECT MAX(X.EFFDT) FROM PSXLATITEM X
+WHERE X.FIELDNAME = &apos;BUDGET_LVL&apos;  AND X.FIELDVALUE=LEVEL.FIELDVALUE)</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <GUI>
+      <xloc>193</xloc>
+      <yloc>190</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+</transformation>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<action-sequence> 
+  <title>%title</title>
+  <version>1</version>
+  <documentation> 
+    <author>Breadboard BI</author>  
+    <description>%description</description>  
+    <icon>PentahoReporting.png</icon>  
+    <help/>  
+    <result-type>report</result-type> 
+  </documentation>
+
+  <inputs> 
+    <outputType type="string"> 
+      <sources> 
+        <request>outputType</request>  
+        <request>type</request> 
+      </sources>  
+      <default-value><![CDATA[html]]></default-value> 
+    </outputType>  
+    <outputTypeList type="property-map-list"> 
+      <sources> 
+        <runtime>outputTypeList</runtime> 
+      </sources>  
+      <default-value type="property-map-list"> 
+        <property-map> 
+          <entry key="report-output-desc">PDF</entry>  
+          <entry key="report-output-type-id">pdf</entry> 
+        </property-map>  
+        <property-map> 
+          <entry key="report-output-desc">Excel</entry>  
+          <entry key="report-output-type-id">xls</entry> 
+        </property-map>  
+        <property-map> 
+          <entry key="report-output-desc">Word</entry>  
+          <entry key="report-output-type-id">rtf</entry> 
+        </property-map>  
+        <property-map> 
+          <entry key="report-output-desc">Web Page</entry>  
+          <entry key="report-output-type-id">html</entry> 
+        </property-map>  
+        <property-map> 
+          <entry key="report-output-desc">Comma Separated Value</entry>  
+          <entry key="report-output-type-id">csv</entry> 
+        </property-map> 
+      </default-value> 
+    </outputTypeList>  
+    <min_date type="string"> 
+      <sources> 
+        <request>min_date</request> 
+      </sources>  
+      <default-value><![CDATA[200704]]></default-value> 
+    </min_date>  
+    <max_date type="string"> 
+      <sources> 
+        <request>max_date</request> 
+      </sources>  
+      <default-value><![CDATA[200704]]></default-value> 
+    </max_date> 
+  </inputs>
+
+  <outputs> 
+    <content type="content"> 
+      <destinations> 
+        <response>content</response> 
+      </destinations> 
+    </content> 
+  </outputs>
+
+  <resources> 
+    <report-definition> 
+      <solution-file> 
+        <location>online_marketing_keywords_report.xml</location>  
+        <mime-type>text/xml</mime-type> 
+      </solution-file> 
+    </report-definition> 
+  </resources>
+  
+  <actions> 
+    <action-definition> 
+      <component-name>SecureFilterComponent</component-name>
+      <action-type>Secure Filter Description</action-type>
+      <action-inputs> 
+        <outputTypeList type="property-map-list"/>  
+        <outputType type="string"/>  
+        <min_date type="string"/>  
+        <max_date type="string"/> 
+      </action-inputs>
+      <component-definition> 
+        <selections> 
+          <outputType style="select"> 
+            <title>Choose the report format</title>  
+            <filter value-col-name="report-output-type-id" display-col-name="report-output-desc">outputTypeList</filter> 
+          </outputType>  
+          <min_date filter="none"> 
+            <title>Enter the minimum quarter for the date range (format YYYYQQ).</title> 
+          </min_date>  
+          <max_date filter="none"> 
+            <title>Enter the maximum quarter for the date range (format YYYYQQ).</title> 
+          </max_date> 
+        </selections> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>SQLLookupRule</component-name>
+      <action-inputs> 
+        <min_date type="string"/>  
+        <max_date type="string"/> 
+      </action-inputs>
+      <action-outputs> 
+        <query-result type="result-set" mapping="query_result"/> 
+      </action-outputs>
+      <component-definition> 
+        <jndi><![CDATA[mdw_mysql]]></jndi>  
+        <query><![CDATA[SELECT C.CAMPAIGN_NAME, 
+C.CAMPAIGN_WAVE_NAME,
+A.AD_DESC,
+K.KEYWORD_DESC, 
+D.QUARTER_SK,
+SUM(F.AD_IMPRESSION_QTY) AS AD_IMPRESSION_QTY,
+SUM(F.AD_CLICK_QTY) AS AD_CLICK_QTY,
+ROUND(SUM(F.AD_COST_AMT)) AS AD_COST_AMT,
+ROUND(AVG(F.AVERAGE_POSITION_QTY)) AS AVERAGE_POSITION_QTY
+FROM FACT_ADVERTISEMENT_IMPRESSION F,
+DIMENSION_CAMPAIGN_WAVE C,
+DIMENSION_ADVERTISEMENT A,
+DIMENSION_KEYWORD_PHRASE K,
+DIMENSION_DAY D
+WHERE F.IMPRESSION_DATE_SK = D.DATE_SK
+AND D.QUARTER_SK BETWEEN '{min_date}' AND '{max_date}'
+/* 
+AND F.HOSTED_CLIENT_SK = 0
+AND D."+column_name+ " = '{TEMPORAL_VALUE}'
+*/
+AND F.CAMPAIGN_WAVE_SK = C.CAMPAIGN_WAVE_SK 
+AND F.AD_SK = A.AD_SK
+AND F.KEYWORD_SK = K.KEYWORD_SK
+GROUP BY C.CAMPAIGN_NAME,C.CAMPAIGN_WAVE_NAME,
+A.AD_DESC, K.KEYWORD_DESC, D.QUARTER_SK
+ORDER BY D.QUARTER_SK DESC, C.CAMPAIGN_NAME, 
+C.CAMPAIGN_WAVE_NAME,
+A.AD_DESC,
+K.KEYWORD_DESC
+LIMIT 2000]]></query>  
+        <live><![CDATA[true]]></live> 
+      </component-definition> 
+    </action-definition>
+  
+    <action-definition> 
+      <component-name>JFreeReportComponent</component-name>
+      <action-type>report</action-type>
+      <action-inputs> 
+        <output-type type="string" mapping="outputType"/>  
+        <data type="result-set" mapping="query_result"/> 
+      </action-inputs>
+      <action-resources> 
+        <report-definition type="resource"/> 
+      </action-resources>
+      <action-outputs> 
+        <report-output type="content" mapping="content"/> 
+      </action-outputs>
+      <component-definition/> 
+    </action-definition>
+ 
+  </actions> 
+</action-sequence>
