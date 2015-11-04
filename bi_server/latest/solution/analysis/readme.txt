@@ -1,0 +1,1 @@
+Add the demo_role to your BI server, and assign this role to your users.  Alternatively, remove role references in the schema.
