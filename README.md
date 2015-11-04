@@ -9,7 +9,7 @@ ETL
 ===
 While the ETL was created on Pentaho Data Integration (PDI) version 2.5.2 - it should work with newer versions, and the process of updating the objects will be somewhat less painful than the BI server objects (see below).  New objects, best practices, etc. will need to be introduced over time.
 
-BI Objects
+BI Server
 ==========
 The cubes, dashboards, and reports were originally created using Pentaho BI Server V1.2 GA.  This is a *very* old version of Pentaho, so much of the content requires significant updates to be useful.  Old version of Pentaho BI server are available on SourceForge - http://sourceforge.net/projects/pentaho/files/.
 
