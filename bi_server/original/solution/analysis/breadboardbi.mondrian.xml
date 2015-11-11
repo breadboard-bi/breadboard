@@ -1,33 +1,33 @@
 <Schema name="breadboardbi">
   <Dimension visible="true" highCardinality="false" name="Account">
     <Hierarchy name="Accounts" visible="true" hasAll="true" allMemberName="All Accounts" primaryKey="ACCOUNT_SK">
-      <Table name="DIMENSION_ACCOUNT">
+      <Table name="dimension_account">
       </Table>
       <Level name="Account Type" visible="true" column="ACCOUNT_TYPE_DESC" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
       <Level name="Account Desc" visible="true" column="ACCOUNT_DESC" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
     </Hierarchy>
-    <Hierarchy name="Account Tree" visible="true" hasAll="true" allMemberName="All Accounts" primaryKey="ACCOUNT_SK" primaryKeyTable="DIMENSION_ACCOUNT">
+    <Hierarchy name="Account Tree" visible="true" hasAll="true" allMemberName="All Accounts" primaryKey="ACCOUNT_SK" primaryKeyTable="dimension_account">
       <Join leftKey="ACCOUNT_SK" rightAlias="TREE_ACCOUNT" rightKey="ACCOUNT_SK">
-        <Table name="DIMENSION_ACCOUNT">
+        <Table name="dimension_account">
         </Table>
-        <Table name="TREE_ACCOUNT">
+        <Table name="tree_account">
         </Table>
       </Join>
-      <Level name="Level 1" visible="true" table="TREE_ACCOUNT" column="ACCOUNT_LEVEL1_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+      <Level name="Level 1" visible="true" table="tree_account" column="ACCOUNT_LEVEL1_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
-      <Level name="Level 2" visible="true" table="TREE_ACCOUNT" column="ACCOUNT_LEVEL2_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+      <Level name="Level 2" visible="true" table="tree_account" column="ACCOUNT_LEVEL2_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
-      <Level name="Level 3" visible="true" table="TREE_ACCOUNT" column="ACCOUNT_LEVEL3_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+      <Level name="Level 3" visible="true" table="tree_account" column="ACCOUNT_LEVEL3_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
-      <Level name="Level 4" visible="true" table="TREE_ACCOUNT" column="ACCOUNT_LEVEL4_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
+      <Level name="Level 4" visible="true" table="tree_account" column="ACCOUNT_LEVEL4_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
     </Hierarchy>
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Advertisement">
     <Hierarchy name="Advertisement Types" visible="true" hasAll="true" allMemberName="All Ad Types" primaryKey="AD_SK">
-      <Table name="DIMENSION_ADVERTISEMENT">
+      <Table name="dimension_advertisement">
       </Table>
       <Level name="Ad Type" visible="true" column="AD_TYPE_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -37,7 +37,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Applicant">
     <Hierarchy name="Gender" visible="true" hasAll="true" allMemberName="All Genders" primaryKey="PERSON_SK">
-      <Table name="DIMENSION_PERSON" alias="DIMENSION_APPLICANT">
+      <Table name="dimension_person" alias="dimension_applicant">
       </Table>
       <Level name="Gender" visible="true" column="GENDER_CODE" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -45,7 +45,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Marital Status" visible="true" hasAll="true" allMemberName="All Marital Stati" primaryKey="PERSON_SK">
-      <Table name="DIMENSION_PERSON" alias="DIMENSION_APPLICANT">
+      <Table name="dimension_person" alias="dimension_applicant">
       </Table>
       <Level name="Marital Status" visible="true" column="MARITAL_STATUS_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -53,7 +53,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Education Level" visible="true" hasAll="true" allMemberName="All Education Levels" primaryKey="PERSON_SK">
-      <Table name="DIMENSION_PERSON" alias="DIMENSION_APPLICANT">
+      <Table name="dimension_person" alias="dimension_applicant">
       </Table>
       <Level name="Education Level" visible="true" column="HIGHEST_EDUCATION_LEVEL_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -61,7 +61,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Department" visible="true" hasAll="true" allMemberName="All Departments" primaryKey="PERSON_SK">
-      <Table name="DIMENSION_PERSON" alias="DIMENSION_APPLICANT">
+      <Table name="dimension_person" alias="dimension_applicant">
       </Table>
       <Level name="Department" visible="true" column="DEPT_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -71,7 +71,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Application Status">
     <Hierarchy name="Stati" visible="true" hasAll="true" allMemberName="All Application Stati" primaryKey="APPLICATION_STATUS_SK">
-      <Table name="DIMENSION_APPLICATION_STATUS">
+      <Table name="dimension_application_status">
       </Table>
       <Level name="Application Status" visible="true" column="APPLICATION_STATUS_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -79,7 +79,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Bill Status">
     <Hierarchy name="Bill Status" visible="true" hasAll="true" allMemberName="All Bill Stati" primaryKey="BILL_STATUS_SK">
-      <Table name="DIMENSION_BILL_STATUS">
+      <Table name="dimension_bill_status">
       </Table>
       <Level name="Status Group" visible="true" column="BILL_STATUS_GROUP_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -89,7 +89,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Business Unit">
     <Hierarchy name="Business Units" visible="true" hasAll="true" allMemberName="All Business Units" primaryKey="BUSINESS_UNIT_SK">
-      <Table name="DIMENSION_BUSINESS_UNIT">
+      <Table name="dimension_business_unit">
       </Table>
       <Level name="Business Unit Category" visible="true" column="BUSINESS_UNIT_CATEGORY" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -101,7 +101,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Business Unit Names" visible="true" hasAll="true" allMemberName="All Business Unit Names" primaryKey="BUSINESS_UNIT_SK">
-      <Table name="DIMENSION_BUSINESS_UNIT">
+      <Table name="dimension_business_unit">
       </Table>
       <Level name="Business Unit Name" visible="true" column="BUSINESS_UNIT_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
         <Property name="Business Unit ID" column="BUSINESS_UNIT_ID" type="String">
@@ -111,7 +111,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Carrier">
     <Hierarchy name="Carriers" visible="true" hasAll="true" allMemberName="All Carriers" primaryKey="CARRIER_SK">
-      <Table name="DIMENSION_CARRIER">
+      <Table name="dimension_carrier">
       </Table>
       <Level name="Continent" visible="true" column="CONTINENT_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -125,7 +125,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Case Category">
     <Hierarchy name="Categories" visible="true" hasAll="true" allMemberName="All Categories" primaryKey="CASE_SK">
-      <Table name="DIMENSION_CASE" alias="DIMENSION_CASE_CATEGORY">
+      <Table name="dimension_case" alias="dimension_case_category">
       </Table>
       <Level name="Case Category" visible="true" column="CASE_TYPE_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -137,7 +137,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Case Impact">
     <Hierarchy name="Impacts" visible="true" hasAll="true" allMemberName="All Impacts" primaryKey="CASE_SK">
-      <Table name="DIMENSION_CASE" alias="DIMENSION_CASE_IMPACT">
+      <Table name="dimension_case" alias="dimension_case_impact">
       </Table>
       <Level name="Impact Type" visible="true" column="IMPACT_TYPE_DESC" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -147,7 +147,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Case Status">
     <Hierarchy name="Stati" visible="true" hasAll="true" allMemberName="All Case Stati" primaryKey="CASE_SK">
-      <Table name="DIMENSION_CASE" alias="DIMENSION_CASE_STATUS">
+      <Table name="dimension_case" alias="dimension_case_status">
       </Table>
       <Level name="Case Status" visible="true" column="CASE_STATUS_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -155,7 +155,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Contract">
     <Hierarchy visible="true" hasAll="true" allMemberName="All Contracts" primaryKey="CONTRACT_SK">
-      <Table name="DIMENSION_CONTRACT">
+      <Table name="dimension_contract">
       </Table>
       <Level name="Contract Type" visible="true" column="CONTRACT_TYPE_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -165,7 +165,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Customer">
     <Hierarchy name="Customers" visible="true" hasAll="true" allMemberName="All Customers" primaryKey="CUSTOMER_SK">
-      <Table name="DIMENSION_CUSTOMER">
+      <Table name="dimension_customer">
       </Table>
       <Level name="Country" visible="true" column="COUNTRY_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -177,7 +177,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Customer Countries" visible="true" hasAll="true" allMemberName="All Customer Countries" primaryKey="CUSTOMER_SK">
-      <Table name="DIMENSION_CUSTOMER">
+      <Table name="dimension_customer">
       </Table>
       <Level name="Customer Country" visible="true" column="COUNTRY_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -187,7 +187,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Customer Classes" visible="true" hasAll="true" allMemberName="All Customer Classes" primaryKey="CUSTOMER_SK">
-      <Table name="DIMENSION_CUSTOMER">
+      <Table name="dimension_customer">
       </Table>
       <Level name="Customer Country" visible="true" column="COUNTRY_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -197,7 +197,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Customer Types" visible="true" hasAll="true" allMemberName="All Customer Types" primaryKey="CUSTOMER_SK">
-      <Table name="DIMENSION_CUSTOMER">
+      <Table name="dimension_customer">
       </Table>
       <Level name="Customer Type" visible="true" column="CUSTOMER_TYPE_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -205,7 +205,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Customer Credit Stati" visible="true" hasAll="true" allMemberName="All Customer Credit Stati" primaryKey="CUSTOMER_SK">
-      <Table name="DIMENSION_CUSTOMER">
+      <Table name="dimension_customer">
       </Table>
       <Level name="Credit Status" visible="true" column="CREDIT_STATUS_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -215,7 +215,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Department">
     <Hierarchy name="Departments" visible="true" hasAll="true" allMemberName="All Departments" primaryKey="DEPARTMENT_SK">
-      <Table name="DIMENSION_DEPARTMENT">
+      <Table name="dimension_department">
       </Table>
       <Level name="Department Status" visible="true" column="EFFECTIVE_STATUS_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -223,7 +223,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Department Names" visible="true" hasAll="true" allMemberName="All Department Names" primaryKey="DEPARTMENT_SK">
-      <Table name="DIMENSION_DEPARTMENT">
+      <Table name="dimension_department">
       </Table>
       <Level name="Department" visible="true" column="DEPARTMENT_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
         <Property name="Department ID" column="DEPARTMENT_ID" type="String">
@@ -233,7 +233,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Employee">
     <Hierarchy name="Gender" visible="true" hasAll="true" allMemberName="All Genders" primaryKey="PERSON_SK">
-      <Table name="DIMENSION_PERSON" alias="DIMENSION_EMPLOYEE">
+      <Table name="dimension_person" alias="dimension_employee">
       </Table>
       <Level name="Gender" visible="true" column="GENDER_CODE" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -241,7 +241,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Marital Status" visible="true" hasAll="true" allMemberName="All Marital Stati" primaryKey="PERSON_SK">
-      <Table name="DIMENSION_PERSON" alias="DIMENSION_EMPLOYEE">
+      <Table name="dimension_person" alias="dimension_employee">
       </Table>
       <Level name="Marital Status" visible="true" column="MARITAL_STATUS_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -249,7 +249,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Education Level" visible="true" hasAll="true" allMemberName="All Education Levels" primaryKey="PERSON_SK">
-      <Table name="DIMENSION_PERSON" alias="DIMENSION_EMPLOYEE">
+      <Table name="dimension_person" alias="dimension_employee">
       </Table>
       <Level name="Education Level" visible="true" column="HIGHEST_EDUCATION_LEVEL_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -257,7 +257,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Department" visible="true" hasAll="true" allMemberName="All Departments" primaryKey="PERSON_SK">
-      <Table name="DIMENSION_PERSON" alias="DIMENSION_EMPLOYEE">
+      <Table name="dimension_person" alias="dimension_employee">
       </Table>
       <Level name="Department" visible="true" column="DEPT_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -267,7 +267,7 @@
   </Dimension>
   <Dimension type="TimeDimension" visible="true" highCardinality="false" name="Fiscal Period">
     <Hierarchy visible="true" hasAll="true" allMemberName="All Fiscal Periods" primaryKey="FISCAL_PERIOD_SK">
-      <Table name="DIMENSION_FISCAL_PERIOD">
+      <Table name="dimension_fiscal_period">
       </Table>
       <Level name="Fiscal Year" visible="true" column="FISCAL_YEAR_SORT_NUMBER" type="String" uniqueMembers="true" levelType="TimeYears" hideMemberIf="Never">
       </Level>
@@ -279,7 +279,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="GL Adjustment">
     <Hierarchy visible="true" hasAll="true" allMemberName="All Adjustments" primaryKey="GL_ADJUSTMENT_SK">
-      <Table name="DIMENSION_GL_ADJUSTMENT">
+      <Table name="dimension_gl_adjustment">
       </Table>
       <Level name="Adjustment" visible="true" column="GL_ADJUSTMENT_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -287,7 +287,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Inventory Adjustment">
     <Hierarchy name="Inventory Adjustments" visible="true" hasAll="true" allMemberName="All Inventory Adjustments" primaryKey="INV_ADJUSTMENT_SK">
-      <Table name="DIMENSION_INVENTORY_ADJUSTMENT">
+      <Table name="dimension_inventory_adjustment">
       </Table>
       <Level name="Inventory Adjustment" visible="true" column="INV_ADJUSTMENT_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -295,7 +295,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Job Action">
     <Hierarchy name="Job Actions" visible="true" hasAll="true" allMemberName="All Job Actions" primaryKey="JOB_ACTION_SK">
-      <Table name="DIMENSION_JOB_ACTION">
+      <Table name="dimension_job_action">
       </Table>
       <Level name="Job Action" visible="true" column="JOB_ACTION_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -305,7 +305,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Jobcode">
     <Hierarchy name="Jobcodes" visible="true" hasAll="true" allMemberName="All Jobcodes" primaryKey="JOBCODE_SK">
-      <Table name="DIMENSION_JOBCODE">
+      <Table name="dimension_jobcode">
       </Table>
       <Level name="Jobcode Level" visible="true" column="MANAGER_LEVEL_DESC" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -315,7 +315,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Keyword Phrase">
     <Hierarchy name="Matching Option" visible="true" hasAll="true" allMemberName="All Matching Options" primaryKey="KEYWORD_SK">
-      <Table name="DIMENSION_KEYWORD_PHRASE">
+      <Table name="dimension_keyword_phrase">
       </Table>
       <Level name="Matching Option" visible="true" column="MATCHING_OPTION_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -323,7 +323,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Destination URL" visible="true" hasAll="true" allMemberName="All URLs" primaryKey="KEYWORD_SK">
-      <Table name="DIMENSION_KEYWORD_PHRASE">
+      <Table name="dimension_keyword_phrase">
       </Table>
       <Level name="URL" visible="true" column="DESTINATION_URL_DESC" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -331,7 +331,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Token Quantites" visible="true" hasAll="true" allMemberName="All Token Quantities" primaryKey="KEYWORD_SK">
-      <Table name="DIMENSION_KEYWORD_PHRASE">
+      <Table name="dimension_keyword_phrase">
       </Table>
       <Level name="Token Quantity" visible="true" column="TOKEN_QTY" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -339,7 +339,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Max CPC Buckets" visible="true" hasAll="true" allMemberName="All Max CPC Buckets" primaryKey="KEYWORD_SK">
-      <Table name="DIMENSION_KEYWORD_PHRASE">
+      <Table name="dimension_keyword_phrase">
       </Table>
       <Level name="Max CPC Bucket" visible="true" column="MAX_CPC_BUCKET_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -347,7 +347,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Keyword Length Buckets" visible="true" hasAll="true" allMemberName="All Keyword Length Buckets" primaryKey="KEYWORD_SK">
-      <Table name="DIMENSION_KEYWORD_PHRASE">
+      <Table name="dimension_keyword_phrase">
       </Table>
       <Level name="Keyword Length Bucket" visible="true" column="KEYWORD_LENGTH_BUCKET_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -357,7 +357,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Sales Lead">
     <Hierarchy name="Lead Status" visible="true" hasAll="true" allMemberName="All Lead Stati" primaryKey="SALES_LEAD_SK">
-      <Table name="DIMENSION_SALES_LEAD">
+      <Table name="dimension_sales_lead">
       </Table>
       <Level name="Lead Status" visible="true" column="SALES_LEAD_STATUS_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -367,7 +367,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Lead Channel">
     <Hierarchy name="Channels" visible="true" hasAll="true" allMemberName="All Lead Channels" primaryKey="SALES_LEAD_CHANNEL_SK">
-      <Table name="DIMENSION_SALES_LEAD_CHANNEL">
+      <Table name="dimension_sales_lead_channel">
       </Table>
       <Level name="Channel" visible="true" column="SALES_LEAD_CHANNEL_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -375,7 +375,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Lead Type">
     <Hierarchy name="Types" visible="true" hasAll="true" allMemberName="All Lead Types" primaryKey="SALES_LEAD_TYPE_SK">
-      <Table name="DIMENSION_SALES_LEAD_TYPE">
+      <Table name="dimension_sales_lead_type">
       </Table>
       <Level name="Lead Type" visible="true" column="SALES_LEAD_TYPE_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -383,7 +383,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Ledger">
     <Hierarchy name="Ledgers" visible="true" hasAll="true" allMemberName="All Ledgers" primaryKey="LEDGER_SK">
-      <Table name="DIMENSION_LEDGER">
+      <Table name="dimension_ledger">
       </Table>
       <Level name="Ledger Group" visible="true" column="LEDGER_GROUP_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -393,7 +393,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Location">
     <Hierarchy name="Locations" visible="true" hasAll="true" allMemberName="All Locations" primaryKey="LOCATION_SK">
-      <Table name="DIMENSION_LOCATION">
+      <Table name="dimension_location">
       </Table>
       <Level name="Country" visible="true" column="COUNTRY_CODE" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -407,7 +407,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Manager">
     <Hierarchy name="Gender" visible="true" hasAll="true" allMemberName="All Genders" primaryKey="PERSON_SK">
-      <Table name="DIMENSION_PERSON" alias="DIMENSION_MANAGER">
+      <Table name="dimension_person" alias="dimension_manager">
       </Table>
       <Level name="Gender" visible="true" column="GENDER_CODE" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -415,7 +415,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Marital Status" visible="true" hasAll="true" allMemberName="All Marital Stati" primaryKey="PERSON_SK">
-      <Table name="DIMENSION_PERSON" alias="DIMENSION_MANAGER">
+      <Table name="dimension_person" alias="dimension_manager">
       </Table>
       <Level name="Marital Status" visible="true" column="MARITAL_STATUS_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -423,7 +423,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Education Level" visible="true" hasAll="true" allMemberName="All Education Levels" primaryKey="PERSON_SK">
-      <Table name="DIMENSION_PERSON" alias="DIMENSION_MANAGER">
+      <Table name="dimension_person" alias="dimension_manager">
       </Table>
       <Level name="Education Level" visible="true" column="HIGHEST_EDUCATION_LEVEL_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -433,7 +433,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Marketing Channel">
     <Hierarchy name="Channel Types" visible="true" hasAll="true" allMemberName="All Marketing Channels" primaryKey="MARKETING_CHANNEL_SK">
-      <Table name="DIMENSION_MARKETING_CHANNEL">
+      <Table name="dimension_marketing_channel">
       </Table>
       <Level name="Channel Type" visible="true" column="CHANNEL_TYPE_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -441,7 +441,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Channel Names" visible="true" hasAll="true" allMemberName="All Channel Names" primaryKey="MARKETING_CHANNEL_SK">
-      <Table name="DIMENSION_MARKETING_CHANNEL">
+      <Table name="dimension_marketing_channel">
       </Table>
       <Level name="Channel" visible="true" column="CHANNEL_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -449,7 +449,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Marketing Segment">
     <Hierarchy name="Segment Groups" visible="true" hasAll="true" allMemberName="All Marketing Segments" primaryKey="MARKETING_SEGMENT_SK">
-      <Table name="DIMENSION_MARKETING_SEGMENT">
+      <Table name="dimension_marketing_segment">
       </Table>
       <Level name="Segment Group" visible="true" column="SEGMENT_GROUP_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -459,7 +459,7 @@
   </Dimension>
   <Dimension type="TimeDimension" visible="true" highCardinality="false" name="Month">
     <Hierarchy name="Month" visible="true" hasAll="true" allMemberName="All Months" primaryKey="MONTH_SK">
-      <Table name="DIMENSION_MONTH">
+      <Table name="dimension_month">
       </Table>
       <Level name="Year" visible="true" column="YEAR_SORT_NUMBER" type="String" uniqueMembers="true" levelType="TimeYears" hideMemberIf="Never">
       </Level>
@@ -467,7 +467,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Quarter" visible="true" hasAll="true" allMemberName="All Quarters" primaryKey="MONTH_SK">
-      <Table name="DIMENSION_MONTH">
+      <Table name="dimension_month">
       </Table>
       <Level name="Year" visible="true" column="YEAR_SORT_NUMBER" type="String" uniqueMembers="true" levelType="TimeYears" hideMemberIf="Never">
       </Level>
@@ -477,7 +477,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Order">
     <Hierarchy name="Sources" visible="true" hasAll="true" allMemberName="All Sources" primaryKey="ORDER_CAPTURE_SK">
-      <Table name="DIMENSION_ORDER_CAPTURE">
+      <Table name="dimension_order_capture">
       </Table>
       <Level name="Source" visible="true" column="SOURCE_TYPE_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -485,7 +485,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Bill Types" visible="true" hasAll="true" allMemberName="All Bill Types" primaryKey="ORDER_CAPTURE_SK">
-      <Table name="DIMENSION_ORDER_CAPTURE">
+      <Table name="dimension_order_capture">
       </Table>
       <Level name="Bill Type" visible="true" column="BILL_TO_TYPE_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -493,7 +493,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Capture Types" visible="true" hasAll="true" allMemberName="All Capture Types" primaryKey="ORDER_CAPTURE_SK">
-      <Table name="DIMENSION_ORDER_CAPTURE">
+      <Table name="dimension_order_capture">
       </Table>
       <Level name="Capture Type" visible="true" column="CAPTURE_TYPE_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -503,7 +503,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Position">
     <Hierarchy name="Stati" visible="true" hasAll="true" allMemberName="All Position Stati" primaryKey="POSITION_SK">
-      <Table name="DIMENSION_POSITION">
+      <Table name="dimension_position">
       </Table>
       <Level name="Position Status" visible="true" column="POSITION_STATUS_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -511,7 +511,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Position Classifications" visible="true" hasAll="true" allMemberName="All Position Classifications" primaryKey="POSITION_SK">
-      <Table name="DIMENSION_POSITION">
+      <Table name="dimension_position">
       </Table>
       <Level name="Position Class" visible="true" column="REGULAR_TEMPORARY_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -519,7 +519,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Position Types" visible="true" hasAll="true" allMemberName="All Position Types" primaryKey="POSITION_SK">
-      <Table name="DIMENSION_POSITION">
+      <Table name="dimension_position">
       </Table>
       <Level name="Position Type" visible="true" column="FULL_PART_TIME_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -529,7 +529,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Promotion">
     <Hierarchy visible="true" hasAll="true" allMemberName="All Promotions" primaryKey="CAMPAIGN_WAVE_SK">
-      <Table name="DIMENSION_CAMPAIGN_WAVE">
+      <Table name="dimension_campaign_wave">
       </Table>
       <Level name="Promotion Category" visible="true" column="CAMPAIGN_CONTENT_TYPE_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -539,7 +539,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Waves" visible="true" hasAll="true" allMemberName="All Waves" primaryKey="CAMPAIGN_WAVE_SK">
-      <Table name="DIMENSION_CAMPAIGN_WAVE">
+      <Table name="dimension_campaign_wave">
       </Table>
       <Level name="Promotion" visible="true" column="CAMPAIGN_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -549,7 +549,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Product">
     <Hierarchy name="Families" visible="true" hasAll="true" allMemberName="All Families" primaryKey="PRODUCT_SK">
-      <Table name="DIMENSION_PRODUCT">
+      <Table name="dimension_product">
       </Table>
       <Level name="Family" visible="true" column="PRODUCT_FAMILY_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -563,7 +563,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Categories" visible="true" hasAll="true" allMemberName="All Categories" primaryKey="PRODUCT_SK">
-      <Table name="DIMENSION_PRODUCT">
+      <Table name="dimension_product">
       </Table>
       <Level name="Category" visible="true" column="PRODUCT_CATEGORY_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -573,7 +573,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Brands" visible="true" hasAll="true" allMemberName="All Brands" primaryKey="PRODUCT_SK">
-      <Table name="DIMENSION_PRODUCT">
+      <Table name="dimension_product">
       </Table>
       <Level name="Brand" visible="true" column="PRODUCT_BRAND_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -583,7 +583,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Geographic Region">
     <Hierarchy name="Regions" visible="true" hasAll="true" allMemberName="All Regions" primaryKey="REGION_SK">
-      <Table name="DIMENSION_REGION">
+      <Table name="dimension_region">
       </Table>
       <Level name="Parent Region" visible="true" column="PARENT_REGION_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -593,7 +593,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Recruitment Channel">
     <Hierarchy name="Recruitment Channel Types" visible="true" hasAll="true" allMemberName="All Recruitment Channels" primaryKey="RECRUITMENT_CHANNEL_SK">
-      <Table name="DIMENSION_RECRUITMENT_CHANNEL">
+      <Table name="dimension_recruitment_channel">
       </Table>
       <Level name="Recruitment Channel Type" visible="true" column="RECRUITMENT_CHANNEL_TYPE_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -603,7 +603,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Recruitment Event">
     <Hierarchy visible="true" hasAll="true" allMemberName="All Events" primaryKey="RECRUITMENT_EVENT_SK">
-      <Table name="DIMENSION_RECRUITMENT_EVENT">
+      <Table name="dimension_recruitment_event">
       </Table>
       <Level name="Event Continent" visible="true" column="CONTINENT_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -619,7 +619,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Event Types" visible="true" hasAll="true" allMemberName="All Event Types" primaryKey="RECRUITMENT_EVENT_SK">
-      <Table name="DIMENSION_RECRUITMENT_EVENT">
+      <Table name="dimension_recruitment_event">
       </Table>
       <Level name="Event Type" visible="true" column="RECRUITMENT_EVENT_TYPE_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -629,7 +629,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Return Reason">
     <Hierarchy name="Return Reasons" visible="true" hasAll="true" allMemberName="All Return Reasons" primaryKey="RETURN_REASON_SK">
-      <Table name="DIMENSION_RETURN_REASON">
+      <Table name="dimension_return_reason">
       </Table>
       <Level name="Return Reason" visible="true" column="RETURN_REASON_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -637,7 +637,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Return Type">
     <Hierarchy name="Return Types" visible="true" hasAll="true" allMemberName="All Return Types" primaryKey="RETURN_TYPE_SK">
-      <Table name="DIMENSION_RETURN_TYPE">
+      <Table name="dimension_return_type">
       </Table>
       <Level name="Return Type" visible="true" column="RETURN_TYPE_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -645,7 +645,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Sales Rep">
     <Hierarchy name="Sales Reps" visible="true" hasAll="true" allMemberName="All Sales Reps" primaryKey="PERSON_SK">
-      <Table name="DIMENSION_PERSON">
+      <Table name="dimension_person">
       </Table>
       <Level name="Sales Region" visible="true" column="SALES_REGION_DESC" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -653,7 +653,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Sales Rep Names" visible="true" hasAll="true" allMemberName="All Sales Rep Names" primaryKey="PERSON_SK">
-      <Table name="DIMENSION_PERSON">
+      <Table name="dimension_person">
       </Table>
       <Level name="Sales Rep Name" visible="true" column="FULL_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -661,7 +661,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Service Agent">
     <Hierarchy visible="true" hasAll="true" allMemberName="All Service Agents" primaryKey="CASE_SK">
-      <Table name="DIMENSION_CASE">
+      <Table name="dimension_case">
       </Table>
       <Level name="Agent Name" visible="true" column="AGENT_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -669,7 +669,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Source System">
     <Hierarchy name="Source Systems" visible="true" hasAll="true" allMemberName="All Source Systems" primaryKey="SOURCE_SYSTEM_SK">
-      <Table name="DIMENSION_SOURCE_SYSTEM">
+      <Table name="dimension_source_system">
       </Table>
       <Level name="Source System Group" visible="true" column="SOURCE_SYSTEM_GROUP_CAT" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -681,7 +681,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Sub Ledger">
     <Hierarchy name="Sub Ledgers" visible="true" hasAll="true" allMemberName="All Sub Ledgers" primaryKey="SUBLEDGER_SK">
-      <Table name="DIMENSION_SUBLEDGER">
+      <Table name="dimension_subledger">
       </Table>
       <Level name="Sub Ledger Type" visible="true" column="SUBLEDGER_TYPE_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -691,7 +691,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Supplier">
     <Hierarchy name="Suppliers" visible="true" hasAll="true" allMemberName="All Suppliers" primaryKey="SUPPLIER_SK">
-      <Table name="DIMENSION_SUPPLIER">
+      <Table name="dimension_supplier">
       </Table>
       <Level name="Supplier Continent" visible="true" column="CONTINENT_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -707,7 +707,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Supplier Countries" visible="true" hasAll="true" allMemberName="All Supplier Countries" primaryKey="SUPPLIER_SK">
-      <Table name="DIMENSION_SUPPLIER">
+      <Table name="dimension_supplier">
       </Table>
       <Level name="Supplier Country" visible="true" column="COUNTRY_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -717,7 +717,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Supplier Classes" visible="true" hasAll="true" allMemberName="All Supplier Classes" primaryKey="SUPPLIER_SK">
-      <Table name="DIMENSION_SUPPLIER">
+      <Table name="dimension_supplier">
       </Table>
       <Level name="Supplier Country" visible="true" column="COUNTRY_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -729,7 +729,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Transaction Type">
     <Hierarchy name="Transaction Types" visible="true" hasAll="true" allMemberName="All Transaction Types" primaryKey="TRXN_TYPE_SK">
-      <Table name="DIMENSION_TRANSACTION_TYPE">
+      <Table name="dimension_transaction_type">
       </Table>
       <Level name="Transaction Type" visible="true" column="TRXN_TYPE_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -737,7 +737,7 @@
   </Dimension>
   <Dimension type="TimeDimension" visible="true" highCardinality="false" name="Time Period">
     <Hierarchy name="Time Periods" visible="true" hasAll="true" allMemberName="All Periods" primaryKey="DATE_SK">
-      <Table name="DIMENSION_DAY">
+      <Table name="dimension_day">
       </Table>
       <Level name="Year" visible="true" column="YEAR_SORT_NUMBER" type="String" uniqueMembers="true" levelType="TimeYears" hideMemberIf="Never">
       </Level>
@@ -750,26 +750,10 @@
       <Level name="Day" visible="true" column="DAY_OF_WEEK_SORT_NAME" type="String" uniqueMembers="false" levelType="TimeDays" hideMemberIf="Never">
       </Level>
     </Hierarchy>
-    <Hierarchy name="Quarter" visible="true" hasAll="true" allMemberName="All Quarters" primaryKey="DATE_SK">
-      <Table name="DIMENSION_DAY">
-      </Table>
-      <Level name="Year" visible="true" column="YEAR_SORT_NUMBER" type="String" uniqueMembers="true" levelType="TimeYears" hideMemberIf="Never">
-      </Level>
-      <Level name="Quarter" visible="true" column="QUARTER_NAME" type="String" uniqueMembers="false" levelType="TimeQuarters" hideMemberIf="Never">
-      </Level>
-    </Hierarchy>
-    <Hierarchy name="Month" visible="true" hasAll="true" allMemberName="All Months" primaryKey="DATE_SK">
-      <Table name="DIMENSION_DAY">
-      </Table>
-      <Level name="Year" visible="true" column="YEAR_SORT_NUMBER" type="String" uniqueMembers="true" levelType="TimeYears" hideMemberIf="Never">
-      </Level>
-      <Level name="Month" visible="true" column="MONTH_NAME" ordinalColumn="MONTH_NUMBER" type="String" uniqueMembers="false" levelType="TimeMonths" hideMemberIf="Never">
-      </Level>
-    </Hierarchy>
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Warehouse">
     <Hierarchy name="Warehouses" visible="true" hasAll="true" allMemberName="All Warehouses" primaryKey="WAREHOUSE_SK">
-      <Table name="DIMENSION_WAREHOUSE">
+      <Table name="dimension_warehouse">
       </Table>
       <Level name="Warehouse Continent" visible="true" column="CONTINENT_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -785,7 +769,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Warehouse Types" visible="true" hasAll="true" allMemberName="All Warehouse Types" primaryKey="WAREHOUSE_SK">
-      <Table name="DIMENSION_WAREHOUSE">
+      <Table name="dimension_warehouse">
       </Table>
       <Level name="Warehouse Type" visible="true" column="WAREHOUSE_TYPE_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -793,7 +777,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Warehouse Names" visible="true" hasAll="true" allMemberName="All Warehouse Names" primaryKey="WAREHOUSE_SK">
-      <Table name="DIMENSION_WAREHOUSE">
+      <Table name="dimension_warehouse">
       </Table>
       <Level name="Warehouse" visible="true" column="WAREHOUSE_NAME" type="String" uniqueMembers="false" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -801,7 +785,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Web Browser">
     <Hierarchy name="Web Browsers" visible="true" hasAll="true" allMemberName="All Browsers" primaryKey="WEB_BROWSER_OS_SK">
-      <Table name="DIMENSION_WEB_BROWSER_OS">
+      <Table name="dimension_web_browser_os">
       </Table>
       <Level name="Parent Browser" visible="true" column="PARENT_WEB_BROWSER_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -811,7 +795,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Web File">
     <Hierarchy name="Web Files" visible="true" hasAll="true" allMemberName="All Files" primaryKey="WEB_FILE_SK">
-      <Table name="DIMENSION_WEB_FILE">
+      <Table name="dimension_web_file">
       </Table>
       <Level name="File Category" visible="true" column="WEB_FILE_CAT_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -821,7 +805,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Web Visitor Location">
     <Hierarchy name="Web Visitor Locations" visible="true" hasAll="true" allMemberName="All Visitor Locations" primaryKey="WEB_VISITOR_SK">
-      <Table name="DIMENSION_WEB_VISITOR">
+      <Table name="dimension_web_visitor">
       </Table>
       <Level name="Country" visible="true" column="COUNTRY_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -831,7 +815,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Web Visitor Postal Codes" visible="true" hasAll="true" allMemberName="All Postal Codes" primaryKey="WEB_VISITOR_SK">
-      <Table name="DIMENSION_WEB_VISITOR">
+      <Table name="dimension_web_visitor">
       </Table>
       <Level name="Country" visible="true" column="COUNTRY_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -839,7 +823,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Web Visitor DMAs" visible="true" hasAll="true" allMemberName="All DMAs" primaryKey="WEB_VISITOR_SK">
-      <Table name="DIMENSION_WEB_VISITOR">
+      <Table name="dimension_web_visitor">
       </Table>
       <Level name="Country" visible="true" column="COUNTRY_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -849,7 +833,7 @@
       </Level>
     </Hierarchy>
     <Hierarchy name="Web Visitor Phone Codes" visible="true" hasAll="true" allMemberName="All Phone Codes" primaryKey="WEB_VISITOR_SK">
-      <Table name="DIMENSION_WEB_VISITOR">
+      <Table name="dimension_web_visitor">
       </Table>
       <Level name="Country" visible="true" column="COUNTRY_NAME" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -859,7 +843,7 @@
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Web Site Referer">
     <Hierarchy name="Web Referers" visible="true" hasAll="true" allMemberName="All Referers" primaryKey="REFERER_URL_SK">
-      <Table name="DIMENSION_WEB_SITE_REFERER">
+      <Table name="dimension_web_site_referer">
       </Table>
       <Level name="Parent Referer" visible="true" column="PARENT_REFERER_DESC" type="String" uniqueMembers="true" levelType="Regular" hideMemberIf="Never">
       </Level>
@@ -868,7 +852,7 @@
     </Hierarchy>
   </Dimension>
   <Cube name="Accounts Payable" visible="true" cache="true" enabled="true">
-    <Table name="FACT_ACCOUNT_PAYABLE">
+    <Table name="fact_account_payable">
     </Table>
     <DimensionUsage source="Time Period" name="Time Period" visible="true" foreignKey="TRXN_DATE_SK" highCardinality="false">
     </DimensionUsage>
@@ -1051,7 +1035,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Accounts Receivable" visible="true" cache="true" enabled="true">
-    <Table name="FACT_ACCOUNT_RECEIVABLE">
+    <Table name="fact_account_receivable">
     </Table>
     <DimensionUsage source="Product" name="Product" visible="true" foreignKey="PRODUCT_SK" highCardinality="false">
     </DimensionUsage>
@@ -1174,7 +1158,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Applications" visible="true" cache="true" enabled="true">
-    <Table name="FACT_PERSON_APPLICATION">
+    <Table name="fact_person_application">
     </Table>
     <DimensionUsage source="Applicant" name="Applicant" visible="true" foreignKey="APPLICANT_SK" highCardinality="false">
     </DimensionUsage>
@@ -1334,7 +1318,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Budget Forecasts" visible="true" cache="true" enabled="true">
-    <Table name="FACT_BUDGET_FORECAST">
+    <Table name="fact_budget_forecast">
     </Table>
     <DimensionUsage source="Product" name="Product" visible="true" foreignKey="PRODUCT_SK" highCardinality="false">
     </DimensionUsage>
@@ -1517,7 +1501,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Contact Center Calls" visible="true" cache="true" enabled="true">
-    <Table name="FACT_CONTACT_CENTER_CALL">
+    <Table name="fact_contact_center_call">
     </Table>
     <DimensionUsage source="Employee" name="Employee" visible="true" foreignKey="AGENT_SK" highCardinality="false">
     </DimensionUsage>
@@ -1684,7 +1668,7 @@
     </CalculatedMember>
   </Cube>
   <Cube name="Cases" visible="true" cache="true" enabled="true">
-    <Table name="FACT_CASE">
+    <Table name="fact_case">
     </Table>
     <DimensionUsage source="Service Agent" name="Service Agent" visible="true" foreignKey="CASE_SK" highCardinality="false">
     </DimensionUsage>
@@ -1795,7 +1779,7 @@
     </CalculatedMember>
   </Cube>
   <Cube name="Billing" visible="true" cache="true" enabled="true">
-    <Table name="FACT_BILLING">
+    <Table name="fact_billing">
     </Table>
     <DimensionUsage source="Product" name="Product" visible="true" foreignKey="PRODUCT_SK" highCardinality="false">
     </DimensionUsage>
@@ -1942,7 +1926,7 @@
     </NamedSet>
   </Cube>
   <Cube name="GL Posted Transactions" visible="true" cache="true" enabled="true">
-    <Table name="FACT_GL_POSTED_TRANSACTION">
+    <Table name="fact_gl_posted_transaction">
     </Table>
     <DimensionUsage source="Time Period" name="Time Period" visible="true" foreignKey="TRXN_DATE_SK" highCardinality="false">
     </DimensionUsage>
@@ -2033,7 +2017,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Inventory" visible="true" cache="true" enabled="true">
-    <Table name="FACT_PHYSICAL_INVENTORY_V">
+    <Table name="fact_physical_inventory_v">
     </Table>
     <DimensionUsage source="Product" name="Product" visible="true" foreignKey="PRODUCT_SK" highCardinality="false">
     </DimensionUsage>
@@ -2089,7 +2073,7 @@
     </Measure>
   </Cube>
   <Cube name="Inventory Transaction" visible="true" cache="true" enabled="true">
-    <Table name="FACT_INVENTORY_TRANSACTION">
+    <Table name="fact_inventory_transaction">
     </Table>
     <DimensionUsage source="Business Unit" name="Business Unit" visible="true" foreignKey="BUSINESS_UNIT_SK" highCardinality="false">
     </DimensionUsage>
@@ -2238,7 +2222,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Leads" visible="true" cache="true" enabled="true">
-    <Table name="FACT_SALES_LEAD">
+    <Table name="fact_sales_lead">
     </Table>
     <DimensionUsage source="Product" name="Product" visible="true" foreignKey="PRODUCT_SK" highCardinality="false">
     </DimensionUsage>
@@ -2395,7 +2379,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Opportunities" visible="true" cache="true" enabled="true">
-    <Table name="FACT_SALES_OPPORTUNITY">
+    <Table name="fact_sales_opportunity">
     </Table>
     <DimensionUsage source="Product" name="Product" visible="true" foreignKey="PRODUCT_SK" highCardinality="false">
     </DimensionUsage>
@@ -2554,7 +2538,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Orders" visible="true" cache="true" enabled="true">
-    <Table name="FACT_ORDER_CAPTURE">
+    <Table name="fact_order_capture">
     </Table>
     <DimensionUsage source="Product" name="Product" visible="true" foreignKey="PRODUCT_SK" highCardinality="false">
     </DimensionUsage>
@@ -2736,7 +2720,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Purchase Orders" visible="true" cache="true" enabled="true">
-    <Table name="FACT_PURCHASE_ORDER">
+    <Table name="fact_purchase_order">
     </Table>
     <DimensionUsage source="Product" name="Product" visible="true" foreignKey="PRODUCT_SK" highCardinality="false">
     </DimensionUsage>
@@ -2847,7 +2831,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Requisitions" visible="true" cache="true" enabled="true">
-    <Table name="FACT_REQUISITION">
+    <Table name="fact_requisition">
     </Table>
     <DimensionUsage source="Product" name="Product" visible="true" foreignKey="PRODUCT_SK" highCardinality="false">
     </DimensionUsage>
@@ -2958,7 +2942,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Shipping Notices" visible="true" cache="true" enabled="true">
-    <Table name="FACT_SHIPPING_NOTICE">
+    <Table name="fact_shipping_notice">
     </Table>
     <DimensionUsage source="Product" name="Product" visible="true" foreignKey="PRODUCT_SK" highCardinality="false">
     </DimensionUsage>
@@ -3079,7 +3063,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Shipments" visible="true" cache="true" enabled="true">
-    <Table name="FACT_SHIPMENT">
+    <Table name="fact_shipment">
     </Table>
     <DimensionUsage source="Product" name="Product" visible="true" foreignKey="PRODUCT_SK" highCardinality="false">
     </DimensionUsage>
@@ -3216,7 +3200,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Job Actions" visible="true" cache="true" enabled="true">
-    <Table name="DIMENSION_EMPLOYEE_JOB_ACTION">
+    <Table name="dimension_employee_job_action">
     </Table>
     <DimensionUsage source="Employee" name="Employee" visible="true" foreignKey="EMPLOYEE_SK" highCardinality="false">
     </DimensionUsage>
@@ -3276,7 +3260,7 @@
     </CalculatedMember>
   </Cube>
   <Cube name="Payable Time" visible="true" cache="true" enabled="true">
-    <Table name="FACT_PAYABLE_TIME">
+    <Table name="fact_payable_time">
     </Table>
     <DimensionUsage source="Employee" name="Employee" visible="true" foreignKey="EMPLOYEE_SK" highCardinality="false">
     </DimensionUsage>
@@ -3392,7 +3376,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Procurement Overview" visible="true" cache="true" enabled="true">
-    <Table name="FACT_PROCUREMENT">
+    <Table name="fact_procurement">
     </Table>
     <DimensionUsage source="Product" name="Product" visible="true" foreignKey="PRODUCT_SK" highCardinality="false">
     </DimensionUsage>
@@ -3460,7 +3444,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Returns" visible="true" cache="true" enabled="true">
-    <Table name="FACT_RETURN">
+    <Table name="fact_return">
     </Table>
     <DimensionUsage source="Product" name="Product" visible="true" foreignKey="PRODUCT_SK" highCardinality="false">
     </DimensionUsage>
@@ -3597,7 +3581,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Warehouse Receipts" visible="true" cache="true" enabled="true">
-    <Table name="FACT_WAREHOUSE_RECEIPT">
+    <Table name="fact_warehouse_receipt">
     </Table>
     <DimensionUsage source="Product" name="Product" visible="true" foreignKey="PRODUCT_SK" highCardinality="false">
     </DimensionUsage>
@@ -3718,7 +3702,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Work Orders" visible="true" cache="true" enabled="true">
-    <Table name="FACT_WORK_ORDER">
+    <Table name="fact_work_order">
     </Table>
     <DimensionUsage source="Product" name="Product" visible="true" foreignKey="PRODUCT_SK" highCardinality="false">
     </DimensionUsage>
@@ -3852,7 +3836,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Workforce Overview" visible="true" cache="true" enabled="true">
-    <Table name="FACT_WORKFORCE_OVERVIEW">
+    <Table name="fact_workforce_overview">
     </Table>
     <DimensionUsage source="Employee" name="Employee" visible="true" foreignKey="EMPLOYEE_SK" highCardinality="false">
     </DimensionUsage>
@@ -3964,7 +3948,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Advertisement Impression" visible="true" cache="true" enabled="true">
-    <Table name="FACT_AD_IMPRESSION_DEMO">
+    <Table name="fact_ad_impression_demo">
     </Table>
     <DimensionUsage source="Time Period" name="Time Period" visible="true" foreignKey="IMPRESSION_DATE_SK" highCardinality="false">
     </DimensionUsage>
@@ -4187,7 +4171,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Web Site Visits" visible="true" cache="true" enabled="true">
-    <Table name="FACT_WEB_SITE_VISIT_DEMO">
+    <Table name="fact_web_site_visit_demo">
     </Table>
     <DimensionUsage source="Time Period" name="Time Period" visible="true" foreignKey="VISIT_DATE_SK" highCardinality="false">
     </DimensionUsage>
@@ -4301,7 +4285,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Web Page Views" visible="true" cache="true" enabled="true">
-    <Table name="FACT_WEB_PAGE_VIEW_DEMO">
+    <Table name="fact_web_page_view_demo">
     </Table>
     <DimensionUsage source="Time Period" name="Time Period" visible="true" foreignKey="REQUEST_DATE_SK" highCardinality="false">
     </DimensionUsage>
@@ -4366,17 +4350,11 @@
       <CalculatedMemberProperty name="FORMAT_STRING" value="0.0%">
       </CalculatedMemberProperty>
     </CalculatedMember>
-    <CalculatedMember name="YTD Page Views" dimension="Measures">
-      <Formula>
-        <![CDATA[Sum(PeriodsToDate([Time Period].[Year], [Time Period].CurrentMember), [Measures].[Page Views])]]>
-      </Formula>
+    <CalculatedMember name="YTD Page Views" formula="Sum(PeriodsToDate([Time Period.Time Periods].[Year]), [Measures].[Page Views])" dimension="Measures">
       <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0">
       </CalculatedMemberProperty>
     </CalculatedMember>
-    <CalculatedMember name="QTD Page Views" dimension="Measures">
-      <Formula>
-        <![CDATA[Sum(PeriodsToDate([Time Period].[Quarter], [Time Period].CurrentMember), [Measures].[Page Views])]]>
-      </Formula>
+    <CalculatedMember name="QTD Page Views" formula="Sum(PeriodsToDate([Time Period].[Quarter], [Time Period].CurrentMember), [Measures].[Page Views])" dimension="Measures">
       <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0">
       </CalculatedMemberProperty>
     </CalculatedMember>
@@ -4424,7 +4402,7 @@
     </NamedSet>
   </Cube>
   <Cube name="Web Site Referrals" visible="true" cache="true" enabled="true">
-    <Table name="FACT_WEB_SITE_REFERER_DEMO">
+    <Table name="fact_web_site_referer_demo">
     </Table>
     <DimensionUsage source="Time Period" name="Time Period" visible="true" foreignKey="REFERRAL_DATE_SK" highCardinality="false">
     </DimensionUsage>

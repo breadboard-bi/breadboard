@@ -560,16 +560,6 @@
       <Level column="WEEK_OF_MONTH_NAME" name="Week" type="String" uniqueMembers="false" levelType="TimeWeeks" caption="%{bbbi.dimension.time_period.week_of_month_name.caption}"/>
       <Level column="DAY_OF_WEEK_SORT_NAME" name="Day" type="String" uniqueMembers="false" levelType="TimeDays" caption="%{bbbi.dimension.time_period.day_of_week_sort_name.caption}"/>
     </Hierarchy>
-    <Hierarchy name = "Quarter" hasAll="true" allMemberName="All Quarters" primaryKey="DATE_SK" allMemberCaption ="%{bbbi.dimension.time_period.quarter.caption}">
-      <Table name="DIMENSION_DAY"/>
-      <Level column="YEAR_SORT_NUMBER" name="Year" type="String" uniqueMembers="true" levelType="TimeYears" caption="%{bbbi.dimension.time_period.year_sort_number.caption}"/>
-      <Level column="QUARTER_NAME" name="Quarter" type="String" uniqueMembers="false" levelType="TimeQuarters" caption="%{bbbi.dimension.time_period.quarter_name.caption}"/>
-    </Hierarchy>
-    <Hierarchy name = "Month" hasAll="true" allMemberName="All Months" primaryKey="DATE_SK" allMemberCaption ="%{bbbi.dimension.time_period.month.caption}">
-      <Table name="DIMENSION_DAY"/>
-      <Level column="YEAR_SORT_NUMBER" name="Year" type="String" uniqueMembers="true" levelType="TimeYears" caption="%{bbbi.dimension.time_period.year_sort_number.caption}"/>
-      <Level column="MONTH_NAME" ordinalColumn = "MONTH_NUMBER" name="Month" type="String" uniqueMembers="false" levelType="TimeMonths" caption="%{bbbi.dimension.time_period.month_name.caption}"/>
-    </Hierarchy>
   </Dimension>
 
   <Dimension name="Warehouse" caption="%{bbbi.dimension.warehouse.caption}">
@@ -3094,67 +3084,5 @@
     </NamedSet> 
 </Cube>
 <!-- End Web Demo Cubes -->
-
-<Role name="demo_role">
-  <SchemaGrant access="none">
-     <CubeGrant cube="Accounts Payable" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Accounts Receivable" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Applications" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Budget Forecasts" access="all">
-     </CubeGrant>
-    <CubeGrant cube="Orders" access="all">
-     </CubeGrant>
-    <CubeGrant cube="Cases" access="all">
-     </CubeGrant>
-    <CubeGrant cube="Contact Center Calls" access="all">
-     </CubeGrant>     
-     <CubeGrant cube="Billing" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Advertisement Impression" access="all">
-     </CubeGrant>
-     <CubeGrant cube="GL Posted Transactions" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Inventory" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Inventory Transaction" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Shipments" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Job Actions" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Leads" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Opportunities" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Payable Time" access="all">
-     </CubeGrant> 
-     <CubeGrant cube="Procurement Overview" access="all">
-     </CubeGrant>     
-     <CubeGrant cube="Purchase Orders" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Requisitions" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Returns" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Shipping Notices" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Warehouse Receipts" access="all">
-     </CubeGrant>     
-     <CubeGrant cube="Web Site Visits" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Web Page Views" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Web Site Referrals" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Work Orders" access="all">
-     </CubeGrant>
-     <CubeGrant cube="Workforce Overview" access="all">
-     </CubeGrant>
-     
-  </SchemaGrant>
-</Role>
 
 </Schema>

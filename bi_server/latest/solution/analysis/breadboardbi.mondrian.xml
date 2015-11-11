@@ -750,22 +750,6 @@
       <Level name="Day" visible="true" column="DAY_OF_WEEK_SORT_NAME" type="String" uniqueMembers="false" levelType="TimeDays" hideMemberIf="Never">
       </Level>
     </Hierarchy>
-    <Hierarchy name="Quarter" visible="true" hasAll="true" allMemberName="All Quarters" primaryKey="DATE_SK">
-      <Table name="dimension_day">
-      </Table>
-      <Level name="Year" visible="true" column="YEAR_SORT_NUMBER" type="String" uniqueMembers="true" levelType="TimeYears" hideMemberIf="Never">
-      </Level>
-      <Level name="Quarter" visible="true" column="QUARTER_NAME" type="String" uniqueMembers="false" levelType="TimeQuarters" hideMemberIf="Never">
-      </Level>
-    </Hierarchy>
-    <Hierarchy name="Month" visible="true" hasAll="true" allMemberName="All Months" primaryKey="DATE_SK">
-      <Table name="dimension_day">
-      </Table>
-      <Level name="Year" visible="true" column="YEAR_SORT_NUMBER" type="String" uniqueMembers="true" levelType="TimeYears" hideMemberIf="Never">
-      </Level>
-      <Level name="Month" visible="true" column="MONTH_NAME" ordinalColumn="MONTH_NUMBER" type="String" uniqueMembers="false" levelType="TimeMonths" hideMemberIf="Never">
-      </Level>
-    </Hierarchy>
   </Dimension>
   <Dimension visible="true" highCardinality="false" name="Warehouse">
     <Hierarchy name="Warehouses" visible="true" hasAll="true" allMemberName="All Warehouses" primaryKey="WAREHOUSE_SK">
@@ -4366,17 +4350,11 @@
       <CalculatedMemberProperty name="FORMAT_STRING" value="0.0%">
       </CalculatedMemberProperty>
     </CalculatedMember>
-    <CalculatedMember name="YTD Page Views" dimension="Measures">
-      <Formula>
-        <![CDATA[Sum(PeriodsToDate([Time Period].[Year], [Time Period].CurrentMember), [Measures].[Page Views])]]>
-      </Formula>
+    <CalculatedMember name="YTD Page Views" formula="Sum(PeriodsToDate([Time Period.Time Periods].[Year]), [Measures].[Page Views])" dimension="Measures">
       <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0">
       </CalculatedMemberProperty>
     </CalculatedMember>
-    <CalculatedMember name="QTD Page Views" dimension="Measures">
-      <Formula>
-        <![CDATA[Sum(PeriodsToDate([Time Period].[Quarter], [Time Period].CurrentMember), [Measures].[Page Views])]]>
-      </Formula>
+    <CalculatedMember name="QTD Page Views" formula="Sum(PeriodsToDate([Time Period].[Quarter], [Time Period].CurrentMember), [Measures].[Page Views])" dimension="Measures">
       <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0">
       </CalculatedMemberProperty>
     </CalculatedMember>
