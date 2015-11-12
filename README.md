@@ -7,7 +7,7 @@ The enterprise, dimensional data model is currently stored in a Toad Data Modele
 
 ETL
 ===
-While the ETL was created on Pentaho Data Integration (PDI) version 2.5.2 - it should work with newer versions, and the process of updating the objects will be somewhat less painful than the BI server objects (see below).  New objects, best practices, etc. will need to be introduced over time.
+While the ETL was created on Pentaho Data Integration (PDI) version 2.5.2 - it should work with newer versions, and the process of updating the objects will be somewhat less painful than the BI server objects (see below).  This section also includes table input steps with SQL designed to help extract data from some Compiere, JDE, PeopleSoft, and SugarCRM tables.  New objects, best practices, etc. will need to be introduced over time.
 
 BI Server
 ==========

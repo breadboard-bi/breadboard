@@ -4528,6 +4528,7 @@
       </Formula>
     </NamedSet>
   </Cube>
+  <!--
   <Role name="demo_role">
     <SchemaGrant access="none">
       <CubeGrant cube="Accounts Payable" access="all">
@@ -4588,4 +4589,5 @@
       </CubeGrant>
     </SchemaGrant>
   </Role>
+  -->
 </Schema>
