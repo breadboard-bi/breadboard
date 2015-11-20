@@ -3,7 +3,9 @@ These somewhat dated analytic modules have been made available as-is to kickstar
 
 Database
 =========
-The enterprise, dimensional, multi-tenant data model is currently stored in a Toad Data Modeler file.  The model was created on a old version of Toad Data Modeler. You can get a copy of the freeware here: http://www.toadworld.com/m/freeware/553.  The freeware version has limitations that will affect your ability to work with the model.  Developers that actively participate in updating and expanding content will be granted access to a MySQL version of the database with test data.  The mdw_master.sql file has not been included, and can be used to generate a MySQL version of the database.
+The enterprise, dimensional, multi-tenant data model is currently stored in a Toad Data Modeler file, it is also now available as a DDL file - mdw_master.sql.  (This DDL file builds only MySQL objects.)  Use the data model file to build for other RDBMS systems.
+
+The data model was created on a old version of Toad Data Modeler. You can get a copy of the freeware here: http://www.toadworld.com/m/freeware/553.  The freeware version has limitations that will affect your ability to work with the model.  Developers that actively participate in updating and expanding content will be granted access to a MySQL version of the database with test data.
 
 ETL
 ===
