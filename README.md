@@ -3,7 +3,7 @@ These somewhat dated analytic modules have been made available as-is to kickstar
 
 Database
 =========
-The enterprise, dimensional data model is currently stored in a Toad Data Modeler file.  The model was created on a old version of Toad Data Modeler. You can get a copy of the freeware here: http://www.toadworld.com/m/freeware/553.  The freeware version has limitations that will affect your ability to work with the model.  Developers that actively participate in updating and expanding content will be granted access to a MySQL version of the database with test data.
+The enterprise, dimensional, multi-tenant data model is currently stored in a Toad Data Modeler file.  The model was created on a old version of Toad Data Modeler. You can get a copy of the freeware here: http://www.toadworld.com/m/freeware/553.  The freeware version has limitations that will affect your ability to work with the model.  Developers that actively participate in updating and expanding content will be granted access to a MySQL version of the database with test data.  The mdw_master.sql file has not been included, and can be used to generate a MySQL version of the database.
 
 ETL
 ===
@@ -11,7 +11,7 @@ While the ETL was created on Pentaho Data Integration (PDI) version 2.5.2 - it s
 
 BI Server
 ==========
-The cubes, dashboards, and reports were originally created using Pentaho BI Server V1.2 GA.  This is a *very* old version of Pentaho, so much of the content requires significant updates to be useful.  The last version the content was known to work on was 4.8.1.  Old versions of Pentaho BI server are available on SourceForge - http://sourceforge.net/projects/pentaho/files/.
+Many of the cubes, dashboards, and reports were originally created using Pentaho BA Server 1.2, however the content is currently being updated to BA Server 5.4.  The last version that the old content was known to work on was 4.8.1.  Old versions of Pentaho BA server are available on SourceForge - http://sourceforge.net/projects/pentaho/files/.  
 
 Documentation
 =============
