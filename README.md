@@ -1,5 +1,5 @@
 # breadboard
-These somewhat dated analytic modules have been made available as-is to kickstart an update and expansion effort in the community. Configuration and use requires Pentaho and database developer skills.  in their current state, they should be treated as a toolkit.
+These analytic modules - helping companies in Australia, Europe, and North America - have been made available as-is to kickstart an update and expansion effort in the community. Configuration and use requires Pentaho and database developer skills.  in their current state, they should be treated as a toolkit - howewver, a process to refactor and run on Pentaho 6 is underway.
 
 Database
 =========
@@ -13,12 +13,4 @@ While the ETL was created on Pentaho Data Integration (PDI) version 2.5.2 - it s
 
 BI Server
 ==========
-Many of the cubes, dashboards, and reports were originally created using Pentaho BA Server 1.2, however the content is currently being updated to BA Server 5.4.  The last version that the old content was known to work on was 4.8.1.  Old versions of Pentaho BA server are available on SourceForge - http://sourceforge.net/projects/pentaho/files/.  
-
-Documentation
-=============
-There isn't much, see the docs folder for what exists today.
-
-Donations
-=========
-Yes, they are accepted and appreciated.  Contact me to ask how.
+Many of the cubes, dashboards, and reports were originally created using Pentaho BA Server 1.2, however the content is currently being updated to BA Server 6.  The last version that the old content was known to work on was 4.8.1.  Old versions of Pentaho BA server are available on SourceForge - http://sourceforge.net/projects/pentaho/files/.
