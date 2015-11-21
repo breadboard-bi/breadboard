@@ -1,1 +1,1 @@
-This content should work well on version 5.4.
+This content is tested on Pentaho BA Server 6.x.
