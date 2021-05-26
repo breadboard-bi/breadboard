@@ -3,7 +3,7 @@ These analytic modules - helping companies in Australia, Europe, and North Ameri
 
 Database
 =========
-The enterprise, dimensional, multi-tenant data model is currently stored in a Toad Data Modeler file, it is also now as a DDL file for MySQL and Snowflake.  Use the data model file to build for other RDBMS systems.
+The enterprise, dimensional, multi-tenant data model is currently stored in a Toad Data Modeler file, it is also now available as a DDL file for MySQL and Snowflake.  Use the data model file to build for other RDBMS systems.
 
 The data model was created on a old version of Toad Data Modeler. You can get a copy of the freeware here: http://www.toadworld.com/m/freeware/553.  The freeware version has limitations that will affect your ability to work with the model.  Developers that actively participate in updating and expanding content will be granted access to a MySQL version of the database with test data.
 
