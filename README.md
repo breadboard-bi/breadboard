@@ -1,4 +1,5 @@
-#Breadboard BI
+Breadboard BI
+=============
 These analytic modules - helping companies in Australia, Europe, and North America - have been made available as-is to kickstart an update and expansion effort in the community. Configuration and use requires Pentaho and database developer skills.  Porting to other ETL and/or BI tools should be easy.  DDL for Snowflake has been added.
 
 Database
