@@ -1,0 +1,651 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 /* \
+Initial pattern to load an MDW dimension from a stage table using Slowly Changing Dimension (SCD2) logic on Snowflake.\
+\
+This script builds a sequence, stream, view, and task.  A Snowflake warehouse is also required, as well as the appropriate privileges.\
+\
+The core logic is based on an article written by John Gontarz, Sales Engineer at Snowflake - https://community.snowflake.com/s/article/Building-a-Type-2-Slowly-Changing-Dimension-in-Snowflake-Using-Streams-and-Tasks-Part-1.  \
+\
+Modifications made to work with the existing MDW enterprise dimensional model and to limit which columns trigger SCD2 insert/update versus a regular update.\
+\
+Assumes the stage_business_unit and dimension_business_unit MDW tables have already been built. See mdw_master_snowflake.txt for the DDL.\
+*/\
+\
+create or replace sequence seq_business_unit start with 1 increment by 1;\
+\
+create or replace stream stage_business_unit_changes on table stage_business_unit;\
+\
+--generates data to load into the dimension_business_unit table.\
+create or replace view business_unit_change_data as\
+-- This first subquery figures out what to do when data is inserted into the stage_business_unit table\
+-- An insert to the stage_business_unit table results in an INSERT to the dimension_business_unit table\
+select business_unit_sk, business_unit_id, source_system_sk, business_unit_name, business_unit_desc, business_unit_alt_id,\
+business_unit_type_code,\
+business_unit_type_name,\
+business_unit_type_desc,\
+business_unit_category,\
+start_date,\
+stop_date,\
+remodel_date,\
+area_qty,\
+area_uom_id,\
+region_name,\
+district_name,\
+latitude,\
+longitude,\
+phone_country_code,\
+address_line1_desc,\
+address_line2_desc,\
+address_line3_desc,\
+address_line4_desc,\
+state_province_code,\
+state_province_name,\
+city_name,\
+county_name,\
+postal_code,\
+country_code,\
+country_name,\
+phone_region_code,\
+business_unit_status_code,\
+business_unit_status_name,\
+business_unit_status_desc,\
+parent_business_unit_id,\
+parent_business_unit_name,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, 'I' as dml_type\
+from (select business_unit_sk, business_unit_id, source_system_sk, business_unit_name, business_unit_desc, business_unit_alt_id, \
+business_unit_type_code,\
+business_unit_type_name,\
+business_unit_type_desc,\
+business_unit_category,\
+start_date,\
+stop_date,\
+remodel_date,\
+area_qty,\
+area_uom_id,\
+region_name,\
+district_name,\
+latitude,\
+longitude,\
+phone_country_code,\
+address_line1_desc,\
+address_line2_desc,\
+address_line3_desc,\
+address_line4_desc,\
+state_province_code,\
+state_province_name,\
+city_name,\
+county_name,\
+postal_code,\
+country_code,\
+country_name,\
+phone_region_code,\
+business_unit_status_code,\
+business_unit_status_name,\
+business_unit_status_desc,\
+parent_business_unit_id,\
+parent_business_unit_name,\
+hosted_client_sk, dw_load_date as dw_start_date,\
+lag(dw_load_date) over (partition by business_unit_id order by dw_load_date desc) as dw_stop_date_raw, \
+--Lag accesses dimension versions with the same key without having to join the table to itself.\
+--if multiple rows with same key are found, the latest is marked as current, the rest are loaded as not current.\
+case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+--case when dw_stop_date is null then 'Y' else 'N' end as dw_current_ind\
+case when dw_stop_date = '9999-12-31'::timestamp_ntz then 'Y' else 'N' end as dw_current_ind\
+from (select null as business_unit_sk, --subsequent merge will insert seq_business_unit.nextval.  This keeps the column count in the union consistent with other subqueries that need to sk.\
+business_unit_id, source_system_id as source_system_sk, business_unit_name, business_unit_desc, business_unit_alt_id, \
+business_unit_type_code,\
+business_unit_type_name,\
+business_unit_type_desc,\
+business_unit_category,\
+start_date,\
+stop_date,\
+remodel_date,\
+area_qty,\
+area_uom_id,\
+region_name,\
+district_name,\
+latitude,\
+longitude,\
+phone_country_code,\
+address_line1_desc,\
+address_line2_desc,\
+address_line3_desc,\
+address_line4_desc,\
+state_province_code,\
+state_province_name,\
+city_name,\
+county_name,\
+postal_code,\
+country_code,\
+country_name,\
+phone_region_code,\
+business_unit_status_code,\
+business_unit_status_name,\
+business_unit_status_desc,\
+parent_business_unit_id,\
+parent_business_unit_name,\
+hosted_client_sk, dw_load_date\
+    from stage_business_unit_changes --stream on stage_business_unit\
+    where metadata$action = 'INSERT'\
+    and metadata$isupdate = 'FALSE'))\
+--End INSERT subquery\
+union\
+-- START SCD2 Update LOGIC\
+-- This subquery figures out what to do when SCD2 trigger columns are updated in the stage_business_unit table\
+-- An update to one or more trigger columns in the stage_business_unit table results in an update AND an insert to the\
+-- dimension_business_unit table\
+-- The subquery below generates two records, each with a different dml_type\
+select business_unit_sk, business_unit_id, source_system_sk, business_unit_name, business_unit_desc, business_unit_alt_id, \
+business_unit_type_code,\
+business_unit_type_name,\
+business_unit_type_desc,\
+business_unit_category,\
+start_date,\
+stop_date,\
+remodel_date,\
+area_qty,\
+area_uom_id,\
+region_name,\
+district_name,\
+latitude,\
+longitude,\
+phone_country_code,\
+address_line1_desc,\
+address_line2_desc,\
+address_line3_desc,\
+address_line4_desc,\
+state_province_code,\
+state_province_name,\
+city_name,\
+county_name,\
+postal_code,\
+country_code,\
+country_name,\
+phone_region_code,\
+business_unit_status_code,\
+business_unit_status_name,\
+business_unit_status_desc,\
+parent_business_unit_id,\
+parent_business_unit_name,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type\
+from (select business_unit_sk, business_unit_id, source_system_sk, business_unit_name, business_unit_desc, \
+business_unit_alt_id, \
+business_unit_type_code,\
+business_unit_type_name,\
+business_unit_type_desc,\
+business_unit_category,\
+start_date,\
+stop_date,\
+remodel_date,\
+area_qty,\
+area_uom_id,\
+region_name,\
+district_name,\
+latitude,\
+longitude,\
+phone_country_code,\
+address_line1_desc,\
+address_line2_desc,\
+address_line3_desc,\
+address_line4_desc,\
+state_province_code,\
+state_province_name,\
+city_name,\
+county_name,\
+postal_code,\
+country_code,\
+country_name,\
+phone_region_code,\
+business_unit_status_code,\
+business_unit_status_name,\
+business_unit_status_desc,\
+parent_business_unit_id,\
+parent_business_unit_name,\
+hosted_client_sk, \
+    dw_start_date as dw_start_date,  --was dw_load_date\
+    lag(dw_load_date) over (partition by business_unit_id order by dw_load_date desc) as dw_stop_date_raw,\
+    case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+    case when dw_stop_date_raw is null then 'Y' else 'N' end as dw_current_ind,\
+    dml_type\
+    from (-- Identify data to insert into dimension_business_unit table\
+        select null as business_unit_sk,\
+        c.business_unit_id, c.source_system_id as source_system_sk, c.business_unit_name, c.business_unit_desc, \
+c.business_unit_alt_id, \
+c.business_unit_type_code,\
+c.business_unit_type_name,\
+c.business_unit_type_desc,\
+c.business_unit_category,\
+c.start_date,\
+c.stop_date,\
+c.remodel_date,\
+c.area_qty,\
+c.area_uom_id,\
+c.region_name,\
+c.district_name,\
+c.latitude,\
+c.longitude,\
+c.phone_country_code,\
+c.address_line1_desc,\
+c.address_line2_desc,\
+c.address_line3_desc,\
+c.address_line4_desc,\
+c.state_province_code,\
+c.state_province_name,\
+c.city_name,\
+c.county_name,\
+c.postal_code,\
+c.country_code,\
+c.country_name,\
+c.phone_region_code,\
+c.business_unit_status_code,\
+c.business_unit_status_name,\
+c.business_unit_status_desc,\
+c.parent_business_unit_id,\
+c.parent_business_unit_name,\
+        c.hosted_client_sk, c.dw_load_date as dw_start_date, --deliberate otherwise will match and not insert.\
+        c.dw_load_date, 'I' as dml_type\
+        from stage_business_unit_changes c --stream\
+        join dimension_business_unit d \
+        on c.business_unit_id = d.business_unit_id \
+        -- SCD2 trigger columns identified below are business_unit_name and business_unit_desc. Changes to other columns will be\
+        -- excluded and handled in the update section.\
+        and (d.business_unit_name <> c.business_unit_name or d.business_unit_desc <> c.business_unit_desc)\
+        where c.metadata$action = 'INSERT'\
+        and c.metadata$isupdate = 'TRUE'\
+        and d.dw_current_ind = 'Y'\
+        union\
+        -- Identify data in dimension_business_unit table that needs to be updated, i.e., given a stop date.\
+        select business_unit_sk, business_unit_id, source_system_sk, \
+        null, null, \
+null, \
+null,         \
+null,         \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null, \
+null,\
+        null as hosted_client_sk, dw_start_date, dw_load_date,\
+        'U' as dml_type\
+        from dimension_business_unit\
+        where business_unit_sk in (select distinct d.business_unit_sk\
+                                from stage_business_unit_changes c --stream\
+                                --ADDED JOIN TO DIM HERE THAT includes triggers are not equal\
+                                join dimension_business_unit d \
+                                on c.business_unit_id = d.business_unit_id \
+                                and c.source_system_id = d.source_system_sk\
+                                and (d.business_unit_name <> c.business_unit_name or d.business_unit_desc <> c.business_unit_desc)\
+                                where c.metadata$action = 'INSERT'\
+                                and c.metadata$isupdate = 'TRUE')\
+                                and dw_current_ind = 'Y' --??\
+                                ))\
+-- END SCD2 logic.    \
+-- START NON SCD2 UPDATES - changes in stage that do not trigger a new insert in the dimension\
+union\
+select business_unit_sk, business_unit_id, source_system_sk, business_unit_name, business_unit_desc, \
+business_unit_alt_id, \
+business_unit_type_code,\
+business_unit_type_name,\
+business_unit_type_desc,\
+business_unit_category,\
+start_date,\
+stop_date,\
+remodel_date,\
+area_qty,\
+area_uom_id,\
+region_name,\
+district_name,\
+latitude,\
+longitude,\
+phone_country_code,\
+address_line1_desc,\
+address_line2_desc,\
+address_line3_desc,\
+address_line4_desc,\
+state_province_code,\
+state_province_name,\
+city_name,\
+county_name,\
+postal_code,\
+country_code,\
+country_name,\
+phone_region_code,\
+business_unit_status_code,\
+business_unit_status_name,\
+business_unit_status_desc,\
+parent_business_unit_id,\
+parent_business_unit_name,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type\
+from (select business_unit_sk, business_unit_id, source_system_sk, business_unit_name, business_unit_desc, \
+business_unit_alt_id, \
+business_unit_type_code,\
+business_unit_type_name,\
+business_unit_type_desc,\
+business_unit_category,\
+start_date,\
+stop_date,\
+remodel_date,\
+area_qty,\
+area_uom_id,\
+region_name,\
+district_name,\
+latitude,\
+longitude,\
+phone_country_code,\
+address_line1_desc,\
+address_line2_desc,\
+address_line3_desc,\
+address_line4_desc,\
+state_province_code,\
+state_province_name,\
+city_name,\
+county_name,\
+postal_code,\
+country_code,\
+country_name,\
+phone_region_code,\
+business_unit_status_code,\
+business_unit_status_name,\
+business_unit_status_desc,\
+parent_business_unit_id,\
+parent_business_unit_name,\
+hosted_client_sk, \
+    dw_start_date as dw_start_date, --was dw_load_date\
+    lag(dw_load_date) over (partition by business_unit_id order by dw_load_date desc) as dw_stop_date_raw,\
+    case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+    case when dw_stop_date_raw is null then 'Y' else 'N' end as dw_current_ind,\
+    dml_type\
+    from (-- Identify data to insert into dimension_business_unit table\
+        select distinct d.business_unit_sk,c.business_unit_id, c.source_system_id as source_system_sk, c.business_unit_name, c.business_unit_desc,\
+c.business_unit_alt_id, \
+c.business_unit_type_code,\
+c.business_unit_type_name,\
+c.business_unit_type_desc,\
+c.business_unit_category,\
+c.start_date,\
+c.stop_date,\
+c.remodel_date,\
+c.area_qty,\
+c.area_uom_id,\
+c.region_name,\
+c.district_name,\
+c.latitude,\
+c.longitude,\
+c.phone_country_code,\
+c.address_line1_desc,\
+c.address_line2_desc,\
+c.address_line3_desc,\
+c.address_line4_desc,\
+c.state_province_code,\
+c.state_province_name,\
+c.city_name,\
+c.county_name,\
+c.postal_code,\
+c.country_code,\
+c.country_name,\
+c.phone_region_code,\
+c.business_unit_status_code,\
+c.business_unit_status_name,\
+c.business_unit_status_desc,\
+c.parent_business_unit_id,\
+c.parent_business_unit_name,\
+c.hosted_client_sk, d.dw_start_date, c.dw_load_date, 'UPDATE' as dml_type\
+        from stage_business_unit_changes c --stream\
+        join dimension_business_unit d \
+        on c.business_unit_id = d.business_unit_id \
+        and d.business_unit_name = c.business_unit_name and d.business_unit_desc = c.business_unit_desc\
+        and c.dw_soft_delete_ind = 'N' --excludes soft delete updates (processed in delete section)\
+        where c.metadata$action = 'INSERT'\
+        and c.metadata$isupdate = 'TRUE'\
+                                ))\
+--END NON-SCD2 UPDATES\
+union\
+-- This subquery figures out what to do when data is deleted from the stage_business_unit table (hard or soft)\
+-- A deletion from the stage_business_unit table results in an update to the dimension_business_unit table\
+select business_unit_sk, business_unit_id, source_system_sk, business_unit_name, business_unit_desc, \
+business_unit_alt_id, \
+business_unit_type_code,\
+business_unit_type_name,\
+business_unit_type_desc,\
+business_unit_category,\
+start_date,\
+stop_date,\
+remodel_date,\
+area_qty,\
+area_uom_id,\
+region_name,\
+district_name,\
+latitude,\
+longitude,\
+phone_country_code,\
+address_line1_desc,\
+address_line2_desc,\
+address_line3_desc,\
+address_line4_desc,\
+state_province_code,\
+state_province_name,\
+city_name,\
+county_name,\
+postal_code,\
+country_code,\
+country_name,\
+phone_region_code,\
+business_unit_status_code,\
+business_unit_status_name,\
+business_unit_status_desc,\
+parent_business_unit_id,\
+parent_business_unit_name,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type \
+from (\
+select nh.business_unit_sk, nms.business_unit_id, nms.source_system_id as source_system_sk, \
+null as business_unit_name, null as business_unit_desc, \
+null as business_unit_alt_id, \
+null as business_unit_type_code,\
+null as business_unit_type_name,\
+null as business_unit_type_desc,\
+null as business_unit_category,\
+null as start_date,\
+null as stop_date,\
+null as remodel_date,\
+null as area_qty,\
+null as area_uom_id,\
+null as region_name,\
+null as district_name,\
+null as latitude,\
+null as longitude,\
+null as phone_country_code,\
+null as address_line1_desc,\
+null as address_line2_desc,\
+null as address_line3_desc,\
+null as address_line4_desc,\
+null as state_province_code,\
+null as state_province_name,\
+null as city_name,\
+null as county_name,\
+null as postal_code,\
+null as country_code,\
+null as country_name,\
+null as phone_region_code,\
+null as business_unit_status_code,\
+null as business_unit_status_name,\
+null as business_unit_status_desc,\
+null as parent_business_unit_id,\
+null as parent_business_unit_name,\
+null as hosted_client_sk, nh.dw_start_date, current_timestamp()::timestamp_ntz as dw_stop_date, null as dw_current_ind, 'D' as dml_type\
+from dimension_business_unit nh\
+inner join stage_business_unit_changes nms\
+on nh.business_unit_id = nms.business_unit_id\
+where ((nms.metadata$action = 'DELETE' and nms.metadata$isupdate = 'FALSE') OR (nms.metadata$action = 'INSERT' AND nms.dw_soft_delete_ind = 'Y'))\
+and nh.dw_current_ind = 'Y'\
+order by nms.dw_load_date);\
+--END VIEW DDL\
+\
+\
+--Create Task\
+create or replace task populate_dimension_business_unit warehouse = mdw_wh schedule = '1 minute' when system$stream_has_data('stage_business_unit_changes')\
+as \
+--START MERGE\
+merge into dimension_business_unit nh --Target table to merge changes from STAGE_business_unit into\
+using business_unit_change_data m --view\
+-- The business_unit_change_data view holds the logic that determines what to insert/update into the DIMENSION_business_unit table.\
+   on nh.business_unit_id = m.business_unit_id \
+   -- and nh.source_system_sk = m.source_system_sk\
+   -- business_unit_id & source_system_sk columns determine if there is a unique record in the DIMENSION_business_unit table\
+   and nh.dw_start_date = m.dw_start_date\
+   and nh.dw_current_ind = 'Y' --only update current rows (needed?)\
+when matched and m.dml_type = 'U' --SCD2 "Update"\
+then update -- Indicates the original record has been updated and is no longer current and the end_time needs to be stamped\
+    set nh.dw_stop_date = m.dw_stop_date,\
+        nh.dw_current_ind = 'N'    \
+when matched and m.dml_type = 'D' \
+then update -- Deletes are essentially logical deletes. The record is stamped and no newer version is inserted\
+    set nh.dw_stop_date = m.dw_stop_date,\
+        nh.dw_current_ind = 'N'\
+--New for non-SCD2 UPDATE\
+when matched and m.dml_type = 'UPDATE' and nh.dw_current_ind = 'Y'\
+then update\
+set nh.hosted_client_sk = m.hosted_client_sk,\
+nh.business_unit_alt_id = m.business_unit_alt_id, \
+nh.business_unit_type_code = m.business_unit_type_code,\
+nh.business_unit_type_name = m.business_unit_type_name,\
+nh.business_unit_type_desc = m.business_unit_type_desc,\
+nh.business_unit_category = m.business_unit_category,\
+nh.start_date = m.start_date,\
+nh.stop_date = m.stop_date,\
+nh.remodel_date = m.remodel_date,\
+nh.area_qty = m.area_qty,\
+nh.area_uom_id = m.area_uom_id,\
+nh.region_name = m.region_name,\
+nh.district_name = m.district_name,\
+nh.latitude = m.latitude,\
+nh.longitude = m.longitude,\
+nh.phone_country_code = m.phone_country_code,\
+nh.address_line1_desc = m.address_line1_desc,\
+nh.address_line2_desc = m.address_line2_desc,\
+nh.address_line3_desc = m.address_line3_desc,\
+nh.address_line4_desc = m.address_line4_desc,\
+nh.state_province_code = m.state_province_code,\
+nh.state_province_name = m.state_province_name,\
+nh.city_name = m.city_name,\
+nh.county_name = m.county_name,\
+nh.postal_code = m.postal_code,\
+nh.country_code = m.country_code,\
+nh.country_name = m.country_name,\
+nh.phone_region_code = m.phone_region_code,\
+nh.business_unit_status_code = m.business_unit_status_code,\
+nh.business_unit_status_name = m.business_unit_status_name,\
+nh.business_unit_status_desc = m.business_unit_status_desc,\
+nh.parent_business_unit_id = m.parent_business_unit_id,\
+nh.parent_business_unit_name = m.parent_business_unit_name,\
+nh.dw_load_date = current_timestamp()\
+--End UPDATE\
+when not matched and m.dml_type = 'I' then insert -- Inserting a new business_unit_id and updating an existing one both result in an insert\
+(business_unit_sk, business_unit_id, source_system_sk, business_unit_name, business_unit_desc, \
+business_unit_alt_id, \
+business_unit_type_code,\
+business_unit_type_name,\
+business_unit_type_desc,\
+business_unit_category,\
+start_date,\
+stop_date,\
+remodel_date,\
+area_qty,\
+area_uom_id,\
+region_name,\
+district_name,\
+latitude,\
+longitude,\
+phone_country_code,\
+address_line1_desc,\
+address_line2_desc,\
+address_line3_desc,\
+address_line4_desc,\
+state_province_code,\
+state_province_name,\
+city_name,\
+county_name,\
+postal_code,\
+country_code,\
+country_name,\
+phone_region_code,\
+business_unit_status_code,\
+business_unit_status_name,\
+business_unit_status_desc,\
+parent_business_unit_id,\
+parent_business_unit_name,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind)\
+values (SEQ_business_unit.nextval, m.business_unit_id, m.source_system_sk, m.business_unit_name, m.business_unit_desc, \
+m.business_unit_alt_id, \
+m.business_unit_type_code,\
+m.business_unit_type_name,\
+m.business_unit_type_desc,\
+m.business_unit_category,\
+m.start_date,\
+m.stop_date,\
+m.remodel_date,\
+m.area_qty,\
+m.area_uom_id,\
+m.region_name,\
+m.district_name,\
+m.latitude,\
+m.longitude,\
+m.phone_country_code,\
+m.address_line1_desc,\
+m.address_line2_desc,\
+m.address_line3_desc,\
+m.address_line4_desc,\
+m.state_province_code,\
+m.state_province_name,\
+m.city_name,\
+m.county_name,\
+m.postal_code,\
+m.country_code,\
+m.country_name,\
+m.phone_region_code,\
+m.business_unit_status_code,\
+m.business_unit_status_name,\
+m.business_unit_status_desc,\
+m.parent_business_unit_id,\
+m.parent_business_unit_name,\
+m.hosted_client_sk, m.dw_start_date, m.dw_stop_date, m.dw_current_ind);\
+-- END MERGE\
+--END TASK\
+\
+--Schedule Task\
+alter task populate_dimension_business_unit resume;\
+show tasks;\
+\
+alter task populate_dimension_order_type set warehouse = mdw_wh\
+\
+-- Suspend the task (as needed)\
+--alter task populate_dimension_business_unit suspend;}

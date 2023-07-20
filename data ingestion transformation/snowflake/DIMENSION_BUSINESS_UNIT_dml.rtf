@@ -1,0 +1,80 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \'97Helpful DML commands\
+\
+--Clear all between tests\
+truncate table stage_business_unit;\
+truncate table dimension_business_unit;\
+create or replace stream stage_business_unit_changes on table stage_business_unit; -- stream nation_table_changes\
+\
+DELETE FROM stage_business_unit WHERE BUSINESS_UNIT_ID = 3\
+\
+--SEED TEST DATA    \
+set update_timestamp = current_timestamp()::timestamp_ntz;\
+begin;\
+insert into stage_business_unit (business_unit_id, source_system_id, business_unit_name, business_unit_desc,hosted_client_sk, dw_error_ind,dw_soft_delete_ind, dw_load_date)\
+values('1',1,'Business Unit Name 1','Business Unit Desc 1',1,'N','N',$update_timestamp);\
+\
+insert into stage_business_unit (business_unit_id, source_system_id, business_unit_name, business_unit_desc,hosted_client_sk, dw_error_ind,dw_soft_delete_ind, dw_load_date)\
+values('2',1,'Business Unit Name 2','Business Unit Desc 2',1,'N','N',$update_timestamp);\
+\
+insert into stage_business_unit (business_unit_id, source_system_id, business_unit_name, business_unit_desc,hosted_client_sk, dw_error_ind,dw_soft_delete_ind, dw_load_date)\
+values('3',1,'Business Unit Name 3','Business Unit Desc 3',1,'N','N',$update_timestamp);\
+\
+insert into stage_business_unit (business_unit_id, source_system_id, business_unit_name, business_unit_desc,hosted_client_sk, dw_error_ind,dw_soft_delete_ind, dw_load_date)\
+values('4',1,'Business Unit Name 4','Business Unit Desc 4',1,'N','N',$update_timestamp);\
+\
+insert into stage_business_unit (business_unit_id, source_system_id, business_unit_name, business_unit_desc,hosted_client_sk, dw_error_ind,dw_soft_delete_ind, dw_load_date)\
+values('5',1,'Business Unit Name 5','Business Unit Desc 5',1,'N','N',$update_timestamp);\
+\
+insert into stage_business_unit (business_unit_id, source_system_id, business_unit_name, business_unit_desc,hosted_client_sk, dw_error_ind,dw_soft_delete_ind, dw_load_date)\
+values('6',1,'Business Unit Name 6','Business Unit Desc 6',1,'N','N',$update_timestamp);\
+commit;\
+\
+insert into stage_business_unit (business_unit_id, source_system_id, business_unit_name, business_unit_desc,hosted_client_sk, dw_error_ind,dw_soft_delete_ind, dw_load_date)\
+values('7',1,'Business Unit Name 7','Business Unit Desc 7',1,'N','N',$update_timestamp);\
+commit;\
+\
+insert into stage_business_unit (business_unit_id, source_system_id, business_unit_name, business_unit_desc,hosted_client_sk, dw_error_ind,dw_soft_delete_ind, dw_load_date)\
+values('8',1,'Business Unit Name 8','Business Unit Desc 8',1,'N','N',$update_timestamp);\
+commit;\
+\
+insert into stage_business_unit (business_unit_id, source_system_id, business_unit_name, business_unit_desc,hosted_client_sk, dw_error_ind,dw_soft_delete_ind, dw_load_date)\
+values('9',1,'Business Unit Name 9','Business Unit Desc 9',1,'N','N',$update_timestamp);\
+commit;\
+\
+insert into stage_business_unit (business_unit_id, source_system_id, business_unit_name, business_unit_desc,business_unit_type_name, hosted_client_sk, dw_error_ind,dw_soft_delete_ind, dw_load_date)\
+values('10',1,'Business Unit Name 10','Business Unit Desc 10','My Type',1,'N','N',$update_timestamp);\
+commit;\
+\
+\
+--TEST DML\
+show streams;\
+select * from stage_business_unit_changes; --query stream\
+select * from business_unit_change_data; --query view\
+\
+show tasks;\
+\
+--Check when task will next run.\
+select timestampdiff(second, current_timestamp, scheduled_time) as next_run, scheduled_time, current_timestamp, name, \
+state \
+from table(information_schema.task_history()) \
+where state = 'SCHEDULED' and name = 'POPULATE_DIMENSION_BUSINESS_UNIT'\
+order by completed_time desc;\
+\
+select * from dimension_business_unit;\
+select * from stage_business_unit;\
+\
+--Test several logic paths\
+update stage_business_unit set business_unit_name = 'BU 5++', dw_load_date = current_timestamp() where business_unit_id = '5';\
+delete from stage_business_unit where business_unit_id = 4;\
+update stage_business_unit set dw_soft_delete_ind = 'Y' where business_unit_id = 3;\
+update stage_business_unit set hosted_client_sk = 125, dw_load_date = current_timestamp() where business_unit_id ='2';\
+delete from stage_business_unit where business_unit_id = 3\
+update stage_business_unit set country_name = 'USA', dw_load_date = current_timestamp();\
+delete from stage_business_unit where business_unit_id = 10;}
