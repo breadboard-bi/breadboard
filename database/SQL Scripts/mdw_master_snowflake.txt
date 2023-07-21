@@ -4,6 +4,8 @@ Modified: 5/21/2021
 Project: Breadboard BI MDW
 Model: Breadboard BI Physical Enterprise Dimensional Model
 Database: Snowflake
+
+Note:  This data model was originally developed to run on older versions of MySQL, PostgreSQL, etc.  It was also heavily influenced by PeopleSoft, JDE, and SAP R/3 (early customers ran these ERPs).  This model has essentially been "lifted & shifted" to run unchanged on Snowflake.  Future versions of this data model will likely vary significantly in order to take advantage of Snowflake's far more powerful capabilities.
 */
 
 -- Create tables section -------------------------------------------------
@@ -3729,7 +3731,7 @@ CREATE TABLE DIMENSION_ORDER_CAPTURE
   ORDER_CAPTURE_SK Int NOT NULL DEFAULT 0
  COMMENT 'The order capture surrogate key.',
   ORDER_CAPTURE_ID Varchar(36)
- COMMENT 'The order (capture) source system identifier.  It is a degenerate dimenension in the order capture fact table.',
+ COMMENT 'The order (capture) source system identifier.  It is a degenerate dimension in the order capture fact table.',
   ORDER_CAPTURE_SETID Varchar(32) DEFAULT 'SHARE'
  COMMENT 'The source system order SETID.  This column is often used as part of the unique identifier.',
   SOURCE_SYSTEM_SK Int DEFAULT 1
