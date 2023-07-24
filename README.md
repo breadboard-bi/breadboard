@@ -10,6 +10,9 @@ The enterprise, dimensional, multi-tenant data model is currently stored in a To
 
 The data model was created on a old version of Toad Data Modeler. You can get a copy of the freeware here: http://www.toadworld.com/m/freeware/553.  The freeware version has limitations that will affect your ability to work with the model.  Developers that actively participate in updating and expanding content will be granted access to a MySQL version of the database with test data.
 
+**Snowflake**
+This data model was originally developed to run on older versions of MySQL, PostgreSQL, etc.  It was also heavily influenced by PeopleSoft, JDE, and SAP R/3 (early customers ran these ERPs).  This model has essentially been "lifted & shifted" to run unchanged on Snowflake.  Future versions of this data model will likely vary significantly in order to take advantage of Snowflake's far more powerful capabilities.
+
 Data Ingestion / Transformation
 ===============================
 **Pentaho**
