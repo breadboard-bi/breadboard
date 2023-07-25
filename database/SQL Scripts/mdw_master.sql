@@ -1,4 +1,4 @@
-﻿/*
+/*
 Created: 3/10/2007
 Modified: 10/17/2015
 Project: Breadboard BI MDW
@@ -10848,6 +10848,8 @@ CREATE TABLE `STAGE_CAMPAIGN_WAVE`
  COMMENT 'The campaign start date.',
   `CAMPAIGN_WAVE_STOP_DATE` Timestamp NULL
  COMMENT 'The campaign stop date.',
+  `CAMPAIGN_WAVE_STATUS_CODE` Varchar(32)
+ COMMENT 'The campaign wave status code.',
   `CAMPAIGN_STATUS_CODE` Varchar(32)
  COMMENT 'The campaign status code.',
   `CAMPAIGN_STATUS_DESC` Varchar(255)
@@ -10876,12 +10878,18 @@ CREATE TABLE `STAGE_CAMPAIGN_WAVE`
  COMMENT 'The campaign content name.',
   `CAMPAIGN_STATUS_NAME` Varchar(60)
  COMMENT 'The campaign status name.',
+  CAMPAIGN_START_DATE Timestamp 
+ COMMENT 'The marketing campaign start date.',
+  CAMPAIGN_STOP_DATE Timestamp 
+ COMMENT 'The marketing campaign stop date.',
   `PROMOTION_CODE` Varchar(60)
  COMMENT 'The promotion code associated with the campaign.',
   `CUSTOMER_ID` Varchar(36)
  COMMENT 'The customer identifier in the source system.  Alone, or in combination with other columns (e.g., business unit, setid, source system), this value uniquely identifiers a customer in the source.',
   `CUSTOMER_SETID` Varchar(5) DEFAULT 'SHARE'
  COMMENT 'The source system customer SETID.  In PeopleSoft, this column is often used as part of the unique identifer, similar to the MANDT (CLIENT) column in SAP.',
+  `CAMPAIGN_WAVE_BUDGET_AMT` Decimal(26,2)
+ COMMENT 'The campaign wave budget amount.',
   `HOSTED_CLIENT_SK` Int DEFAULT 0
  COMMENT 'The hosted client surrogate key.  The relates to the hosted client admin table.',
   `DW_ERROR_IND` Char(1) DEFAULT 'N'
@@ -10902,6 +10910,35 @@ ALTER TABLE `STAGE_CAMPAIGN_WAVE` ADD  PRIMARY KEY (`CAMPAIGN_ID`,`CAMPAIGN_WAVE
 
 ALTER TABLE `STAGE_CAMPAIGN_WAVE` ADD UNIQUE `PK_STAGE_CAMPAIGN_WAVE` (`CAMPAIGN_ID`,`CAMPAIGN_WAVE_ID`,`CAMPAIGN_WAVE_SETID`,`SOURCE_SYSTEM_ID`)
 ;
+
+
+-- Table STAGE_CAMPAIGN_WAVE_STATUS
+
+CREATE TABLE `STAGE_CAMPAIGN_WAVE_STATUS`
+(
+  `CAMPAIGN_WAVE_STATUS_CODE` Varchar(36) NOT NULL
+ COMMENT 'The campaign wave status code.',  
+  `SOURCE_SYSTEM_ID` Int NOT NULL DEFAULT 1
+ COMMENT 'The source system identifier.  This enables multiple source system capability.',
+  `CAMPAIGN_WAVE_STATUS_NAME` Varchar(60) DEFAULT 'Missing'
+ COMMENT 'The campaign wave status name.',
+  `CAMPAIGN_WAVE_STATUS_DESC` Varchar(255) DEFAULT 'Missing'
+ COMMENT 'The campaign wave status description.',
+  `HOSTED_CLIENT_SK` Int DEFAULT 0
+ COMMENT 'The hosted client surrogate key.  The relates to the hosted client admin table.',
+  `DW_ERROR_IND` Char(1) DEFAULT 'N'
+ COMMENT 'This denotes if a particular row in the staging table has failed a previous load attempt.',
+  `DW_SOFT_DELETE_IND` Char(1) DEFAULT 'N'
+ COMMENT 'This denotes that a row in the stage table has been soft-deleted.  Soft deleted have been sucessfully loaded into the data warehouse.',
+  `DW_LOAD_DATE` Timestamp NULL DEFAULT CURRENT_TIMESTAMP
+ COMMENT 'The date the row was inserted or updated into the data warehouse table.'
+)
+ COMMENT = 'The marketing campaign wave status (promotion) stage table.'
+;
+
+ALTER TABLE `STAGE_CAMPAIGN_WAVE_STATUS` ADD  PRIMARY KEY (`CAMPAIGN_WAVE_STATUS_CODE`,`SOURCE_SYSTEM_ID`)
+;
+
 
 -- Table STAGE_CARRIER
 
