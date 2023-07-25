@@ -1,0 +1,405 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 /* \
+Initial pattern to load an MDW dimension_campaign_wave from a stage table using Slowly Changing Dimension (SCD2) logic on Snowflake.\
+\
+This script builds a sequence, stream, view, and task.  A Snowflake warehouse is also required, as well as the appropriate privileges.\
+\
+The core logic is based on an article written by John Gontarz, Sales Engineer at Snowflake - https://community.snowflake.com/s/article/Building-a-Type-2-Slowly-Changing-Dimension-in-Snowflake-Using-Streams-and-Tasks-Part-1.  \
+\
+Modifications made to work with the existing MDW enterprise dimensional model and to limit which columns trigger SCD2 insert/update versus a regular update.\
+\
+Assumes the stage_campaign_wave and dimension_campaign_wave MDW tables have already been built. See mdw_master_snowflake.txt for the DDL.\
+\
+Load dependency - cutomer, campaign, campaign status dimensions.\
+\
+alter table stage_campaign_wave add campaign_wave_status_code varchar(32)\
+*/\
+\
+alter table stage_campaign_wave add  CAMPAIGN_WAVE_BUDGET_AMT Decimal(26,2)\
+ COMMENT 'The campaign wave budget amount.'\
+\
+create or replace sequence seq_campaign_wave start with 1 increment by 1;\
+\
+create or replace stream stage_campaign_wave_changes on table stage_campaign_wave;\
+\
+select campaign_status_code from dimension_campaign_wave\
+\
+select campaign_wave_status_code from stage_campaign_wave\
+\
+--generates data to load into the dimension_campaign_wave table.\
+create or replace view campaign_wave_change_data as\
+-- This first subquery figures out what to do when data is inserted into the stage_campaign_wave table\
+-- An insert to the stage_campaign_wave table results in an INSERT to the dimension_campaign_wave table\
+select campaign_wave_sk, campaign_wave_id, source_system_sk, campaign_wave_setid, \
+campaign_id, campaign_wave_name,\
+0 as campaign_sk, --Placeholder\
+promotion_code, campaign_name, campaign_wave_start_date, campaign_wave_stop_date, campaign_objective_code, campaign_objective_desc, campaign_offer_name, campaign_content_name, campaign_content_desc, campaign_content_type_name, campaign_content_type_desc, campaign_content_subtype_name, campaign_content_subtype_desc, \
+0 as customer_sk, --Placeholder\
+program_owner_id, program_owner_name, campaign_status_code, campaign_status_name, campaign_status_desc, \
+0 as campaign_wave_status_sk,\
+/* May be added to campaign wave from the campaign wave status dimension.\
+campaign_wave_status_code, \
+campaign_wave_status_name, \
+campaign_wave_status_desc, \
+*/\
+campaign_start_date, \
+campaign_stop_date, \
+campaign_wave_budget_amt,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, 'I' as dml_type\
+from (select campaign_wave_sk, campaign_wave_id, source_system_sk, campaign_wave_setid, \
+campaign_id, campaign_wave_name, \
+0 as campaign_sk, --Placeholder\
+promotion_code, campaign_name, campaign_wave_start_date, campaign_wave_stop_date, campaign_objective_code, campaign_objective_desc, campaign_offer_name, campaign_content_name, campaign_content_desc, campaign_content_type_name, campaign_content_type_desc, campaign_content_subtype_name, campaign_content_subtype_desc, \
+0 as customer_sk, --Placeholder\
+program_owner_id, program_owner_name, campaign_status_code, campaign_status_name, campaign_status_desc, \
+0 as campaign_wave_status_sk, --Placeholder\
+/* May be added to campaign wave from the campaign wave status dimension.\
+campaign_wave_status_code,\
+campaign_wave_status_name, \
+campaign_wave_status_desc, \
+*/\
+campaign_start_date, campaign_stop_date, campaign_wave_budget_amt,\
+hosted_client_sk, dw_load_date as dw_start_date,\
+lag(dw_load_date) over (partition by campaign_wave_id order by dw_load_date desc) as dw_stop_date_raw, \
+--Lag accesses dimension versions with the same key without having to join the table to itself.\
+--if multiple rows with same key are found, the latest is marked as current, the rest are loaded as not current.\
+case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+--case when dw_stop_date is null then 'Y' else 'N' end as dw_current_ind\
+case when dw_stop_date = '9999-12-31'::timestamp_ntz then 'Y' else 'N' end as dw_current_ind\
+from (select null as campaign_wave_sk, --subsequent merge will insert seq_campaign_wave.nextval.  This keeps the column count in the union consistent with other subqueries that need to sk.\
+campaign_wave_id, source_system_id as source_system_sk, null as campaign_wave_setid, \
+campaign_id, campaign_wave_name, \
+0 as campaign_sk, --Placeholder\
+promotion_code, campaign_name, campaign_wave_start_date, campaign_wave_stop_date, campaign_objective_code, campaign_objective_desc, campaign_offer_name, campaign_content_name, campaign_content_desc, campaign_content_type_name, campaign_content_type_desc, campaign_content_subtype_name, campaign_content_subtype_desc, \
+0 as customer_sk, --Placeholder\
+program_owner_id, program_owner_name, campaign_status_code, campaign_status_name, campaign_status_desc, \
+0 as campaign_wave_status_sk, --Placeholder\
+/* May be added to campaign wave from the campaign wave status dimension.\
+campaign_wave_status_code, campaign_wave_status_name, campaign_wave_status_desc, \
+*/\
+campaign_start_date, campaign_stop_date, campaign_wave_budget_amt,\
+hosted_client_sk, dw_load_date\
+    from stage_campaign_wave_changes --stream on stage_campaign_wave    \
+    where metadata$action = 'INSERT'\
+    and metadata$isupdate = 'FALSE'))\
+--End INSERT subquery\
+\
+\
+union\
+-- START SCD2 Update LOGIC\
+-- This subquery figures out what to do when SCD2 trigger columns are updated in the stage_campaign_wave table\
+-- An update to one or more trigger columns in the stage_campaign_wave table results in an update AND an insert to the\
+-- dimension_campaign_wave table\
+-- The subquery below generates two records, each with a different dml_type\
+select distinct campaign_wave_sk, campaign_wave_id, source_system_sk, campaign_wave_setid, \
+campaign_id, campaign_wave_name, \
+0 as campaign_sk, --Placeholder\
+promotion_code, campaign_name, campaign_wave_start_date, campaign_wave_stop_date, campaign_objective_code, campaign_objective_desc, campaign_offer_name, campaign_content_name, campaign_content_desc, campaign_content_type_name, campaign_content_type_desc, campaign_content_subtype_name, campaign_content_subtype_desc, \
+0 as customer_sk, --Placeholder\
+program_owner_id, program_owner_name, campaign_status_code, campaign_status_name, campaign_status_desc, \
+0 as campaign_wave_status_sk, --Placeholder\
+/* May be added to campaign wave from the campaign wave status dimension.\
+campaign_wave_status_code, campaign_wave_status_name, campaign_wave_status_desc, \
+*/\
+campaign_start_date, campaign_stop_date, campaign_wave_budget_amt,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type\
+from (select campaign_wave_sk, campaign_wave_id, source_system_sk, campaign_wave_setid,\
+campaign_id, campaign_wave_name, \
+0 as campaign_sk, --Placeholder\
+promotion_code, campaign_name, campaign_wave_start_date, campaign_wave_stop_date, campaign_objective_code, campaign_objective_desc, campaign_offer_name, campaign_content_name, campaign_content_desc, campaign_content_type_name, campaign_content_type_desc, campaign_content_subtype_name, campaign_content_subtype_desc, \
+0 as customer_sk, --Placeholder\
+program_owner_id, program_owner_name, campaign_status_code, campaign_status_name, campaign_status_desc, \
+0 as campaign_wave_status_sk, --Placeholder\
+/* May be added to campaign wave from the campaign wave status dimension.\
+campaign_wave_status_code, campaign_wave_status_name, campaign_wave_status_desc, \
+*/\
+campaign_start_date, campaign_stop_date, campaign_wave_budget_amt,\
+hosted_client_sk, dw_start_date as dw_start_date,  --was dw_load_date\
+    lag(dw_load_date) over (partition by campaign_wave_id order by dw_load_date desc) as dw_stop_date_raw,\
+    case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+    case when dw_stop_date_raw is null then 'Y' else 'N' end as dw_current_ind,\
+    dml_type\
+    from (-- Identify data to insert into dimension_campaign_wave table\
+        select distinct null as campaign_wave_sk, c.campaign_wave_id, c.source_system_id as source_system_sk, null as campaign_wave_setid,\
+c.campaign_id, c.campaign_wave_name, \
+0 as campaign_sk, --Placeholder\
+c.promotion_code, c.campaign_name, c.campaign_wave_start_date, c.campaign_wave_stop_date, c.campaign_objective_code, c.campaign_objective_desc, c.campaign_offer_name, c.campaign_content_name, c.campaign_content_desc, c.campaign_content_type_name, c.campaign_content_type_desc, c.campaign_content_subtype_name, c.campaign_content_subtype_desc, \
+0 as customer_sk, --Placeholder\
+c.program_owner_id, c.program_owner_name, c.campaign_status_code, c.campaign_status_name, c.campaign_status_desc, \
+0 as campaign_wave_status_sk, --Placeholder\
+/* May be added to campaign wave from the campaign wave status dimension.\
+campaign_wave_status_code, campaign_wave_status_name, campaign_wave_status_desc, \
+*/\
+c.campaign_start_date, c.campaign_stop_date, c.campaign_wave_budget_amt,\
+        c.hosted_client_sk, c.dw_load_date as dw_start_date, --deliberate otherwise will match and not insert.\
+        c.dw_load_date, 'I' as dml_type\
+        from stage_campaign_wave_changes c --stream\
+        join dimension_campaign_wave d \
+        on c.campaign_wave_id = d.campaign_wave_id \
+        -- SCD2 trigger columns identified below are campaign_wave_name and campaign_wave_name. Changes to other columns will be\
+        -- excluded and handled in the update section.\
+        and (d.campaign_wave_name <> c.campaign_wave_name)\
+        where c.metadata$action = 'INSERT'\
+        and c.metadata$isupdate = 'TRUE'\
+        and d.dw_current_ind = 'Y'\
+        union\
+        -- Identify data in dimension_campaign_wave table that needs to be updated, i.e., given a stop date.\
+        select distinct campaign_wave_sk, campaign_wave_id, source_system_sk, \
+null as campaign_wave_setid, \
+null as campaign_id, \
+null as campaign_wave_name, \
+null as campaign_sk, \
+null as promotion_code, \
+null as campaign_name, \
+null as campaign_wave_start_date, \
+null as campaign_wave_stop_date, \
+null as campaign_objective_code, \
+null as campaign_objective_desc, \
+null as campaign_offer_name, \
+null as campaign_content_name, \
+null as campaign_content_desc, \
+null as campaign_content_type_name, \
+null as campaign_content_type_desc, \
+null as campaign_content_subtype_name, \
+null as campaign_content_subtype_desc, \
+null as customer_sk, \
+null as program_owner_id, \
+null as program_owner_name, \
+null as campaign_status_code, \
+null as campaign_status_name, \
+null as campaign_status_desc, \
+null as campaign_wave_status_sk, \
+/* May be added to campaign wave from the campaign wave status dimension.\
+null as campaign_wave_status_code, \
+null as campaign_wave_status_name, \
+null as campaign_wave_status_desc, \
+*/\
+null as campaign_start_date, \
+null as campaign_stop_date, \
+null as campaign_wave_budget_amt,\
+\
+null as hosted_client_sk, dw_start_date, dw_load_date,\
+        'U' as dml_type\
+        from dimension_campaign_wave\
+        where campaign_wave_sk in (select distinct d.campaign_wave_sk\
+                                from stage_campaign_wave_changes c --stream\
+                                --ADDED JOIN TO DIM HERE THAT includes triggers are not equal\
+                                join dimension_campaign_wave d \
+                                on c.campaign_wave_id = d.campaign_wave_id \
+                                and c.source_system_id = d.source_system_sk\
+                                and (d.campaign_wave_name <> c.campaign_wave_name)\
+                                where c.metadata$action = 'INSERT'\
+                                and c.metadata$isupdate = 'TRUE')\
+                                and dw_current_ind = 'Y' --??\
+                                ))            \
+-- END SCD2 logic.    \
+-- START NON SCD2 UPDATES - changes in stage that do not trigger a new insert in the dimension\
+union\
+select campaign_wave_sk, campaign_wave_id, source_system_sk, campaign_wave_setid, \
+campaign_id, campaign_wave_name, campaign_sk,\
+promotion_code, campaign_name, campaign_wave_start_date, campaign_wave_stop_date, campaign_objective_code, campaign_objective_desc, campaign_offer_name, campaign_content_name, campaign_content_desc, campaign_content_type_name, campaign_content_type_desc, campaign_content_subtype_name, campaign_content_subtype_desc, \
+customer_sk, program_owner_id, program_owner_name, campaign_status_code, campaign_status_name, campaign_status_desc, campaign_wave_status_sk,\
+/* May be added to campaign wave from the campaign wave status dimension.\
+campaign_wave_status_code, campaign_wave_status_name, campaign_wave_status_desc, \
+*/\
+campaign_start_date, campaign_stop_date, campaign_wave_budget_amt,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type\
+from (select campaign_wave_sk, campaign_wave_id, source_system_sk, campaign_wave_setid, \
+campaign_id, campaign_wave_name, \
+Campaign_sk, promotion_code, campaign_name, campaign_wave_start_date, campaign_wave_stop_date, campaign_objective_code, campaign_objective_desc, campaign_offer_name, campaign_content_name, campaign_content_desc, campaign_content_type_name, campaign_content_type_desc, campaign_content_subtype_name, campaign_content_subtype_desc, customer_sk, program_owner_id, program_owner_name, campaign_status_code, campaign_status_name, campaign_status_desc, campaign_wave_status_sk,\
+/* May be added to campaign wave from the campaign wave status dimension.\
+campaign_wave_status_code, campaign_wave_status_name, campaign_wave_status_desc, \
+*/\
+campaign_start_date, campaign_stop_date, campaign_wave_budget_amt,\
+hosted_client_sk, dw_start_date as dw_start_date, --was dw_load_date\
+    lag(dw_load_date) over (partition by campaign_wave_id order by dw_load_date desc) as dw_stop_date_raw,\
+    case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+    case when dw_stop_date_raw is null then 'Y' else 'N' end as dw_current_ind,\
+    dml_type\
+    from (-- Identify data to insert into dimension_campaign_wave table\
+        select d.campaign_wave_sk,c.campaign_wave_id, c.source_system_id as source_system_sk, null as campaign_wave_setid, \
+c.campaign_id, c.campaign_wave_name, \
+0 as campaign_sk, --Placeholder\
+c.promotion_code, c.campaign_name, c.campaign_wave_start_date, c.campaign_wave_stop_date, c.campaign_objective_code, c.campaign_objective_desc, c.campaign_offer_name, c.campaign_content_name, c.campaign_content_desc, c.campaign_content_type_name, c.campaign_content_type_desc, c.campaign_content_subtype_name, c.campaign_content_subtype_desc, \
+0 as customer_sk, --Placeholder\
+c.program_owner_id, c.program_owner_name, c.campaign_status_code, c.campaign_status_name, c.campaign_status_desc, \
+0 as campaign_wave_status_sk, --Placeholder\
+/* May be added to campaign wave from the campaign wave status dimension.\
+campaign_wave_status_code, campaign_wave_status_name, campaign_wave_status_desc, \
+*/\
+c.campaign_start_date, c.campaign_stop_date, c.campaign_wave_budget_amt,\
+c.hosted_client_sk, d.dw_start_date, c.dw_load_date, 'UPDATE' as dml_type\
+        from stage_campaign_wave_changes c --stream\
+        join dimension_campaign_wave d \
+        on c.campaign_wave_id = d.campaign_wave_id \
+        and d.campaign_wave_name = c.campaign_wave_name\
+        and c.dw_soft_delete_ind = 'N' --excludes soft delete updates (processed in delete section)\
+        where c.metadata$action = 'INSERT'\
+        and c.metadata$isupdate = 'TRUE'\
+                                ))\
+--END NON-SCD2 UPDATES\
+union\
+-- This subquery figures out what to do when data is deleted from the stage_campaign_wave table (hard or soft)\
+-- A deletion from the stage_campaign_wave table results in an update to the dimension_campaign_wave table\
+select campaign_wave_sk, campaign_wave_id, source_system_sk, campaign_wave_setid, \
+campaign_id, campaign_wave_name, campaign_sk, promotion_code, campaign_name, campaign_wave_start_date, campaign_wave_stop_date, campaign_objective_code, campaign_objective_desc, campaign_offer_name, campaign_content_name, campaign_content_desc, campaign_content_type_name, campaign_content_type_desc, campaign_content_subtype_name, campaign_content_subtype_desc, customer_sk, program_owner_id, program_owner_name, campaign_status_code, campaign_status_name, campaign_status_desc, campaign_wave_status_sk,\
+/* May be added to campaign wave from the campaign wave status dimension.\
+campaign_wave_status_code, campaign_wave_status_name, campaign_wave_status_desc, \
+*/\
+campaign_start_date, campaign_stop_date, campaign_wave_budget_amt,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type \
+from (\
+select nh.campaign_wave_sk, nms.campaign_wave_id, nms.source_system_id as source_system_sk, null as campaign_wave_setid, \
+null as campaign_id, \
+null as campaign_wave_name, \
+null as campaign_sk, \
+null as promotion_code, \
+null as campaign_name, \
+null as campaign_wave_start_date, \
+null as campaign_wave_stop_date, \
+null as campaign_objective_code, \
+null as campaign_objective_desc, \
+null as campaign_offer_name, \
+null as campaign_content_name, \
+null as campaign_content_desc, \
+null as campaign_content_type_name, \
+null as campaign_content_type_desc, \
+null as campaign_content_subtype_name, \
+null as campaign_content_subtype_desc, \
+null as customer_sk, \
+null as program_owner_id, \
+null as program_owner_name, \
+null as campaign_status_code, \
+null as campaign_status_name, \
+null as campaign_status_desc, \
+null as campaign_wave_status_sk, \
+/* May be added to campaign wave from the campaign wave status dimension.\
+null as campaign_wave_status_code, \
+null as campaign_wave_status_name, \
+null as campaign_wave_status_desc, \
+*/\
+null as campaign_start_date, \
+null as campaign_stop_date, \
+null as campaign_wave_budget_amt,\
+null as hosted_client_sk, nh.dw_start_date, current_timestamp()::timestamp_ntz as dw_stop_date, null as dw_current_ind, 'D' as dml_type\
+from dimension_campaign_wave nh\
+inner join stage_campaign_wave_changes nms\
+on nh.campaign_wave_id = nms.campaign_wave_id\
+where ((nms.metadata$action = 'DELETE' and nms.metadata$isupdate = 'FALSE') OR (nms.metadata$action = 'INSERT' AND nms.dw_soft_delete_ind = 'Y'))\
+and nh.dw_current_ind = 'Y'\
+order by nms.dw_load_date\
+);\
+--END VIEW DDL\
+\
+\
+\
+--Create Task\
+create or replace task populate_dimension_campaign_wave warehouse = mdw_wh schedule = '1 minute' when system$stream_has_data('stage_campaign_wave_changes')\
+as \
+--START MERGE\
+merge into dimension_campaign_wave nh --Target table to merge changes from stage_campaign_wave into\
+using campaign_wave_change_data m --view\
+-- The campaign_wave_change_data view holds the logic that determines what to insert/update into the dimension_campaign_wave table.\
+   on nh.campaign_wave_id = m.campaign_wave_id \
+   -- and nh.source_system_sk = m.source_system_sk\
+   -- campaign_wave_id & source_system_sk columns determine if there is a unique record in the dimension_campaign_wave table\
+   and nh.dw_start_date = m.dw_start_date\
+   and nh.dw_current_ind = 'Y' --only update current rows (needed?)\
+when matched and m.dml_type = 'U' --SCD2 "Update"\
+then update -- Indicates the original record has been updated and is no longer current and the end_time needs to be stamped\
+    set nh.dw_stop_date = m.dw_stop_date,\
+        nh.dw_current_ind = 'N'    \
+when matched and m.dml_type = 'D' \
+then update -- Deletes are essentially logical deletes. The record is stamped and no newer version is inserted\
+    set nh.dw_stop_date = m.dw_stop_date,\
+        nh.dw_current_ind = 'N'\
+--New for non-SCD2 UPDATE\
+when matched and m.dml_type = 'UPDATE' and nh.dw_current_ind = 'Y'\
+then update\
+set nh.hosted_client_sk = m.hosted_client_sk,\
+nh.campaign_wave_name = m.campaign_wave_name,\
+nh.campaign_wave_setid = m.campaign_wave_setid,\
+nh.campaign_id = m.campaign_id, \
+nh.campaign_sk = m.campaign_sk,\
+nh.promotion_code = m.promotion_code, \
+nh.campaign_name = m.campaign_name, \
+nh.campaign_wave_start_date = m.campaign_wave_start_date, \
+nh.campaign_wave_stop_date = m.campaign_wave_stop_date, \
+nh.campaign_objective_code = m.campaign_objective_code, \
+nh.campaign_objective_desc = m.campaign_objective_desc, \
+nh.campaign_offer_name = m.campaign_offer_name, \
+nh.campaign_content_name = m.campaign_content_name, \
+nh.campaign_content_desc = m.campaign_content_desc, \
+nh.campaign_content_type_name = m.campaign_content_type_name, \
+nh.campaign_content_type_desc = m.campaign_content_type_desc, \
+nh.campaign_content_subtype_name = m.campaign_content_subtype_name, \
+nh.campaign_content_subtype_desc = m.campaign_content_subtype_desc, \
+nh.customer_sk = m.customer_sk,\
+nh.program_owner_id = m.program_owner_id, \
+nh.program_owner_name = m.program_owner_name, \
+nh.campaign_status_code = m.campaign_status_code, \
+nh.campaign_status_name = m.campaign_status_name, \
+nh.campaign_status_desc = m.campaign_status_desc, \
+nh.campaign_wave_status_sk = m.campaign_wave_status_sk,\
+/*\
+nh.campaign_wave_status_code = m.campaign_wave_status_code, \
+nh.campaign_wave_status_name = m.campaign_wave_status_name, \
+nh.campaign_wave_status_desc = m.campaign_wave_status_desc, \
+*/\
+nh.dw_load_date = current_timestamp()\
+--End UPDATE\
+when not matched and m.dml_type = 'I' then insert -- Inserting a new campaign_wave_id and updating an existing one both result in an insert\
+(campaign_wave_sk, campaign_wave_id, source_system_sk, campaign_wave_name, campaign_wave_setid,\
+campaign_id, campaign_sk, promotion_code, campaign_name, campaign_wave_start_date, campaign_wave_stop_date, campaign_objective_code, campaign_objective_desc, campaign_offer_name, campaign_content_name, campaign_content_desc, campaign_content_type_name, campaign_content_type_desc, campaign_content_subtype_name, campaign_content_subtype_desc, customer_sk, program_owner_id, program_owner_name, campaign_status_code, campaign_status_name, campaign_status_desc, campaign_wave_status_sk, \
+/*\
+campaign_wave_status_code, campaign_wave_status_name, campaign_wave_status_desc, \
+*/\
+campaign_start_date, campaign_stop_date, campaign_wave_budget_amt,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind)\
+values (seq_campaign_wave.nextval, m.campaign_wave_id, m.source_system_sk, m.campaign_wave_name, \
+m.campaign_wave_setid,\
+m.campaign_id, \
+m.campaign_sk,\
+m.promotion_code, \
+m.campaign_name, \
+m.campaign_wave_start_date, \
+m.campaign_wave_stop_date, \
+m.campaign_objective_code, \
+m.campaign_objective_desc, \
+m.campaign_offer_name, \
+m.campaign_content_name, \
+m.campaign_content_desc, \
+m.campaign_content_type_name, \
+m.campaign_content_type_desc, \
+m.campaign_content_subtype_name, \
+m.campaign_content_subtype_desc, \
+m.customer_sk,\
+m.program_owner_id, \
+m.program_owner_name, \
+m.campaign_status_code, \
+m.campaign_status_name, \
+m.campaign_status_desc, \
+m.campaign_wave_status_sk,\
+/*\
+m.campaign_wave_status_code, m.campaign_wave_status_name, m.campaign_wave_status_desc, \
+*/\
+m.campaign_start_date, m.campaign_stop_date, m.campaign_wave_budget_amt,\
+m.hosted_client_sk, m.dw_start_date, m.dw_stop_date, m.dw_current_ind);\
+-- END MERGE\
+--END TASK\
+\
+--Schedule Task\
+alter task populate_dimension_campaign_wave resume;\
+show tasks;\
+\
+alter task populate_dimension_order_type set warehouse = mdw_wh\
+\
+-- Suspend the task (as needed)\
+--alter task populate_dimension_campaign_wave suspend;\
+}
