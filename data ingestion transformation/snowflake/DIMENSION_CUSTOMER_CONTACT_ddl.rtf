@@ -1,0 +1,164 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww14480\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 /* \
+Initial pattern to load an MDW dimension from a stage table using Slowly Changing Dimension (SCD2) logic on Snowflake.\
+\
+This script builds a sequence, stream, view, and task.  A Snowflake warehouse is also required, as well as the appropriate privileges.\
+\
+The core logic is based on an article written by John Gontarz, Sales Engineer at Snowflake - https://community.snowflake.com/s/article/Building-a-Type-2-Slowly-Changing-Dimension-in-Snowflake-Using-Streams-and-Tasks-Part-1.  \
+\
+Modfiications made to work with the existing MDW enterprise dimensional model and to limit which columns trigger SCD2 insert/update versus a regular update.\
+\
+Assumes the stage_order_type and dimension_order_type MDW tables have already been built. See mdw_master_snowflake.txt for the DDL.\
+*/\
+\
+create or replace sequence  seq_customer_contact start with 1 increment by 1;\
+CLAVIGNE_DB.MDWCLAVIGNE_DB.MDW\
+create or replace stream stage_customer_contact_changes on table stage_customer_contact; -- stream nation_table_changes\
+\
+--generates data to load customer contact into the dimension_customer_contact table.\
+create or replace view customer_contact_change_data as\
+-- This first subquery figures out what to do when data is inserted into the stage_customer_contact table\
+-- An insert to the stage_customer_contact table results in an INSERT to the dimension_customer_contact table\
+select customer_contact_sk, customer_contact_id, customer_id, customer_setid, customer_contact_name, source_system_sk, \
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, 'I' as dml_type\
+from (select customer_contact_sk, customer_contact_id, customer_id, customer_setid, customer_contact_name, source_system_sk, \
+hosted_client_sk, dw_load_date as dw_start_date,\
+lag(dw_load_date) over (partition by customer_contact_id order by dw_load_date desc) as dw_stop_date_raw, \
+--Lag accesses dimension versions with the same key without having to join the table to itself.\
+--if multiple rows with same key are found, the latest is marked as current, the rest are loaded as not current.\
+case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+--case when dw_stop_date is null then 'Y' else 'N' end as dw_current_ind\
+case when dw_stop_date = '9999-12-31'::timestamp_ntz then 'Y' else 'N' end as dw_current_ind\
+from (select null as customer_contact_sk, --subsequent merge will insert SEQ_customer_contact.nextval.  This keeps the column count in the union consistent with other subqueries that need the sk.\
+customer_contact_id, customer_id, customer_setid, customer_contact_name, source_system_id as source_system_sk, hosted_client_sk, dw_load_date\
+    from stage_customer_contact_changes --stream on stage_customer_contact\
+    where metadata$action = 'INSERT'\
+    and metadata$isupdate = 'FALSE'))\
+--End INSERT subquery\
+union\
+-- START SCD2 Update LOGIC\
+-- This subquery figures out what to do when SCD2 trigger columns are updated in the stage_customer_contact table\
+-- An update to one or more trigger columns in the stage_customer_contact table results in an update AND an insert to the\
+-- dimension_customer_contact table\
+-- The subquery below generates two records, each with a different dml_type\
+select customer_contact_sk, customer_contact_id, customer_id, customer_setid, customer_contact_name, source_system_sk, hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type\
+from (select customer_contact_sk, customer_contact_id, customer_id, customer_setid, customer_contact_name, source_system_sk, hosted_client_sk, dw_start_date as dw_start_date,  --was dw_load_date\
+    lag(dw_load_date) over (partition by customer_contact_id order by dw_load_date desc) as dw_stop_date_raw,\
+    case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+    case when dw_stop_date_raw is null then 'Y' else 'N' end as dw_current_ind,\
+    dml_type\
+    from (-- Identify data to insert into dimension_customer_contact table\
+        select null as customer_contact_sk, c.customer_contact_id, c.customer_id, c.customer_setid, c.customer_contact_name,\
+        c.source_system_id as source_system_sk,\
+        c.hosted_client_sk, \
+        c.dw_load_date as dw_start_date, --deliberate otherwise will match and not insert.\
+        c.dw_load_date, \
+        'I' as dml_type\
+        from stage_customer_contact_changes c --stream\
+        join dimension_customer_contact d \
+        on c.customer_contact_id = d.customer_contact_id \
+        -- SCD2 trigger columns identified below are customer_contact_name and customer_contact_desc. Changes to other columns will be\
+        -- excluded and handled in the update section.\
+        and (d.customer_contact_name <> c.customer_contact_name)\
+        where c.metadata$action = 'INSERT'\
+        and c.metadata$isupdate = 'TRUE'\
+        and d.dw_current_ind = 'Y'\
+        union\
+        -- Identify data in dimension_customer_contact table that needs to be updated, i.e., given a stop date.\
+        select customer_contact_sk, customer_contact_id, customer_id, customer_setid, null as customer_contact_name, source_system_sk, null as hosted_client_sk, dw_start_date, dw_load_date,\
+        'U' as dml_type\
+        from dimension_customer_contact\
+        where customer_contact_sk in (select distinct d.customer_contact_sk\
+                                from stage_customer_contact_changes c --stream\
+                                --ADDED JOIN TO DIM HERE THAT includes triggers are not equal\
+                                join dimension_customer_contact d \
+                                on c.customer_contact_id = d.customer_contact_id \
+                                and c.source_system_id = d.source_system_sk\
+                                and (d.customer_contact_name <> c.customer_contact_name)\
+                                where c.metadata$action = 'INSERT'\
+                                and c.metadata$isupdate = 'TRUE')\
+                                and dw_current_ind = 'Y' --??\
+                                ))\
+-- END SCD2 logic.    \
+-- START NON SCD2 UPDATES - changes in stage that do not trigger a new insert in the dim.\
+union\
+select customer_contact_sk, customer_contact_id, customer_id, customer_setid, customer_contact_name, source_system_sk, hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type\
+from (select customer_contact_sk, customer_contact_id, customer_id, customer_setid, customer_contact_name, source_system_sk, hosted_client_sk, \
+    dw_start_date as dw_start_date, --was dw_load_date\
+    lag(dw_load_date) over (partition by customer_contact_id order by dw_load_date desc) as dw_stop_date_raw,\
+    case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+    case when dw_stop_date_raw is null then 'Y' else 'N' end as dw_current_ind,\
+    dml_type\
+    from (-- Identify data to insert into dimension_customer_contact table\
+        select distinct d.customer_contact_sk,\
+        c.customer_contact_id, c.customer_id, c.customer_setid, c.customer_contact_name, c.source_system_id as\
+        source_system_sk, c.hosted_client_sk, d.dw_start_date, c.dw_load_date, 'UPDATE' as dml_type\
+        from stage_customer_contact_changes c --stream\
+        join dimension_customer_contact d \
+        on c.customer_contact_id = d.customer_contact_id \
+        and d.customer_contact_name = c.customer_contact_name\
+        and c.dw_soft_delete_ind = 'N' --excludes soft delete updates (processed in delete section)\
+        where c.metadata$action = 'INSERT'\
+        and c.metadata$isupdate = 'TRUE'\
+                                ))\
+--END NON-SCD2 UPDATES\
+union\
+-- This subquery figures out what to do when data is deleted from the stage_customer_contact table (hard or soft)\
+-- A deletion from the stage_customer_contact table results in an update to the dimension_customer_contact table\
+select customer_contact_sk, customer_contact_id, customer_id, customer_setid, customer_contact_name, source_system_sk, hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type \
+from (\
+select nh.customer_contact_sk,\
+nms.customer_contact_id, nms.customer_id, nms.customer_setid, null as customer_contact_name, nms.source_system_id as\
+source_system_sk, null as hosted_client_sk, nh.dw_start_date, current_timestamp()::timestamp_ntz as dw_stop_date, null as dw_current_ind, 'D' as dml_type\
+from dimension_customer_contact nh\
+inner join stage_customer_contact_changes nms\
+on nh.customer_contact_id = nms.customer_contact_id\
+where ((nms.metadata$action = 'DELETE' and nms.metadata$isupdate = 'FALSE') OR (nms.metadata$action = 'INSERT' AND nms.dw_soft_delete_ind = 'Y'))\
+and nh.dw_current_ind = 'Y'\
+order by nms.dw_load_date);\
+--END VIEW DDL\
+\
+\
+\
+create or replace task populate_dimension_customer_contact warehouse = mdw_wh schedule = '1 minute' when system$stream_has_data('stage_customer_contact_changes')\
+as \
+--START MERGE\
+merge into dimension_customer_contact nh --Target table to merge changes from STAGE_customer_contact into\
+using customer_contact_change_data m --view\
+-- The customer_contact_change_data view holds the logic that determines what to insert/update into the DIMENSION_customer_contact table.\
+   on nh.customer_contact_id = m.customer_contact_id \
+   -- and nh.source_system_sk = m.source_system_sk\
+   -- customer_contact_id & source_system_sk columns determine if there is a unique record in the DIMENSION_customer_contact table\
+   and nh.dw_start_date = m.dw_start_date\
+   and nh.dw_current_ind = 'Y' --only update current rows (needed?)\
+when matched and m.dml_type = 'U' --SCD2 "Update"\
+then update -- Indicates the original record has been updated and is no longer current and the end_time needs to be stamped\
+    set nh.dw_stop_date = m.dw_stop_date,\
+        nh.dw_current_ind = 'N'    \
+when matched and m.dml_type = 'D' \
+then update -- Deletes are essentially logical deletes. The record is stamped and no newer version is inserted\
+    set nh.dw_stop_date = m.dw_stop_date,\
+        nh.dw_current_ind = 'N'\
+--New for non-SCD2 UPDATE\
+when matched and m.dml_type = 'UPDATE' and nh.dw_current_ind = 'Y'\
+then update\
+set nh.hosted_client_sk = m.hosted_client_sk, --only non-SCD2 column in this small dimension.\
+nh.dw_load_date = current_timestamp()\
+--End UPDATE\
+when not matched and m.dml_type = 'I' then insert -- Inserting a new customer_contact_id and updating an existing one both result in an insert\
+(customer_contact_sk, customer_contact_id, customer_sk, customer_id, customer_setid, customer_contact_name, source_system_sk, hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind)\
+values (SEQ_customer_contact.nextval, m.customer_contact_id, 0, --placeholder\
+m.customer_id, m.customer_setid, m.customer_contact_name, m.source_system_sk, m.hosted_client_sk, m.dw_start_date, m.dw_stop_date, m.dw_current_ind);\
+-- END MERGE\
+\
+\
+-- Resume the task\
+alter task populate_dimension_customer_contact suspend;\
+alter task populate_dimension_customer_contact resume;\
+show tasks;}

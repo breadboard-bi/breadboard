@@ -1,0 +1,67 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 truncate table stage_customer_contact;\
+truncate table dimension_customer_contact;\
+create or replace stream stage_customer_contact_changes on table stage_customer_contact; -- stream nation_table_changes\
+\
+desc table stage_customer_contact\
+\
+insert into stage_customer_contact (customer_contact_id, customer_id, customer_setid, customer_contact_name, source_system_id, hosted_client_sk, dw_error_ind, dw_soft_delete_ind, dw_load_date)\
+values ('1', 1,'setid', 'Chris', 1, 0,'N','N', current_timestamp);\
+\
+insert into stage_customer_contact (customer_contact_id, customer_id, customer_setid, customer_contact_name, source_system_id, hosted_client_sk, dw_error_ind, dw_soft_delete_ind, dw_load_date)\
+values ('2', 1,'setid', 'John', 1, 0,'N','N', current_timestamp);\
+\
+insert into stage_customer_contact (customer_contact_id, customer_id, customer_setid, customer_contact_name, source_system_id, hosted_client_sk, dw_error_ind, dw_soft_delete_ind, dw_load_date)\
+values ('3', 1,'setid', 'Steve', 1, 0,'N','N', current_timestamp);\
+\
+insert into stage_customer_contact (customer_contact_id, customer_id, customer_setid, customer_contact_name, source_system_id, hosted_client_sk, dw_error_ind, dw_soft_delete_ind, dw_load_date)\
+values ('4', 1,'setid', 'Karen', 1, 0,'N','N', current_timestamp);\
+\
+insert into stage_customer_contact (customer_contact_id, customer_id, customer_setid, customer_contact_name, source_system_id, hosted_client_sk, dw_error_ind, dw_soft_delete_ind, dw_load_date)\
+values ('5', 1,'setid', 'Vienna', 1, 0,'N','N', current_timestamp);\
+\
+\
+show streams;\
+select * from stage_customer_contact_changes --APPEARS CORRECTCLAVIGNE_DB.MDW\
+\
+select * from customer_contact_change_data --view\
+\
+show tasks\
+\
+select timestampdiff(second, current_timestamp, scheduled_time) as next_run, scheduled_time, current_timestamp, name, \
+state \
+from table(information_schema.task_history()) \
+where state = 'SCHEDULED' and name = 'POPULATE_DIMENSION_CUSTOMER_CONTACT'\
+order by completed_time desc;\
+\
+select * from customer_contact_change_data --5 ROWS INSTEAD OF 2.  LOOKS LIKE DW_CURRENT_IND = N SHOULD BE OMITTED.\
+\
+SELECT * FROM stage_customer_contact_changes\
+select * from dimension_customer_contact\
+select * from stage_customer_contact\
+update stage_customer_contact set dw_soft_delete_ind = 'N' WHERE customer_contact_ID = 4\
+select * from customer_contact_change_data\
+select * from dimension_customer_contact where customer_contactcustomer contact_id = 5\
+\
+\
+update stage_customer_contact set customer_contact_name = 'CJ', dw_load_date = current_timestamp() where customer_contact_id = '1';\
+delete from stage_customer_contact where customer_contact_id = 2;\
+update stage_customer_contact set dw_soft_delete_ind = 'Y' where customer_contact_id = 3;\
+update stage_customer_contact set hosted_client_sk = 125, dw_load_date = current_timestamp() where customer_contact_id ='5';\
+\
+delete from dimension_customer_contact where customer_contact_id = 3\
+\
+update stage_customer_contact set customer_contact_name = 'customer contact Name 5', dw_load_date = current_timestamp() where customer_contact_id = '5';\
+\
+select * from stage_customer_contact\
+select * from dimension_customer_contact order by customer_contact_id asc\
+\
+\
+select * from stage_customer_contact_changes --stream\
+select * from customer_contact_change_data --view}
