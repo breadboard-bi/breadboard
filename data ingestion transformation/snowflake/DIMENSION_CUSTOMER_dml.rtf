@@ -53,5 +53,6 @@ update stage_customer set customer_name = 'Customer One', dw_load_date = current
 delete from stage_customer where customer_id = 2;\
 update stage_customer set dw_soft_delete_ind = 'Y' where customer_id = 3;\
 update stage_customer set hosted_client_sk = 125, dw_load_date = current_timestamp() where customer_id ='5';\
+update stage_customer set timezone_name = 'EDT', dw_load_date = current_timestamp() where customer_id ='5';\
 \
 select * from dimension_customer order by customer_id asc;}

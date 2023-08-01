@@ -190,7 +190,75 @@ then update -- Deletes are essentially logical deletes. The record is stamped an
 --New for non-SCD2 UPDATE\
 when matched and m.dml_type = 'UPDATE' and nh.dw_current_ind = 'Y'\
 then update\
-set nh.hosted_client_sk = m.hosted_client_sk, --only non-SCD2 column in this small dimension.\
+set nh.hosted_client_sk = m.hosted_client_sk,\
+nh.currency_id = m.currency_id, \
+nh.do_not_contact_ind = m.do_not_contact_ind, \
+nh.do_not_email_ind = m.do_not_email_ind, \
+nh.do_not_mail_ind = m.do_not_mail_ind, \
+nh.do_not_call_ind = m.do_not_call_ind, \
+nh.customer_type_id = m.customer_type_id, \
+nh.customer_type_desc = m.customer_type_desc, \
+nh.customer_status_code = m.customer_status_code, \
+nh.customer_status_name = m.customer_status_name, \
+nh.customer_status_desc = m.customer_status_desc, \
+nh.customer_status_date = m.customer_status_date, \
+nh.geo_code = m.geo_code, \
+nh.in_city_limit_ind = m.in_city_limit_ind, \
+nh.timezone_name = m.timezone_name, \
+nh.latitude = m.latitude, \
+nh.longitude = m.longitude, \
+nh.address_line1_desc = m.address_line1_desc, \
+nh.address_line2_desc = m.address_line2_desc, \
+nh.address_line3_desc = m.address_line3_desc, \
+nh.address_line4_desc = m.address_line4_desc, \
+nh.city_name = m.city_name, \
+nh.county_name = m.county_name, \
+nh.postal_code = m.postal_code, \
+nh.state_province_code = m.state_province_code, \
+nh.state_province_name = m.state_province_name, \
+nh.country_code = m.country_code, \
+nh.country_name = m.country_name, \
+nh.email_domain_desc = m.email_domain_desc, \
+nh.email_address_desc = m.email_address_desc, \
+nh.phone_country_code = m.phone_country_code, \
+nh.phone_number = m.phone_number, \
+nh.phone_extension_number = m.phone_extension_number, \
+nh.sold_to_ind = m.sold_to_ind, \
+nh.ship_to_ind = m.ship_to_ind, \
+nh.bill_to_ind = m.bill_to_ind, \
+nh.alt_customer_id = m.alt_customer_id, \
+nh.duns_number = m.duns_number, \
+nh.parent_duns_number = m.parent_duns_number, \
+nh.ult_duns_number = m.ult_duns_number, \
+nh.last_name = m.last_name, \
+nh.add_date = m.add_date, \
+nh.first_name = m.first_name, \
+nh.since_date = m.since_date, \
+nh.birth_date = m.birth_date, \
+nh.death_date = m.death_date, \
+nh.marital_status_cat = m.marital_status_cat, \
+nh.marital_status_date = m.marital_status_date, \
+nh.gender_cat = m.gender_cat, \
+nh.customer_amt = m.customer_amt, \
+nh.income_qty = m.income_qty, \
+nh.credit_rating_cat = m.credit_rating_cat, \
+nh.credit_score_qty = m.credit_score_qty, \
+nh.phone_region_code = m.phone_region_code, \
+nh.credit_rating_code = m.credit_rating_code, \
+nh.credit_rating_name = m.credit_rating_name, \
+nh.customer_type_code = m.customer_type_code, \
+nh.customer_type_name = m.customer_type_name, \
+nh.customer_group_code = m.customer_group_code, \
+nh.customer_group_name = m.customer_group_name, \
+nh.customer_group_desc = m.customer_group_desc, \
+nh.customer_class_code = m.customer_class_code, \
+nh.customer_class_name = m.customer_class_name, \
+nh.customer_class_desc = m.customer_class_desc,\
+nh.credit_status_code = m.credit_status_code, \
+nh.credit_status_name = m.credit_status_name, \
+nh.credit_status_desc = m.credit_status_desc, \
+nh.credit_status_date = m.credit_status_date, \
+nh.guaranteed_cpc_amt = m.guaranteed_cpc_amt,\
 nh.dw_load_date = current_timestamp()\
 --End UPDATE\
 when not matched and m.dml_type = 'I' then insert -- Inserting a new customer_id and updating an existing one both result in an insert\
@@ -206,7 +274,6 @@ currency_id, do_not_contact_ind, do_not_email_ind, do_not_mail_ind, do_not_call_
 credit_status_code, credit_status_name, credit_status_desc, credit_status_date, guaranteed_cpc_amt,\
 m.hosted_client_sk, m.dw_start_date, m.dw_stop_date, m.dw_current_ind);\
 -- END MERGE\
-\
 \
 -- Resume the task\
 alter task populate_dimension_customer suspend;\
