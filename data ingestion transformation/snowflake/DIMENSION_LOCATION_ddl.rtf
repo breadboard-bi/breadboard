@@ -1,0 +1,212 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww14480\viewh13040\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 /* \
+Initial pattern to load an MDW dimension from a stage table using Slowly Changing Dimension (SCD2) logic on Snowflake.\
+\
+This script builds a sequence, stream, view, and task.  A Snowflake warehouse is also required, as well as the appropriate privileges.\
+\
+The core logic is based on an article written by John Gontarz, Sales Engineer at Snowflake - https://community.snowflake.com/s/article/Building-a-Type-2-Slowly-Changing-Dimension-in-Snowflake-Using-Streams-and-Tasks-Part-1.  \
+\
+Modfiications made to work with the existing MDW enterprise dimensional model and to limit which columns trigger SCD2 insert/update versus a regular update..\
+*/\
+\
+create or replace sequence seq_location start with 1 increment by 1;\
+\
+create or replace stream stage_location_changes on table stage_location; -- stream nation_table_changes\
+\
+--generates data to load location into the dimension_location table.\
+create or replace view location_change_data as\
+-- This first subquery figures out what to do when data is inserted into the stage_location table\
+-- An insert to the stage_location table results in an INSERT to the dimension_location table\
+select location_sk, location_id, location_setid, location_name, source_system_sk, \
+effective_date, regulatory_region_id, location_desc, address_line1_desc, address_line2_desc, address_line3_desc, address_line4_desc, building_name, floor_number, city_name, county_name, state_province_code, state_province_name, postal_code, country_code, geography_code, alt_geography_code, jursidiction_code, sector_number,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, 'I' as dml_type\
+from (select location_sk, location_id, location_setid, location_name, source_system_sk, \
+effective_date, regulatory_region_id, location_desc, address_line1_desc, address_line2_desc, address_line3_desc, address_line4_desc, building_name, floor_number, city_name, county_name, state_province_code, state_province_name, postal_code, country_code, geography_code, alt_geography_code, jursidiction_code, sector_number,\
+hosted_client_sk, dw_load_date as dw_start_date,\
+lag(dw_load_date) over (partition by location_id order by dw_load_date desc) as dw_stop_date_raw, \
+--Lag accesses dimension versions with the same key without having to join the table to itself.\
+--if multiple rows with same key are found, the latest is marked as current, the rest are loaded as not current.\
+case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+--case when dw_stop_date is null then 'Y' else 'N' end as dw_current_ind\
+case when dw_stop_date = '9999-12-31'::timestamp_ntz then 'Y' else 'N' end as dw_current_ind\
+from (select null as location_sk, --subsequent merge will insert seq_location.nextval.  This keeps the column count in the union consistent with other subqueries that need the sk.\
+location_id, location_setid, location_name, source_system_id as source_system_sk, \
+effective_date, regulatory_region_id, location_desc, address_line1_desc, address_line2_desc, address_line3_desc, address_line4_desc, building_name, floor_number, city_name, county_name, state_province_code, state_province_name, postal_code, country_code, geography_code, alt_geography_code, jursidiction_code, sector_number,\
+hosted_client_sk, dw_load_date\
+    from stage_location_changes --stream on stage_location\
+    where metadata$action = 'INSERT'\
+    and metadata$isupdate = 'FALSE'))\
+--End INSERT subquery\
+union\
+-- START SCD2 Update LOGIC\
+-- This subquery figures out what to do when SCD2 trigger columns are updated in the stage_location table\
+-- An update to one or more trigger columns in the stage_location table results in an update AND an insert to the\
+-- dimension_location table\
+-- The subquery below generates two records, each with a different dml_type\
+select location_sk, location_id, location_setid, location_name, source_system_sk, \
+effective_date, regulatory_region_id, location_desc, address_line1_desc, address_line2_desc, address_line3_desc, address_line4_desc, building_name, floor_number, city_name, county_name, state_province_code, state_province_name, postal_code, country_code, geography_code, alt_geography_code, jursidiction_code, sector_number,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type\
+from (select location_sk, location_id, location_setid, location_name, source_system_sk, \
+effective_date, regulatory_region_id, location_desc, address_line1_desc, address_line2_desc, address_line3_desc, address_line4_desc, building_name, floor_number, city_name, county_name, state_province_code, state_province_name, postal_code, country_code, geography_code, alt_geography_code, jursidiction_code, sector_number,\
+hosted_client_sk, dw_start_date as dw_start_date,  --was dw_load_date\
+    lag(dw_load_date) over (partition by location_id order by dw_load_date desc) as dw_stop_date_raw,\
+    case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+    case when dw_stop_date_raw is null then 'Y' else 'N' end as dw_current_ind,\
+    dml_type\
+    from (-- Identify data to insert into dimension_location table\
+        select null as location_sk, c.location_id, c.location_setid, c.location_name,\
+        c.source_system_id as source_system_sk,\
+c.effective_date, c.regulatory_region_id, c.location_desc, c.address_line1_desc, c.address_line2_desc, c.address_line3_desc, c.address_line4_desc, c.building_name, c.floor_number, c.city_name, c.county_name, c.state_province_code, c.state_province_name, c.postal_code, c.country_code, c.geography_code, c.alt_geography_code, c.jursidiction_code, c.sector_number,\
+        c.hosted_client_sk, \
+        c.dw_load_date as dw_start_date, --deliberate otherwise will match and not insert.\
+        c.dw_load_date, \
+        'I' as dml_type\
+        from stage_location_changes c --stream\
+        join dimension_location d \
+        on c.location_id = d.location_id \
+        -- SCD2 trigger columns identified below are location_name and location_desc. Changes to other columns will be\
+        -- excluded and handled in the update section.\
+        and (d.location_name <> c.location_name)\
+        where c.metadata$action = 'INSERT'\
+        and c.metadata$isupdate = 'TRUE'\
+        and d.dw_current_ind = 'Y'\
+        union\
+        -- Identify data in dimension_location table that needs to be updated, i.e., given a stop date.\
+        select location_sk, location_id, location_setid, null as location_name, source_system_sk, \
+effective_date, regulatory_region_id, location_desc, address_line1_desc, address_line2_desc, address_line3_desc, address_line4_desc, building_name, floor_number, city_name, county_name, state_province_code, state_province_name, postal_code, country_code, geography_code, alt_geography_code, jursidiction_code, sector_number,\
+        null as hosted_client_sk, dw_start_date, dw_load_date,\
+        'U' as dml_type\
+        from dimension_location\
+        where location_sk in (select distinct d.location_sk\
+                                from stage_location_changes c --stream\
+                                --ADDED JOIN TO DIM HERE THAT includes triggers are not equal\
+                                join dimension_location d \
+                                on c.location_id = d.location_id \
+                                and c.source_system_id = d.source_system_sk\
+                                and (d.location_name <> c.location_name)\
+                                where c.metadata$action = 'INSERT'\
+                                and c.metadata$isupdate = 'TRUE')\
+                                and dw_current_ind = 'Y' --??\
+                                ))\
+-- END SCD2 logic.    \
+-- START NON SCD2 UPDATES - changes in stage that do not trigger a new insert in the dim.\
+union\
+select location_sk, location_id, location_setid, location_name, source_system_sk, \
+effective_date, regulatory_region_id, location_desc, address_line1_desc, address_line2_desc, address_line3_desc, address_line4_desc, building_name, floor_number, city_name, county_name, state_province_code, state_province_name, postal_code, country_code, geography_code, alt_geography_code, jursidiction_code, sector_number,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type\
+from (select location_sk, location_id, location_setid, location_name, source_system_sk, \
+effective_date, regulatory_region_id, location_desc, address_line1_desc, address_line2_desc, address_line3_desc, address_line4_desc, building_name, floor_number, city_name, county_name, state_province_code, state_province_name, postal_code, country_code, geography_code, alt_geography_code, jursidiction_code, sector_number,\
+hosted_client_sk, \
+    dw_start_date as dw_start_date, --was dw_load_date\
+    lag(dw_load_date) over (partition by location_id order by dw_load_date desc) as dw_stop_date_raw,\
+    case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+    case when dw_stop_date_raw is null then 'Y' else 'N' end as dw_current_ind,\
+    dml_type\
+    from (-- Identify data to insert into dimension_location table\
+        select distinct d.location_sk,\
+        c.location_id, c.location_setid, c.location_name, c.source_system_id as\
+        source_system_sk, \
+c.effective_date, c.regulatory_region_id, c.location_desc, c.address_line1_desc, c.address_line2_desc, c.address_line3_desc, c.address_line4_desc, c.building_name, c.floor_number, c.city_name, c.county_name, c.state_province_code, c.state_province_name, c.postal_code, c.country_code, c.geography_code, c.alt_geography_code, c.jursidiction_code, c.sector_number,\
+        c.hosted_client_sk, d.dw_start_date, c.dw_load_date, 'UPDATE' as dml_type\
+        from stage_location_changes c --stream\
+        join dimension_location d \
+        on c.location_id = d.location_id \
+        and d.location_name = c.location_name\
+        and c.dw_soft_delete_ind = 'N' --excludes soft delete updates (processed in delete section)\
+        where c.metadata$action = 'INSERT'\
+        and c.metadata$isupdate = 'TRUE'\
+                                ))\
+--END NON-SCD2 UPDATES\
+union\
+-- This subquery figures out what to do when data is deleted from the stage_location table (hard or soft)\
+-- A deletion from the stage_location table results in an update to the dimension_location table\
+select location_sk, location_id, location_setid, location_name, source_system_sk, \
+effective_date, regulatory_region_id, location_desc, address_line1_desc, address_line2_desc, address_line3_desc, address_line4_desc, building_name, floor_number, city_name, county_name, state_province_code, state_province_name, postal_code, country_code, geography_code, alt_geography_code, jursidiction_code, sector_number,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type \
+from (\
+/* Most of the columns could have been listed as null, e.g., do_not_mail_ind as null */\
+select nh.location_sk, nms.location_id, nms.location_setid, nms.location_name, nms.source_system_id as source_system_sk, \
+nms.effective_date, nms.regulatory_region_id, nms.location_desc, nms.address_line1_desc, nms.address_line2_desc, nms.address_line3_desc, nms.address_line4_desc, nms.building_name, nms.floor_number, nms.city_name, nms.county_name, nms.state_province_code, nms.state_province_name, nms.postal_code, nms.country_code, nms.geography_code, nms.alt_geography_code, nms.jursidiction_code, nms.sector_number,\
+nms.hosted_client_sk, nh.dw_start_date, current_timestamp()::timestamp_ntz as dw_stop_date, null as dw_current_ind, 'D' as dml_type\
+from dimension_location nh\
+inner join stage_location_changes nms\
+on nh.location_id = nms.location_id\
+where ((nms.metadata$action = 'DELETE' and nms.metadata$isupdate = 'FALSE') OR (nms.metadata$action = 'INSERT' AND nms.dw_soft_delete_ind = 'Y'))\
+and nh.dw_current_ind = 'Y'\
+order by nms.dw_load_date);\
+--END VIEW DDL\
+\
+\
+\
+create or replace task populate_dimension_location warehouse = mdw_wh schedule = '1 minute' when system$stream_has_data('stage_location_changes')\
+as \
+--START MERGE\
+merge into dimension_location nh --Target table to merge changes from STAGE_location into\
+using location_change_data m --view\
+-- The location_change_data view holds the logic that determines what to insert/update into the DIMENSION_location table.\
+   on nh.location_id = m.location_id \
+   -- and nh.source_system_sk = m.source_system_sk\
+   -- location_id & source_system_sk columns determine if there is a unique record in the DIMENSION_location table\
+   and nh.dw_start_date = m.dw_start_date\
+   and nh.dw_current_ind = 'Y' --only update current rows (needed?)\
+when matched and m.dml_type = 'U' --SCD2 "Update"\
+then update -- Indicates the original record has been updated and is no longer current and the end_time needs to be stamped\
+    set nh.dw_stop_date = m.dw_stop_date,\
+        nh.dw_current_ind = 'N'    \
+when matched and m.dml_type = 'D' \
+then update -- Deletes are essentially logical deletes. The record is stamped and no newer version is inserted\
+    set nh.dw_stop_date = m.dw_stop_date,\
+        nh.dw_current_ind = 'N'\
+--New for non-SCD2 UPDATE\
+when matched and m.dml_type = 'UPDATE' and nh.dw_current_ind = 'Y'\
+then update\
+set nh.hosted_client_sk = m.hosted_client_sk,\
+nh.effective_date=m.effective_date, \
+nh.regulatory_region_id=m.regulatory_region_id, \
+nh.location_desc=m.location_desc, \
+nh.address_line1_desc=m.address_line1_desc, \
+nh.address_line2_desc=m.address_line2_desc, \
+nh.address_line3_desc=m.address_line3_desc, \
+nh.address_line4_desc=m.address_line4_desc, \
+nh.building_name=m.building_name, \
+nh.floor_number=m.floor_number, \
+nh.city_name=m.city_name, \
+nh.county_name=m.county_name, \
+nh.state_province_code=m.state_province_code, \
+nh.state_province_name=m.state_province_name, \
+nh.postal_code=m.postal_code, \
+nh.country_code=m.country_code, \
+nh.geography_code=m.geography_code, \
+nh.alt_geography_code=m.alt_geography_code, \
+nh.jursidiction_code=m.jursidiction_code, \
+nh.sector_number=m.sector_number,\
+nh.dw_load_date = current_timestamp()\
+--End UPDATE\
+when not matched and m.dml_type = 'I' then insert -- Inserting a new location_id and updating an existing one both result in an insert\
+(location_sk, location_id, location_setid, location_name, source_system_sk, \
+effective_date, regulatory_region_id, location_desc, address_line1_desc, address_line2_desc, address_line3_desc, address_line4_desc, building_name, floor_number, city_name, county_name, state_province_code, state_province_name, postal_code, country_code, geography_code, alt_geography_code, jursidiction_code, sector_number,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind)\
+values (seq_location.nextval, m.location_id,\
+m.location_setid, m.location_name, m.source_system_sk, \
+m.effective_date, \
+m.regulatory_region_id, \
+m.location_desc, \
+m.address_line1_desc, \
+m.address_line2_desc, \
+m.address_line3_desc, \
+m.address_line4_desc, \
+m.building_name, m.floor_number, m.city_name, m.county_name, m.state_province_code, m.state_province_name, m.postal_code, m.country_code, m.geography_code, m.alt_geography_code, m.jursidiction_code, m.sector_number,\
+m.hosted_client_sk, m.dw_start_date, m.dw_stop_date, m.dw_current_ind);\
+-- END MERGE\
+\
+\
+-- Resume the task\
+alter task populate_dimension_location suspend;\
+alter task populate_dimension_location resume;\
+show tasks;}
