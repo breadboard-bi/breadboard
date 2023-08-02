@@ -1,0 +1,190 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww14480\viewh13040\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 /* \
+Initial pattern to load an MDW dimension from a stage table using Slowly Changing Dimension (SCD2) logic on Snowflake.\
+\
+This script builds a sequence, stream, view, and task.  A Snowflake warehouse is also required, as well as the appropriate privileges.\
+\
+The core logic is based on an article written by John Gontarz, Sales Engineer at Snowflake - https://community.snowflake.com/s/article/Building-a-Type-2-Slowly-Changing-Dimension-in-Snowflake-Using-Streams-and-Tasks-Part-1.  \
+\
+Modfiications made to work with the existing MDW enterprise dimensional model and to limit which columns trigger SCD2 insert/update versus a regular update..\
+*/\
+\
+create or replace sequence seq_marketing_channel start with 1 increment by 1;\
+create or replace stream stage_marketing_channel_changes on table stage_marketing_channel; -- stream nation_table_changes\
+\
+--generates data to load marketing_channel into the dimension_marketing_channel table.\
+create or replace view marketing_channel_change_data as\
+-- This first subquery figures out what to do when data is inserted into the stage_marketing_channel table\
+-- An insert to the stage_marketing_channel table results in an INSERT to the dimension_marketing_channel table\
+select marketing_channel_sk, channel_id, channel_setid, channel_name, source_system_sk, \
+channel_desc, channel_type_code, channel_type_name, channel_type_desc, channel_activity_code, channel_activity_name, channel_activity_desc,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, 'I' as dml_type\
+from (select marketing_channel_sk, channel_id, channel_setid, channel_name, source_system_sk, \
+channel_desc, channel_type_code, channel_type_name, channel_type_desc, channel_activity_code, channel_activity_name, channel_activity_desc,\
+hosted_client_sk, dw_load_date as dw_start_date,\
+lag(dw_load_date) over (partition by channel_id order by dw_load_date desc) as dw_stop_date_raw, \
+--Lag accesses dimension versions with the same key without having to join the table to itself.\
+--if multiple rows with same key are found, the latest is marked as current, the rest are loaded as not current.\
+case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+--case when dw_stop_date is null then 'Y' else 'N' end as dw_current_ind\
+case when dw_stop_date = '9999-12-31'::timestamp_ntz then 'Y' else 'N' end as dw_current_ind\
+from (select null as marketing_channel_sk, --subsequent merge will insert seq_marketing_channel.nextval.  This keeps the column count in the union consistent with other subqueries that need the sk.\
+channel_id, channel_setid, channel_name, source_system_id as source_system_sk, \
+channel_desc, channel_type_code, channel_type_name, channel_type_desc, channel_activity_code, channel_activity_name, channel_activity_desc,\
+hosted_client_sk, dw_load_date\
+    from stage_marketing_channel_changes --stream on stage_marketing_channel\
+    where metadata$action = 'INSERT'\
+    and metadata$isupdate = 'FALSE'))\
+--End INSERT subquery\
+union\
+-- START SCD2 Update LOGIC\
+-- This subquery figures out what to do when SCD2 trigger columns are updated in the stage_marketing_channel table\
+-- An update to one or more trigger columns in the stage_marketing_channel table results in an update AND an insert to the\
+-- dimension_marketing_channel table\
+-- The subquery below generates two records, each with a different dml_type\
+select marketing_channel_sk, channel_id, channel_setid, channel_name, source_system_sk, \
+channel_desc, channel_type_code, channel_type_name, channel_type_desc, channel_activity_code, channel_activity_name, channel_activity_desc,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type\
+from (select marketing_channel_sk, channel_id, channel_setid, channel_name, source_system_sk, \
+channel_desc, channel_type_code, channel_type_name, channel_type_desc, channel_activity_code, channel_activity_name, channel_activity_desc,\
+hosted_client_sk, dw_start_date as dw_start_date,  --was dw_load_date\
+    lag(dw_load_date) over (partition by channel_id order by dw_load_date desc) as dw_stop_date_raw,\
+    case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+    case when dw_stop_date_raw is null then 'Y' else 'N' end as dw_current_ind,\
+    dml_type\
+    from (-- Identify data to insert into dimension_marketing_channel table\
+        select null as marketing_channel_sk, c.channel_id, c.channel_setid, c.channel_name, c.source_system_id as source_system_sk, \
+c.channel_desc, c.channel_type_code, c.channel_type_name, c.channel_type_desc, c.channel_activity_code, c.channel_activity_name, c.channel_activity_desc,\
+        c.hosted_client_sk, \
+        c.dw_load_date as dw_start_date, --deliberate otherwise will match and not insert.\
+        c.dw_load_date, \
+        'I' as dml_type\
+        from stage_marketing_channel_changes c --stream\
+        join dimension_marketing_channel d \
+        on c.channel_id = d.channel_id \
+        -- SCD2 trigger columns identified below are mhannel_name. Changes to other columns will be\
+        -- excluded and handled in the update section.\
+        and (d.channel_name <> c.channel_name)\
+        where c.metadata$action = 'INSERT'\
+        and c.metadata$isupdate = 'TRUE'\
+        and d.dw_current_ind = 'Y'\
+        union\
+        -- Identify data in dimension_marketing_channel table that needs to be updated, i.e., given a stop date.\
+        select marketing_channel_sk, channel_id, channel_setid, channel_name, source_system_sk, \
+channel_desc, channel_type_code, channel_type_name, channel_type_desc, channel_activity_code, channel_activity_name, channel_activity_desc,\
+        null as hosted_client_sk, dw_start_date, dw_load_date,\
+        'U' as dml_type\
+        from dimension_marketing_channel\
+        where marketing_channel_sk in (select distinct d.marketing_channel_sk\
+                                from stage_marketing_channel_changes c --stream\
+                                --ADDED JOIN TO DIM HERE THAT includes triggers are not equal\
+                                join dimension_marketing_channel d \
+                                on c.channel_id = d.channel_id \
+                                and c.source_system_id = d.source_system_sk\
+                                and (d.channel_name <> c.channel_name)\
+                                where c.metadata$action = 'INSERT'\
+                                and c.metadata$isupdate = 'TRUE')\
+                                and dw_current_ind = 'Y' --??\
+                                ))\
+-- END SCD2 logic.    \
+-- START NON SCD2 UPDATES - changes in stage that do not trigger a new insert in the dim.\
+union\
+select marketing_channel_sk, channel_id, channel_setid, channel_name, source_system_sk, \
+channel_desc, channel_type_code, channel_type_name, channel_type_desc, channel_activity_code, channel_activity_name, channel_activity_desc,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type\
+from (select marketing_channel_sk, channel_id, channel_setid, channel_name, source_system_sk, \
+channel_desc, channel_type_code, channel_type_name, channel_type_desc, channel_activity_code, channel_activity_name, channel_activity_desc,\
+hosted_client_sk, \
+    dw_start_date as dw_start_date, --was dw_load_date\
+    lag(dw_load_date) over (partition by channel_id order by dw_load_date desc) as dw_stop_date_raw,\
+    case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+    case when dw_stop_date_raw is null then 'Y' else 'N' end as dw_current_ind,\
+    dml_type\
+    from (-- Identify data to insert into dimension_marketing_channel table\
+        select distinct d.marketing_channel_sk,\
+        c.channel_id, c.channel_setid, c.channel_name, c.source_system_id as source_system_sk, \
+c.channel_desc, c.channel_type_code, c.channel_type_name, c.channel_type_desc, c.channel_activity_code, c.channel_activity_name, c.channel_activity_desc,\
+        c.hosted_client_sk, d.dw_start_date, c.dw_load_date, 'UPDATE' as dml_type\
+        from stage_marketing_channel_changes c --stream\
+        join dimension_marketing_channel d \
+        on c.channel_id = d.channel_id \
+        and d.channel_name = c.channel_name\
+        and c.dw_soft_delete_ind = 'N' --excludes soft delete updates (processed in delete section)\
+        where c.metadata$action = 'INSERT'\
+        and c.metadata$isupdate = 'TRUE'\
+                                ))\
+--END NON-SCD2 UPDATES\
+union\
+-- This subquery figures out what to do when data is deleted from the stage_marketing_channel table (hard or soft)\
+-- A deletion from the stage_marketing_channel table results in an update to the dimension_marketing_channel table\
+select marketing_channel_sk, channel_id, channel_setid, channel_name, source_system_sk, \
+channel_desc, channel_type_code, channel_type_name, channel_type_desc, channel_activity_code, channel_activity_name, channel_activity_desc,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type \
+from (\
+/* Most of the columns could have been listed as null, e.g., do_not_mail_ind as null */\
+select nh.marketing_channel_sk, nms.channel_id, nms.channel_setid, nms.channel_name, nms.source_system_id as source_system_sk, \
+nms.channel_desc, nms.channel_type_code, nms.channel_type_name, nms.channel_type_desc, nms.channel_activity_code, nms.channel_activity_name, nms.channel_activity_desc,\
+nms.hosted_client_sk, nh.dw_start_date, current_timestamp()::timestamp_ntz as dw_stop_date, null as dw_current_ind, 'D' as dml_type\
+from dimension_marketing_channel nh\
+inner join stage_marketing_channel_changes nms\
+on nh.channel_id = nms.channel_id\
+where ((nms.metadata$action = 'DELETE' and nms.metadata$isupdate = 'FALSE') OR (nms.metadata$action = 'INSERT' AND nms.dw_soft_delete_ind = 'Y'))\
+and nh.dw_current_ind = 'Y'\
+order by nms.dw_load_date);\
+--END VIEW DDL\
+\
+\
+\
+create or replace task populate_dimension_marketing_channel warehouse = mdw_wh schedule = '1 minute' when system$stream_has_data('stage_marketing_channel_changes')\
+as \
+--START MERGE\
+merge into dimension_marketing_channel nh --Target table to merge changes from STAGE_marketing_channel into\
+using marketing_channel_change_data m --view\
+-- The marketing_channel_change_data view holds the logic that determines what to insert/update into the dimension_marketing_channel table.\
+   on nh.channel_id = m.channel_id \
+   -- and nh.source_system_sk = m.source_system_sk\
+   -- channel_id & source_system_sk columns determine if there is a unique record in the dimension_marketing_channel table\
+   and nh.dw_start_date = m.dw_start_date\
+   and nh.dw_current_ind = 'Y' --only update current rows (needed?)\
+when matched and m.dml_type = 'U' --SCD2 "Update"\
+then update -- Indicates the original record has been updated and is no longer current and the end_time needs to be stamped\
+    set nh.dw_stop_date = m.dw_stop_date,\
+        nh.dw_current_ind = 'N'    \
+when matched and m.dml_type = 'D' \
+then update -- Deletes are essentially logical deletes. The record is stamped and no newer version is inserted\
+    set nh.dw_stop_date = m.dw_stop_date,\
+        nh.dw_current_ind = 'N'\
+--New for non-SCD2 UPDATE\
+when matched and m.dml_type = 'UPDATE' and nh.dw_current_ind = 'Y'\
+then update\
+set nh.hosted_client_sk= m.hosted_client_sk,\
+nh.channel_setid=m.channel_setid, \
+nh.channel_desc=m.channel_desc,\
+nh.channel_type_code=m.channel_type_code, \
+nh.channel_type_name=m.channel_type_name,\
+nh.channel_type_desc=m.channel_type_desc,\
+nh.channel_activity_code=m.channel_activity_code,\
+nh.channel_activity_name=m.channel_activity_name,\
+nh.channel_activity_desc=m.channel_activity_desc,\
+nh.dw_load_date = current_timestamp()\
+--End UPDATE\
+when not matched and m.dml_type = 'I' then insert -- Inserting a new marketing_channel_id and updating an existing one both result in an insert\
+(marketing_channel_sk, channel_id, channel_setid, channel_name, source_system_sk, \
+channel_desc, channel_type_code, channel_type_name, channel_type_desc, channel_activity_code, channel_activity_name, channel_activity_desc,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind)\
+values (seq_marketing_channel.nextval, m.channel_id, channel_setid, channel_name, source_system_sk, \
+channel_desc, channel_type_code, channel_type_name, channel_type_desc, channel_activity_code, channel_activity_name, channel_activity_desc,\
+m.hosted_client_sk, m.dw_start_date, m.dw_stop_date, m.dw_current_ind);\
+-- END MERGE\
+\
+\
+-- Resume the task\
+alter task populate_dimension_marketing_channel suspend;\
+alter task populate_dimension_marketing_channel resume;\
+show tasks;}
