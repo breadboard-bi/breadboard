@@ -1,0 +1,239 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs32 \cf2 \expnd0\expndtw0\kerning0
+/* \
+Initial pattern to load an MDW dimension from a stage table using Slowly Changing Dimension (SCD2) logic on Snowflake.\
+\
+This script builds a sequence, stream, view, and task.  A Snowflake warehouse is also required, as well as the appropriate privileges.\
+\
+The core logic is based on an article written by John Gontarz, Sales Engineer at Snowflake - https://community.snowflake.com/s/article/Building-a-Type-2-Slowly-Changing-Dimension-in-Snowflake-Using-Streams-and-Tasks-Part-1.  \
+\
+Modifications made to work with the existing MDW enterprise dimensional model and to limit which columns trigger SCD2 insert/update versus a regular update.\
+\
+Assumes the stage_product and dimension_product MDW tables have already been built. See mdw_master_snowflake.txt for the DDL.\
+*/\
+\
+create or replace sequence seq_product start with 1 increment by 1;\
+\
+create or replace stream stage_product_changes on table stage_product;\
+\
+--generates data to load into the dimension_product table.\
+create or replace view product_change_data as\
+-- This first subquery figures out what to do when data is inserted into the stage_product table\
+-- An insert to the stage_product table results in an INSERT to the dimension_product table\
+select product_sk, product_id, product_name, product_desc, source_system_sk, \
+\
+product_setid, product_code, manufacturer_product_id, product_kit_ind, product_upper_margin_pct, product_lower_margin_pct, product_status_code, product_status_name, product_status_desc, product_status_date, product_default_uom_id, product_category_code, product_category_name, product_category_desc, product_subcategory_code, product_subcategory_name, product_subcategory_desc, parent_product_category_name, parent_product_category_desc, product_brand_code, product_brand_name, product_brand_desc, product_family_code, product_family_name, product_family_desc, product_department_name, weight_qty, weight_uom_id, length_qty, width_qty, height_qty, dimension_uom_id, volume_qty, volume_uom_id, sell_unit_qty, case_unit_qty, pallet_unit_qty, unit_uom_id, inventory_item_id, ean_upc_number, alt_ean_upc_number, ean_upc_type_name, alt_ean_upc_type_name, price_each_amt, cost_each_amt, currency_id,\
+\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, 'I' as dml_type\
+from (select product_sk, product_id, product_name, product_desc, source_system_sk, \
+product_setid, product_code, manufacturer_product_id, product_kit_ind, product_upper_margin_pct, product_lower_margin_pct, product_status_code, product_status_name, product_status_desc, product_status_date, product_default_uom_id, product_category_code, product_category_name, product_category_desc, product_subcategory_code, product_subcategory_name, product_subcategory_desc, parent_product_category_name, parent_product_category_desc, product_brand_code, product_brand_name, product_brand_desc, product_family_code, product_family_name, product_family_desc, product_department_name, weight_qty, weight_uom_id, length_qty, width_qty, height_qty, dimension_uom_id, volume_qty, volume_uom_id, sell_unit_qty, case_unit_qty, pallet_unit_qty, unit_uom_id, inventory_item_id, ean_upc_number, alt_ean_upc_number, ean_upc_type_name, alt_ean_upc_type_name, price_each_amt, cost_each_amt, currency_id,\
+hosted_client_sk, dw_load_date as dw_start_date,\
+lag(dw_load_date) over (partition by product_id order by dw_load_date desc) as dw_stop_date_raw, \
+--Lag accesses dimension versions with the same key without having to join the table to itself.\
+--if multiple rows with same key are found, the latest is marked as current, the rest are loaded as not current.\
+case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+--case when dw_stop_date is null then 'Y' else 'N' end as dw_current_ind\
+case when dw_stop_date = '9999-12-31'::timestamp_ntz then 'Y' else 'N' end as dw_current_ind\
+from (select null as product_sk, --subsequent merge will insert SEQ_product.nextval.  This keeps the column count in the union consistent with other subqueries that need to sk.\
+product_id, product_name, product_desc, source_system_id as source_system_sk, \
+product_setid, product_code, manufacturer_product_id, product_kit_ind, product_upper_margin_pct, product_lower_margin_pct, product_status_code, product_status_name, product_status_desc, product_status_date, product_default_uom_id, product_category_code, product_category_name, product_category_desc, product_subcategory_code, product_subcategory_name, product_subcategory_desc, parent_product_category_name, parent_product_category_desc, product_brand_code, product_brand_name, product_brand_desc, product_family_code, product_family_name, product_family_desc, product_department_name, weight_qty, weight_uom_id, length_qty, width_qty, height_qty, dimension_uom_id, volume_qty, volume_uom_id, sell_unit_qty, case_unit_qty, pallet_unit_qty, unit_uom_id, inventory_item_id, ean_upc_number, alt_ean_upc_number, ean_upc_type_name, alt_ean_upc_type_name, price_each_amt, cost_each_amt, currency_id,\
+hosted_client_sk, dw_load_date\
+    from stage_product_changes --stream on stage_product\
+    where metadata$action = 'INSERT'\
+    and metadata$isupdate = 'FALSE'))\
+--End INSERT subquery\
+union\
+-- START SCD2 Update LOGIC\
+-- This subquery figures out what to do when SCD2 trigger columns are updated in the stage_product table\
+-- An update to one or more trigger columns in the stage_product table results in an update AND an insert to the\
+-- dimension_product table\
+-- The subquery below generates two records, each with a different dml_type\
+select product_sk, product_id, product_name, product_desc, source_system_sk, \
+product_setid, product_code, manufacturer_product_id, product_kit_ind, product_upper_margin_pct, product_lower_margin_pct, product_status_code, product_status_name, product_status_desc, product_status_date, product_default_uom_id, product_category_code, product_category_name, product_category_desc, product_subcategory_code, product_subcategory_name, product_subcategory_desc, parent_product_category_name, parent_product_category_desc, product_brand_code, product_brand_name, product_brand_desc, product_family_code, product_family_name, product_family_desc, product_department_name, weight_qty, weight_uom_id, length_qty, width_qty, height_qty, dimension_uom_id, volume_qty, volume_uom_id, sell_unit_qty, case_unit_qty, pallet_unit_qty, unit_uom_id, inventory_item_id, ean_upc_number, alt_ean_upc_number, ean_upc_type_name, alt_ean_upc_type_name, price_each_amt, cost_each_amt, currency_id,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type\
+from (select product_sk, product_id, product_name, product_desc, source_system_sk, \
+product_setid, product_code, manufacturer_product_id, product_kit_ind, product_upper_margin_pct, product_lower_margin_pct, product_status_code, product_status_name, product_status_desc, product_status_date, product_default_uom_id, product_category_code, product_category_name, product_category_desc, product_subcategory_code, product_subcategory_name, product_subcategory_desc, parent_product_category_name, parent_product_category_desc, product_brand_code, product_brand_name, product_brand_desc, product_family_code, product_family_name, product_family_desc, product_department_name, weight_qty, weight_uom_id, length_qty, width_qty, height_qty, dimension_uom_id, volume_qty, volume_uom_id, sell_unit_qty, case_unit_qty, pallet_unit_qty, unit_uom_id, inventory_item_id, ean_upc_number, alt_ean_upc_number, ean_upc_type_name, alt_ean_upc_type_name, price_each_amt, cost_each_amt, currency_id,\
+hosted_client_sk, \
+    dw_start_date as dw_start_date,  --was dw_load_date\
+    lag(dw_load_date) over (partition by product_id order by dw_load_date desc) as dw_stop_date_raw,\
+    case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+    case when dw_stop_date_raw is null then 'Y' else 'N' end as dw_current_ind,\
+    dml_type\
+    from (-- Identify data to insert into dimension_product table\
+        select null as product_sk, --was c.\
+        c.product_id, c.product_name, c.product_desc, c.source_system_id as source_system_sk,\
+c.product_setid, c.product_code, c.manufacturer_product_id, c.product_kit_ind, c.product_upper_margin_pct, c.product_lower_margin_pct, c.product_status_code, c.product_status_name, c.product_status_desc, c.product_status_date, c.product_default_uom_id, c.product_category_code, c.product_category_name, c.product_category_desc, c.product_subcategory_code, c.product_subcategory_name, c.product_subcategory_desc, c.parent_product_category_name, c.parent_product_category_desc, c.product_brand_code, c.product_brand_name, c.product_brand_desc, c.product_family_code, c.product_family_name, c.product_family_desc, c.product_department_name, c.weight_qty, c.weight_uom_id, c.length_qty, c.width_qty, c.height_qty, c.dimension_uom_id, c.volume_qty, c.volume_uom_id, c.sell_unit_qty, c.case_unit_qty, c.pallet_unit_qty, c.unit_uom_id, c.inventory_item_id, c.ean_upc_number, c.alt_ean_upc_number, c.ean_upc_type_name, c.alt_ean_upc_type_name, c.price_each_amt, c.cost_each_amt, c.currency_id,\
+        c.hosted_client_sk, c.dw_load_date as dw_start_date, --deliberate otherwise will match and not insert.\
+        c.dw_load_date, 'I' as dml_type\
+        from stage_product_changes c --stream\
+        join dimension_product d \
+        on c.product_id = d.product_id \
+        -- SCD2 trigger columns identified below are product_name and product_desc. Changes to other columns will be\
+        -- excluded and handled in the update section.\
+        and (d.product_name <> c.product_name or d.product_desc <> c.product_desc)\
+        where c.metadata$action = 'INSERT'\
+        and c.metadata$isupdate = 'TRUE'\
+        and d.dw_current_ind = 'Y'\
+        union\
+        -- Identify data in dimension_product table that needs to be updated, i.e., given a stop date.\
+        select product_sk, product_id, product_name, product_desc, source_system_sk, \
+        product_setid, product_code, manufacturer_product_id, product_kit_ind, product_upper_margin_pct, product_lower_margin_pct, product_status_code, product_status_name, product_status_desc, product_status_date, product_default_uom_id, product_category_code, product_category_name, product_category_desc, product_subcategory_code, product_subcategory_name, product_subcategory_desc, parent_product_category_name, parent_product_category_desc, product_brand_code, product_brand_name, product_brand_desc, product_family_code, product_family_name, product_family_desc, product_department_name, weight_qty, weight_uom_id, length_qty, width_qty, height_qty, dimension_uom_id, volume_qty, volume_uom_id, sell_unit_qty, case_unit_qty, pallet_unit_qty, unit_uom_id, inventory_item_id, ean_upc_number, alt_ean_upc_number, ean_upc_type_name, alt_ean_upc_type_name, price_each_amt, cost_each_amt, \
+0 as currency_sk, -- to do: use currency_id to retrieve currency_sk,\
+hosted_client_sk, dw_start_date, dw_load_date,\
+        'U' as dml_type\
+        from dimension_product\
+        where product_sk in (select distinct d.product_sk\
+                                from stage_product_changes c --stream\
+                                --ADDED JOIN TO DIM HERE THAT includes triggers are not equal\
+                                join dimension_product d \
+                                on c.product_id = d.product_id \
+                                and c.source_system_id = d.source_system_sk\
+                                and (d.product_name <> c.product_name or d.product_desc <> c.product_desc)\
+                                where c.metadata$action = 'INSERT'\
+                                and c.metadata$isupdate = 'TRUE')\
+                                and dw_current_ind = 'Y' --??\
+                                ))\
+-- END SCD2 logic.    \
+-- START NON SCD2 UPDATES - changes in stage that do not trigger a new insert in the dimension\
+union\
+select product_sk, product_id, product_name, product_desc, source_system_sk, \
+product_setid, product_code, manufacturer_product_id, product_kit_ind, product_upper_margin_pct, product_lower_margin_pct, product_status_code, product_status_name, product_status_desc, product_status_date, product_default_uom_id, product_category_code, product_category_name, product_category_desc, product_subcategory_code, product_subcategory_name, product_subcategory_desc, parent_product_category_name, parent_product_category_desc, product_brand_code, product_brand_name, product_brand_desc, product_family_code, product_family_name, product_family_desc, product_department_name, weight_qty, weight_uom_id, length_qty, width_qty, height_qty, dimension_uom_id, volume_qty, volume_uom_id, sell_unit_qty, case_unit_qty, pallet_unit_qty, unit_uom_id, inventory_item_id, ean_upc_number, alt_ean_upc_number, ean_upc_type_name, alt_ean_upc_type_name, price_each_amt, cost_each_amt, currency_id,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type\
+from (select product_sk, product_id, product_name, product_desc, source_system_sk, \
+product_setid, product_code, manufacturer_product_id, product_kit_ind, product_upper_margin_pct, product_lower_margin_pct, product_status_code, product_status_name, product_status_desc, product_status_date, product_default_uom_id, product_category_code, product_category_name, product_category_desc, product_subcategory_code, product_subcategory_name, product_subcategory_desc, parent_product_category_name, parent_product_category_desc, product_brand_code, product_brand_name, product_brand_desc, product_family_code, product_family_name, product_family_desc, product_department_name, weight_qty, weight_uom_id, length_qty, width_qty, height_qty, dimension_uom_id, volume_qty, volume_uom_id, sell_unit_qty, case_unit_qty, pallet_unit_qty, unit_uom_id, inventory_item_id, ean_upc_number, alt_ean_upc_number, ean_upc_type_name, alt_ean_upc_type_name, price_each_amt, cost_each_amt, currency_id,\
+hosted_client_sk, dw_start_date as dw_start_date, --was dw_load_date\
+    lag(dw_load_date) over (partition by product_id order by dw_load_date desc) as dw_stop_date_raw,\
+    case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+    case when dw_stop_date_raw is null then 'Y' else 'N' end as dw_current_ind,\
+    dml_type\
+    from (-- Identify data to insert into dimension_product table\
+        select distinct d.product_sk, --was c.\
+        c.product_id, c.product_name, c.product_desc, c.source_system_id as\
+        source_system_sk, \
+        c.product_setid, c.product_code, c.manufacturer_product_id, c.product_kit_ind, c.product_upper_margin_pct, c.product_lower_margin_pct, c.product_status_code, c.product_status_name, c.product_status_desc, c.product_status_date, c.product_default_uom_id, c.product_category_code, c.product_category_name, c.product_category_desc, c.product_subcategory_code, c.product_subcategory_name, c.product_subcategory_desc, c.parent_product_category_name, c.parent_product_category_desc, c.product_brand_code, c.product_brand_name, c.product_brand_desc, c.product_family_code, c.product_family_name, c.product_family_desc, c.product_department_name, c.weight_qty, c.weight_uom_id, c.length_qty, c.width_qty, c.height_qty, c.dimension_uom_id, c.volume_qty, c.volume_uom_id, c.sell_unit_qty, c.case_unit_qty, c.pallet_unit_qty, c.unit_uom_id, c.inventory_item_id, c.ean_upc_number, c.alt_ean_upc_number, c.ean_upc_type_name, c.alt_ean_upc_type_name, c.price_each_amt, c.cost_each_amt, c.currency_id,\
+        c.hosted_client_sk, d.dw_start_date, c.dw_load_date, 'UPDATE' as dml_type\
+        from stage_product_changes c --stream\
+        join dimension_product d \
+        on c.product_id = d.product_id \
+        and d.product_name = c.product_name and d.product_desc = c.product_desc\
+        and c.dw_soft_delete_ind = 'N' --excludes soft delete updates (processed in delete section)\
+        where c.metadata$action = 'INSERT'\
+        and c.metadata$isupdate = 'TRUE'\
+                                ))\
+--END NON-SCD2 UPDATES\
+union\
+-- This subquery figures out what to do when data is deleted from the stage_product table (hard or soft)\
+-- A deletion from the stage_product table results in an update to the dimension_product table\
+select product_sk, product_id, product_name, product_desc, source_system_sk, \
+product_setid, product_code, manufacturer_product_id, product_kit_ind, product_upper_margin_pct, product_lower_margin_pct, product_status_code, product_status_name, product_status_desc, product_status_date, product_default_uom_id, product_category_code, product_category_name, product_category_desc, product_subcategory_code, product_subcategory_name, product_subcategory_desc, parent_product_category_name, parent_product_category_desc, product_brand_code, product_brand_name, product_brand_desc, product_family_code, product_family_name, product_family_desc, product_department_name, weight_qty, weight_uom_id, length_qty, width_qty, height_qty, dimension_uom_id, volume_qty, volume_uom_id, sell_unit_qty, case_unit_qty, pallet_unit_qty, unit_uom_id, inventory_item_id, ean_upc_number, alt_ean_upc_number, ean_upc_type_name, alt_ean_upc_type_name, price_each_amt, cost_each_amt, currency_id,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type \
+from (\
+select nh.product_sk,\
+nms.product_id, null as product_name, null as product_desc, nms.source_system_id as source_system_sk,\
+null as product_setid, null as product_code, null as manufacturer_product_id, null as product_kit_ind, null as product_upper_margin_pct, null as product_lower_margin_pct, null as product_status_code, null as product_status_name, null as product_status_desc, null as product_status_date, null as product_default_uom_id, null as product_category_code, null as product_category_name, null as product_category_desc, null as product_subcategory_code, null as product_subcategory_name, null as product_subcategory_desc, null as parent_product_category_name, null as parent_product_category_desc, null as product_brand_code, null as product_brand_name, null as product_brand_desc, null as product_family_code, null as product_family_name, null as product_family_desc, null as product_department_name, null as weight_qty, null as weight_uom_id, null as length_qty, null as width_qty, null as height_qty, null as dimension_uom_id, null as volume_qty, null as volume_uom_id, null as sell_unit_qty, null as case_unit_qty, null as pallet_unit_qty, null as unit_uom_id, null as inventory_item_id, null as ean_upc_number, null as alt_ean_upc_number, null as ean_upc_type_name, null as alt_ean_upc_type_name, null as price_each_amt, null as cost_each_amt, null as currency_id,\
+null as hosted_client_sk, nh.dw_start_date, current_timestamp()::timestamp_ntz as dw_stop_date, null as dw_current_ind, 'D' as dml_type\
+from dimension_product nh\
+inner join stage_product_changes nms\
+on nh.product_id = nms.product_id\
+where ((nms.metadata$action = 'DELETE' and nms.metadata$isupdate = 'FALSE') OR (nms.metadata$action = 'INSERT' AND nms.dw_soft_delete_ind = 'Y'))\
+and nh.dw_current_ind = 'Y'\
+order by nms.dw_load_date);\
+--END VIEW DDL\
+\
+--Create Task\
+create or replace task populate_dimension_product warehouse = mdw_wh schedule = '1 minute' when system$stream_has_data('stage_product_changes')\
+as \
+--START MERGE\
+merge into dimension_product nh --Target table to merge changes from STAGE_product into\
+using product_change_data m --view\
+-- The product_change_data view holds the logic that determines what to insert/update into the DIMENSION_product table.\
+   on nh.product_id = m.product_id \
+   -- and nh.source_system_sk = m.source_system_sk\
+   -- product_id & source_system_sk columns determine if there is a unique record in the DIMENSION_product table\
+   and nh.dw_start_date = m.dw_start_date\
+   and nh.dw_current_ind = 'Y' --only update current rows (needed?)\
+when matched and m.dml_type = 'U' --SCD2 "Update"\
+then update -- Indicates the original record has been updated and is no longer current and the end_time needs to be stamped\
+    set nh.dw_stop_date = m.dw_stop_date,\
+        nh.dw_current_ind = 'N'    \
+when matched and m.dml_type = 'D' \
+then update -- Deletes are essentially logical deletes. The record is stamped and no newer version is inserted\
+    set nh.dw_stop_date = m.dw_stop_date,\
+        nh.dw_current_ind = 'N'\
+--New for non-SCD2 UPDATE\
+when matched and m.dml_type = 'UPDATE' and nh.dw_current_ind = 'Y'\
+then update\
+set \
+nh.product_setid=m.product_setid,\
+nh.product_code=m.product_code,\
+nh.manufacturer_product_id=m.manufacturer_product_id,\
+nh.product_kit_ind=m.product_kit_ind,\
+nh.product_upper_margin_pct=m.product_upper_margin_pct,\
+nh.product_lower_margin_pct=m.product_lower_margin_pct,\
+nh.product_status_code=m.product_status_code,\
+nh.product_status_name=m.product_status_name,\
+nh.product_status_desc=m.product_status_desc,\
+nh.product_status_date=m.product_status_date,\
+nh.product_default_uom_id=m.product_default_uom_id,\
+nh.product_category_code=m.product_category_code,\
+nh.product_category_name=m.product_category_name,\
+nh.product_category_desc=m.product_category_desc,\
+nh.product_subcategory_code=m.product_subcategory_code,\
+nh.product_subcategory_name=m.product_subcategory_name,\
+nh.product_subcategory_desc=m.product_subcategory_desc,\
+nh.parent_product_category_name=m.parent_product_category_name,\
+nh.parent_product_category_desc=m.parent_product_category_desc,\
+nh.product_brand_code=m.product_brand_code,\
+nh.product_brand_name=m.product_brand_name,\
+nh.product_brand_desc=m.product_brand_desc,\
+nh.product_family_code=m.product_family_code,\
+nh.product_family_name=m.product_family_name,\
+nh.product_family_desc=m.product_family_desc,\
+nh.product_department_name=m.product_department_name,\
+nh.weight_qty=m.weight_qty,\
+nh.weight_uom_id=m.weight_uom_id,\
+nh.length_qty=m.length_qty, \
+nh.width_qty=m.width_qty,\
+nh.height_qty=m.height_qty,\
+nh.dimension_uom_id=m.dimension_uom_id,\
+nh.volume_qty=m.volume_qty,\
+nh.volume_uom_id=m.volume_uom_id,\
+nh.sell_unit_qty=m.sell_unit_qty,\
+nh.case_unit_qty=m.case_unit_qty,\
+nh.pallet_unit_qty=m.pallet_unit_qty,\
+nh.unit_uom_id=m.unit_uom_id,\
+nh.inventory_item_id=m.inventory_item_id,\
+nh.ean_upc_number=m.ean_upc_number,\
+nh.alt_ean_upc_number=m.alt_ean_upc_number,\
+nh.ean_upc_type_name=m.ean_upc_type_name,\
+nh.alt_ean_upc_type_name=m.alt_ean_upc_type_name,\
+nh.price_each_amt=m.price_each_amt,\
+nh.cost_each_amt=m.cost_each_amt,\
+--nh.currency_id=m.currency_id,-- to do: use currency_id to retrieve currency_sk,\
+nh.hosted_client_sk = m.hosted_client_sk,\
+nh.dw_load_date = current_timestamp()\
+--End UPDATE\
+when not matched and m.dml_type = 'I' then insert -- Inserting a new product_id and updating an existing one both result in an insert\
+(product_sk, product_id, product_name, product_desc, source_system_sk, \
+product_setid, product_code, manufacturer_product_id, product_kit_ind, product_upper_margin_pct, product_lower_margin_pct, product_status_code, product_status_name, product_status_desc, product_status_date, product_default_uom_id, product_category_code, product_category_name, product_category_desc, product_subcategory_code, product_subcategory_name, product_subcategory_desc, parent_product_category_name, parent_product_category_desc, product_brand_code, product_brand_name, product_brand_desc, product_family_code, product_family_name, product_family_desc, product_department_name, weight_qty, weight_uom_id, length_qty, width_qty, height_qty, dimension_uom_id, volume_qty, volume_uom_id, sell_unit_qty, case_unit_qty, pallet_unit_qty, unit_uom_id, inventory_item_id, ean_upc_number, alt_ean_upc_number, ean_upc_type_name, alt_ean_upc_type_name, price_each_amt, cost_each_amt, \
+currency_sk, -- to do: use currency_id to retrieve currency_sk,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind)\
+values (SEQ_product.nextval, m.product_id, m.product_name, m.product_desc, m.source_system_sk, \
+        m.product_setid, m.product_code, m.manufacturer_product_id, m.product_kit_ind, m.product_upper_margin_pct, m.product_lower_margin_pct, m.product_status_code, m.product_status_name, m.product_status_desc, m.product_status_date, m.product_default_uom_id, m.product_category_code, m.product_category_name, m.product_category_desc, m.product_subcategory_code, m.product_subcategory_name, m.product_subcategory_desc, m.parent_product_category_name, m.parent_product_category_desc, m.product_brand_code, m.product_brand_name, m.product_brand_desc, m.product_family_code, m.product_family_name, m.product_family_desc, m.product_department_name, m.weight_qty, m.weight_uom_id, m.length_qty, m.width_qty, m.height_qty, m.dimension_uom_id, m.volume_qty, m.volume_uom_id, m.sell_unit_qty, m.case_unit_qty, m.pallet_unit_qty, m.unit_uom_id, m.inventory_item_id, m.ean_upc_number, m.alt_ean_upc_number, m.ean_upc_type_name, m.alt_ean_upc_type_name, m.price_each_amt, m.cost_each_amt,0,-- to do: use currency_id to retrieve currency_sk,\
+m.hosted_client_sk, m.dw_start_date, m.dw_stop_date, m.dw_current_ind);\
+-- END MERGE\
+--END TASK\
+\
+--Schedule Task\
+alter task populate_dimension_product resume;\
+show tasks;\
+\
+-- Suspend the task (as needed)\
+alter task populate_dimension_product suspend;}
