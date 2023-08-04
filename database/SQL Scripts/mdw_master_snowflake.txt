@@ -4463,6 +4463,7 @@ CREATE TABLE DIMENSION_PRODUCT
   COST_EACH_AMT Decimal(26,2)
  COMMENT 'The each cost of the product.  This is a sum of all costs that can be attributed to a product (e.g., raw material, transportation, indirect costs, etc.).',
   CURRENCY_SK Int DEFAULT 0,
+INVENTORY_ITEM_ID Varchar(36) COMMENT 'The inventory item identifier for the product (finished good) in the source system.',
   DW_VERSION_NUMBER Smallint DEFAULT 1
  COMMENT 'The version number for the row.',
   DW_CURRENT_IND Char(1) DEFAULT 'Y'
