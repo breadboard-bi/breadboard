@@ -1,6 +1,6 @@
 Breadboard BI
 =============
-These analytic modules - long helping companies in Australia, Europe, and North America - have been made available as-is as a tookit to kickstart development efforts. Configuration and use of the original modules required Pentaho and database developer skills.  
+These analytic modules - long helping companies in Australia, Europe, and North America report on SAP, JDE, PeopleSoft, and custom-built solutions - were made available years ago as-is as a tookit to kickstart development efforts. Configuration and use of the original modules required Pentaho and database developer skills.  
 
 More recently the DDL for Snowflake has been added as well as a growing number of draft Snowflake objects (sequences, streams, views, and tasks) to load dimensions featuring SCD2 logic.  This effort is part of a lift & shift POC to understand the level of effort required to offer the solution on Snowflake.
 
