@@ -1,0 +1,273 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww14480\viewh13040\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 /* \
+Initial pattern to load an MDW dimension from a stage table using Slowly Changing Dimension (SCD2) logic on Snowflake.\
+\
+This script builds a sequence, stream, view, and task.  A Snowflake warehouse is also required, as well as the appropriate privileges.\
+\
+The core logic is based on an article written by John Gontarz, Sales Engineer at Snowflake - https://community.snowflake.com/s/article/Building-a-Type-2-Slowly-Changing-Dimension-in-Snowflake-Using-Streams-and-Tasks-Part-1.  \
+\
+Modfiications made to work with the existing MDW enterprise dimensional model and to limit which columns trigger SCD2 insert/update versus a regular update..\
+*/\
+\
+create or replace sequence  seq_person start with 1 increment by 1;\
+\
+create or replace stream stage_person_changes on table stage_person; -- stream nation_table_changes\
+\
+--generates data to load person into the dimension_person table.\
+create or replace view person_change_data as\
+-- This first subquery figures out what to do when data is inserted into the stage_person table\
+-- An insert to the stage_person table results in an INSERT to the dimension_person table\
+select person_sk, person_id, person_setid, source_system_sk, \
+agent_id, employee_id, alternate_employee_id, national_id, applicant_id, application_date, birth_date, death_date, last_name, middle_name, first_name, full_name, marital_status_code, marital_status_name, marital_status_desc, marital_status_date, gender_code, gender_desc, full_time_student_ind, us_work_eligibility_ind, eu_work_eligibilty_ind, us_citizen_proof_doc1_name, us_citizen_proof_doc2_name, military_status_code, highest_education_level_code, highest_education_level_name, highest_education_level_desc, ethnic_group_code, ethnic_group_name, ethnic_group_desc, high_compensation_ind, high_compensation_plan_ind, experience_year_qty, regulatory_region_code, disabled_ind, disabled_vetran_ind, effective_date, sales_rep_ind, service_rep_ind, home_address_line1_desc, home_address_line2_desc, home_address_line3_desc, home_address_line4_desc, home_city_name, home_state_province_code, home_state_province_name, home_postal_code, home_geography_code, home_country_name, home_phone_country_code, home_phone_region_code, home_phone_number, cell_phone_number, business_phone_number, sales_user_type_code, sales_user_type_desc, quota_type_code, quota_type_desc, unit_quota_type_code, unit_quota_type_desc, manager_quota_type_code, manager_quota_type_desc, jobcode_id, jobcode_setid, location_id, locaton_setid, employee_class_code, full_part_time_ind, full_part_time_desc, reg_temp_ind, reg_temp_desc, dept_id, dept_setid, dept_name, dept_desc, sales_region_code, sales_region_desc, employee_class_id, employee_class_name, employee_class_desc, regular_temporary_ind, regular_temporary_name, regular_temporary_desc, person_status_code, person_status_name, person_status_desc, person_status_date, person_type_id, person_type_name, person_type_desc,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, 'I' as dml_type\
+from (select person_sk, person_id, person_setid, source_system_sk, \
+agent_id, employee_id, alternate_employee_id, national_id, applicant_id, application_date, birth_date, death_date, last_name, middle_name, first_name, full_name, marital_status_code, marital_status_name, marital_status_desc, marital_status_date, gender_code, gender_desc, full_time_student_ind, us_work_eligibility_ind, eu_work_eligibilty_ind, us_citizen_proof_doc1_name, us_citizen_proof_doc2_name, military_status_code, highest_education_level_code, highest_education_level_name, highest_education_level_desc, ethnic_group_code, ethnic_group_name, ethnic_group_desc, high_compensation_ind, high_compensation_plan_ind, experience_year_qty, regulatory_region_code, disabled_ind, disabled_vetran_ind, effective_date, sales_rep_ind, service_rep_ind, home_address_line1_desc, home_address_line2_desc, home_address_line3_desc, home_address_line4_desc, home_city_name, home_state_province_code, home_state_province_name, home_postal_code, home_geography_code, home_country_name, home_phone_country_code, home_phone_region_code, home_phone_number, cell_phone_number, business_phone_number, sales_user_type_code, sales_user_type_desc, quota_type_code, quota_type_desc, unit_quota_type_code, unit_quota_type_desc, manager_quota_type_code, manager_quota_type_desc, jobcode_id, jobcode_setid, location_id, locaton_setid, employee_class_code, full_part_time_ind, full_part_time_desc, reg_temp_ind, reg_temp_desc, dept_id, dept_setid, dept_name, dept_desc, sales_region_code, sales_region_desc, employee_class_id, employee_class_name, employee_class_desc, regular_temporary_ind, regular_temporary_name, regular_temporary_desc, person_status_code, person_status_name, person_status_desc, person_status_date, person_type_id, person_type_name, person_type_desc,\
+hosted_client_sk, dw_load_date as dw_start_date,\
+lag(dw_load_date) over (partition by person_id order by dw_load_date desc) as dw_stop_date_raw, \
+--Lag accesses dimension versions with the same key without having to join the table to itself.\
+--if multiple rows with same key are found, the latest is marked as current, the rest are loaded as not current.\
+case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+--case when dw_stop_date is null then 'Y' else 'N' end as dw_current_ind\
+case when dw_stop_date = '9999-12-31'::timestamp_ntz then 'Y' else 'N' end as dw_current_ind\
+from (select null as person_sk, --subsequent merge will insert SEQ_person.nextval.  This keeps the column count in the union consistent with other subqueries that need the sk.\
+person_id, person_setid, source_system_id as source_system_sk, \
+agent_id, employee_id, alternate_employee_id, national_id, applicant_id, application_date, birth_date, death_date, last_name, middle_name, first_name, full_name, marital_status_code, marital_status_name, marital_status_desc, marital_status_date, gender_code, gender_desc, full_time_student_ind, us_work_eligibility_ind, eu_work_eligibilty_ind, us_citizen_proof_doc1_name, us_citizen_proof_doc2_name, military_status_code, highest_education_level_code, highest_education_level_name, highest_education_level_desc, ethnic_group_code, ethnic_group_name, ethnic_group_desc, high_compensation_ind, high_compensation_plan_ind, experience_year_qty, regulatory_region_code, disabled_ind, disabled_vetran_ind, effective_date, sales_rep_ind, service_rep_ind, home_address_line1_desc, home_address_line2_desc, home_address_line3_desc, home_address_line4_desc, home_city_name, home_state_province_code, home_state_province_name, home_postal_code, home_geography_code, home_country_name, home_phone_country_code, home_phone_region_code, home_phone_number, cell_phone_number, business_phone_number, sales_user_type_code, sales_user_type_desc, quota_type_code, quota_type_desc, unit_quota_type_code, unit_quota_type_desc, manager_quota_type_code, manager_quota_type_desc, jobcode_id, jobcode_setid, location_id, locaton_setid, employee_class_code, full_part_time_ind, full_part_time_desc, reg_temp_ind, reg_temp_desc, dept_id, dept_setid, dept_name, dept_desc, sales_region_code, sales_region_desc, employee_class_id, employee_class_name, employee_class_desc, regular_temporary_ind, regular_temporary_name, regular_temporary_desc, person_status_code, person_status_name, person_status_desc, person_status_date, person_type_id, person_type_name, person_type_desc,\
+hosted_client_sk, dw_load_date\
+    from stage_person_changes --stream on stage_person\
+    where metadata$action = 'INSERT'\
+    and metadata$isupdate = 'FALSE'))\
+--End INSERT subquery\
+union\
+-- START SCD2 Update LOGIC\
+-- This subquery figures out what to do when SCD2 trigger columns are updated in the stage_person table\
+-- An update to one or more trigger columns in the stage_person table results in an update AND an insert to the\
+-- dimension_person table\
+-- The subquery below generates two records, each with a different dml_type\
+select person_sk, person_id, person_setid, source_system_sk, \
+agent_id, employee_id, alternate_employee_id, national_id, applicant_id, application_date, birth_date, death_date, last_name, middle_name, first_name, full_name, marital_status_code, marital_status_name, marital_status_desc, marital_status_date, gender_code, gender_desc, full_time_student_ind, us_work_eligibility_ind, eu_work_eligibilty_ind, us_citizen_proof_doc1_name, us_citizen_proof_doc2_name, military_status_code, highest_education_level_code, highest_education_level_name, highest_education_level_desc, ethnic_group_code, ethnic_group_name, ethnic_group_desc, high_compensation_ind, high_compensation_plan_ind, experience_year_qty, regulatory_region_code, disabled_ind, disabled_vetran_ind, effective_date, sales_rep_ind, service_rep_ind, home_address_line1_desc, home_address_line2_desc, home_address_line3_desc, home_address_line4_desc, home_city_name, home_state_province_code, home_state_province_name, home_postal_code, home_geography_code, home_country_name, home_phone_country_code, home_phone_region_code, home_phone_number, cell_phone_number, business_phone_number, sales_user_type_code, sales_user_type_desc, quota_type_code, quota_type_desc, unit_quota_type_code, unit_quota_type_desc, manager_quota_type_code, manager_quota_type_desc, jobcode_id, jobcode_setid, location_id, locaton_setid, employee_class_code, full_part_time_ind, full_part_time_desc, reg_temp_ind, reg_temp_desc, dept_id, dept_setid, dept_name, dept_desc, sales_region_code, sales_region_desc, employee_class_id, employee_class_name, employee_class_desc, regular_temporary_ind, regular_temporary_name, regular_temporary_desc, person_status_code, person_status_name, person_status_desc, person_status_date, person_type_id, person_type_name, person_type_desc,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type\
+from (select person_sk, person_id, person_setid, source_system_sk, \
+agent_id, employee_id, alternate_employee_id, national_id, applicant_id, application_date, birth_date, death_date, last_name, middle_name, first_name, full_name, marital_status_code, marital_status_name, marital_status_desc, marital_status_date, gender_code, gender_desc, full_time_student_ind, us_work_eligibility_ind, eu_work_eligibilty_ind, us_citizen_proof_doc1_name, us_citizen_proof_doc2_name, military_status_code, highest_education_level_code, highest_education_level_name, highest_education_level_desc, ethnic_group_code, ethnic_group_name, ethnic_group_desc, high_compensation_ind, high_compensation_plan_ind, experience_year_qty, regulatory_region_code, disabled_ind, disabled_vetran_ind, effective_date, sales_rep_ind, service_rep_ind, home_address_line1_desc, home_address_line2_desc, home_address_line3_desc, home_address_line4_desc, home_city_name, home_state_province_code, home_state_province_name, home_postal_code, home_geography_code, home_country_name, home_phone_country_code, home_phone_region_code, home_phone_number, cell_phone_number, business_phone_number, sales_user_type_code, sales_user_type_desc, quota_type_code, quota_type_desc, unit_quota_type_code, unit_quota_type_desc, manager_quota_type_code, manager_quota_type_desc, jobcode_id, jobcode_setid, location_id, locaton_setid, employee_class_code, full_part_time_ind, full_part_time_desc, reg_temp_ind, reg_temp_desc, dept_id, dept_setid, dept_name, dept_desc, sales_region_code, sales_region_desc, employee_class_id, employee_class_name, employee_class_desc, regular_temporary_ind, regular_temporary_name, regular_temporary_desc, person_status_code, person_status_name, person_status_desc, person_status_date, person_type_id, person_type_name, person_type_desc,\
+hosted_client_sk, dw_start_date as dw_start_date,  --was dw_load_date\
+    lag(dw_load_date) over (partition by person_id order by dw_load_date desc) as dw_stop_date_raw,\
+    case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+    case when dw_stop_date_raw is null then 'Y' else 'N' end as dw_current_ind,\
+    dml_type\
+    from (-- Identify data to insert into dimension_person table\
+        select null as person_sk, c.person_id, c.person_setid,\
+        c.source_system_id as source_system_sk,\
+c.agent_id, c.employee_id, c.alternate_employee_id, c.national_id, c.applicant_id, c.application_date, c.birth_date, c.death_date, c.last_name, c.middle_name, c.first_name, c.full_name, c.marital_status_code, c.marital_status_name, c.marital_status_desc, c.marital_status_date, c.gender_code, c.gender_desc, c.full_time_student_ind, c.us_work_eligibility_ind, c.eu_work_eligibilty_ind, c.us_citizen_proof_doc1_name, c.us_citizen_proof_doc2_name, c.military_status_code, c.highest_education_level_code, c.highest_education_level_name,c. highest_education_level_desc, c.ethnic_group_code, c.ethnic_group_name, c.ethnic_group_desc, c.high_compensation_ind, c.high_compensation_plan_ind, c.experience_year_qty, c.regulatory_region_code, c.disabled_ind, c.disabled_vetran_ind, c.effective_date, c.sales_rep_ind, c.service_rep_ind, c.home_address_line1_desc, c.home_address_line2_desc, c.home_address_line3_desc, c.home_address_line4_desc, c.home_city_name, c.home_state_province_code, c.home_state_province_name, c.home_postal_code, c.home_geography_code, c.home_country_name, c.home_phone_country_code, c.home_phone_region_code, c.home_phone_number, c.cell_phone_number, c.business_phone_number, c.sales_user_type_code, c.sales_user_type_desc, c.quota_type_code, c.quota_type_desc, c.unit_quota_type_code, c.unit_quota_type_desc, c.manager_quota_type_code, c.manager_quota_type_desc, c.jobcode_id, c.jobcode_setid, c.location_id, c.locaton_setid, c.employee_class_code, c.full_part_time_ind, c.full_part_time_desc, c.reg_temp_ind, c.reg_temp_desc, c.dept_id, c.dept_setid, c.dept_name, c.dept_desc, c.sales_region_code, c.sales_region_desc, c.employee_class_id, c.employee_class_name, c.employee_class_desc, c.regular_temporary_ind, c.regular_temporary_name, c.regular_temporary_desc, c.person_status_code, c.person_status_name, c.person_status_desc, c.person_status_date, c.person_type_id, c.person_type_name, c.person_type_desc,\
+        c.hosted_client_sk, \
+        c.dw_load_date as dw_start_date, --deliberate otherwise will match and not insert.\
+        c.dw_load_date, \
+        'I' as dml_type\
+        from stage_person_changes c --stream\
+        join dimension_person d \
+        on c.person_id = d.person_id \
+        -- SCD2 trigger columns identified below is full_name. Changes to other columns will be\
+        -- excluded and handled in the update section.\
+        and (d.full_name <> c.full_name)\
+        where c.metadata$action = 'INSERT'\
+        and c.metadata$isupdate = 'TRUE'\
+        and d.dw_current_ind = 'Y'\
+        union\
+        -- Identify data in dimension_person table that needs to be updated, i.e., given a stop date.\
+        select person_sk, person_id, person_setid, source_system_sk, \
+agent_id, employee_id, alternate_employee_id, national_id, applicant_id, application_date, birth_date, death_date, last_name, middle_name, first_name, full_name, marital_status_code, marital_status_name, marital_status_desc, marital_status_date, gender_code, gender_desc, full_time_student_ind, us_work_eligibility_ind, eu_work_eligibilty_ind, us_citizen_proof_doc1_name, us_citizen_proof_doc2_name, military_status_code, highest_education_level_code, highest_education_level_name, highest_education_level_desc, ethnic_group_code, ethnic_group_name, ethnic_group_desc, high_compensation_ind, high_compensation_plan_ind, experience_year_qty, regulatory_region_code, disabled_ind, disabled_vetran_ind, effective_date, sales_rep_ind, service_rep_ind, home_address_line1_desc, home_address_line2_desc, home_address_line3_desc, home_address_line4_desc, home_city_name, home_state_province_code, home_state_province_name, home_postal_code, home_geography_code, home_country_name, home_phone_country_code, home_phone_region_code, home_phone_number, cell_phone_number, business_phone_number, sales_user_type_code, sales_user_type_desc, quota_type_code, quota_type_desc, unit_quota_type_code, unit_quota_type_desc, manager_quota_type_code, manager_quota_type_desc, jobcode_id, jobcode_setid, location_id, locaton_setid, employee_class_code, full_part_time_ind, full_part_time_desc, reg_temp_ind, reg_temp_desc, dept_id, dept_setid, dept_name, dept_desc, sales_region_code, sales_region_desc, employee_class_id, employee_class_name, employee_class_desc, regular_temporary_ind, regular_temporary_name, regular_temporary_desc, person_status_code, person_status_name, person_status_desc, person_status_date, person_type_id, person_type_name, person_type_desc,\
+        null as hosted_client_sk, dw_start_date, dw_load_date,\
+        'U' as dml_type\
+        from dimension_person\
+        where person_sk in (select distinct d.person_sk\
+                                from stage_person_changes c --stream\
+                                --ADDED JOIN TO DIM HERE THAT includes triggers are not equal\
+                                join dimension_person d \
+                                on c.person_id = d.person_id \
+                                and c.source_system_id = d.source_system_sk\
+                                and (d.full_name <> c.full_name)\
+                                where c.metadata$action = 'INSERT'\
+                                and c.metadata$isupdate = 'TRUE')\
+                                and dw_current_ind = 'Y' --??\
+                                ))\
+-- END SCD2 logic.    \
+-- START NON SCD2 UPDATES - changes in stage that do not trigger a new insert in the dim.\
+union\
+select person_sk, person_id, person_setid, source_system_sk, \
+agent_id, employee_id, alternate_employee_id, national_id, applicant_id, application_date, birth_date, death_date, last_name, middle_name, first_name, full_name, marital_status_code, marital_status_name, marital_status_desc, marital_status_date, gender_code, gender_desc, full_time_student_ind, us_work_eligibility_ind, eu_work_eligibilty_ind, us_citizen_proof_doc1_name, us_citizen_proof_doc2_name, military_status_code, highest_education_level_code, highest_education_level_name, highest_education_level_desc, ethnic_group_code, ethnic_group_name, ethnic_group_desc, high_compensation_ind, high_compensation_plan_ind, experience_year_qty, regulatory_region_code, disabled_ind, disabled_vetran_ind, effective_date, sales_rep_ind, service_rep_ind, home_address_line1_desc, home_address_line2_desc, home_address_line3_desc, home_address_line4_desc, home_city_name, home_state_province_code, home_state_province_name, home_postal_code, home_geography_code, home_country_name, home_phone_country_code, home_phone_region_code, home_phone_number, cell_phone_number, business_phone_number, sales_user_type_code, sales_user_type_desc, quota_type_code, quota_type_desc, unit_quota_type_code, unit_quota_type_desc, manager_quota_type_code, manager_quota_type_desc, jobcode_id, jobcode_setid, location_id, locaton_setid, employee_class_code, full_part_time_ind, full_part_time_desc, reg_temp_ind, reg_temp_desc, dept_id, dept_setid, dept_name, dept_desc, sales_region_code, sales_region_desc, employee_class_id, employee_class_name, employee_class_desc, regular_temporary_ind, regular_temporary_name, regular_temporary_desc, person_status_code, person_status_name, person_status_desc, person_status_date, person_type_id, person_type_name, person_type_desc,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type\
+from (select person_sk, person_id, person_setid, source_system_sk, \
+agent_id, employee_id, alternate_employee_id, national_id, applicant_id, application_date, birth_date, death_date, last_name, middle_name, first_name, full_name, marital_status_code, marital_status_name, marital_status_desc, marital_status_date, gender_code, gender_desc, full_time_student_ind, us_work_eligibility_ind, eu_work_eligibilty_ind, us_citizen_proof_doc1_name, us_citizen_proof_doc2_name, military_status_code, highest_education_level_code, highest_education_level_name, highest_education_level_desc, ethnic_group_code, ethnic_group_name, ethnic_group_desc, high_compensation_ind, high_compensation_plan_ind, experience_year_qty, regulatory_region_code, disabled_ind, disabled_vetran_ind, effective_date, sales_rep_ind, service_rep_ind, home_address_line1_desc, home_address_line2_desc, home_address_line3_desc, home_address_line4_desc, home_city_name, home_state_province_code, home_state_province_name, home_postal_code, home_geography_code, home_country_name, home_phone_country_code, home_phone_region_code, home_phone_number, cell_phone_number, business_phone_number, sales_user_type_code, sales_user_type_desc, quota_type_code, quota_type_desc, unit_quota_type_code, unit_quota_type_desc, manager_quota_type_code, manager_quota_type_desc, jobcode_id, jobcode_setid, location_id, locaton_setid, employee_class_code, full_part_time_ind, full_part_time_desc, reg_temp_ind, reg_temp_desc, dept_id, dept_setid, dept_name, dept_desc, sales_region_code, sales_region_desc, employee_class_id, employee_class_name, employee_class_desc, regular_temporary_ind, regular_temporary_name, regular_temporary_desc, person_status_code, person_status_name, person_status_desc, person_status_date, person_type_id, person_type_name, person_type_desc,\
+hosted_client_sk, \
+    dw_start_date as dw_start_date, --was dw_load_date\
+    lag(dw_load_date) over (partition by person_id order by dw_load_date desc) as dw_stop_date_raw,\
+    case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+    case when dw_stop_date_raw is null then 'Y' else 'N' end as dw_current_ind,\
+    dml_type\
+    from (-- Identify data to insert into dimension_person table\
+        select distinct d.person_sk,\
+        c.person_id, c.person_setid, c.source_system_id as source_system_sk, \
+c.agent_id, c.employee_id, c.alternate_employee_id, c.national_id, c.applicant_id, c.application_date, c.birth_date, c.death_date, c.last_name, c.middle_name, c.first_name, c.full_name, c.marital_status_code, c.marital_status_name, c.marital_status_desc, c.marital_status_date, c.gender_code, c.gender_desc, c.full_time_student_ind, c.us_work_eligibility_ind, c.eu_work_eligibilty_ind, c.us_citizen_proof_doc1_name, c.us_citizen_proof_doc2_name, c.military_status_code, c.highest_education_level_code, c.highest_education_level_name,c. highest_education_level_desc, c.ethnic_group_code, c.ethnic_group_name, c.ethnic_group_desc, c.high_compensation_ind, c.high_compensation_plan_ind, c.experience_year_qty, c.regulatory_region_code, c.disabled_ind, c.disabled_vetran_ind, c.effective_date, c.sales_rep_ind, c.service_rep_ind, c.home_address_line1_desc, c.home_address_line2_desc, c.home_address_line3_desc, c.home_address_line4_desc, c.home_city_name, c.home_state_province_code, c.home_state_province_name, c.home_postal_code, c.home_geography_code, c.home_country_name, c.home_phone_country_code, c.home_phone_region_code, c.home_phone_number, c.cell_phone_number, c.business_phone_number, c.sales_user_type_code, c.sales_user_type_desc, c.quota_type_code, c.quota_type_desc, c.unit_quota_type_code, c.unit_quota_type_desc, c.manager_quota_type_code, c.manager_quota_type_desc, c.jobcode_id, c.jobcode_setid, c.location_id, c.locaton_setid, c.employee_class_code, c.full_part_time_ind, c.full_part_time_desc, c.reg_temp_ind, c.reg_temp_desc, c.dept_id, c.dept_setid, c.dept_name, c.dept_desc, c.sales_region_code, c.sales_region_desc, c.employee_class_id, c.employee_class_name, c.employee_class_desc, c.regular_temporary_ind, c.regular_temporary_name, c.regular_temporary_desc, c.person_status_code, c.person_status_name, c.person_status_desc, c.person_status_date, c.person_type_id, c.person_type_name, c.person_type_desc,\
+        c.hosted_client_sk, d.dw_start_date, c.dw_load_date, 'UPDATE' as dml_type\
+        from stage_person_changes c --stream\
+        join dimension_person d \
+        on c.person_id = d.person_id \
+        and d.full_name = c.full_name\
+        and c.dw_soft_delete_ind = 'N' --excludes soft delete updates (processed in delete section)\
+        where c.metadata$action = 'INSERT'\
+        and c.metadata$isupdate = 'TRUE'\
+                                ))\
+--END NON-SCD2 UPDATES\
+union\
+-- This subquery figures out what to do when data is deleted from the stage_person table (hard or soft)\
+-- A deletion from the stage_person table results in an update to the dimension_person table\
+select person_sk, person_id, person_setid, source_system_sk, \
+agent_id, employee_id, alternate_employee_id, national_id, applicant_id, application_date, birth_date, death_date, last_name, middle_name, first_name, full_name, marital_status_code, marital_status_name, marital_status_desc, marital_status_date, gender_code, gender_desc, full_time_student_ind, us_work_eligibility_ind, eu_work_eligibilty_ind, us_citizen_proof_doc1_name, us_citizen_proof_doc2_name, military_status_code, highest_education_level_code, highest_education_level_name, highest_education_level_desc, ethnic_group_code, ethnic_group_name, ethnic_group_desc, high_compensation_ind, high_compensation_plan_ind, experience_year_qty, regulatory_region_code, disabled_ind, disabled_vetran_ind, effective_date, sales_rep_ind, service_rep_ind, home_address_line1_desc, home_address_line2_desc, home_address_line3_desc, home_address_line4_desc, home_city_name, home_state_province_code, home_state_province_name, home_postal_code, home_geography_code, home_country_name, home_phone_country_code, home_phone_region_code, home_phone_number, cell_phone_number, business_phone_number, sales_user_type_code, sales_user_type_desc, quota_type_code, quota_type_desc, unit_quota_type_code, unit_quota_type_desc, manager_quota_type_code, manager_quota_type_desc, jobcode_id, jobcode_setid, location_id, locaton_setid, employee_class_code, full_part_time_ind, full_part_time_desc, reg_temp_ind, reg_temp_desc, dept_id, dept_setid, dept_name, dept_desc, sales_region_code, sales_region_desc, employee_class_id, employee_class_name, employee_class_desc, regular_temporary_ind, regular_temporary_name, regular_temporary_desc, person_status_code, person_status_name, person_status_desc, person_status_date, person_type_id, person_type_name, person_type_desc,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type \
+from (\
+/* Most of the columns could have been listed as null, e.g., do_not_mail_ind as null */\
+select nh.person_sk, nms.person_id, nms.person_setid, nms.source_system_id as source_system_sk, \
+nms.agent_id, nms.employee_id, nms.alternate_employee_id, nms.national_id, nms.applicant_id, nms.application_date, nms.birth_date, nms.death_date, nms.last_name, nms.middle_name, nms.first_name, nms.full_name, nms.marital_status_code, nms.marital_status_name, nms.marital_status_desc, nms.marital_status_date, nms.gender_code, nms.gender_desc, nms.full_time_student_ind, nms.us_work_eligibility_ind, nms.eu_work_eligibilty_ind, nms.us_citizen_proof_doc1_name, nms.us_citizen_proof_doc2_name, nms.military_status_code, nms.highest_education_level_code, nms.highest_education_level_name, nms.highest_education_level_desc, nms.ethnic_group_code, nms.ethnic_group_name, nms.ethnic_group_desc, nms.high_compensation_ind, nms.high_compensation_plan_ind, nms.experience_year_qty, nms.regulatory_region_code, nms.disabled_ind, nms.disabled_vetran_ind, nms.effective_date, nms.sales_rep_ind, nms.service_rep_ind, nms.home_address_line1_desc, nms.home_address_line2_desc, nms.home_address_line3_desc, nms.home_address_line4_desc, nms.home_city_name, nms.home_state_province_code, nms.home_state_province_name, nms.home_postal_code, nms.home_geography_code, nms.home_country_name, nms.home_phone_country_code, nms.home_phone_region_code, nms.home_phone_number, nms.cell_phone_number, nms.business_phone_number, nms.sales_user_type_code, nms.sales_user_type_desc, nms.quota_type_code, nms.quota_type_desc, nms.unit_quota_type_code, nms.unit_quota_type_desc, nms.manager_quota_type_code, nms.manager_quota_type_desc, nms.jobcode_id, nms.jobcode_setid, nms.location_id, nms.locaton_setid, nms.employee_class_code, nms.full_part_time_ind, nms.full_part_time_desc, nms.reg_temp_ind, nms.reg_temp_desc, nms.dept_id, nms.dept_setid, nms.dept_name, nms.dept_desc, nms.sales_region_code, nms.sales_region_desc, nms.employee_class_id, nms.employee_class_name, nms.employee_class_desc, nms.regular_temporary_ind, nms.regular_temporary_name, nms.regular_temporary_desc, nms.person_status_code, nms.person_status_name, nms.person_status_desc, nms.person_status_date, nms.person_type_id, nms.person_type_name, nms.person_type_desc,\
+nms.hosted_client_sk, nh.dw_start_date, current_timestamp()::timestamp_ntz as dw_stop_date, null as dw_current_ind, 'D' as dml_type\
+from dimension_person nh\
+inner join stage_person_changes nms\
+on nh.person_id = nms.person_id\
+where ((nms.metadata$action = 'DELETE' and nms.metadata$isupdate = 'FALSE') OR (nms.metadata$action = 'INSERT' AND nms.dw_soft_delete_ind = 'Y'))\
+and nh.dw_current_ind = 'Y'\
+order by nms.dw_load_date);\
+--END VIEW DDL\
+\
+\
+\
+create or replace task populate_dimension_person warehouse = mdw_wh schedule = '1 minute' when system$stream_has_data('stage_person_changes')\
+as \
+--START MERGE\
+merge into dimension_person nh --Target table to merge changes from STAGE_person into\
+using person_change_data m --view\
+-- The person_change_data view holds the logic that determines what to insert/update into the DIMENSION_person table.\
+   on nh.person_id = m.person_id \
+   -- and nh.source_system_sk = m.source_system_sk\
+   -- person_id & source_system_sk columns determine if there is a unique record in the DIMENSION_person table\
+   and nh.dw_start_date = m.dw_start_date\
+   and nh.dw_current_ind = 'Y' --only update current rows (needed?)\
+when matched and m.dml_type = 'U' --SCD2 "Update"\
+then update -- Indicates the original record has been updated and is no longer current and the end_time needs to be stamped\
+    set nh.dw_stop_date = m.dw_stop_date,\
+        nh.dw_current_ind = 'N'    \
+when matched and m.dml_type = 'D' \
+then update -- Deletes are essentially logical deletes. The record is stamped and no newer version is inserted\
+    set nh.dw_stop_date = m.dw_stop_date,\
+        nh.dw_current_ind = 'N'\
+--New for non-SCD2 UPDATE\
+when matched and m.dml_type = 'UPDATE' and nh.dw_current_ind = 'Y'\
+then update\
+set nh.hosted_client_sk = m.hosted_client_sk,\
+nh.agent_id=m.agent_id,\
+nh.employee_id=m.employee_id,\
+nh.alternate_employee_id=m.alternate_employee_id,\
+nh.national_id=m.national_id,\
+nh.applicant_id=m.applicant_id,\
+nh.application_date=m.application_date,\
+nh.birth_date=m.birth_date,\
+nh.death_date=m.death_date,\
+nh.last_name=m.last_name,\
+nh.middle_name=m.middle_name,\
+nh.first_name=m.first_name,\
+nh.full_name=m.full_name,\
+nh.marital_status_code=m.marital_status_code,\
+nh.marital_status_name=m.marital_status_name,\
+nh.marital_status_desc=m.marital_status_desc,\
+nh.marital_status_date=m.marital_status_date,\
+nh.gender_code=m.gender_code,\
+nh.gender_desc=m.gender_desc,\
+nh.full_time_student_ind=m.full_time_student_ind,\
+nh.us_work_eligibility_ind=m.us_work_eligibility_ind,\
+nh.eu_work_eligibilty_ind=m.eu_work_eligibilty_ind,\
+nh.us_citizen_proof_doc1_name=m.us_citizen_proof_doc1_name,\
+nh.us_citizen_proof_doc2_name=m.us_citizen_proof_doc2_name,\
+nh.military_status_code=m.military_status_code,\
+nh.highest_education_level_code=m.highest_education_level_code,\
+nh.highest_education_level_name=m.highest_education_level_name,\
+nh.highest_education_level_desc=m.highest_education_level_desc,\
+nh.ethnic_group_code=m.ethnic_group_code,\
+nh.ethnic_group_name=m.ethnic_group_name,\
+nh.ethnic_group_desc=m.ethnic_group_desc,\
+nh.high_compensation_ind=m.high_compensation_ind,\
+nh.high_compensation_plan_ind=m.high_compensation_plan_ind,\
+nh.experience_year_qty=m.experience_year_qty,\
+nh.regulatory_region_code=m.regulatory_region_code,\
+nh.disabled_ind=m.disabled_ind,\
+nh.disabled_vetran_ind=m.disabled_vetran_ind,\
+nh.effective_date=m.effective_date,\
+nh.sales_rep_ind=m.sales_rep_ind,\
+nh. service_rep_ind=m. service_rep_ind,\
+nh.home_address_line1_desc=m.home_address_line1_desc,\
+nh.home_address_line2_desc=m.home_address_line2_desc,\
+nh.home_address_line3_desc=m.home_address_line3_desc,\
+nh.home_address_line4_desc=m.home_address_line4_desc,\
+nh.home_city_name=m.home_city_name,\
+nh.home_state_province_code=m.home_state_province_code,\
+nh.home_state_province_name=m.home_state_province_name,\
+nh.home_postal_code=m.home_postal_code,\
+nh.home_geography_code=m.home_geography_code,\
+nh.home_country_name=m.home_country_name,\
+nh.home_phone_country_code=m.home_phone_country_code,\
+nh.home_phone_region_code=m.home_phone_region_code,\
+nh.home_phone_number=m.home_phone_number,\
+nh.cell_phone_number=m.cell_phone_number,\
+nh.business_phone_number=m.business_phone_number,\
+nh.sales_user_type_code=m.sales_user_type_code,\
+nh.sales_user_type_desc=m.sales_user_type_desc,\
+nh.quota_type_code=m.quota_type_code,\
+nh.quota_type_desc=m.quota_type_desc,\
+nh.unit_quota_type_code=m.unit_quota_type_code,\
+nh.unit_quota_type_desc=m.unit_quota_type_desc,\
+nh.manager_quota_type_code=m.manager_quota_type_code,\
+nh.manager_quota_type_desc=m.manager_quota_type_desc,\
+nh.jobcode_id=m.jobcode_id, \
+nh.jobcode_setid=m.jobcode_setid,\
+nh.location_id=m.location_id,\
+nh.locaton_setid=m.locaton_setid,\
+nh.employee_class_code=m.employee_class_code,\
+nh.full_part_time_ind=m.full_part_time_ind,\
+nh.full_part_time_desc=m.full_part_time_desc,\
+nh.reg_temp_ind=m.reg_temp_ind,\
+nh.reg_temp_desc=m.reg_temp_desc,\
+nh.dept_id=m.dept_id,\
+nh.dept_setid=m.dept_setid,\
+nh.dept_name=m.dept_name, \
+nh.dept_desc = m.dept_desc,\
+nh.sales_region_code=m.sales_region_code,\
+nh.sales_region_desc=m.sales_region_desc,\
+nh.employee_class_id=m.employee_class_id,\
+nh.employee_class_name=m.employee_class_name,\
+nh.employee_class_desc=m.employee_class_desc,\
+nh.regular_temporary_ind=m.regular_temporary_ind,\
+nh.regular_temporary_name=m.regular_temporary_name,\
+nh.regular_temporary_desc=m.regular_temporary_desc,\
+nh.person_status_code=m.person_status_code,\
+nh.person_status_name=m.person_status_name,\
+nh.person_status_desc=m.person_status_desc,\
+nh.person_status_date=m.person_status_date,\
+nh.person_type_id=m.person_type_id,\
+nh.person_type_name=m.person_type_name,\
+nh.person_type_desc=m.person_type_desc,\
+nh.dw_load_date = current_timestamp()\
+--End UPDATE\
+when not matched and m.dml_type = 'I' then insert -- Inserting a new person_id and updating an existing one both result in an insert\
+(person_sk, person_id, person_setid, source_system_sk, \
+agent_id, employee_id, alternate_employee_id, national_id, applicant_id, application_date, birth_date, death_date, last_name, middle_name, first_name, full_name, marital_status_code, marital_status_name, marital_status_desc, marital_status_date, gender_code, gender_desc, full_time_student_ind, us_work_eligibility_ind, eu_work_eligibilty_ind, us_citizen_proof_doc1_name, us_citizen_proof_doc2_name, military_status_code, highest_education_level_code, highest_education_level_name, highest_education_level_desc, ethnic_group_code, ethnic_group_name, ethnic_group_desc, high_compensation_ind, high_compensation_plan_ind, experience_year_qty, regulatory_region_code, disabled_ind, disabled_vetran_ind, effective_date, sales_rep_ind, service_rep_ind, home_address_line1_desc, home_address_line2_desc, home_address_line3_desc, home_address_line4_desc, home_city_name, home_state_province_code, home_state_province_name, home_postal_code, home_geography_code, home_country_name, home_phone_country_code, home_phone_region_code, home_phone_number, cell_phone_number, business_phone_number, sales_user_type_code, sales_user_type_desc, quota_type_code, quota_type_desc, unit_quota_type_code, unit_quota_type_desc, manager_quota_type_code, manager_quota_type_desc, jobcode_id, jobcode_setid, location_id, locaton_setid, employee_class_code, full_part_time_ind, full_part_time_desc, reg_temp_ind, reg_temp_desc, dept_id, dept_setid, dept_name, dept_desc, sales_region_code, sales_region_desc, employee_class_id, employee_class_name, employee_class_desc, regular_temporary_ind, regular_temporary_name, regular_temporary_desc, person_status_code, person_status_name, person_status_desc, person_status_date, person_type_id, person_type_name, person_type_desc,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind)\
+values (SEQ_person.nextval, m.person_id,m.person_setid, m.source_system_sk, \
+m.agent_id, m.employee_id, m.alternate_employee_id, m.national_id, m.applicant_id, m.application_date, m.birth_date, m.death_date, m.last_name, m.middle_name, m.first_name, m.full_name, m.marital_status_code, m.marital_status_name, m.marital_status_desc, m.marital_status_date, m.gender_code, m.gender_desc, m.full_time_student_ind, m.us_work_eligibility_ind, m.eu_work_eligibilty_ind, m.us_citizen_proof_doc1_name, m.us_citizen_proof_doc2_name, m.military_status_code, m.highest_education_level_code, m.highest_education_level_name, m.highest_education_level_desc, m.ethnic_group_code, m.ethnic_group_name, m.ethnic_group_desc, m.high_compensation_ind, m.high_compensation_plan_ind, m.experience_year_qty, m.regulatory_region_code, m.disabled_ind, m.disabled_vetran_ind, m.effective_date, m.sales_rep_ind, m. service_rep_ind, m.home_address_line1_desc, m.home_address_line2_desc, m.home_address_line3_desc, m.home_address_line4_desc, m.home_city_name, m.home_state_province_code, m.home_state_province_name, m.home_postal_code, m.home_geography_code, m.home_country_name, m.home_phone_country_code, m.home_phone_region_code, m.home_phone_number, m.cell_phone_number, m.business_phone_number, m.sales_user_type_code, m.sales_user_type_desc, m.quota_type_code, m.quota_type_desc, m.unit_quota_type_code, m.unit_quota_type_desc, m.manager_quota_type_code, m.manager_quota_type_desc, m.jobcode_id,  jobcode_setid, m.location_id, m.locaton_setid, m.employee_class_code, m.full_part_time_ind, m.full_part_time_desc, m.reg_temp_ind, m.reg_temp_desc, m.dept_id, m.dept_setid, m.dept_name, m.dept_desc, m.sales_region_code, m.sales_region_desc, m.employee_class_id, m.employee_class_name, m.employee_class_desc, m.regular_temporary_ind, m.regular_temporary_name, m.regular_temporary_desc, m.person_status_code, m.person_status_name, m.person_status_desc, m.person_status_date, m.person_type_id, m.person_type_name, m.person_type_desc, \
+m.hosted_client_sk, m.dw_start_date, m.dw_stop_date, m.dw_current_ind);\
+-- END MERGE\
+\
+-- Resume the task\
+alter task populate_dimension_person suspend;\
+alter task populate_dimension_person resume;\
+show tasks;}
