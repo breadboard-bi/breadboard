@@ -1,0 +1,125 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 /* \
+Initial pattern to load an MDW dimension from a stage table without Slowly Changing Dimension logic.  It's assumed that the history of changes to this simple dimension would not be tracked.\
+\
+This script builds a sequence, stream, view, and task.  A Snowflake warehouse is also required, as well as the appropriate privileges.\
+\
+The core logic is based on an article written by John Gontarz, Sales Engineer at Snowflake - https://community.snowflake.com/s/article/Building-a-Type-2-Slowly-Changing-Dimension-in-Snowflake-Using-Streams-and-Tasks-Part-1.  \
+\
+Modifications made to work with the existing MDW enterprise dimensional model and to limit which columns trigger SCD2 insert/update versus a regular update.\
+\
+Assumes the stage_currency and dimension_currency MDW tables have already been built. See mdw_master_snowflake.txt for the DDL.\
+*/\
+\
+create or replace sequence seq_currency start with 1 increment by 1;\
+\
+create or replace stream stage_currency_changes on table stage_currency;\
+\
+--generates data to load into the dimension_currency table.\
+create or replace view currency_change_data as\
+-- This first subquery figures out what to do when data is inserted into the stage_currency table\
+-- An insert to the stage_currency table results in an INSERT to the dimension_currency table\
+select currency_sk, currency_id, currency_name, currency_desc, source_system_sk, \
+decimal_place_qty, effective_status_code, effective_status_name, effective_status_date, currency_symbol_code, currency_symbol_side_ind,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, 'I' as dml_type\
+from (select currency_sk, currency_id, currency_name, currency_desc, source_system_sk, \
+decimal_place_qty, effective_status_code, effective_status_name, effective_status_date, currency_symbol_code, currency_symbol_side_ind,\
+hosted_client_sk, dw_load_date as dw_start_date,\
+lag(dw_load_date) over (partition by currency_id order by dw_load_date desc) as dw_stop_date_raw, \
+--Lag accesses dimension versions with the same key without having to join the table to itself.\
+--if multiple rows with same key are found, the latest is marked as current, the rest are loaded as not current.\
+case when dw_stop_date_raw is null then '9999-12-31'::timestamp_ntz else dw_stop_date_raw end as dw_stop_date,\
+--case when dw_stop_date is null then 'Y' else 'N' end as dw_current_ind\
+case when dw_stop_date = '9999-12-31'::timestamp_ntz then 'Y' else 'N' end as dw_current_ind\
+from (select null as currency_sk, --subsequent merge will insert SEQ_currency.nextval.  This keeps the column count in the union consistent with other subqueries that need to sk.\
+currency_id, currency_name, currency_desc, source_system_id as source_system_sk, \
+decimal_place_qty, effective_status_code, effective_status_name, effective_status_date, currency_symbol_code, currency_symbol_side_ind,\
+hosted_client_sk, dw_load_date\
+    from stage_currency_changes --stream on stage_currency\
+    where metadata$action = 'INSERT'\
+    and metadata$isupdate = 'FALSE'))\
+--End INSERT subquery\
+-- START UPDATES - changes in stage that do not trigger a new insert in the dimension\
+union\
+select distinct d.currency_sk, c.currency_id, c.currency_name, c.currency_desc, d.source_system_sk, \
+c.decimal_place_qty, c.effective_status_code, c.effective_status_name, c.effective_status_date, c.currency_symbol_code, c.currency_symbol_side_ind,\
+c.hosted_client_sk, d.dw_start_date, d.dw_stop_date,\
+d.dw_current_ind,'UPDATE' as dml_type\
+    from stage_currency_changes c --stream\
+    join dimension_currency d \
+    on c.currency_id = d.currency_id\
+    and c.dw_soft_delete_ind = 'N' --excludes soft delete updates (processed in delete section)\
+    where c.metadata$action = 'INSERT' and c.metadata$isupdate = 'TRUE'\
+--END UPDATES\
+union\
+-- This subquery figures out what to do when data is deleted from the stage_currency table (hard or soft)\
+-- A deletion from the stage_currency table results in an update to the dimension_currency table\
+select currency_sk, currency_id, currency_name, currency_desc, source_system_sk, \
+decimal_place_qty, effective_status_code, effective_status_name, effective_status_date, currency_symbol_code, currency_symbol_side_ind,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind, dml_type \
+from (\
+select nh.currency_sk,\
+nms.currency_id, nms.currency_name, nms.currency_desc, nms.source_system_id as\
+source_system_sk, \
+nms.decimal_place_qty, nms.effective_status_code, nms.effective_status_name, nms.effective_status_date, nms.currency_symbol_code, nms.currency_symbol_side_ind,\
+nms.hosted_client_sk, nh.dw_start_date, current_timestamp()::timestamp_ntz as dw_stop_date, null as dw_current_ind, 'D' as dml_type\
+from dimension_currency nh\
+inner join stage_currency_changes nms\
+on nh.currency_id = nms.currency_id\
+where ((nms.metadata$action = 'DELETE' and nms.metadata$isupdate = 'FALSE') OR (nms.metadata$action = 'INSERT' AND nms.dw_soft_delete_ind = 'Y'))\
+and nh.dw_current_ind = 'Y'\
+order by nms.dw_load_date);\
+--END VIEW DDL\
+\
+--Create Task\
+create or replace task populate_dimension_currency warehouse = mdw_wh schedule = '1 minute' when system$stream_has_data('stage_currency_changes')\
+as \
+--START MERGE\
+merge into DIMENSION_currency nh --Target table to merge changes from STAGE_currency into\
+using currency_change_data m --view\
+-- The currency_change_data view holds the logic that determines what to insert/update into the DIMENSION_currency table.\
+   on nh.currency_id = m.currency_id \
+   -- and nh.source_system_sk = m.source_system_sk\
+   -- currency_id & source_system_sk columns determine if there is a unique record in the DIMENSION_currency table\
+   and nh.dw_current_ind = 'Y' --only update current rows (needed?) \
+when matched and m.dml_type = 'D' \
+then update -- Deletes are essentially logical deletes. The record is stamped and no newer version is inserted\
+    set nh.dw_stop_date = m.dw_stop_date,\
+        nh.dw_current_ind = 'N'\
+--New for non-SCD2 UPDATE\
+when matched and m.dml_type = 'UPDATE' and nh.dw_current_ind = 'Y'\
+then update\
+set \
+nh.currency_name=m.currency_name, \
+nh.currency_desc=m.currency_desc, \
+nh.decimal_place_qty=m.decimal_place_qty, \
+nh.effective_status_code=m.effective_status_code, \
+nh.effective_status_name=m.effective_status_name, \
+nh.effective_status_date=m.effective_status_date, \
+nh.currency_symbol_code=m.currency_symbol_code, \
+nh.currency_symbol_side_ind=m.currency_symbol_side_ind,\
+nh.hosted_client_sk = m.hosted_client_sk,\
+nh.dw_load_date = current_timestamp()\
+--End UPDATE\
+when not matched and m.dml_type = 'I' then insert -- Inserting a new currency_id and updating an existing one both result in an insert\
+(currency_sk, currency_id, currency_name, currency_desc, source_system_sk, \
+decimal_place_qty, effective_status_code, effective_status_name, effective_status_date, currency_symbol_code, currency_symbol_side_ind,\
+hosted_client_sk, dw_start_date, dw_stop_date, dw_current_ind)\
+values (SEQ_currency.nextval, m.currency_id, m.currency_name, m.currency_desc, m.source_system_sk, \
+m.decimal_place_qty, m.effective_status_code, m.effective_status_name, m.effective_status_date, m.currency_symbol_code, m.currency_symbol_side_ind,\
+m.hosted_client_sk, m.dw_start_date, m.dw_stop_date, m.dw_current_ind);\
+-- END MERGE\
+--END TASK\
+\
+--Schedule Task\
+alter task populate_dimension_currency resume;\
+show tasks;\
+\
+-- Suspend the task (as needed)\
+--alter task populate_dimension_currency suspend;}
