@@ -1,0 +1,163 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh10900\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 /* \
+Initial pattern to load a MDW fact from a stage table.\
+This script builds a sequence, stream, view, and task.  A Snowflake warehouse is also required, as well as the appropriate privileges\
+Accomodates late arriving facts for SCD2 dimensions.\
+Assumes the stage_order_capture, fact_order_capture, and related dimensions have already been built and loaded. See mdw_master_snowflake.txt for the DDL.\
+*/\
+\
+select * from order_change_data\
+\
+select to_char(current_date,'yyyymmdd')\
+\
+create or replace stream stage_order_changes on table stage_order;\
+\
+--generates data to load into the dimension_order_capture table.\
+create or replace view order_change_data as\
+select c.order_id as order_capture_id, c.order_line_number as line_number, nvl(c.source_system_id,0) as source_system_sk, c.business_unit_id, \
+nvl(to_char(c.order_capture_date,'yyyymmdd'),0) as order_capture_date_sk, nvl(oc.order_capture_sk,0) as order_capture_sk, \
+nvl(bu.business_unit_sk,0) as business_unit_sk, nvl(cw.campaign_sk,0) as campaign_wave_sk, nvl(cu.customer_sk,0) as customer_sk, nvl(cc.customer_contact_sk,0) as customer_contact_sk, nvl(l.location_sk,0) as location_sk, nvl(mc.marketing_channel_sk,0) as marketing_channel_sk, nvl(ms.marketing_segment_sk,0) as marketing_segment_sk, nvl(os.order_status_sk,0) as order_status_sk, nvl(ot.order_type_sk,0) as order_type_sk, nvl(p.product_sk,0) as product_sk, nvl(r.region_sk,0) as region_sk, nvl(sr.person_sk,0) as sales_representative_sk, \
+nvl(bc.currency_sk,0) as base_currency_sk, nvl(tc.currency_sk,0) as trxn_currency_sk, nvl(um.unit_of_measure_sk,0) as unit_of_measure_sk, nvl(vm.unit_of_measure_sk,0) as volume_unit_of_measure_sk, nvl(wm.unit_of_measure_sk,0) as weight_unit_of_measure_sk,\
+c.recurring_price_frequency_code, c.order_capture_date, c.return_authorization_id, c.order_number, c.po_number, c.po_line_number, c.price_amt as trxn_price_amt, c.list_price_amt as trxn_list_price_amt, c.cost_amt as trxn_cost_amt, c.recurring_price_amt as trxn_recurring_price_amt, c.discount_amt as trxn_discount_amt, c.order_qty as order_unit_qty, c.billed_qty, c.shipped_qty, c.lost_sales_qty, c.return_qty, c.volume_qty, c.weight_qty, c.reserved_qty, c.base_currency_exchange_rate,\
+c.hosted_client_sk,c.dw_load_date,\
+case when c.metadata$action = 'INSERT' and c.metadata$isupdate = 'FALSE' then 'I'\
+when c.metadata$action = 'INSERT' and c.metadata$isupdate = 'TRUE' then 'UPDATE'\
+when ((c.metadata$action = 'DELETE' and c.metadata$isupdate = 'FALSE') OR (c.metadata$action = 'INSERT' AND c.dw_soft_delete_ind = 'Y')) then 'D'\
+end as dml_type\
+from stage_order_changes c--stream on stage_order\
+left join dimension_order_capture oc\
+on c.order_id = oc.order_capture_id\
+and c.order_capture_date between oc.dw_start_date and oc.dw_stop_date\
+left join dimension_business_unit bu\
+on c.business_unit_id = bu.business_unit_id\
+and c.order_capture_date between bu.dw_start_date and bu.dw_stop_date\
+left join dimension_campaign cw\
+on c.campaign_wave_id = cw.campaign_id --and c.campaign_wave_setid = cw.campaign_setid NOTE: campaign_setid missing from dimension_campaign\
+and c.order_capture_date between cw.dw_start_date and cw.dw_stop_date\
+left join dimension_customer cu\
+on c.customer_id = cu.customer_id and c.customer_setid = cu.customer_setid\
+and c.order_capture_date between cu.dw_start_date and cu.dw_stop_date\
+left join dimension_customer_contact cc\
+on c.customer_contact_id = cc.customer_contact_id and c.customer_setid = cc.customer_setid\
+and c.order_capture_date between cc.dw_start_date and cc.dw_stop_date\
+left join dimension_location l\
+on c.location_id = l.location_id and c.location_setid = l.location_setid\
+and c.order_capture_date between l.dw_start_date and l.dw_stop_date\
+left join dimension_marketing_channel mc\
+on c.channel_id = mc.channel_id and c.channel_setid = mc.channel_setid\
+and c.order_capture_date between mc.dw_start_date and mc.dw_stop_date\
+left join dimension_marketing_segment ms\
+on c.segment_id = ms.segment_id and c.segment_setid = ms.segment_setid\
+and c.order_capture_date between ms.dw_start_date and ms.dw_stop_date\
+left join dimension_order_status os\
+on c.order_status_id = os.order_status_id and c.order_status_setid = os.order_status_setid   \
+and c.order_capture_date between os.dw_start_date and os.dw_stop_date\
+left join dimension_order_type ot\
+on c.order_type_id = ot.order_type_id  \
+and c.order_capture_date between ot.dw_start_date and ot.dw_stop_date\
+left join dimension_product p\
+on c.product_id = p.product_id and c.product_setid = p.product_setid  \
+and c.order_capture_date between p.dw_start_date and p.dw_stop_date\
+left join dimension_region r\
+on c.region_id = r.region_id\
+and c.order_capture_date between r.dw_start_date and r.dw_stop_date\
+left join dimension_person sr\
+on c.employee_id = sr.person_id --and c.employee_setid = sr.person_setid  NOTE:  Necessary? Use order_setid?\
+and c.order_capture_date between sr.dw_start_date and sr.dw_stop_date\
+left join dimension_currency bc\
+on c.base_currency_id = bc.currency_id\
+left join dimension_currency tc\
+on c.currency_id = tc.currency_id\
+left join dimension_unit_of_measure um\
+on c.unit_of_measure_id = um.unit_of_measure_id\
+left join dimension_unit_of_measure vm\
+on c.volume_unit_of_measure_id = vm.unit_of_measure_id\
+left join dimension_unit_of_measure wm\
+on c.weight_unit_of_measure_id = wm.unit_of_measure_id\
+\
+\
+\
+--Create Task\
+create or replace task populate_fact_order_capture warehouse = mdw_wh schedule = '1 minute' when system$stream_has_data('stage_order_changes')\
+as \
+--START MERGE\
+merge into fact_order_capture nh --Target table to merge changes from stage_order into\
+using order_change_data m --view\
+-- The order_capture_change_data view holds the logic that determines what to insert/update into the DIMENSION_order_capture table.\
+   on nh.order_capture_id = m.order_capture_id \
+   and nh.line_number = m.line_number \
+   --and nh.business_unit_id = m.business_unit_id FOR PEOPLESOFT\
+   --and nh.source_system_sk = m.source_system_sk IF MULTISOURCE (SYSTEM) ORDER DATA\
+/* The fact table does not currently accomodate soft deletes\
+when matched and m.dml_type = 'D' \
+then update -- Deletes are essentially logical deletes. The record is stamped and no newer version is inserted\
+    set nh.dw_stop_date = m.dw_stop_date,\
+        nh.dw_current_ind = 'N'\
+*/\
+--UPDATES\
+when matched and m.dml_type = 'UPDATE'\
+then update\
+set \
+nh.business_unit_id=m.business_unit_id, --if not part of AK (e.g., PeopleSoft)\
+nh.order_capture_date_sk=m.order_capture_date_sk,\
+nh.order_capture_sk=m.order_capture_sk,\
+nh.business_unit_sk=m.business_unit_sk,\
+nh.campaign_wave_sk=m.campaign_wave_sk,\
+nh.customer_sk=m.customer_sk,\
+nh.customer_contact_sk=m.customer_contact_sk,\
+nh.location_sk=m.location_sk,\
+nh.marketing_channel_sk=m.marketing_channel_sk,\
+nh.marketing_segment_sk=m.marketing_segment_sk,\
+nh.order_status_sk=m.order_status_sk,\
+nh.order_type_sk=m.order_type_sk,\
+nh.product_sk=m.product_sk,\
+nh.region_sk=m.region_sk,\
+nh.sales_representative_sk=m.sales_representative_sk,\
+nh.base_currency_sk=m.base_currency_sk,\
+nh.trxn_currency_sk=m.trxn_currency_sk,\
+nh.unit_of_measure_sk=m.unit_of_measure_sk,\
+nh.volume_unit_of_measure_sk=m.volume_unit_of_measure_sk,\
+nh.weight_unit_of_measure_sk=m.weight_unit_of_measure_sk,\
+nh.recurring_price_frequency_code=m.recurring_price_frequency_code,\
+nh.order_capture_date=m.order_capture_date,\
+nh.return_authorization_id=m.return_authorization_id,\
+nh.order_number=m.order_number,\
+nh.po_number=m.po_number,\
+nh.po_line_number=m.po_line_number,\
+nh.trxn_price_amt=m.trxn_price_amt,\
+nh.trxn_list_price_amt=m.trxn_list_price_amt,\
+nh.trxn_cost_amt=m.trxn_cost_amt,\
+nh.trxn_recurring_price_amt=m.trxn_recurring_price_amt,\
+nh.trxn_discount_amt=m.trxn_discount_amt,\
+nh.order_unit_qty=m.order_unit_qty,\
+nh.billed_qty=m.billed_qty,\
+nh.shipped_qty=m.shipped_qty,\
+nh.lost_sales_qty=m.lost_sales_qty,\
+nh.return_qty=m.return_qty,\
+nh.volume_qty=m.volume_qty,\
+nh.weight_qty=m.weight_qty,\
+nh.reserved_qty=m.reserved_qty,\
+nh.base_currency_exchange_rate=m.base_currency_exchange_rate,\
+nh.hosted_client_sk = m.hosted_client_sk,\
+nh.dw_load_date = m.dw_load_date --current_timestamp()\
+--End UPDATE\
+when not matched and m.dml_type = 'I' then insert -- Inserting a new order_capture_id and updating an existing one both result in an insert\
+(order_capture_id, line_number, business_unit_sk, source_system_sk, order_capture_date_sk, order_capture_sk, campaign_wave_sk, customer_sk, customer_contact_sk, location_sk, marketing_channel_sk, marketing_segment_sk, order_status_sk, order_type_sk, product_sk, region_sk, sales_representative_sk, base_currency_sk, trxn_currency_sk, unit_of_measure_sk, volume_unit_of_measure_sk, weight_unit_of_measure_sk, recurring_price_frequency_code, order_capture_date, business_unit_id, return_authorization_id, order_number, po_number, po_line_number, trxn_price_amt, trxn_list_price_amt, trxn_cost_amt, trxn_recurring_price_amt, trxn_discount_amt, order_unit_qty, billed_qty, shipped_qty, lost_sales_qty, return_qty, volume_qty, weight_qty, reserved_qty, base_currency_exchange_rate, hosted_client_sk, dw_load_date)\
+values (m.order_capture_id, m.line_number, m.business_unit_sk, m.source_system_sk, m.order_capture_date_sk, m.order_capture_sk, m.campaign_wave_sk, m.customer_sk, m.customer_contact_sk, m.location_sk, m.marketing_channel_sk, m.marketing_segment_sk, m.order_status_sk, m.order_type_sk, m.product_sk, m.region_sk, m.sales_representative_sk, m.base_currency_sk, m.trxn_currency_sk, m.unit_of_measure_sk, m.volume_unit_of_measure_sk, m.weight_unit_of_measure_sk, m.recurring_price_frequency_code, m.order_capture_date, m.business_unit_id, m.return_authorization_id, m.order_number, m.po_number, m.po_line_number, m.trxn_price_amt, m.trxn_list_price_amt, m.trxn_cost_amt, m.trxn_recurring_price_amt, m.trxn_discount_amt, m.order_unit_qty, m.billed_qty, m.shipped_qty, m.lost_sales_qty, m.return_qty, m.volume_qty, m.weight_qty, m.reserved_qty, m.base_currency_exchange_rate, m.hosted_client_sk, m.dw_load_date);\
+-- END MERGE\
+--END TASK\
+\
+--Schedule Task\
+alter task populate_fact_order_capture resume;\
+alter task populate_dimension_order_capture resume;\
+show tasks;\
+\
+-- Suspend the task (as needed)\
+--alter task populate_fact_order_capture suspend;\
+--alter task populate_dimension_order_capture suspend;}

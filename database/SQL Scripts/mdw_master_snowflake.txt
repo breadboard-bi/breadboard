@@ -13,170 +13,169 @@ Note:  This data model was originally developed to run on older versions of MySQ
 
 -- Table FACT_ORDER_CAPTURE
 
-CREATE TABLE `FACT_ORDER_CAPTURE`
+CREATE TABLE FACT_ORDER_CAPTURE
 (
-  `ORDER_CAPTURE_ID` Varchar(36) NOT NULL
+  ORDER_CAPTURE_ID Varchar(36) NOT NULL
  COMMENT 'The order (capture) source system identifier.  It is a degenerate dimension in the order capture fact table.',
-  `LINE_NUMBER` Varchar(36) NOT NULL
+  LINE_NUMBER Varchar(36) NOT NULL
  COMMENT 'The order line number.',
-  `BUSINESS_UNIT_SK` Int NOT NULL DEFAULT 0
+  BUSINESS_UNIT_SK Int NOT NULL DEFAULT 0
  COMMENT 'The business unit surrogate key.  This relates to the business unit dimension.',
-  `SOURCE_SYSTEM_SK` Int  NOT NULL
+  SOURCE_SYSTEM_SK Int  NOT NULL
  COMMENT 'The source system surrogate key.  This enables multiple source system capability.',
-  `ORDER_CAPTURE_DATE_SK` Int  NOT NULL DEFAULT 0
+  ORDER_CAPTURE_DATE_SK Int  NOT NULL DEFAULT 0
  COMMENT 'The order (capture) date surrogate key.  This column may be used to partition the fact table by time.',
-  `ORDER_CAPTURE_SK` Int NOT NULL DEFAULT 0
+  ORDER_CAPTURE_SK Int NOT NULL DEFAULT 0
  COMMENT 'The order capture surrogate key.  This relates to the order capture dimension.',
-  `CAMPAIGN_WAVE_SK` Int  DEFAULT 0
+  CAMPAIGN_WAVE_SK Int  DEFAULT 0
  COMMENT 'The campaign wave surrogate key.  The relates to the campaign wave dimension.',
-  `CUSTOMER_SK` Int  DEFAULT 0
+  CUSTOMER_SK Int  DEFAULT 0
  COMMENT 'The customer surrogate key.  This relates to the customer dimension.',
-  `CUSTOMER_CONTACT_SK` Int DEFAULT 0
+  CUSTOMER_CONTACT_SK Int DEFAULT 0
  COMMENT 'The customer contact surrogate key.  This relates to the customer contact dimension.',
-  `LOCATION_SK` Int DEFAULT 0
+  LOCATION_SK Int DEFAULT 0
  COMMENT 'The location surrogate key.  This relates to the location dimension.',
-  `MARKETING_CHANNEL_SK` Int DEFAULT 0
+  MARKETING_CHANNEL_SK Int DEFAULT 0
  COMMENT 'The marketing activity surrogate key.  This relates to the marketing channel dimension.',
-  `MARKETING_SEGMENT_SK` Int DEFAULT 0
+  MARKETING_SEGMENT_SK Int DEFAULT 0
  COMMENT 'The marketing segment surrogate key.  This relates to the marketing segment dimension.',
-  `ORDER_STATUS_SK` Int DEFAULT 0
+  ORDER_STATUS_SK Int DEFAULT 0
  COMMENT 'The order status surrogate key.  This relates to the order status dimension.',
-  `ORDER_TYPE_SK` Int DEFAULT 0
+  ORDER_TYPE_SK Int DEFAULT 0
  COMMENT 'The order type surrogate key.  This relates to the order type dimension.',
-  `PRODUCT_SK` Int  DEFAULT 0
+  PRODUCT_SK Int  DEFAULT 0
  COMMENT 'The product surrogate key.  This relates to the product dimension.',
-  `REGION_SK` Int DEFAULT 0
+  REGION_SK Int DEFAULT 0
  COMMENT 'The region surrogate key.  This relates to the region dimension.',
-  `SALES_REPRESENTATIVE_SK` Int NOT NULL DEFAULT 0
+  SALES_REPRESENTATIVE_SK Int NOT NULL DEFAULT 0
  COMMENT 'The sales person surrogate key.  This relates to the day dimension.',
-  `BASE_CURRENCY_SK` Int NOT NULL DEFAULT 0
+  BASE_CURRENCY_SK Int NOT NULL DEFAULT 0
  COMMENT 'The base currency surrogate key.  This relates to the currency dimension.',
-  `TRXN_CURRENCY_SK` Int NOT NULL DEFAULT 0
+  TRXN_CURRENCY_SK Int NOT NULL DEFAULT 0
  COMMENT 'The transaction currency surrogate key.  This relates to the currency dimension.',
-  `UNIT_OF_MEASURE_SK` Int DEFAULT 0
+  UNIT_OF_MEASURE_SK Int DEFAULT 0
  COMMENT 'The unit of measure surrogate key.  This relates to the unit of measure dimension.',
-  `VOLUME_UNIT_OF_MEASURE_SK` Int DEFAULT 0
+  VOLUME_UNIT_OF_MEASURE_SK Int DEFAULT 0
  COMMENT 'The volume unit of measure surrogate key.  This relates to the unit of measure dimension.',
-  `WEIGHT_UNIT_OF_MEASURE_SK` Int DEFAULT 0
+  WEIGHT_UNIT_OF_MEASURE_SK Int DEFAULT 0
  COMMENT 'The weight unit of measure surrogate key.  This relates to the unit of measure dimension.',
-  `RECURRING_PRICE_FREQUENCY_CODE` Varchar(32)
+  RECURRING_PRICE_FREQUENCY_CODE Varchar(32)
  COMMENT 'The recurring price frequency code.',
-  `ORDER_CAPTURE_DATE` Datetime
+  ORDER_CAPTURE_DATE Datetime
  COMMENT 'The order (capture) date.  This column may be used to partition the fact table by time.',
-  `BUSINESS_UNIT_ID` Varchar(32) NOT NULL DEFAULT 'SHARE'
+  BUSINESS_UNIT_ID Varchar(32) NOT NULL DEFAULT 'SHARE'
  COMMENT 'The business unit identifier in the source system.  Alone, or in combination with other columns, this value uniquely identifiers a business unit in the source.',
-  `RETURN_AUTHORIZATION_ID` Varchar(32)
+  RETURN_AUTHORIZATION_ID Varchar(32)
  COMMENT 'The return authorization number.  It is a degenerate dimension in the fact table.',
-  `ORDER_NUMBER` Varchar(36)
+  ORDER_NUMBER Varchar(36)
  COMMENT 'The source system order number.',
-  `PO_NUMBER` Varchar(32)
+  PO_NUMBER Varchar(32)
  COMMENT 'The purchase order number in the source system.  It is a degenerate dimension in the order capture fact table.  Note:  this may or not be a numeric value.',
-  `PO_LINE_NUMBER` Varchar(32)
+  PO_LINE_NUMBER Varchar(32)
  COMMENT 'The customer purchase order (PO) line number in the source system.  It is a degenerate dimension in the order capture fact table.',
-  `TRXN_PRICE_AMT` Decimal(26,2)
+  TRXN_PRICE_AMT Decimal(26,2)
  COMMENT 'The sales price of an entire order line in the transaction currency.',
-  `TRXN_LIST_PRICE_AMT` Decimal(26,2)
+  TRXN_LIST_PRICE_AMT Decimal(26,2)
  COMMENT 'The list price of an entire line in the transaction currency.',
-  `TRXN_COST_AMT` Decimal(26,2)
+  TRXN_COST_AMT Decimal(26,2)
  COMMENT 'The cost of an entire order line in the transaction currency.',
-  `TRXN_RECURRING_PRICE_AMT` Decimal(26,2)
+  TRXN_RECURRING_PRICE_AMT Decimal(26,2)
  COMMENT 'The recurring sales price of an entire order line in the transaction currency.',
-  `TRXN_DISCOUNT_AMT` Decimal(26,2) DEFAULT 0
+  TRXN_DISCOUNT_AMT Decimal(26,2) DEFAULT 0
  COMMENT 'The discount amount for an entire order line in the transaction currency.',
-  `ORDER_UNIT_QTY` Decimal(26,2)
+  ORDER_UNIT_QTY Decimal(26,2)
  COMMENT 'The sales unit quantity of a product at a particular unit of measure (e.g, five items, two case, one pallet).  This can be used to divide the amount columns for operational reports.',
-  `BILLED_QTY` Decimal(26,2)
+  BILLED_QTY Decimal(26,2)
  COMMENT 'The billed unit quantity of a product at a particular unit of measure (e.g, five items, two case, one pallet).',
-  `SHIPPED_QTY` Decimal(26,2)
+  SHIPPED_QTY Decimal(26,2)
  COMMENT 'The shipped unit quantity of a product at a particular unit of measure (e.g, five items, two case, one pallet).',
-  `LOST_SALES_QTY` Decimal(26,2)
+  LOST_SALES_QTY Decimal(26,2)
  COMMENT 'The lost sales quantity of a product at a particular unit of measure (e.g, five items, two case, one pallet).',
-  `RETURN_QTY` Decimal(26,2)
+  RETURN_QTY Decimal(26,2)
  COMMENT 'The quantity of product that was returned by the customer.',
-  `VOLUME_QTY` Decimal(26,2)
+  VOLUME_QTY Decimal(26,2)
  COMMENT 'The sales volume quantity at a particular unit of measure (e.g, liter, gallon, etc.).',
-  `WEIGHT_QTY` Decimal(26,2)
+  WEIGHT_QTY Decimal(26,2)
  COMMENT 'The sales weight quantity at a particular unit of measure.',
-  `RESERVED_QTY` Decimal(26,2)
+  RESERVED_QTY Decimal(26,2)
  COMMENT 'The reserved unit quantity of a product at a particular unit of measure (e.g, five items, two case, one pallet).',
-  `BASE_CURRENCY_EXCHANGE_RATE` Decimal(26,9) DEFAULT 1
+  BASE_CURRENCY_EXCHANGE_RATE Decimal(26,9) DEFAULT 1
  COMMENT 'The currency exchange rate used to convert the transaction amount to the base amount.',
-  `HOSTED_CLIENT_SK` Double
+  HOSTED_CLIENT_SK Double
  COMMENT 'The hosted client surrogate key.  The relates to the hosted client admin table.',
-  `DW_LOAD_DATE` DATETIME NULL DEFAULT CURRENT_TIMESTAMP
+  DW_LOAD_DATE DATETIME NULL DEFAULT CURRENT_TIMESTAMP
  COMMENT 'The date the row was inserted or update in the table.'
 )
  COMMENT = 'This fact table maintains customer order information at the order line grain.  It is generally sourced from the combination of the sales order header and the sales order detail (line) tables.'
 ;
 
-
-ALTER TABLE `FACT_ORDER_CAPTURE` ADD  PRIMARY KEY (`ORDER_CAPTURE_ID`,`LINE_NUMBER`,`BUSINESS_UNIT_SK`,`SOURCE_SYSTEM_SK`)
+ALTER TABLE FACT_ORDER_CAPTURE ADD  PRIMARY KEY (ORDER_CAPTURE_ID,LINE_NUMBER,BUSINESS_UNIT_SK,SOURCE_SYSTEM_SK)
 ;
 
 
 -- Table FACT_GL_POSTED_TRANSACTION
 
-CREATE TABLE `FACT_GL_POSTED_TRANSACTION`
+CREATE TABLE FACT_GL_POSTED_TRANSACTION
 (
-  `TRXN_DATE_SK` Int  NOT NULL DEFAULT 0
+  TRXN_DATE_SK Int  NOT NULL DEFAULT 0
  COMMENT 'The general ledger transaction date surrogate key.  This column may be used to partition the fact table by time.',
-  `TRXN_ID` Varchar(36) NOT NULL
+  TRXN_ID Varchar(36) NOT NULL
  COMMENT 'The gl posted transaction (journal entry id) source system identifier.  It is a degenerate dimension in the gl posted transaction fact table.',
-  `SOURCE_SYSTEM_SK` Int  NOT NULL
+  SOURCE_SYSTEM_SK Int  NOT NULL
  COMMENT 'The source system surrogate key.  This enables multiple source system capability.',
-  `BUSINESS_UNIT_SK` Int NOT NULL DEFAULT 0
+  BUSINESS_UNIT_SK Int NOT NULL DEFAULT 0
  COMMENT 'The general ledger business unit surrogate key.  This relates to the business unit dimension.',
-  `LEDGER_SK` Int NOT NULL DEFAULT 0
+  LEDGER_SK Int NOT NULL DEFAULT 0
  COMMENT 'The ledger surrogate key.  This relates to the ledger dimension.',
-  `SUBLEDGER_SK` Int NOT NULL DEFAULT 0
+  SUBLEDGER_SK Int NOT NULL DEFAULT 0
  COMMENT 'The subledger surrogate key.  This relates to the subledger dimension.',
-  `ACCOUNT_SK` Int NOT NULL DEFAULT 0
+  ACCOUNT_SK Int NOT NULL DEFAULT 0
  COMMENT 'The account surrogate key.  This relates to the account dimension.',
-  `COST_CENTER_SK` Int NOT NULL DEFAULT 0
+  COST_CENTER_SK Int NOT NULL DEFAULT 0
  COMMENT 'The cost center surrogate key.  This relates to the cost center dimension.',
-  `TRXN_CURRENCY_SK` Int NOT NULL DEFAULT 0
+  TRXN_CURRENCY_SK Int NOT NULL DEFAULT 0
  COMMENT 'The transaction currency surrogate key.  This relates to the currency dimension.',
-  `BASE_CURRENCY_SK` Int NOT NULL DEFAULT 0
+  BASE_CURRENCY_SK Int NOT NULL DEFAULT 0
  COMMENT 'The base currency surrogate key.  This relates to the currency dimension.',
-  `DEPARTMENT_SK` Int NOT NULL DEFAULT 0
+  DEPARTMENT_SK Int NOT NULL DEFAULT 0
  COMMENT 'The department surrogate key.  This relates to the department dimension.',
-  `OPERATING_UNIT_SK` Int NOT NULL DEFAULT 0
+  OPERATING_UNIT_SK Int NOT NULL DEFAULT 0
  COMMENT 'The operating unit surrogate key.  This relates to the operating unit dimension.',
-  `PRODUCT_SK` Int  NOT NULL DEFAULT 0
+  PRODUCT_SK Int  NOT NULL DEFAULT 0
  COMMENT 'The product surrogate key.  This relates to the product dimension.',
-  `FUND_SK` Int NOT NULL DEFAULT 0
+  FUND_SK Int NOT NULL DEFAULT 0
  COMMENT 'The fund surrogate key.  This relates to the fund dimension.',
-  `CLASSIFICATION_SK` Int NOT NULL DEFAULT 0
+  CLASSIFICATION_SK Int NOT NULL DEFAULT 0
  COMMENT 'The classification surrogate key.  This relates to the classification dimension.',
-  `PROGRAM_SK` Int NOT NULL DEFAULT 0
+  PROGRAM_SK Int NOT NULL DEFAULT 0
  COMMENT 'The program surrogate key.  This relates to the program dimension.',
-  `BUDGET_SK` Int NOT NULL DEFAULT 0
+  BUDGET_SK Int NOT NULL DEFAULT 0
  COMMENT 'The budget forecast surrogate key.  This relates to the budget forecast dimension.',
-  `PROJECT_SK` Int NOT NULL DEFAULT 0
+  PROJECT_SK Int NOT NULL DEFAULT 0
  COMMENT 'The project surrogate key.  This relates to the proejct dimension.',
-  `GL_BOOK_SK` Int NOT NULL DEFAULT 0
+  GL_BOOK_SK Int NOT NULL DEFAULT 0
  COMMENT 'The book surrogate key.  This relates to the book dimension.',
-  `GL_ADJUSTMENT_SK` Int NOT NULL DEFAULT 0
+  GL_ADJUSTMENT_SK Int NOT NULL DEFAULT 0
  COMMENT 'The general ledger (GL) adjustment type surrogate key.  This relates to the GL adjustment type dimension.',
-  `STATISTICS_SK` Int NOT NULL DEFAULT 0
+  STATISTICS_SK Int NOT NULL DEFAULT 0
  COMMENT 'The statistics surrogate key.  This relates to the statistics dimension.',
-  `TRXN_TYPE_SK` Int NOT NULL DEFAULT 0
+  TRXN_TYPE_SK Int NOT NULL DEFAULT 0
  COMMENT 'The transaction type surrogate key.  This relates to the transaction type dimension.',
-  `TRXN_DATE` Datetime
+  TRXN_DATE Datetime
  COMMENT 'The general ledger transaction date.',
-  `TRXN_AMT` Decimal(26,2) DEFAULT 0
+  TRXN_AMT Decimal(26,2) DEFAULT 0
  COMMENT 'The gl posted transaction amount (transaction currency).',
-  `BASE_CURRENCY_EXCHANGE_RATE` Decimal(26,9) DEFAULT 1
+  BASE_CURRENCY_EXCHANGE_RATE Decimal(26,9) DEFAULT 1
  COMMENT 'The currency exchange rate used to convert the transaction amount to the base amount.  This column defaults to 1.',
-  `HOSTED_CLIENT_SK` Int DEFAULT 0
+  HOSTED_CLIENT_SK Int DEFAULT 0
  COMMENT 'The hosted client surrogate key.  The relates to the hosted client admin table.',
-  `DW_LOAD_DATE` DATETIME NULL DEFAULT CURRENT_TIMESTAMP
+  DW_LOAD_DATE DATETIME NULL DEFAULT CURRENT_TIMESTAMP
  COMMENT 'The date the row was inserted or update in the table.'
 )
  COMMENT = 'The general ledger posted transaction table maintains general ledger information at the journal entry grain.'
 ;
 
-ALTER TABLE `FACT_GL_POSTED_TRANSACTION` ADD  PRIMARY KEY (`TRXN_DATE_SK`,`TRXN_ID`,`SOURCE_SYSTEM_SK`)
+ALTER TABLE FACT_GL_POSTED_TRANSACTION ADD  PRIMARY KEY (TRXN_DATE_SK,TRXN_ID,SOURCE_SYSTEM_SK)
 ;
 
 
@@ -184,51 +183,51 @@ ALTER TABLE `FACT_GL_POSTED_TRANSACTION` ADD  PRIMARY KEY (`TRXN_DATE_SK`,`TRXN_
 
 -- Table FACT_GL_SNAPSHOT
 
-CREATE TABLE `FACT_GL_SNAPSHOT`
+CREATE TABLE FACT_GL_SNAPSHOT
 (
-  `FISCAL_PERIOD_SK` Int NOT NULL DEFAULT 0
+  FISCAL_PERIOD_SK Int NOT NULL DEFAULT 0
  COMMENT 'The fiscal period surrogate key.  This relates to the fiscal period dimension.',
-  `BUSINESS_UNIT_SK` Int NOT NULL DEFAULT 0
+  BUSINESS_UNIT_SK Int NOT NULL DEFAULT 0
  COMMENT 'The general ledger business unit surrogate key.  This relates to the business unit dimension.',
-  `COST_CENTER_SK` Int NOT NULL DEFAULT 0
+  COST_CENTER_SK Int NOT NULL DEFAULT 0
  COMMENT 'The cost center surrogate key.  This relates to the cost center dimension.',
-  `LEDGER_SK` Int NOT NULL DEFAULT 0
+  LEDGER_SK Int NOT NULL DEFAULT 0
  COMMENT 'The ledger surrogate key.  This relates to the ledger dimension.',
-  `SUBLEDGER_SK` Int NOT NULL DEFAULT 0
+  SUBLEDGER_SK Int NOT NULL DEFAULT 0
  COMMENT 'The subledger surrogate key.  This relates to the subledger dimension.',
-  `ACCOUNT_SK` Int NOT NULL DEFAULT 0
+  ACCOUNT_SK Int NOT NULL DEFAULT 0
  COMMENT 'The account surrogate key.  This relates to the account dimension.',
-  `TRXN_CURRENCY_SK` Int NOT NULL DEFAULT 0
+  TRXN_CURRENCY_SK Int NOT NULL DEFAULT 0
  COMMENT 'The transaction currency surrogate key.  This relates to the currency dimension.',
-  `BASE_CURRENCY_SK` Int NOT NULL DEFAULT 0
+  BASE_CURRENCY_SK Int NOT NULL DEFAULT 0
  COMMENT 'The base currency surrogate key.  This relates to the currency dimension.',
-  `DEPARTMENT_SK` Int NOT NULL DEFAULT 0
+  DEPARTMENT_SK Int NOT NULL DEFAULT 0
  COMMENT 'The department surrogate key.  This relates to the department dimension.',
-  `OPERATING_UNIT_SK` Int NOT NULL DEFAULT 0
+  OPERATING_UNIT_SK Int NOT NULL DEFAULT 0
  COMMENT 'The operating unit surrogate key.  This relates to the operating unit dimension.',
-  `BUDGET_SK` Int NOT NULL DEFAULT 0
+  BUDGET_SK Int NOT NULL DEFAULT 0
  COMMENT 'The budget forecast surrogate key.  This relates to the budget forecast dimension.',
-  `GL_BOOK_SK` Int NOT NULL DEFAULT 0
+  GL_BOOK_SK Int NOT NULL DEFAULT 0
  COMMENT 'The book surrogate key.  This relates to the book dimension.',
-  `PERIOD_END_BALANCE_AMT` Decimal(26,2) DEFAULT 0
+  PERIOD_END_BALANCE_AMT Decimal(26,2) DEFAULT 0
  COMMENT 'The period end balance amount.',
-  `PERIOD_CREDIT_AMT` Decimal(26,2) DEFAULT 0
+  PERIOD_CREDIT_AMT Decimal(26,2) DEFAULT 0
  COMMENT 'The period credits amount.',
-  `PERIOD_DEBIT_AMT` Decimal(26,2) DEFAULT 0
+  PERIOD_DEBIT_AMT Decimal(26,2) DEFAULT 0
  COMMENT 'The period debits amount.',
-  `PERIOD_NET_CHANGE_AMT` Decimal(26,2) DEFAULT 0
+  PERIOD_NET_CHANGE_AMT Decimal(26,2) DEFAULT 0
  COMMENT 'The period net change amount (from previous period).',
-  `BASE_CURRENCY_EXCHANGE_RATE` Decimal(26,9) DEFAULT 1
+  BASE_CURRENCY_EXCHANGE_RATE Decimal(26,9) DEFAULT 1
  COMMENT 'The currency exchange rate used to convert the transaction amount to the base amount.  This column defaults to 1.',
-  `HOSTED_CLIENT_SK` Int DEFAULT 0
+  HOSTED_CLIENT_SK Int DEFAULT 0
  COMMENT 'The hosted client surrogate key.  The relates to the hosted client admin table.',
-  `DW_LOAD_DATE` DATETIME NULL DEFAULT CURRENT_TIMESTAMP
+  DW_LOAD_DATE DATETIME NULL DEFAULT CURRENT_TIMESTAMP
  COMMENT 'The date the row was inserted or update in the table.'
 )
  COMMENT = 'The general ledger snapshot table maintains general ledger information aggregated to the fiscal period'
 ;
 
-ALTER TABLE `FACT_GL_SNAPSHOT` ADD  PRIMARY KEY (`FISCAL_PERIOD_SK`,`BUSINESS_UNIT_SK`,`COST_CENTER_SK`,`LEDGER_SK`,`SUBLEDGER_SK`,`ACCOUNT_SK`,`TRXN_CURRENCY_SK`,`BASE_CURRENCY_SK`,`DEPARTMENT_SK`,`OPERATING_UNIT_SK`,`BUDGET_SK`,`GL_BOOK_SK`)
+ALTER TABLE FACT_GL_SNAPSHOT ADD  PRIMARY KEY (FISCAL_PERIOD_SK,BUSINESS_UNIT_SK,COST_CENTER_SK,LEDGER_SK,SUBLEDGER_SK,ACCOUNT_SK,TRXN_CURRENCY_SK,BASE_CURRENCY_SK,DEPARTMENT_SK,OPERATING_UNIT_SK,BUDGET_SK,GL_BOOK_SK)
 ;
 
 
